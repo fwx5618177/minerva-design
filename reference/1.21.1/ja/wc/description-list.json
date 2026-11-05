@@ -1,0 +1,427 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "description-list",
+  "title": "DescriptionList 説明リスト",
+  "description": "ネイティブの dl で描画するラベル付きメタデータ。狭い画面では行が縦に並びます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DescriptionItem",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/description-item",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-description-item",
+        "props": [
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "The description"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DescriptionList",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/description-list",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-description-list",
+        "props": [
+          {
+            "name": "bordered",
+            "typeText": "boolean",
+            "attribute": "bordered",
+            "required": false
+          },
+          {
+            "name": "striped",
+            "typeText": "boolean",
+            "attribute": "striped",
+            "required": false
+          },
+          {
+            "name": "items",
+            "typeText": "DescriptionListItem[]",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "`<minerva-description-item>` rows"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-description-item": {
+      "kind": "element",
+      "source": "web-components/src/components/description-list/description-list.ts",
+      "className": "MinervaDescriptionItem",
+      "summary": "Declarative term / description row of a description list.",
+      "description": "One declarative row of a `<minerva-description-list>`: the `label` attribute is the term, the content of the element the description. It renders its content as-is; the list places it in the `<dd>` of its row.",
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Term of the row (reflected: the list re-renders when it changes)"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The description"
+        }
+      ],
+      "parts": [],
+      "cssProperties": [
+        {
+          "name": "--description-list-row-padding-y",
+          "description": "Vertical padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--description-list-gap",
+          "description": "Space between the term and the description"
+        },
+        {
+          "name": "--description-list-term-color",
+          "description": "Text color of the terms"
+        },
+        {
+          "name": "--description-list-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--description-list-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--description-list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--description-list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--description-list-padding-x",
+          "description": "Horizontal padding of the rows of a bordered or striped list"
+        },
+        {
+          "name": "--description-list-stripe-background",
+          "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+        }
+      ]
+    },
+    "wc:minerva-description-list": {
+      "kind": "element",
+      "source": "web-components/src/components/description-list/description-list.ts",
+      "className": "MinervaDescriptionList",
+      "summary": "Native description list of labeled fields.",
+      "description": "Labeled metadata fields as a native `<dl>` (`<DescriptionList>` of React). Each item is a row (`<div>`) holding one `<dt>` / `<dd>` pair; rows stack on narrow screens. Rows come from the `items` property and / or from `<minerva-description-item label=\"...\">` children (rendered after the `items`). Each child is assigned into the `<dd>` of its row (manual slot assignment), so the native `<dl>` structure is kept.",
+      "properties": [
+        {
+          "name": "bordered",
+          "attribute": "bordered",
+          "type": "boolean",
+          "default": "false",
+          "description": "Frames the list as a card (full border, rounded corners, surface background, padded rows)"
+        },
+        {
+          "name": "striped",
+          "attribute": "striped",
+          "type": "boolean",
+          "default": "false",
+          "description": "Tints every other row (replaces the row separators)"
+        },
+        {
+          "name": "items",
+          "type": "DescriptionListItem[]",
+          "default": "[]",
+          "description": "Rows rendered before the declarative `<minerva-description-item>` children"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "`<minerva-description-item>` rows"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The `<dl>`"
+        },
+        {
+          "name": "row",
+          "description": "Each row (one term / description pair)"
+        },
+        {
+          "name": "term",
+          "description": "Each `<dt>`"
+        },
+        {
+          "name": "description",
+          "description": "Each `<dd>`"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--description-list-row-padding-y",
+          "description": "Vertical padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--description-list-gap",
+          "description": "Space between the term and the description"
+        },
+        {
+          "name": "--description-list-term-color",
+          "description": "Text color of the terms"
+        },
+        {
+          "name": "--description-list-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--description-list-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--description-list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--description-list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--description-list-padding-x",
+          "description": "Horizontal padding of the rows of a bordered or striped list"
+        },
+        {
+          "name": "--description-list-stripe-background",
+          "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:DescriptionList": {
+      "kind": "cssVars",
+      "source": "react/src/components/DescriptionList",
+      "vars": [
+        {
+          "name": "--description-list-row-padding-y",
+          "description": "Vertical padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--description-list-gap",
+          "description": "Space between the term and the description"
+        },
+        {
+          "name": "--description-list-term-color",
+          "description": "Text color of the terms"
+        },
+        {
+          "name": "--description-list-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--description-list-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--description-list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--description-list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--description-list-padding-x",
+          "description": "Horizontal padding of the rows of a bordered or striped list"
+        },
+        {
+          "name": "--description-list-stripe-background",
+          "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/description-list/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/description-list/wc/basic.html": "<minerva-description-list style=\"max-width: 480px\">\n  <minerva-description-item label=\"Customer\"\n    >Acme Corporation</minerva-description-item\n  >\n  <minerva-description-item label=\"Plan\"\n    >Business, billed yearly</minerva-description-item\n  >\n  <minerva-description-item label=\"Status\">\n    <minerva-badge color=\"success\" badge-role=\"presentation\"\n      >Active</minerva-badge\n    >\n  </minerva-description-item>\n  <minerva-description-item label=\"Owner\">\n    <minerva-text-link href=\"mailto:jane@example.com\"\n      >Jane Cooper</minerva-text-link\n    >\n  </minerva-description-item>\n</minerva-description-list>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "宣言的な <minerva-description-item label> 行。内容（テキスト、バッジ、リンク）はネイティブ <dl> の <dd> に入ります。"
+    },
+    {
+      "id": "items",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/description-list/wc/items.html",
+      "files": {
+        "apps/docs/src/docs/pages/description-list/wc/items.html": "<minerva-description-list id=\"order\" style=\"max-width: 480px\">\n  <minerva-description-item label=\"Notes\"\n    >Leave the parcel at the reception desk.</minerva-description-item\n  >\n</minerva-description-list>\n",
+        "apps/docs/src/docs/pages/description-list/wc/items.ts": "// `items` rows (data from JS) are rendered before the declarative\n// <minerva-description-item> children; 0 is rendered as a value.\ntype Row = { key?: string; label: string; value: string | number };\n\nexport function setup(root: HTMLElement) {\n  const list = root.querySelector<HTMLElement & { items: Row[] }>(\"#order\")!;\n  list.items = [\n    { key: \"id\", label: \"Order\", value: \"#10482\" },\n    { key: \"date\", label: \"Placed on\", value: \"March 4, 2026\" },\n    { key: \"total\", label: \"Total\", value: \"€129.00\" },\n    { key: \"returns\", label: \"Returns\", value: 0 },\n  ];\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "データからの行",
+      "description": "items プロパティは JS データから行を描画し、宣言的な子要素より前に置きます。0 も値として表示されます。"
+    },
+    {
+      "id": "styling",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/description-list/wc/styling.html",
+      "files": {
+        "apps/docs/src/docs/pages/description-list/wc/styling.html": "<style>\n  .compact-specs::part(term) {\n    font-weight: 600;\n  }\n  .compact-specs::part(row):hover {\n    background: var(--primary-color-subtle);\n  }\n</style>\n<minerva-description-list\n  class=\"compact-specs\"\n  style=\"\n    max-width: 480px;\n    --description-list-row-padding-y: 4px;\n    --description-list-gap: 24px;\n    --description-list-font-size: 0.875rem;\n    --description-list-border-color: transparent;\n  \"\n>\n  <minerva-description-item label=\"CPU\">8 vCPU</minerva-description-item>\n  <minerva-description-item label=\"Memory\">32 GiB</minerva-description-item>\n  <minerva-description-item label=\"Region\">eu-west-3</minerva-description-item>\n</minerva-description-list>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "スタイリング",
+      "description": "CSS 変数で密度、間隔、区切り線を設定し、::part(term) と ::part(row) でネイティブのセルをスタイルします。"
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/description-list/wc/variants.html",
+      "files": {
+        "apps/docs/src/docs/pages/description-list/wc/variants.html": "<div\n  style=\"\n    display: grid;\n    gap: 24px;\n    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n    align-items: start;\n  \"\n>\n  <minerva-description-list bordered>\n    <minerva-description-item label=\"Project\"\n      >minerva-docs</minerva-description-item\n    >\n    <minerva-description-item label=\"Region\"\n      >Frankfurt (fra1)</minerva-description-item\n    >\n    <minerva-description-item label=\"Runtime\"\n      >Node.js 22</minerva-description-item\n    >\n    <minerva-description-item label=\"Updated\"\n      >2 minutes ago</minerva-description-item\n    >\n  </minerva-description-list>\n  <minerva-description-list striped>\n    <minerva-description-item label=\"Project\"\n      >minerva-docs</minerva-description-item\n    >\n    <minerva-description-item label=\"Region\"\n      >Frankfurt (fra1)</minerva-description-item\n    >\n    <minerva-description-item label=\"Runtime\"\n      >Node.js 22</minerva-description-item\n    >\n    <minerva-description-item label=\"Updated\"\n      >2 minutes ago</minerva-description-item\n    >\n  </minerva-description-list>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "枠付きとストライプ",
+      "description": "bordered と striped のブール属性：パディング付きの行を持つカード枠、または区切り線の代わりの交互の色付け。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DescriptionList 説明リスト",
+      "description": "ネイティブの dl で描画するラベル付きメタデータ。狭い画面では行が縦に並びます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "ラベルと値には任意の ReactNode を使え、0 も表示されます。"
+        },
+        "variants": {
+          "title": "枠付きとストライプ",
+          "description": "bordered は項目をパディング付きの行を持つカードとして囲み、striped は区切り線の代わりに 1 行おきに色付けします。"
+        }
+      },
+      "api": {
+        "DescriptionListProps": {
+          "items": "順番に描画する行",
+          "ref": "<dl> 要素への ref",
+          "bordered": "リストをパディング付きの行を持つカードとして囲みます",
+          "striped": "1 行おきに色付けします（区切り線の代わり）"
+        },
+        "DescriptionListItem": {
+          "key": "行の安定した React key",
+          "label": "用語。<dt> に描画されます",
+          "value": "説明。<dd> に描画されます"
+        }
+      },
+      "cssVars": {
+        "--description-list-row-padding-y": "行の上下パディング（密度の行パディングに追従）",
+        "--description-list-gap": "用語と説明の間隔",
+        "--description-list-term-color": "用語の文字色",
+        "--description-list-border-color": "行区切り線の色",
+        "--description-list-font-size": "フォントサイズ",
+        "--description-list-radius": "枠付きリストの角丸（既定は --radius-lg）",
+        "--description-list-background": "枠付きリストの背景（既定は --surface-color）",
+        "--description-list-padding-x": "枠付きまたはストライプのリストの行の左右パディング",
+        "--description-list-stripe-background": "ストライプリストの 1 行おきの背景（既定は --surface-subtle-color）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "宣言的な <minerva-description-item label> 行。内容（テキスト、バッジ、リンク）はネイティブ <dl> の <dd> に入ります。"
+          },
+          "items": {
+            "title": "データからの行",
+            "description": "items プロパティは JS データから行を描画し、宣言的な子要素より前に置きます。0 も値として表示されます。"
+          },
+          "styling": {
+            "title": "スタイリング",
+            "description": "CSS 変数で密度、間隔、区切り線を設定し、::part(term) と ::part(row) でネイティブのセルをスタイルします。"
+          },
+          "variants": {
+            "title": "枠付きとストライプ",
+            "description": "bordered と striped のブール属性：パディング付きの行を持つカード枠、または区切り線の代わりの交互の色付け。"
+          }
+        },
+        "minerva-description-item": {
+          "slots": {
+            "default": "説明。"
+          }
+        },
+        "minerva-description-list": {
+          "slots": {
+            "default": "<minerva-description-item> の行。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

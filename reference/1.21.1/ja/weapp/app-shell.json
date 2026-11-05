@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "ja",
+  "renderer": "weapp",
+  "page": "app-shell",
+  "title": "AppShell アプリシェル",
+  "description": "アプリの外枠：折りたたみ・フローティング可能なサイドバー、固定ヘッダー、単一の main ランドマーク。768px 以下ではナビゲーションがドロワーに移動します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "AppShell",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default expanded/compact/floating modes, mobile drawer/backdrop, navigationKey close, explicit pin/expand controls, brand/header/page navigation/footer slots and navigationstate events. Floating rail expands by explicit tap instead of mouse hover; native accessibility replaces DOM skip-link focus. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default expanded/compact/floating modes, mobile drawer/backdrop, navigationKey close, explicit pin/expand controls, brand/header/page navigation/footer slots and navigationstate events. Floating rail expands by explicit tap instead of mouse hover; native accessibility replaces DOM skip-link focus. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/app-shell/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "app-shell",
+        "props": [
+          {
+            "name": "sidebarWidth",
+            "typeText": "number",
+            "required": false,
+            "default": 240
+          },
+          {
+            "name": "brand",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "brandIcon",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "sidebarMode",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultSidebarMode",
+            "typeText": "string",
+            "required": false,
+            "default": "expanded"
+          },
+          {
+            "name": "navigationLabel",
+            "typeText": "string",
+            "required": false,
+            "default": "Navigation"
+          },
+          {
+            "name": "navigationKey",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "labels",
+            "typeText": "unknown",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "sidebarmodechange",
+            "typeText": "{ mode: 'expanded' | 'compact' | 'floating' }",
+            "description": "Requested desktop sidebar mode."
+          },
+          {
+            "name": "navigationstate",
+            "typeText": "{ mode: string; collapsed: boolean; isMobile: boolean; open: boolean }",
+            "description": "Current native navigation state for the navigation slot owner."
+          }
+        ],
+        "slots": [
+          {
+            "name": "brandIcon"
+          },
+          {
+            "name": "brand"
+          },
+          {
+            "name": "navigation"
+          },
+          {
+            "name": "sidebar"
+          },
+          {
+            "name": "header"
+          },
+          {
+            "name": "headerActions"
+          },
+          {
+            "name": "pageNavigation"
+          },
+          {
+            "name": "default"
+          },
+          {
+            "name": "footer"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-app-shell\": \"minerva-design/dist/weapp/app-shell/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AppShell": {
+      "kind": "cssVars",
+      "source": "react/src/components/AppShell",
+      "vars": [
+        {
+          "name": "--app-shell-sidebar-width",
+          "description": "Width of the expanded sidebar"
+        },
+        {
+          "name": "--app-shell-rail-width",
+          "description": "Width of the compact / floating rail"
+        },
+        {
+          "name": "--app-shell-header-height",
+          "description": "Minimum height of the header and the sidebar brand row"
+        },
+        {
+          "name": "--app-shell-background",
+          "description": "Background of the page area"
+        },
+        {
+          "name": "--app-shell-sidebar-background",
+          "description": "Background of the sidebar and the mobile navigation drawer"
+        },
+        {
+          "name": "--app-shell-header-background",
+          "description": "Background of the sticky header"
+        },
+        {
+          "name": "--app-shell-drawer-width",
+          "description": "Width of the mobile navigation drawer"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AppShell アプリシェル",
+      "description": "アプリの外枠：折りたたみ・フローティング可能なサイドバー、固定ヘッダー、単一の main ランドマーク。768px 以下ではナビゲーションがドロワーに移動します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "navigation は collapsed / isMobile / closeNavigation / expandNavigation を受け取る描画関数です。"
+        },
+        "controlled": {
+          "title": "制御されたサイドバーモード",
+          "description": "sidebarMode / onSidebarModeChange で expanded・compact・floating を制御します。floating はホバーまたはキーボードフォーカスで展開します。"
+        },
+        "skip-link": {
+          "title": "スキップリンク",
+          "description": "「コンテンツへスキップ」リンクは最初のフォーカス可能な要素です。キーボードでフォーカスされるまで非表示で、main にフォーカスを移します。skipLink にはカスタムテキスト、または削除する場合は false を指定します。"
+        }
+      },
+      "api": {
+        "AppShellProps": {
+          "ref": "ルートの div への ref",
+          "brand": "サイドバー上部のブランド（ページ見出しではありません）",
+          "brandIcon": "装飾的なブランドアイコン（コンパクトレールでも表示）",
+          "navigation": "現在の状態からナビゲーションを描画します。常に 1 か所のみ（デスクトップはサイドバー、モバイルはドロワー）",
+          "navigationLabel": "サイドバーランドマークのアクセシブルネームとモバイルドロワーのタイトル",
+          "navigationKey": "ルート確定時に変更するとモバイルナビゲーションを閉じます",
+          "headerActions": "上部ヘッダーバーの内容（main の外側）",
+          "pageNavigation": "ヘッダーと main の間に描画（開いているページのタブなど）",
+          "children": "ページの内容（単一の main ランドマーク内に描画）",
+          "sidebarMode": "サイドバーモード（制御）",
+          "defaultSidebarMode": "初期サイドバーモード（非制御）",
+          "onSidebarModeChange": "ユーザーがモードを変更したとき次のモードで呼ばれます",
+          "labels": "コントロール名の上書き（既定はローカライズ済み）",
+          "skipLink": "最初のフォーカス可能な要素として描画される「コンテンツへスキップ」リンク（フォーカスされるまで視覚的に非表示）。main にフォーカスを移します。文字列でテキストを置き換え、false で削除します"
+        },
+        "AppShellNavigationState": {
+          "collapsed": "デスクトップのサイドバーが現在コンパクトレール表示",
+          "isMobile": "ナビゲーションがモバイルドロワー内に描画されている（ビューポート <= 768px）",
+          "closeNavigation": "モバイルのナビゲーションドロワーを閉じます（項目選択時に呼び出す）",
+          "expandNavigation": "サイドバーを expanded に切り替えます（コンパクトなグループを開くときなど）"
+        },
+        "AppShellLabels": {
+          "expand": "サイドバーを展開するトグルの名前",
+          "collapse": "サイドバーを折りたたむトグルの名前",
+          "enableFloating": "フローティングがオフのときのピン留めトグルの名前",
+          "disableFloating": "フローティングがオンのときのピン留めトグルの名前",
+          "openNavigation": "モバイルナビゲーションを開くヘッダーボタンの名前",
+          "closeNavigation": "モバイルナビゲーションの閉じるボタンの名前"
+        }
+      },
+      "cssVars": {
+        "--app-shell-sidebar-width": "展開したサイドバーの幅",
+        "--app-shell-rail-width": "コンパクト / フローティングのレールの幅",
+        "--app-shell-header-height": "ヘッダーとサイドバーのブランド行の最小の高さ",
+        "--app-shell-background": "ページ領域の背景",
+        "--app-shell-sidebar-background": "サイドバーとモバイルのナビゲーションドロワーの背景",
+        "--app-shell-header-background": "固定ヘッダーの背景",
+        "--app-shell-drawer-width": "モバイルのナビゲーションドロワーの幅"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ブランドと navigation スロットを持つサイドバー、固定ヘッダー（header-actions スロット）、デフォルトスロットを入れる main ランドマーク。768px 以下ではナビゲーションがヘッダーから開くモーダルドロワーに移ります。"
+          },
+          "sidebar-modes": {
+            "title": "サイドバーのモードとスロット",
+            "description": "sidebar-mode=\"compact\" はアイコンレールで始まります。サイドバーのボタンで展開したり、フローティングレールとして固定したりできます。collapsed 属性でナビゲーションをスタイル指定し（ここではラベルを非表示）、brand-icon はレールでも表示され、page-navigation はヘッダーと main の間に入ります。"
+          },
+          "controlled": {
+            "title": "イベント・メソッド・ラベル",
+            "description": "minerva-sidebar-mode-change と minerva-open-change はキャンセル可能です（モードをロックして確認）。expandNavigation() と focusMain() でシェルを操作し、*-label と skip-link 属性でコントロールの名前を変更します。"
+          }
+        },
+        "minerva-app-shell": {
+          "props": {
+            "noSkipLink": "「コンテンツへスキップ」リンクを削除します。",
+            "expandLabel": "サイドバーを展開するトグルの名前。",
+            "collapseLabel": "サイドバーを折りたたむトグルの名前。",
+            "enableFloatingLabel": "フローティングモードがオフのときのピントグルの名前。",
+            "disableFloatingLabel": "フローティングモードがオンのときのピントグルの名前。",
+            "openNavigationLabel": "モバイルナビゲーションを開くヘッダーボタンの名前。",
+            "closeNavigationLabel": "モバイルナビゲーションの閉じるボタンの名前。",
+            "mobile": "読み取り専用：モバイルレイアウトが有効です（ビューポート 768px 以下）。"
+          },
+          "events": {
+            "minerva-sidebar-mode-change": "ユーザーがサイドバーのモードを変更しました（detail: { mode }）。キャンセル可能：preventDefault() で現在のモードを維持します。",
+            "minerva-open-change": "モバイルドロワーが開閉しました（detail: { open }）。ユーザー操作によるものはキャンセル可能です。"
+          },
+          "slots": {
+            "default": "main ランドマーク内のページコンテンツ。",
+            "navigation": "ナビゲーション（デスクトップではサイドバー、モバイルではドロワー）。",
+            "brand": "ブランド（brand 属性の代わり）。",
+            "brand-icon": "装飾用のブランドアイコン（コンパクトレールでも表示）。",
+            "header-actions": "ヘッダーバーのコンテンツ（アカウントメニュー、検索など）。",
+            "page-navigation": "ヘッダーと main の間に描画されます（ページタブなど）。"
+          },
+          "cssVars": {
+            "--icon-button-color": "シェルのコントロール（サイドバーのトグル、メニューボタン）のアイコン色。",
+            "--icon-button-hover-bg": "ホバー時のシェルのコントロールの背景。",
+            "--icon-button-pressed-color": "押された状態のピントグルのアイコン色。",
+            "--icon-button-pressed-bg": "押された状態のピントグルの背景。",
+            "--icon-button-size": "シェルのコントロールの幅と高さ。",
+            "--icon-button-icon-size": "シェルのコントロールのアイコンサイズ。",
+            "--icon-button-radius": "シェルのコントロールの角丸の半径。"
+          },
+          "methods": {
+            "openNavigation": "モバイルナビゲーションのドロワーを開きます（モバイルレイアウトのみ）。",
+            "closeNavigation": "モバイルナビゲーションのドロワーを閉じます（項目が選ばれたときに呼び出します）。",
+            "expandNavigation": "サイドバーを展開状態に切り替えます（コンパクトレールでグループを開いたときなど）。",
+            "focusMain": "main ランドマークにフォーカスを移します。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

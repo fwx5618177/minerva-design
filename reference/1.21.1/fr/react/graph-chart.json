@@ -1,0 +1,3006 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "graph-chart",
+  "title": "Graphe de relations",
+  "description": "Réseaux de relations : personnes, organisations, services ou toute entité et les liens qui les unissent. Une disposition par forces (Barnes–Hut, dans un Web Worker pour les grands graphes), un cercle ou un diagramme en arcs place les nœuds ; nœuds et arêtes sont dessinés par le GPU (WebGPU, WebGL2, WebGL, repli Canvas2D), si bien que des dizaines de milliers de nœuds restent fluides. Survolez un nœud pour mettre en avant ses voisins, déplacez-le, masquez des groupes depuis la légende et parcourez le graphe au clavier.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {
+    "intro": {
+      "overview": {
+        "title": "Vue d’ensemble",
+        "text": "GraphChart reçoit des nœuds, des arêtes et éventuellement des groupes. Les groupes donnent les couleurs et la légende, la valeur des nœuds leur taille, et les libellés des arêtes nomment les relations.",
+        "layouts": "Dispositions : forces (par défaut) avec liens, répulsion, gravité, collisions et graine déterministe ; cercle (par groupe, arêtes regroupées vers le centre) ; diagramme en arcs ; les dispositions dag et arbre sont aussi disponibles (voir Graphe de dépendances et Arbre). Les algorithmes sont exportés comme fonctions pures, utilisables dans des workers et des mini-programmes.",
+        "gpu": "Le rendu passe par les mêmes moteurs GPU que les autres graphiques, avec un repli automatique WebGPU → WebGL2 → WebGL → Canvas2D ; le moteur utilisé est indiqué par onRendererChange et l’attribut data-renderer.",
+        "labels": "Les libellés s’évitent : en vue éloignée, seuls les nœuds les plus importants gardent leur libellé, et ceux des arêtes apparaissent en zoomant ou quand une arête est mise en avant."
+      },
+      "controls": {
+        "title": "Interaction et accessibilité",
+        "pointer": "Faites glisser le fond pour déplacer la vue, Ctrl / ⌘ + molette ou pincement pour zoomer, faites glisser un nœud pour le déplacer (la simulation suit), cliquez pour sélectionner (Ctrl / ⌘ + clic pour ajouter), double-cliquez sur le fond pour tout afficher. Les boutons du coin zooment et recadrent.",
+        "keyboard": "Donnez le focus au graphique puis utilisez les flèches pour passer de nœud en nœud ; Entrée sélectionne, + et - zooment, 0 recadre, Échap efface. Le nœud actif est annoncé avec son groupe et son nombre de liens.",
+        "languages": "Les textes intégrés (résumé, annonces, infobulle, boutons) existent en anglais, chinois, japonais et français et suivent la langue de la page ; les couleurs suivent les thèmes clair et sombre."
+      }
+    },
+    "data": {
+      "characters": {
+        "liubei": "Liu Bei",
+        "guanyu": "Guan Yu",
+        "zhangfei": "Zhang Fei",
+        "zhugeliang": "Zhuge Liang",
+        "zhaoyun": "Zhao Yun",
+        "machao": "Ma Chao",
+        "huangzhong": "Huang Zhong",
+        "pangtong": "Pang Tong",
+        "jiangwei": "Jiang Wei",
+        "liushan": "Liu Shan",
+        "weiyan": "Wei Yan",
+        "fazheng": "Fa Zheng",
+        "caocao": "Cao Cao",
+        "caopi": "Cao Pi",
+        "simayi": "Sima Yi",
+        "xiahoudun": "Xiahou Dun",
+        "xiahouyuan": "Xiahou Yuan",
+        "zhangliao": "Zhang Liao",
+        "xuchu": "Xu Chu",
+        "guojia": "Guo Jia",
+        "xunyu": "Xun Yu",
+        "dianwei": "Dian Wei",
+        "caozhi": "Cao Zhi",
+        "simazhao": "Sima Zhao",
+        "dengai": "Deng Ai",
+        "sunquan": "Sun Quan",
+        "sunce": "Sun Ce",
+        "sunjian": "Sun Jian",
+        "zhouyu": "Zhou Yu",
+        "lusu": "Lu Su",
+        "lumeng": "Lü Meng",
+        "luxun": "Lu Xun",
+        "ganning": "Gan Ning",
+        "huanggai": "Huang Gai",
+        "xiaoqiao": "Xiao Qiao",
+        "daqiao": "Da Qiao",
+        "sunshangxiang": "Sun Shangxiang",
+        "lvbu": "Lü Bu",
+        "dongzhuo": "Dong Zhuo",
+        "diaochan": "Diaochan",
+        "yuanshao": "Yuan Shao",
+        "xiandi": "Empereur Xian",
+        "wangyun": "Wang Yun"
+      },
+      "factions": {
+        "shu": "Shu Han",
+        "wei": "Wei",
+        "wu": "Wu oriental",
+        "qun": "Seigneurs de guerre et cour Han"
+      },
+      "relations": {
+        "brothers": "Frères jurés",
+        "serves": "Sert",
+        "father": "Père et fils",
+        "spouse": "Mariés",
+        "siblings": "Fratrie",
+        "rival": "Rivaux",
+        "mentor": "Maître",
+        "adoptive": "Père adoptif",
+        "ally": "Alliance",
+        "defeated": "A vaincu",
+        "friends": "Amis jurés"
+      },
+      "charactersAria": "Relations entre les personnages du Roman des Trois Royaumes, par faction",
+      "charactersHint": "Survolez un personnage ou une relation, cliquez pour sélectionner ; Ctrl / ⌘ + molette pour zoomer.",
+      "selectedHint": "Sélection : {{name}}",
+      "relationHint": "{{source}} → {{target}} : {{relation}}",
+      "separator": ", ",
+      "member": "Membre {{id}}",
+      "community": "Communauté {{n}}",
+      "largeAria": "Réseau généré de 10 000 membres répartis en 40 communautés",
+      "largeStatus": "{{nodes}} nœuds · {{edges}} liens · rendu : {{renderer}} ·",
+      "largeRunning": "simulation dans un Web Worker…",
+      "largeDone": "disposition terminée en {{seconds}} s",
+      "domains": {
+        "edge": "Périphérie",
+        "commerce": "Commerce",
+        "identity": "Identité",
+        "data": "Données"
+      },
+      "bundleEdges": "Regrouper les arêtes vers le centre",
+      "circularAria": "Appels entre microservices, regroupés par domaine",
+      "families": {
+        "systems": "Système",
+        "functional": "Fonctionnel",
+        "objects": "Orienté objet",
+        "scripting": "Script"
+      },
+      "influenced": "A influencé",
+      "arcAria": "Influences entre langages de programmation",
+      "layouts": {
+        "force": "Forces",
+        "circular": "Cercle",
+        "arc": "Diagramme en arcs"
+      },
+      "layoutLabel": "Disposition",
+      "vanillaHint": "Cliquez sur un personnage pour le centrer.",
+      "vanillaClick": "{{name}} : {{links}} relations",
+      "vanillaLayout": "Disposition : {{layout}}",
+      "states": {
+        "cart": "Panier",
+        "pending": "En attente de paiement",
+        "paid": "Payée",
+        "shipped": "Expédiée",
+        "delivered": "Livrée",
+        "refunded": "Remboursée",
+        "cancelled": "Annulée"
+      },
+      "events": {
+        "checkout": "commande",
+        "edit": "modifier le panier",
+        "pay": "paiement",
+        "retry": "nouvel essai de paiement",
+        "timeout": "délai dépassé",
+        "cancel": "annulation",
+        "reverse": "paiement annulé",
+        "ship": "expédition",
+        "refund": "remboursement",
+        "track": "suivi mis à jour",
+        "deliver": "livraison",
+        "bounce": "retour à l’expéditeur",
+        "return": "retour",
+        "review": "avis"
+      },
+      "stages": {
+        "open": "En cours",
+        "fulfilment": "Traitement",
+        "closed": "Terminée"
+      },
+      "filledArrows": "Pointes pleines",
+      "transitionsAria": "États d’une commande et événements qui les relient",
+      "health": {
+        "healthy": "Sain",
+        "degraded": "Dégradé",
+        "critical": "Critique"
+      },
+      "latency": "p95 {{value}} ms",
+      "rps": "{{value}} req/s",
+      "liveUpdates": "Mises à jour en direct",
+      "serviceMapAria": "Carte des services d'une boutique en ligne avec la santé de chaque service en direct",
+      "serviceHint": "Cliquez sur un service pour lire ses métriques.",
+      "serviceReadout": "{{name}} : {{status}} · p95 {{latency}} ms · erreurs {{errors}} · {{rps}} req/s.",
+      "serviceCounts": "{{healthy}} sains, {{degraded}} dégradés, {{critical}} critiques · mis à jour à {{time}}",
+      "entities": {
+        "curie": "Marie Curie",
+        "pierre": "Pierre Curie",
+        "einstein": "Albert Einstein",
+        "planck": "Max Planck",
+        "bohr": "Niels Bohr",
+        "heisenberg": "Werner Heisenberg",
+        "meitner": "Lise Meitner",
+        "hahn": "Otto Hahn",
+        "noether": "Emmy Noether",
+        "paris": "Paris",
+        "warsaw": "Varsovie",
+        "vienna": "Vienne",
+        "berlin": "Berlin",
+        "zurich": "Zurich",
+        "copenhagen": "Copenhague",
+        "sorbonne": "Sorbonne",
+        "kwg": "Société Kaiser-Wilhelm",
+        "eth": "ETH Zurich",
+        "nbi": "Institut Niels-Bohr",
+        "radioactivity": "Radioactivité",
+        "relativity": "Relativité",
+        "quantum": "Théorie quantique",
+        "uncertainty": "Principe d'incertitude",
+        "fission": "Fission nucléaire",
+        "symmetry": "Théorème de Noether"
+      },
+      "predicates": {
+        "bornIn": "né(e) à",
+        "workedAt": "a travaillé à",
+        "studiedAt": "a étudié à",
+        "marriedTo": "marié(e) à",
+        "contributedTo": "a contribué à",
+        "locatedIn": "situé(e) à",
+        "influenced": "a influencé",
+        "partOf": "fait partie de",
+        "collaborated": "a collaboré avec",
+        "relatedTo": "lié(e) à"
+      },
+      "entityKinds": {
+        "person": "Personnes",
+        "place": "Lieux",
+        "institution": "Institutions",
+        "concept": "Idées"
+      },
+      "searchPlaceholder": "Chercher une personne, un lieu ou une idée…",
+      "searchLabel": "Rechercher dans le graphe de connaissances",
+      "noMatch": "Aucune entité ne correspond à cette recherche.",
+      "knowledgeAria": "Graphe de connaissances de physiciens, des lieux et institutions qui leur sont liés et de leurs découvertes",
+      "knowledgeHint": "Cherchez une entité ou cliquez sur un nœud pour lister ce que le graphe sait d'elle.",
+      "factsReadout": "{{name}} : {{total}} faits — {{facts}}",
+      "factOut": "→ {{name}} ({{relation}})",
+      "factIn": "← {{name}} ({{relation}})",
+      "circles": {
+        "university": "Amis de fac",
+        "work": "Collègues",
+        "climbing": "Club d'escalade",
+        "books": "Club de lecture"
+      },
+      "friendsAria": "Amitiés entre 24 personnes réparties en quatre cercles",
+      "suggestions": "Personnes que {{name}} connaît peut-être : {{list}}.",
+      "suggestion": "{{name}} (amis en commun : {{mutual}})",
+      "noSuggestions": "{{name}} connaît déjà tous les amis de ses amis.",
+      "friendsHint": "Cliquez sur une autre personne pour mettre à jour les suggestions.",
+      "deviceLabel": "Appareil {{id}}",
+      "cardLabel": "Carte •••• {{last4}}",
+      "accountLabel": "Compte {{id}}",
+      "loggedInFrom": "connecté depuis",
+      "paidWith": "a payé avec",
+      "fraudKinds": {
+        "account": "Comptes",
+        "flagged": "Comptes signalés",
+        "device": "Appareils",
+        "card": "Cartes"
+      },
+      "risk": {
+        "low": "faible",
+        "medium": "moyen",
+        "high": "élevé"
+      },
+      "darkTheme": "Thème sombre",
+      "fraudAria": "Comptes, appareils et cartes de paiement, avec deux réseaux de fraude qui partagent des appareils et des cartes",
+      "clusterReadout": "Groupe : {{accounts}} comptes, {{devices}} appareils, {{cards}} cartes · risque : {{risk}}",
+      "fraudHint": "Cliquez sur un compte, un appareil ou une carte pour sélectionner tout son groupe."
+    }
+  },
+  "components": [
+    {
+      "name": "GraphChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "GraphChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "layout",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "enum",
+            "values": [
+              "arc",
+              "circular",
+              "dag",
+              "force",
+              "mindmap",
+              "none",
+              "org",
+              "radial",
+              "tree"
+            ],
+            "typeText": "GraphLayoutType | undefined",
+            "typeRef": "type:9f4c5f81daeecd1158dc",
+            "default": "force",
+            "required": false,
+            "description": "Placement of the nodes"
+          },
+          {
+            "name": "direction",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "enum",
+            "values": [
+              "BT",
+              "LR",
+              "RL",
+              "TB"
+            ],
+            "typeText": "GraphDirection | undefined",
+            "typeRef": "type:e2282a023de588fdd830",
+            "required": false,
+            "description": "Direction of the `dag` and `tree` layouts"
+          },
+          {
+            "name": "force",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "object",
+            "typeText": "GraphForceOptions | undefined",
+            "typeRef": "type:8b3296588bce07c348c5",
+            "required": false,
+            "description": "Force layout settings (Barnes–Hut, worker for large graphs)"
+          },
+          {
+            "name": "circular",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "object",
+            "typeText": "GraphCircularOptions | undefined",
+            "typeRef": "type:93a5748191458ba57fc5",
+            "required": false,
+            "description": "Circular / arc layout settings"
+          },
+          {
+            "name": "dag",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "object",
+            "typeText": "GraphDagOptions | undefined",
+            "typeRef": "type:9812c43f612183b6c13d",
+            "required": false,
+            "description": "Layered layout settings (`layout=\"dag\"`)"
+          },
+          {
+            "name": "tree",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "object",
+            "typeText": "GraphTreeOptions | undefined",
+            "typeRef": "type:8786e91b2b5f9ba54696",
+            "required": false,
+            "description": "Tree layout settings (tree layouts)"
+          },
+          {
+            "name": "nodes",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "array",
+            "typeText": "readonly GraphNode[]",
+            "typeRef": "type:d043e153cf195b5b2e2b",
+            "required": true,
+            "description": "The nodes"
+          },
+          {
+            "name": "edges",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "array",
+            "typeText": "readonly GraphEdge[]",
+            "typeRef": "type:75a5208fa228dd1e0528",
+            "required": true,
+            "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)"
+          },
+          {
+            "name": "groups",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "array",
+            "typeText": "readonly GraphGroup[] | undefined",
+            "typeRef": "type:b8f1cf5e37f0c33f5bad",
+            "required": false,
+            "description": "Groups: legend order, names and colors"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 480,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "nodeShape",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "enum",
+            "values": [
+              "box",
+              "circle"
+            ],
+            "typeText": "GraphNodeShape | undefined",
+            "typeRef": "type:1091b2c2c15e447b147f",
+            "required": false,
+            "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)"
+          },
+          {
+            "name": "nodeSize",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "number | readonly [number, number] | undefined",
+            "typeRef": "type:750314f5aee769294737",
+            "required": false,
+            "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`"
+          },
+          {
+            "name": "edgeStyle",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "enum",
+            "values": [
+              "curve",
+              "orthogonal",
+              "spline",
+              "straight"
+            ],
+            "typeText": "GraphEdgeStyle | undefined",
+            "typeRef": "type:8c4d9692eea81edaa9b2",
+            "required": false,
+            "description": "Edge shape; depends on the layout when omitted"
+          },
+          {
+            "name": "edgeWidth",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "number | readonly [number, number] | undefined",
+            "typeRef": "type:750314f5aee769294737",
+            "required": false,
+            "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`"
+          },
+          {
+            "name": "edgeColor",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "enum",
+            "values": [
+              "neutral",
+              "source",
+              "target"
+            ],
+            "typeText": "\"neutral\" | \"target\" | \"source\" | undefined",
+            "typeRef": "type:12fe953650573b302791",
+            "default": "neutral",
+            "required": false,
+            "description": "Edge colors: neutral or tinted with the source / target node"
+          },
+          {
+            "name": "arrows",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Arrowheads on the edges without `directed`"
+          },
+          {
+            "name": "arrowStyle",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "enum",
+            "values": [
+              "filled",
+              "open"
+            ],
+            "typeText": "\"filled\" | \"open\" | undefined",
+            "typeRef": "type:d74ec6d9774e9b198b93",
+            "default": "open",
+            "required": false,
+            "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, which follows the theme and the highlight)"
+          },
+          {
+            "name": "nodeLabels",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "boolean | \"auto\" | undefined",
+            "typeRef": "type:54793a2f0bb416543bfd",
+            "default": "auto",
+            "required": false,
+            "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out. Text inside boxes keeps a readable minimum size and is shortened with an ellipsis; it is hidden only when the box is too small for any text, or with `false`"
+          },
+          {
+            "name": "edgeLabels",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "boolean | \"hover\" | \"auto\" | undefined",
+            "typeRef": "type:266dfa648b484f073d6f",
+            "default": "auto",
+            "required": false,
+            "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never"
+          },
+          {
+            "name": "highlight",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "enum",
+            "values": [
+              "lineage",
+              "neighbors",
+              "none"
+            ],
+            "typeText": "\"none\" | \"neighbors\" | \"lineage\" | undefined",
+            "typeRef": "type:b5de00c7c3625629f010",
+            "required": false,
+            "description": "What hovering / selecting a node highlights"
+          },
+          {
+            "name": "selected",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Ids of the selected nodes (changing it updates the selection)"
+          },
+          {
+            "name": "animation",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "number | boolean | undefined",
+            "typeRef": "type:11d9d08024b0b84c460e",
+            "default": true,
+            "required": false,
+            "description": "Animates layout and data changes; a number is the duration in ms"
+          },
+          {
+            "name": "fitPadding",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 24,
+            "required": false,
+            "description": "Padding around the graph when fitting it, in CSS pixels"
+          },
+          {
+            "name": "controls",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Zoom buttons (zoom in, zoom out, fit)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "boolean | GraphLegendOptions | undefined",
+            "typeRef": "type:a6752c0a6f36341f0589",
+            "required": false,
+            "description": "Legend of the groups; shown by default with several groups"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "boolean | GraphTooltipOptions | undefined",
+            "typeRef": "type:43b64af2877567c9edca",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "union",
+            "typeText": "boolean | GraphInteractionOptions | undefined",
+            "typeRef": "type:a8c334ec55cb37fe3733",
+            "default": true,
+            "required": false,
+            "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged (force, circular), click selects, arrow keys move between nodes; `false` makes the chart static"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); built-in texts in English, Chinese, Japanese and French"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "object",
+            "typeText": "Partial<GraphChartLabels> | undefined",
+            "typeRef": "type:dae2a71254652403a618",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "function",
+            "typeText": "((event: GraphHoverEvent | null) => void) | undefined",
+            "typeRef": "type:ac5e1baf28ad49ba06c3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GraphHoverEvent | null",
+                "typeRef": "type:888c98d6309fe4d4eaed"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) node / edge changes"
+          },
+          {
+            "name": "onItemClick",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "function",
+            "typeText": "((event: GraphHoverEvent) => void) | undefined",
+            "typeRef": "type:51acd588b4a8583a3df7",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GraphHoverEvent",
+                "typeRef": "type:a459780626c7d631683c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a node or an edge is clicked (or a node activated with Enter)"
+          },
+          {
+            "name": "onSelectionChange",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "function",
+            "typeText": "((ids: string[]) => void) | undefined",
+            "typeRef": "type:e21311d79e7bf99e04a2",
+            "parameters": [
+              {
+                "name": "ids",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string[]",
+                "typeRef": "type:19a96e1d6cef0c4dc643"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the ids of the selected nodes when the selection changes"
+          },
+          {
+            "name": "onToggle",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "function",
+            "typeText": "((event: GraphToggleEvent) => void) | undefined",
+            "typeRef": "type:5637f42cbc0ffe182065",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GraphToggleEvent",
+                "typeRef": "type:f64c00a6c651b3baee92"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a tree node is collapsed or expanded"
+          },
+          {
+            "name": "onGroupToggle",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "function",
+            "typeText": "((event: GraphGroupToggleEvent) => void) | undefined",
+            "typeRef": "type:19db777e1f40d3438872",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GraphGroupToggleEvent",
+                "typeRef": "type:530e796c884bafc1408c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the legend shows / hides a group"
+          },
+          {
+            "name": "onLayoutEnd",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "function",
+            "typeText": "((event: GraphLayoutEndEvent) => void) | undefined",
+            "typeRef": "type:def0e4d2c65fe68907cf",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GraphLayoutEndEvent",
+                "typeRef": "type:55967c5fef8c1466ed7d"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the layout is done (the force simulation cooled down)"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/graph.tsx",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:5797a13f9f213080fe55",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and after a fallback)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "GraphChartProps": {
+      "source": "charts/src/react/graph.tsx",
+      "description": "Props of `GraphChart`",
+      "kind": "interface",
+      "extends": [
+        "GraphCommonProps"
+      ],
+      "props": [
+        {
+          "name": "layout",
+          "type": "GraphLayoutType",
+          "required": false,
+          "default": "\"force\"",
+          "description": "Placement of the nodes"
+        },
+        {
+          "name": "direction",
+          "type": "GraphDirection",
+          "required": false,
+          "description": "Direction of the `dag` and `tree` layouts"
+        },
+        {
+          "name": "force",
+          "type": "GraphForceOptions",
+          "required": false,
+          "description": "Force layout settings (Barnes–Hut, worker for large graphs)"
+        },
+        {
+          "name": "circular",
+          "type": "GraphCircularOptions",
+          "required": false,
+          "description": "Circular / arc layout settings"
+        },
+        {
+          "name": "dag",
+          "type": "GraphDagOptions",
+          "required": false,
+          "description": "Layered layout settings (`layout=\"dag\"`)"
+        },
+        {
+          "name": "tree",
+          "type": "GraphTreeOptions",
+          "required": false,
+          "description": "Tree layout settings (tree layouts)"
+        }
+      ]
+    },
+    "GraphCommonProps": {
+      "source": "charts/src/react/graph.tsx",
+      "description": "Props shared by `GraphChart`, `DependencyGraph` and `TreeChart`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "nodes",
+          "type": "readonly GraphNode[]",
+          "required": true,
+          "description": "The nodes"
+        },
+        {
+          "name": "edges",
+          "type": "readonly GraphEdge[]",
+          "required": true,
+          "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)"
+        },
+        {
+          "name": "groups",
+          "type": "readonly GraphGroup[]",
+          "required": false,
+          "description": "Groups: legend order, names and colors"
+        },
+        {
+          "name": "height",
+          "type": "number | string",
+          "required": false,
+          "default": "480",
+          "description": "Height of the chart (the legend included); numbers are pixels"
+        },
+        {
+          "name": "width",
+          "type": "number | string",
+          "required": false,
+          "default": "\"100%\"",
+          "description": "Width of the chart; numbers are pixels"
+        },
+        {
+          "name": "nodeShape",
+          "type": "GraphNodeShape",
+          "required": false,
+          "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)"
+        },
+        {
+          "name": "nodeSize",
+          "type": "number | readonly [number, number]",
+          "required": false,
+          "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`"
+        },
+        {
+          "name": "edgeStyle",
+          "type": "GraphEdgeStyle",
+          "required": false,
+          "description": "Edge shape; depends on the layout when omitted"
+        },
+        {
+          "name": "edgeWidth",
+          "type": "number | readonly [number, number]",
+          "required": false,
+          "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`"
+        },
+        {
+          "name": "edgeColor",
+          "type": "\"neutral\" | \"source\" | \"target\"",
+          "required": false,
+          "default": "\"neutral\"",
+          "description": "Edge colors: neutral or tinted with the source / target node"
+        },
+        {
+          "name": "arrows",
+          "type": "boolean",
+          "required": false,
+          "description": "Arrowheads on the edges without `directed`"
+        },
+        {
+          "name": "arrowStyle",
+          "type": "\"open\" | \"filled\"",
+          "required": false,
+          "default": "\"open\"",
+          "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, which follows the theme and the highlight)"
+        },
+        {
+          "name": "nodeLabels",
+          "type": "boolean | \"auto\"",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out. Text inside boxes keeps a readable minimum size and is shortened with an ellipsis; it is hidden only when the box is too small for any text, or with `false`"
+        },
+        {
+          "name": "edgeLabels",
+          "type": "boolean | \"auto\" | \"hover\"",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never"
+        },
+        {
+          "name": "highlight",
+          "type": "\"neighbors\" | \"lineage\" | \"none\"",
+          "required": false,
+          "description": "What hovering / selecting a node highlights"
+        },
+        {
+          "name": "selected",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Ids of the selected nodes (changing it updates the selection)"
+        },
+        {
+          "name": "animation",
+          "type": "boolean | number",
+          "required": false,
+          "default": "true",
+          "description": "Animates layout and data changes; a number is the duration in ms"
+        },
+        {
+          "name": "fitPadding",
+          "type": "number",
+          "required": false,
+          "default": "24",
+          "description": "Padding around the graph when fitting it, in CSS pixels"
+        },
+        {
+          "name": "controls",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Zoom buttons (zoom in, zoom out, fit)"
+        },
+        {
+          "name": "legend",
+          "type": "boolean | GraphLegendOptions",
+          "required": false,
+          "description": "Legend of the groups; shown by default with several groups"
+        },
+        {
+          "name": "tooltip",
+          "type": "boolean | GraphTooltipOptions",
+          "required": false,
+          "description": "Tooltip; `false` disables it"
+        },
+        {
+          "name": "interaction",
+          "type": "boolean | GraphInteractionOptions",
+          "required": false,
+          "default": "true",
+          "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged (force, circular), click selects, arrow keys move between nodes; `false` makes the chart static"
+        },
+        {
+          "name": "renderer",
+          "type": "ChartRendererPreference",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+        },
+        {
+          "name": "palette",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name of the chart"
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "the page language (`<html lang>`), then the browser language",
+          "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); built-in texts in English, Chinese, Japanese and French"
+        },
+        {
+          "name": "labels",
+          "type": "Partial<GraphChartLabels>",
+          "required": false,
+          "description": "Overrides of the built-in texts of the `locale`"
+        },
+        {
+          "name": "onHover",
+          "type": "(event: GraphHoverEvent | null) => void",
+          "required": false,
+          "description": "Called when the hovered (or keyboard-focused) node / edge changes"
+        },
+        {
+          "name": "onItemClick",
+          "type": "(event: GraphHoverEvent) => void",
+          "required": false,
+          "description": "Called when a node or an edge is clicked (or a node activated with Enter)"
+        },
+        {
+          "name": "onSelectionChange",
+          "type": "(ids: string[]) => void",
+          "required": false,
+          "description": "Called with the ids of the selected nodes when the selection changes"
+        },
+        {
+          "name": "onToggle",
+          "type": "(event: GraphToggleEvent) => void",
+          "required": false,
+          "description": "Called when a tree node is collapsed or expanded"
+        },
+        {
+          "name": "onGroupToggle",
+          "type": "(event: GraphGroupToggleEvent) => void",
+          "required": false,
+          "description": "Called when the legend shows / hides a group"
+        },
+        {
+          "name": "onLayoutEnd",
+          "type": "(event: GraphLayoutEndEvent) => void",
+          "required": false,
+          "description": "Called when the layout is done (the force simulation cooled down)"
+        },
+        {
+          "name": "onRendererChange",
+          "type": "(renderer: ChartRendererKind) => void",
+          "required": false,
+          "description": "Called with the backend once it is ready (and after a fallback)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Class of the outer element"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Style of the outer element"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<GraphChartHandle>",
+          "required": false,
+          "description": "Imperative handle"
+        }
+      ]
+    },
+    "GraphChartHandle": {
+      "source": "charts/src/react/graph.tsx",
+      "description": "Imperative handle of the graph components (`ref`)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "fit",
+          "type": "(animate?: boolean) => void",
+          "required": true,
+          "description": "Fits the visible nodes in the view"
+        },
+        {
+          "name": "focusNode",
+          "type": "(id: string, options?: { zoom?: number; animate?: boolean }) => void",
+          "required": true,
+          "description": "Centers a node (expanding its collapsed ancestors), optionally zooming"
+        },
+        {
+          "name": "setData",
+          "type": "(data: GraphData) => void",
+          "required": true,
+          "description": "Replaces the data until the next render with new props"
+        },
+        {
+          "name": "select",
+          "type": "(ids: readonly string[] | string | null) => void",
+          "required": true,
+          "description": "Selects nodes (`null` clears the selection)"
+        },
+        {
+          "name": "getSelection",
+          "type": "() => string[]",
+          "required": true,
+          "description": "Ids of the selected nodes"
+        },
+        {
+          "name": "expand",
+          "type": "(id?: string) => void",
+          "required": true,
+          "description": "Expands a node (all nodes without an id)"
+        },
+        {
+          "name": "collapse",
+          "type": "(id?: string) => void",
+          "required": true,
+          "description": "Collapses a node (all nodes with children without an id)"
+        },
+        {
+          "name": "toggle",
+          "type": "(id: string) => void",
+          "required": true,
+          "description": "Collapses / expands a node"
+        },
+        {
+          "name": "getPositions",
+          "type": "() => Record<string, GraphPoint>",
+          "required": true,
+          "description": "Current positions of the nodes in layout units"
+        },
+        {
+          "name": "relayout",
+          "type": "() => void",
+          "required": true,
+          "description": "Computes the layout again"
+        },
+        {
+          "name": "getRenderer",
+          "type": "() => ChartRendererKind | null",
+          "required": true,
+          "description": "Backend in use, `null` until ready"
+        },
+        {
+          "name": "getInstance",
+          "type": "() => GraphChartInstance | null",
+          "required": true,
+          "description": "The underlying engine instance (minerva-design/charts/core)"
+        }
+      ]
+    },
+    "GraphNode": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "A node (entity, person, package, task, tree item)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier, referenced by the edges"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Text shown next to / inside the node (the id when omitted)"
+        },
+        {
+          "name": "subtitle",
+          "type": "string",
+          "required": false,
+          "description": "Second line of boxes and org chart cards (job title, version, status)"
+        },
+        {
+          "name": "group",
+          "type": "string",
+          "required": false,
+          "description": "Group (category) id: color, legend entry"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "description": "Weight of the node: sizes circles (area) and ranks labels; the duration of a task for the critical path"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Color (any CSS color, `var(--x)` included); wins over the group color"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "required": false,
+          "description": "Diameter of a circle / height of a box in layout units (the zoom scales it)"
+        },
+        {
+          "name": "shape",
+          "type": "GraphNodeShape",
+          "required": false,
+          "description": "Shape; the `nodeShape` option when omitted"
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "required": false,
+          "description": "Position (layout `none`, initial position of `force`)"
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "fixed",
+          "type": "boolean",
+          "required": false,
+          "description": "The force layout does not move the node (pinned at `x` / `y`)"
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "required": false,
+          "description": "Tree layouts: the children of the node start hidden"
+        },
+        {
+          "name": "data",
+          "type": "unknown",
+          "required": false,
+          "description": "Any data, passed back in the events"
+        }
+      ]
+    },
+    "GraphEdge": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "A relationship / dependency between two nodes",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "source",
+          "type": "string",
+          "required": true,
+          "description": "Id of the source node (the parent in tree layouts, the prerequisite in a DAG)"
+        },
+        {
+          "name": "target",
+          "type": "string",
+          "required": true,
+          "description": "Id of the target node"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "description": "Weight: line width (and the link strength of the force layout)"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Text drawn on the edge (relationship name)"
+        },
+        {
+          "name": "directed",
+          "type": "boolean",
+          "required": false,
+          "description": "Draws an arrowhead at the target; the `arrows` option when omitted"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Line color (any CSS color)"
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "required": false,
+          "description": "Line width in CSS pixels; derived from `value` when omitted"
+        },
+        {
+          "name": "dashed",
+          "type": "boolean",
+          "required": false,
+          "description": "Dashed line (optional / weak relationship)"
+        },
+        {
+          "name": "data",
+          "type": "unknown",
+          "required": false,
+          "description": "Any data, passed back in the events"
+        }
+      ]
+    },
+    "GraphGroup": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "A group (category) of nodes: legend entry and color",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Id referenced by `GraphNode.group`"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Name in the legend and the tooltip (the id when omitted)"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Color of the nodes of the group (any CSS color); the palette when omitted"
+        },
+        {
+          "name": "hidden",
+          "type": "boolean",
+          "required": false,
+          "description": "Starts hidden (the legend can show it)"
+        }
+      ]
+    },
+    "GraphForceOptions": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Settings of the force-directed layout",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "linkDistance",
+          "type": "number",
+          "required": false,
+          "default": "60",
+          "description": "Rest length of the edges, in layout units"
+        },
+        {
+          "name": "linkStrength",
+          "type": "number",
+          "required": false,
+          "description": "Stiffness of the edges, 0-1; `1 / min(degree)` per edge when omitted (d3 semantics)"
+        },
+        {
+          "name": "charge",
+          "type": "number",
+          "required": false,
+          "default": "-160",
+          "description": "Many-body strength: negative values repel the nodes"
+        },
+        {
+          "name": "theta",
+          "type": "number",
+          "required": false,
+          "default": "0.9",
+          "description": "Barnes–Hut accuracy: larger values are faster and less accurate"
+        },
+        {
+          "name": "gravity",
+          "type": "number",
+          "required": false,
+          "default": "0.04",
+          "description": "Pull of every node towards the center (keeps disconnected parts together)"
+        },
+        {
+          "name": "collide",
+          "type": "boolean | number",
+          "required": false,
+          "default": "true",
+          "description": "Prevents overlapping nodes; a number is the extra spacing in layout units"
+        },
+        {
+          "name": "velocityDecay",
+          "type": "number",
+          "required": false,
+          "default": "0.4",
+          "description": "Velocity damping per tick, 0-1"
+        },
+        {
+          "name": "iterations",
+          "type": "number",
+          "required": false,
+          "default": "300",
+          "description": "Number of ticks of a full cooling (alpha 1 → 0.001)"
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Seed of the pseudo-random jitter: the same data always gives the same layout"
+        },
+        {
+          "name": "worker",
+          "type": "\"auto\" | boolean",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Runs the simulation in a Web Worker (created from a Blob URL): `auto` uses one above 2,000 nodes; falls back to time-sliced ticks on the main thread when workers are unavailable"
+        },
+        {
+          "name": "animate",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Shows the simulation while it runs; `false` computes it first and shows the result"
+        },
+        {
+          "name": "multilevel",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Multilevel start of large graphs (400+ nodes without known positions): the layout of a coarsened graph (merged neighbors) seeds a short refinement, several times faster than a full cooling; `false` always runs the full cooling"
+        }
+      ]
+    },
+    "GraphCircularOptions": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Settings of the `circular` and `arc` layouts",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "order",
+          "type": "\"group\" | \"degree\" | \"none\"",
+          "required": false,
+          "default": "\"group\"",
+          "description": "Orders the nodes by group, then by degree (fewer crossings); `none` keeps the data order"
+        },
+        {
+          "name": "tension",
+          "type": "number",
+          "required": false,
+          "default": "0.8",
+          "description": "Pull of the circular edges towards the center, 0 (straight chords) - 1"
+        }
+      ]
+    },
+    "GraphInteractionOptions": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Pan / zoom / drag / keyboard options",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "pan",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Dragging the background pans the view"
+        },
+        {
+          "name": "zoom",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Wheel and pinch zoom"
+        },
+        {
+          "name": "wheel",
+          "type": "\"modifier\" | \"always\"",
+          "required": false,
+          "default": "\"modifier\"",
+          "description": "Wheel zoom: only with Ctrl / ⌘ (and trackpad pinch, a hint explains it) or always"
+        },
+        {
+          "name": "drag",
+          "type": "boolean",
+          "required": false,
+          "description": "Nodes can be dragged; on by default for the force, circular and free layouts"
+        },
+        {
+          "name": "select",
+          "type": "boolean | \"multiple\"",
+          "required": false,
+          "default": "true",
+          "description": "Clicking selects nodes (Ctrl / ⌘ + click adds to the selection); `multiple` without modifier"
+        },
+        {
+          "name": "keyboard",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Arrow keys move between nodes, Enter selects / expands, +/- zoom, 0 fits, Esc clears"
+        },
+        {
+          "name": "zoomRange",
+          "type": "readonly [number, number]",
+          "required": false,
+          "default": "[0.02, 8]",
+          "description": "Zoom limits (scale of the layout units)"
+        }
+      ]
+    },
+    "GraphLegendOptions": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Legend options",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "position",
+          "type": "\"top\" | \"bottom\"",
+          "required": false,
+          "default": "\"top\"",
+          "description": "Legend position"
+        },
+        {
+          "name": "toggle",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Clicking an item shows / hides the nodes of the group"
+        }
+      ]
+    },
+    "GraphTooltipOptions": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Tooltip options",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "render",
+          "type": "(event: GraphHoverEvent) => string | Node | null",
+          "required": false,
+          "description": "Renders the tooltip content (a string is set as text, `null` hides it)"
+        }
+      ]
+    },
+    "GraphHoverEvent": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "The node or edge under the pointer (or focused with the keyboard)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "type",
+          "type": "\"node\" | \"edge\"",
+          "required": true,
+          "description": "Kind of item"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Node id, or `source→target` for an edge"
+        },
+        {
+          "name": "node",
+          "type": "GraphNode",
+          "required": false,
+          "description": "The node (node events)"
+        },
+        {
+          "name": "edge",
+          "type": "GraphEdge",
+          "required": false,
+          "description": "The edge (edge events)"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "required": true,
+          "description": "Index of the node / edge in the data"
+        },
+        {
+          "name": "group",
+          "type": "string",
+          "required": false,
+          "description": "Group id of the node"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": true,
+          "description": "Resolved color of the node / edge"
+        },
+        {
+          "name": "degree",
+          "type": "number",
+          "required": false,
+          "description": "Number of links of the node"
+        },
+        {
+          "name": "clientX",
+          "type": "number",
+          "required": true,
+          "description": "Position in CSS pixels, relative to the chart's container"
+        },
+        {
+          "name": "clientY",
+          "type": "number",
+          "required": true
+        }
+      ]
+    },
+    "GraphChartLabels": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Built-in texts of the graph charts. Templates replace `{name}`-style placeholders.",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "chart",
+          "type": "string",
+          "required": true,
+          "default": "\"Network graph\"",
+          "description": "Role description and accessible name of an unnamed chart"
+        },
+        {
+          "name": "tree",
+          "type": "string",
+          "required": true,
+          "default": "\"Tree diagram\"",
+          "description": "Accessible name of a tree layout"
+        },
+        {
+          "name": "dag",
+          "type": "string",
+          "required": true,
+          "default": "\"Dependency graph\"",
+          "description": "Accessible name of a layered layout"
+        },
+        {
+          "name": "summary",
+          "type": "string",
+          "required": true,
+          "default": "\"{nodes} nodes, {edges} links.\"",
+          "description": "Summary; `{nodes}`, `{edges}`"
+        },
+        {
+          "name": "groupsSummary",
+          "type": "string",
+          "required": true,
+          "default": "\"Groups: {groups}.\"",
+          "description": "Summary of the groups; `{groups}`"
+        },
+        {
+          "name": "keyboardHelp",
+          "type": "string",
+          "required": true,
+          "default": "\"Use the arrow keys to move between nodes, Enter to select, + and - to zoom, 0 to fit.\"",
+          "description": "Keyboard help in the summary"
+        },
+        {
+          "name": "nodeFocus",
+          "type": "string",
+          "required": true,
+          "default": "\"{name}, {degree} links\"",
+          "description": "Announcement of a focused node; `{name}`, `{degree}`"
+        },
+        {
+          "name": "nodeFocusGroup",
+          "type": "string",
+          "required": true,
+          "default": "\"{name} ({group}), {degree} links\"",
+          "description": "Announcement of a focused node in a group; `{name}`, `{group}`, `{degree}`"
+        },
+        {
+          "name": "selected",
+          "type": "string",
+          "required": true,
+          "default": "\"{count} selected\"",
+          "description": "Announcement of the selection; `{count}`"
+        },
+        {
+          "name": "selectionCleared",
+          "type": "string",
+          "required": true,
+          "default": "\"Selection cleared\"",
+          "description": "Announcement when the selection is cleared"
+        },
+        {
+          "name": "expanded",
+          "type": "string",
+          "required": true,
+          "default": "\"{name} expanded\"",
+          "description": "Announcement of an expanded node; `{name}`"
+        },
+        {
+          "name": "collapsed",
+          "type": "string",
+          "required": true,
+          "default": "\"{name} collapsed, {count} hidden\"",
+          "description": "Announcement of a collapsed node; `{name}`, `{count}`"
+        },
+        {
+          "name": "shown",
+          "type": "string",
+          "required": true,
+          "default": "\"{name}: shown\"",
+          "description": "Announcement when the legend shows a group; `{name}`"
+        },
+        {
+          "name": "hidden",
+          "type": "string",
+          "required": true,
+          "default": "\"{name}: hidden\"",
+          "description": "Announcement when the legend hides a group; `{name}`"
+        },
+        {
+          "name": "degree",
+          "type": "string",
+          "required": true,
+          "default": "\"Links\"",
+          "description": "Tooltip row: number of links"
+        },
+        {
+          "name": "incoming",
+          "type": "string",
+          "required": true,
+          "default": "\"Incoming\"",
+          "description": "Tooltip row: incoming links"
+        },
+        {
+          "name": "outgoing",
+          "type": "string",
+          "required": true,
+          "default": "\"Outgoing\"",
+          "description": "Tooltip row: outgoing links"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "default": "\"Value\"",
+          "description": "Tooltip row: node / edge value"
+        },
+        {
+          "name": "group",
+          "type": "string",
+          "required": true,
+          "default": "\"Group\"",
+          "description": "Tooltip row: group"
+        },
+        {
+          "name": "hiddenChildren",
+          "type": "string",
+          "required": true,
+          "default": "\"Hidden\"",
+          "description": "Tooltip row: hidden descendants of a collapsed node"
+        },
+        {
+          "name": "critical",
+          "type": "string",
+          "required": true,
+          "default": "\"Critical path\"",
+          "description": "Tooltip of a node on the critical path"
+        },
+        {
+          "name": "zoomIn",
+          "type": "string",
+          "required": true,
+          "default": "\"Zoom in\"",
+          "description": "Zoom in button"
+        },
+        {
+          "name": "zoomOut",
+          "type": "string",
+          "required": true,
+          "default": "\"Zoom out\"",
+          "description": "Zoom out button"
+        },
+        {
+          "name": "fit",
+          "type": "string",
+          "required": true,
+          "default": "\"Fit to view\"",
+          "description": "Fit button"
+        },
+        {
+          "name": "zoomHint",
+          "type": "string",
+          "required": true,
+          "default": "\"Use {key} + scroll to zoom\"",
+          "description": "Hint of a plain wheel; `{key}` is Ctrl or ⌘"
+        },
+        {
+          "name": "listSeparator",
+          "type": "string",
+          "required": true,
+          "default": "\", \"",
+          "description": "Separator of the lists"
+        }
+      ]
+    },
+    "GraphChartOptions": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Options of `createGraphChart`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "nodes",
+          "type": "readonly GraphNode[]",
+          "required": true,
+          "description": "The nodes"
+        },
+        {
+          "name": "edges",
+          "type": "readonly GraphEdge[]",
+          "required": true,
+          "description": "The edges (unknown node ids are ignored)"
+        },
+        {
+          "name": "groups",
+          "type": "readonly GraphGroup[]",
+          "required": false,
+          "description": "Groups: legend order, names and colors (groups of the nodes are added)"
+        },
+        {
+          "name": "layout",
+          "type": "GraphLayoutType",
+          "required": false,
+          "default": "\"force\"",
+          "description": "Placement of the nodes"
+        },
+        {
+          "name": "direction",
+          "type": "GraphDirection",
+          "required": false,
+          "description": "Direction of `dag` (default `TB`) and `tree` (default `LR`)"
+        },
+        {
+          "name": "force",
+          "type": "GraphForceOptions",
+          "required": false,
+          "description": "Force layout settings"
+        },
+        {
+          "name": "dag",
+          "type": "GraphDagOptions",
+          "required": false,
+          "description": "Layered layout settings"
+        },
+        {
+          "name": "tree",
+          "type": "GraphTreeOptions",
+          "required": false,
+          "description": "Tree layout settings"
+        },
+        {
+          "name": "circular",
+          "type": "GraphCircularOptions",
+          "required": false,
+          "description": "Circular / arc layout settings"
+        },
+        {
+          "name": "nodeShape",
+          "type": "GraphNodeShape",
+          "required": false,
+          "description": "Shape of the nodes without `shape`; boxes for `dag`, `org` and `mindmap`, circles otherwise"
+        },
+        {
+          "name": "nodeSize",
+          "type": "number | readonly [number, number]",
+          "required": false,
+          "default": "12, or [8, 36] when nodes have values",
+          "description": "Circle diameter in layout units; `[min, max]` scales the area with the node `value`"
+        },
+        {
+          "name": "edgeStyle",
+          "type": "GraphEdgeStyle",
+          "required": false,
+          "description": "Edge shape; depends on the layout when omitted"
+        },
+        {
+          "name": "edgeWidth",
+          "type": "number | readonly [number, number]",
+          "required": false,
+          "default": "1.25, or [1, 5] when edges have values",
+          "description": "Edge width in CSS pixels; `[min, max]` scales it with the edge `value`"
+        },
+        {
+          "name": "edgeColor",
+          "type": "\"neutral\" | \"source\" | \"target\"",
+          "required": false,
+          "default": "\"neutral\"",
+          "description": "Edge colors: neutral, or tinted with the color of the source / target node"
+        },
+        {
+          "name": "arrows",
+          "type": "boolean",
+          "required": false,
+          "description": "Arrowheads on the edges without `directed`; on for `dag`, off otherwise"
+        },
+        {
+          "name": "arrowStyle",
+          "type": "\"open\" | \"filled\"",
+          "required": false,
+          "default": "\"open\"",
+          "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color, which follows the theme and the highlight)"
+        },
+        {
+          "name": "nodeLabels",
+          "type": "boolean | \"auto\"",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Node labels: `auto` hides minor labels when zoomed out and labels that would overlap. Text inside boxes keeps a readable minimum size and is shortened with an ellipsis; it is hidden only when the box is too small for any text, or with `false`"
+        },
+        {
+          "name": "edgeLabels",
+          "type": "boolean | \"auto\" | \"hover\"",
+          "required": false,
+          "default": "\"auto\" (shown when zoomed in or highlighted)",
+          "description": "Edge labels: always, only for the highlighted edges, or never"
+        },
+        {
+          "name": "highlight",
+          "type": "\"neighbors\" | \"lineage\" | \"none\"",
+          "required": false,
+          "description": "Hovering / focusing a node highlights its neighbors (`lineage`: all ancestors and descendants); `lineage` for `dag`"
+        },
+        {
+          "name": "selected",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Ids of the selected nodes (initial selection; `select()` changes it)"
+        },
+        {
+          "name": "animation",
+          "type": "boolean | number",
+          "required": false,
+          "default": "true (450 ms)",
+          "description": "Animates layout and data changes (expand / collapse, new data); a number is the duration in ms"
+        },
+        {
+          "name": "fitPadding",
+          "type": "number",
+          "required": false,
+          "default": "24",
+          "description": "Padding around the graph when fitting it in the view, in CSS pixels"
+        },
+        {
+          "name": "controls",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Zoom buttons (zoom in, zoom out, fit) in a corner"
+        },
+        {
+          "name": "legend",
+          "type": "boolean | GraphLegendOptions",
+          "required": false,
+          "description": "Legend of the groups; shown by default when there are several groups"
+        },
+        {
+          "name": "tooltip",
+          "type": "boolean | GraphTooltipOptions",
+          "required": false,
+          "description": "Tooltip; `false` disables it"
+        },
+        {
+          "name": "interaction",
+          "type": "boolean | GraphInteractionOptions",
+          "required": false,
+          "description": "Pan / zoom / drag / select / keyboard; `false` makes the chart static"
+        },
+        {
+          "name": "renderer",
+          "type": "ChartRendererPreference",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D and skips GPUs running in software"
+        },
+        {
+          "name": "palette",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Colors of the groups without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name of the chart"
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "the page language (`<html lang>`), then the browser language",
+          "description": "Language of the built-in texts (accessible summary, announcements, tooltip, buttons) and of the number formatting. Built-in texts exist in English, Chinese, Japanese and French; other languages fall back to English."
+        },
+        {
+          "name": "labels",
+          "type": "Partial<GraphChartLabels>",
+          "required": false,
+          "description": "Overrides of the built-in texts of the `locale`"
+        }
+      ]
+    },
+    "GraphChartInstance": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Chart created by `createGraphChart`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "setOptions",
+          "type": "(options: GraphChartOptions) => void",
+          "required": true,
+          "description": "Replaces the options (positions of the remaining nodes are kept and animated)"
+        },
+        {
+          "name": "setData",
+          "type": "(data: GraphData) => void",
+          "required": true,
+          "description": "Replaces the nodes, edges and groups"
+        },
+        {
+          "name": "fit",
+          "type": "(animate?: boolean) => void",
+          "required": true,
+          "description": "Fits the visible nodes in the view (animated by default)"
+        },
+        {
+          "name": "focusNode",
+          "type": "(id: string, options?: { zoom?: number; animate?: boolean }) => void",
+          "required": true,
+          "description": "Centers a node (and zooms to `zoom` when given); expands its collapsed ancestors"
+        },
+        {
+          "name": "select",
+          "type": "(ids: readonly string[] | string | null) => void",
+          "required": true,
+          "description": "Selects nodes (`null` / `[]` clears the selection)"
+        },
+        {
+          "name": "getSelection",
+          "type": "() => string[]",
+          "required": true,
+          "description": "Ids of the selected nodes"
+        },
+        {
+          "name": "expand",
+          "type": "(id?: string) => void",
+          "required": true,
+          "description": "Expands a node (all nodes without an id)"
+        },
+        {
+          "name": "collapse",
+          "type": "(id?: string) => void",
+          "required": true,
+          "description": "Collapses a node (all nodes with children without an id)"
+        },
+        {
+          "name": "toggle",
+          "type": "(id: string) => void",
+          "required": true,
+          "description": "Collapses an expanded node, expands a collapsed one"
+        },
+        {
+          "name": "getPositions",
+          "type": "() => Record<string, GraphPoint>",
+          "required": true,
+          "description": "Current positions of the nodes in layout units"
+        },
+        {
+          "name": "relayout",
+          "type": "() => void",
+          "required": true,
+          "description": "Computes the layout again (restarts the force simulation)"
+        },
+        {
+          "name": "resize",
+          "type": "() => void",
+          "required": true,
+          "description": "Measures the container again (a ResizeObserver does it automatically)"
+        },
+        {
+          "name": "getRenderer",
+          "type": "() => ChartRendererKind | null",
+          "required": true,
+          "description": "Backend in use, `null` until ready"
+        },
+        {
+          "name": "ready",
+          "type": "Promise<ChartRendererKind | null>",
+          "required": true,
+          "description": "Resolves with the backend once the first frame can be drawn (`null` without canvas support)"
+        },
+        {
+          "name": "refreshTheme",
+          "type": "() => void",
+          "required": true,
+          "description": "Reads the CSS variables again (theme changes on `<html>` / `<body>` are detected automatically)"
+        },
+        {
+          "name": "on",
+          "type": "(type: K, listener: (event: GraphChartEventMap[K]) => void) => () => void",
+          "required": true,
+          "description": "Subscribes to an event; returns the unsubscribe function"
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "required": true,
+          "description": "Removes the DOM, stops the simulation and frees the GPU resources"
+        }
+      ]
+    },
+    "GraphChartEventMap": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Events of a graph chart instance",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "hover",
+          "type": "GraphHoverEvent | null",
+          "required": true
+        },
+        {
+          "name": "click",
+          "type": "GraphHoverEvent",
+          "required": true
+        },
+        {
+          "name": "select",
+          "type": "GraphSelectEvent",
+          "required": true
+        },
+        {
+          "name": "toggle",
+          "type": "GraphToggleEvent",
+          "required": true
+        },
+        {
+          "name": "groupToggle",
+          "type": "GraphGroupToggleEvent",
+          "required": true
+        },
+        {
+          "name": "layoutEnd",
+          "type": "GraphLayoutEndEvent",
+          "required": true
+        },
+        {
+          "name": "renderer",
+          "type": "ChartRendererKind",
+          "required": true
+        }
+      ]
+    },
+    "GraphForceLayoutOptions": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "Options of `forceLayout` / `createForceSimulation`",
+      "kind": "interface",
+      "extends": [
+        "GraphForceOptions"
+      ],
+      "props": [
+        {
+          "name": "radius",
+          "type": "(node: GraphNode, index: number) => number",
+          "required": false,
+          "description": "Radius of each node (collisions); 6 when omitted"
+        }
+      ]
+    },
+    "GraphForceSimulation": {
+      "source": "charts/src/engine/graph/types.ts",
+      "description": "A force simulation stepped by the caller",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "x",
+          "type": "Float64Array",
+          "required": true,
+          "description": "Positions (updated in place)"
+        },
+        {
+          "name": "y",
+          "type": "Float64Array",
+          "required": true
+        },
+        {
+          "name": "tick",
+          "type": "(count?: number) => boolean",
+          "required": true,
+          "description": "Runs `count` ticks (1 by default); returns whether the simulation is still hot"
+        },
+        {
+          "name": "alpha",
+          "type": "() => number",
+          "required": true,
+          "description": "Current alpha (temperature)"
+        },
+        {
+          "name": "reheat",
+          "type": "(alpha?: number) => void",
+          "required": true,
+          "description": "Restarts the cooling from `alpha` (0.3 by default)"
+        },
+        {
+          "name": "drag",
+          "type": "(index: number, x: number, y: number) => void",
+          "required": true,
+          "description": "Pins a node at a position (dragging) and keeps the simulation warm"
+        },
+        {
+          "name": "release",
+          "type": "(index: number, keep?: boolean) => void",
+          "required": true,
+          "description": "Releases a dragged node (`keep` leaves it pinned)"
+        },
+        {
+          "name": "done",
+          "type": "() => boolean",
+          "required": true,
+          "description": "Whether the simulation has cooled down"
+        },
+        {
+          "name": "settle",
+          "type": "() => void",
+          "required": true,
+          "description": "Pushes overlapping nodes apart (run after the last tick)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "arc",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/arc.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/arc.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  GraphChart,\n  type GraphEdge,\n  type GraphNode,\n} from \"minerva-design/charts\";\n\ntype Family = \"systems\" | \"functional\" | \"objects\" | \"scripting\";\n\nconst LANGUAGES: [string, Family, number][] = [\n  [\"Fortran\", \"systems\", 1957],\n  [\"C\", \"systems\", 1972],\n  [\"C++\", \"systems\", 1985],\n  [\"Go\", \"systems\", 2009],\n  [\"Rust\", \"systems\", 2010],\n  [\"Lisp\", \"functional\", 1958],\n  [\"ML\", \"functional\", 1973],\n  [\"Scheme\", \"functional\", 1975],\n  [\"Haskell\", \"functional\", 1990],\n  [\"OCaml\", \"functional\", 1996],\n  [\"Elixir\", \"functional\", 2012],\n  [\"Simula\", \"objects\", 1967],\n  [\"Smalltalk\", \"objects\", 1972],\n  [\"Java\", \"objects\", 1995],\n  [\"C#\", \"objects\", 2000],\n  [\"Scala\", \"objects\", 2004],\n  [\"Kotlin\", \"objects\", 2011],\n  [\"Swift\", \"objects\", 2014],\n  [\"Perl\", \"scripting\", 1987],\n  [\"Python\", \"scripting\", 1991],\n  [\"Ruby\", \"scripting\", 1995],\n  [\"JavaScript\", \"scripting\", 1995],\n  [\"TypeScript\", \"scripting\", 2012],\n];\n\n// \"a influenced b\"\nconst INFLUENCES: [string, string][] = [\n  [\"Fortran\", \"C\"],\n  [\"C\", \"C++\"],\n  [\"C\", \"Go\"],\n  [\"C++\", \"Rust\"],\n  [\"C++\", \"Java\"],\n  [\"C++\", \"C#\"],\n  [\"Simula\", \"C++\"],\n  [\"Simula\", \"Smalltalk\"],\n  [\"Smalltalk\", \"Ruby\"],\n  [\"Smalltalk\", \"Java\"],\n  [\"Lisp\", \"Scheme\"],\n  [\"Lisp\", \"Smalltalk\"],\n  [\"Scheme\", \"JavaScript\"],\n  [\"ML\", \"Haskell\"],\n  [\"ML\", \"OCaml\"],\n  [\"OCaml\", \"Rust\"],\n  [\"Haskell\", \"Rust\"],\n  [\"Haskell\", \"Scala\"],\n  [\"Haskell\", \"Swift\"],\n  [\"Java\", \"Scala\"],\n  [\"Java\", \"Kotlin\"],\n  [\"Java\", \"C#\"],\n  [\"Scala\", \"Kotlin\"],\n  [\"C#\", \"TypeScript\"],\n  [\"JavaScript\", \"TypeScript\"],\n  [\"Perl\", \"Ruby\"],\n  [\"Perl\", \"Python\"],\n  [\"Ruby\", \"Elixir\"],\n  [\"Python\", \"Swift\"],\n  [\"Ruby\", \"Swift\"],\n  [\"Rust\", \"Swift\"],\n  [\"C\", \"Python\"],\n  [\"Lisp\", \"Python\"],\n];\n\nconst FAMILIES: Family[] = [\"systems\", \"functional\", \"objects\", \"scripting\"];\n\nexport default function ArcDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const nodes = useMemo(\n    (): GraphNode[] =>\n      LANGUAGES.map(([id, family, year]) => ({\n        id,\n        group: family,\n        value: INFLUENCES.filter(([a]) => a === id).length + 1,\n        subtitle: String(year),\n      })),\n    [],\n  );\n  const edges = useMemo(\n    (): GraphEdge[] =>\n      INFLUENCES.map(([source, target]) => ({\n        source,\n        target,\n        label: t(\"influenced\"),\n      })),\n    [t],\n  );\n  const groups = useMemo(\n    () => FAMILIES.map((id) => ({ id, name: t(`families.${id}`) })),\n    [t],\n  );\n\n  return (\n    <GraphChart\n      nodes={nodes}\n      edges={edges}\n      groups={groups}\n      layout=\"arc\"\n      edgeColor=\"source\"\n      edgeLabels=\"hover\"\n      height={420}\n      ariaLabel={t(\"arcAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Diagramme en arcs",
+      "description": "Quels langages de programmation en ont influencé d’autres : les nœuds sont alignés par famille et chaque influence est un arc au-dessus. Survolez un langage pour voir ses ancêtres et ses descendants."
+    },
+    {
+      "id": "characters",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/characters.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/characters.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { GraphChart, type GraphHoverEvent } from \"minerva-design/charts\";\nimport { characterGraph } from \"../data\";\n\nexport default function CharactersDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const data = useMemo(() => characterGraph(t), [t]);\n  const [selected, setSelected] = useState<string[]>([]);\n  const [hovered, setHovered] = useState<GraphHoverEvent | null>(null);\n\n  const name = (id: string) =>\n    data.nodes.find((node) => node.id === id)?.label ?? id;\n  const status = hovered?.edge\n    ? t(\"relationHint\", {\n        source: name(hovered.edge.source),\n        target: name(hovered.edge.target),\n        relation: hovered.edge.label,\n      })\n    : selected.length\n      ? t(\"selectedHint\", { name: selected.map(name).join(t(\"separator\")) })\n      : t(\"charactersHint\");\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <GraphChart\n        nodes={data.nodes}\n        edges={data.edges}\n        groups={data.groups}\n        height={520}\n        nodeSize={[10, 34]}\n        edgeColor=\"source\"\n        force={{ linkDistance: 80, charge: -420 }}\n        ariaLabel={t(\"charactersAria\")}\n        onSelectionChange={setSelected}\n        onHover={setHovered}\n      />\n      <span role=\"status\" style={{ color: \"var(--text-secondary-color)\" }}>\n        {status}\n      </span>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/graph-chart/data.ts": "// Data of the graph-chart demos: characters of Romance of the Three Kingdoms\n// (三国演义), their factions and relationships, and a generated community\n// network. Names and relation labels come from the page's locale file.\n\nimport type { GraphEdge, GraphGroup, GraphNode } from \"minerva-design/charts\";\n\nexport type Faction = \"shu\" | \"wei\" | \"wu\" | \"qun\";\n\n/** id, faction, importance (node size) */\nexport const CHARACTERS: [string, Faction, number][] = [\n  [\"liubei\", \"shu\", 10],\n  [\"guanyu\", \"shu\", 9],\n  [\"zhangfei\", \"shu\", 8],\n  [\"zhugeliang\", \"shu\", 10],\n  [\"zhaoyun\", \"shu\", 8],\n  [\"machao\", \"shu\", 6],\n  [\"huangzhong\", \"shu\", 6],\n  [\"pangtong\", \"shu\", 5],\n  [\"jiangwei\", \"shu\", 6],\n  [\"liushan\", \"shu\", 5],\n  [\"weiyan\", \"shu\", 5],\n  [\"fazheng\", \"shu\", 4],\n  [\"caocao\", \"wei\", 10],\n  [\"caopi\", \"wei\", 7],\n  [\"simayi\", \"wei\", 9],\n  [\"xiahoudun\", \"wei\", 6],\n  [\"xiahouyuan\", \"wei\", 5],\n  [\"zhangliao\", \"wei\", 6],\n  [\"xuchu\", \"wei\", 5],\n  [\"guojia\", \"wei\", 5],\n  [\"xunyu\", \"wei\", 5],\n  [\"dianwei\", \"wei\", 4],\n  [\"caozhi\", \"wei\", 4],\n  [\"simazhao\", \"wei\", 5],\n  [\"dengai\", \"wei\", 5],\n  [\"sunquan\", \"wu\", 9],\n  [\"sunce\", \"wu\", 7],\n  [\"sunjian\", \"wu\", 6],\n  [\"zhouyu\", \"wu\", 8],\n  [\"lusu\", \"wu\", 6],\n  [\"lumeng\", \"wu\", 6],\n  [\"luxun\", \"wu\", 7],\n  [\"ganning\", \"wu\", 5],\n  [\"huanggai\", \"wu\", 4],\n  [\"xiaoqiao\", \"wu\", 3],\n  [\"daqiao\", \"wu\", 3],\n  [\"sunshangxiang\", \"wu\", 4],\n  [\"lvbu\", \"qun\", 8],\n  [\"dongzhuo\", \"qun\", 6],\n  [\"diaochan\", \"qun\", 5],\n  [\"yuanshao\", \"qun\", 6],\n  [\"xiandi\", \"qun\", 5],\n  [\"wangyun\", \"qun\", 3],\n];\n\nexport type Relation =\n  | \"brothers\"\n  | \"serves\"\n  | \"father\"\n  | \"spouse\"\n  | \"siblings\"\n  | \"rival\"\n  | \"mentor\"\n  | \"adoptive\"\n  | \"ally\"\n  | \"defeated\"\n  | \"friends\";\n\n/** source, target, relation; `serves` points from the vassal to the lord */\nexport const RELATIONS: [string, string, Relation][] = [\n  [\"liubei\", \"guanyu\", \"brothers\"],\n  [\"liubei\", \"zhangfei\", \"brothers\"],\n  [\"guanyu\", \"zhangfei\", \"brothers\"],\n  [\"zhugeliang\", \"liubei\", \"serves\"],\n  [\"zhaoyun\", \"liubei\", \"serves\"],\n  [\"machao\", \"liubei\", \"serves\"],\n  [\"huangzhong\", \"liubei\", \"serves\"],\n  [\"pangtong\", \"liubei\", \"serves\"],\n  [\"weiyan\", \"liubei\", \"serves\"],\n  [\"fazheng\", \"liubei\", \"serves\"],\n  [\"liubei\", \"liushan\", \"father\"],\n  [\"liubei\", \"sunshangxiang\", \"spouse\"],\n  [\"sunquan\", \"sunshangxiang\", \"siblings\"],\n  [\"zhugeliang\", \"jiangwei\", \"mentor\"],\n  [\"zhugeliang\", \"simayi\", \"rival\"],\n  [\"zhugeliang\", \"zhouyu\", \"rival\"],\n  [\"jiangwei\", \"dengai\", \"rival\"],\n  [\"jiangwei\", \"liushan\", \"serves\"],\n  [\"zhugeliang\", \"liushan\", \"serves\"],\n  [\"caocao\", \"caopi\", \"father\"],\n  [\"caocao\", \"caozhi\", \"father\"],\n  [\"caopi\", \"caozhi\", \"siblings\"],\n  [\"simayi\", \"caocao\", \"serves\"],\n  [\"simayi\", \"caopi\", \"serves\"],\n  [\"simayi\", \"simazhao\", \"father\"],\n  [\"xiahoudun\", \"caocao\", \"serves\"],\n  [\"xiahouyuan\", \"caocao\", \"serves\"],\n  [\"zhangliao\", \"caocao\", \"serves\"],\n  [\"xuchu\", \"caocao\", \"serves\"],\n  [\"dianwei\", \"caocao\", \"serves\"],\n  [\"guojia\", \"caocao\", \"serves\"],\n  [\"xunyu\", \"caocao\", \"serves\"],\n  [\"dengai\", \"simazhao\", \"serves\"],\n  [\"caocao\", \"liubei\", \"rival\"],\n  [\"caocao\", \"yuanshao\", \"defeated\"],\n  [\"caocao\", \"lvbu\", \"defeated\"],\n  [\"huangzhong\", \"xiahouyuan\", \"defeated\"],\n  [\"zhangliao\", \"sunquan\", \"defeated\"],\n  [\"lumeng\", \"guanyu\", \"defeated\"],\n  [\"luxun\", \"liubei\", \"defeated\"],\n  [\"zhouyu\", \"caocao\", \"defeated\"],\n  [\"sunjian\", \"sunce\", \"father\"],\n  [\"sunjian\", \"sunquan\", \"father\"],\n  [\"sunce\", \"sunquan\", \"siblings\"],\n  [\"sunce\", \"daqiao\", \"spouse\"],\n  [\"zhouyu\", \"xiaoqiao\", \"spouse\"],\n  [\"daqiao\", \"xiaoqiao\", \"siblings\"],\n  [\"sunce\", \"zhouyu\", \"friends\"],\n  [\"zhouyu\", \"sunquan\", \"serves\"],\n  [\"lusu\", \"sunquan\", \"serves\"],\n  [\"lumeng\", \"sunquan\", \"serves\"],\n  [\"luxun\", \"sunquan\", \"serves\"],\n  [\"ganning\", \"sunquan\", \"serves\"],\n  [\"huanggai\", \"sunquan\", \"serves\"],\n  [\"huanggai\", \"zhouyu\", \"serves\"],\n  [\"liubei\", \"sunquan\", \"ally\"],\n  [\"lusu\", \"zhugeliang\", \"ally\"],\n  [\"lvbu\", \"dongzhuo\", \"adoptive\"],\n  [\"lvbu\", \"diaochan\", \"spouse\"],\n  [\"wangyun\", \"diaochan\", \"adoptive\"],\n  [\"dongzhuo\", \"xiandi\", \"serves\"],\n  [\"caocao\", \"xiandi\", \"serves\"],\n  [\"yuanshao\", \"dongzhuo\", \"rival\"],\n  [\"lvbu\", \"liubei\", \"rival\"],\n];\n\nexport const FACTIONS: Faction[] = [\"shu\", \"wei\", \"wu\", \"qun\"];\n\n/** Faction colors (Shu green, Wei blue, Wu red, warlords amber) */\nexport const FACTION_COLORS: Record<Faction, string> = {\n  shu: \"var(--success-color, #16a34a)\",\n  wei: \"var(--info-color, #0ea5e9)\",\n  wu: \"var(--danger-color, #ef4444)\",\n  qun: \"var(--warning-color, #f59e0b)\",\n};\n\ntype Translate = (key: string, options?: Record<string, unknown>) => string;\n\n/** Nodes, edges and groups of the character network in the reader's language */\nexport const characterGraph = (\n  t: Translate,\n): { nodes: GraphNode[]; edges: GraphEdge[]; groups: GraphGroup[] } => ({\n  nodes: CHARACTERS.map(([id, faction, importance]) => ({\n    id,\n    label: t(`characters.${id}`),\n    group: faction,\n    value: importance,\n  })),\n  edges: RELATIONS.map(([source, target, relation]) => ({\n    source,\n    target,\n    label: t(`relations.${relation}`),\n    directed: relation === \"serves\" || relation === \"defeated\",\n    dashed: relation === \"rival\",\n    data: relation,\n  })),\n  groups: FACTIONS.map((id) => ({\n    id,\n    name: t(`factions.${id}`),\n    color: FACTION_COLORS[id],\n  })),\n});\n\n/**\n * A large network: `communities` groups of `size` nodes, each a random\n * tree plus extra links inside the group and a few between groups\n * (seeded: the same graph on every render)\n */\nexport const communityGraph = (\n  communities: number,\n  size: number,\n): { nodes: GraphNode[]; edges: GraphEdge[] } => {\n  let seed = 42;\n  const random = () => {\n    seed = (seed * 16807) % 2147483647;\n    return seed / 2147483647;\n  };\n  const nodes: GraphNode[] = [];\n  const edges: GraphEdge[] = [];\n  for (let c = 0; c < communities; c++) {\n    const base = c * size;\n    for (let i = 0; i < size; i++) {\n      const id = base + i;\n      nodes.push({ id: String(id), group: `c${c % 8}` });\n      if (i > 0) {\n        // preferential attachment: hubs inside each community\n        const parent = base + Math.floor(Math.pow(random(), 2.2) * i);\n        edges.push({ source: String(parent), target: String(id) });\n        const other = base + Math.floor(random() * size);\n        if (other !== id)\n          edges.push({ source: String(id), target: String(other) });\n        if (random() < 0.12) {\n          const third = base + Math.floor(random() * size);\n          if (third !== id)\n            edges.push({ source: String(id), target: String(third) });\n        }\n      }\n    }\n    // bridges to other communities\n    for (let k = 0; k < 4; k++) {\n      const a = base + Math.floor(random() * size);\n      const b =\n        Math.floor(random() * communities) * size + Math.floor(random() * size);\n      if (Math.floor(b / size) !== c)\n        edges.push({ source: String(a), target: String(b) });\n    }\n  }\n  return { nodes, edges };\n};\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Relations entre personnages",
+      "description": "Les personnages du Roman des Trois Royaumes, colorés par faction, dimensionnés selon leur importance, avec la relation sur chaque arête. Survolez un personnage pour voir son entourage, une arête pour lire la relation, cliquez pour sélectionner et masquez des factions depuis la légende."
+    },
+    {
+      "id": "circular",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/circular.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/circular.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport {\n  GraphChart,\n  type GraphEdge,\n  type GraphNode,\n} from \"minerva-design/charts\";\n\ntype Domain = \"edge\" | \"commerce\" | \"identity\" | \"data\";\n\nconst SERVICES: [string, Domain][] = [\n  [\"gateway\", \"edge\"],\n  [\"web-bff\", \"edge\"],\n  [\"mobile-bff\", \"edge\"],\n  [\"cdn-purge\", \"edge\"],\n  [\"catalog\", \"commerce\"],\n  [\"cart\", \"commerce\"],\n  [\"checkout\", \"commerce\"],\n  [\"pricing\", \"commerce\"],\n  [\"inventory\", \"commerce\"],\n  [\"shipping\", \"commerce\"],\n  [\"auth\", \"identity\"],\n  [\"users\", \"identity\"],\n  [\"sessions\", \"identity\"],\n  [\"permissions\", \"identity\"],\n  [\"search\", \"data\"],\n  [\"recommend\", \"data\"],\n  [\"events\", \"data\"],\n  [\"analytics\", \"data\"],\n  [\"billing\", \"commerce\"],\n  [\"notify\", \"data\"],\n];\n\n// calls per minute between services (thousands)\nconst CALLS: [string, string, number][] = [\n  [\"gateway\", \"web-bff\", 42],\n  [\"gateway\", \"mobile-bff\", 31],\n  [\"gateway\", \"auth\", 55],\n  [\"web-bff\", \"catalog\", 24],\n  [\"web-bff\", \"cart\", 12],\n  [\"web-bff\", \"search\", 18],\n  [\"web-bff\", \"recommend\", 9],\n  [\"mobile-bff\", \"catalog\", 16],\n  [\"mobile-bff\", \"cart\", 8],\n  [\"mobile-bff\", \"users\", 6],\n  [\"cart\", \"pricing\", 14],\n  [\"cart\", \"inventory\", 9],\n  [\"checkout\", \"cart\", 5],\n  [\"checkout\", \"billing\", 4],\n  [\"checkout\", \"shipping\", 3],\n  [\"checkout\", \"notify\", 3],\n  [\"catalog\", \"pricing\", 20],\n  [\"catalog\", \"inventory\", 11],\n  [\"catalog\", \"cdn-purge\", 1],\n  [\"auth\", \"users\", 22],\n  [\"auth\", \"sessions\", 38],\n  [\"auth\", \"permissions\", 19],\n  [\"search\", \"catalog\", 7],\n  [\"recommend\", \"analytics\", 4],\n  [\"recommend\", \"catalog\", 6],\n  [\"events\", \"analytics\", 26],\n  [\"checkout\", \"events\", 3],\n  [\"cart\", \"events\", 6],\n  [\"billing\", \"users\", 2],\n  [\"billing\", \"notify\", 2],\n  [\"shipping\", \"notify\", 2],\n  [\"users\", \"events\", 3],\n];\n\nconst DOMAINS: Domain[] = [\"edge\", \"commerce\", \"identity\", \"data\"];\n\nexport default function CircularDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const [bundled, setBundled] = useState(true);\n  const nodes = useMemo(\n    (): GraphNode[] =>\n      SERVICES.map(([id, domain]) => ({\n        id,\n        group: domain,\n        value: CALLS.filter(([a, b]) => a === id || b === id).reduce(\n          (sum, [, , v]) => sum + v,\n          0,\n        ),\n      })),\n    [],\n  );\n  const edges = useMemo(\n    (): GraphEdge[] =>\n      CALLS.map(([source, target, value]) => ({\n        source,\n        target,\n        value,\n        directed: true,\n      })),\n    [],\n  );\n  const groups = useMemo(\n    () => DOMAINS.map((id) => ({ id, name: t(`domains.${id}`) })),\n    [t],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch\n        checked={bundled}\n        onChange={setBundled}\n        label={t(\"bundleEdges\")}\n      />\n      <GraphChart\n        nodes={nodes}\n        edges={edges}\n        groups={groups}\n        layout=\"circular\"\n        circular={{ tension: bundled ? 0.85 : 0 }}\n        edgeColor=\"source\"\n        edgeWidth={[1, 6]}\n        height={480}\n        ariaLabel={t(\"circularAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Disposition circulaire",
+      "description": "Appels entre microservices, regroupés par domaine autour d’un cercle. L’épaisseur suit le volume d’appels, edgeColor=\"source\" teinte chaque arête de la couleur de l’appelant, et la tension regroupe les arêtes vers le centre."
+    },
+    {
+      "id": "fraud-ring",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/fraud-ring.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/fraud-ring.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { ConfigProvider, Switch } from \"minerva-design\";\nimport {\n  GraphChart,\n  type GraphEdge,\n  type GraphNode,\n} from \"minerva-design/charts\";\n\ntype Kind = \"account\" | \"flagged\" | \"device\" | \"card\";\ntype Risk = \"low\" | \"medium\" | \"high\";\n\n// accounts and the devices / cards they used; two rings share them\nconst FLAGGED = new Set([\"2101\", \"2102\", \"2103\", \"2104\", \"2105\", \"3301\"]);\nconst USES: [string, string][] = [\n  // ring 1: five accounts on two phones, three of them on the same card\n  [\"2101\", \"d:9F3C\"],\n  [\"2102\", \"d:9F3C\"],\n  [\"2103\", \"d:9F3C\"],\n  [\"2104\", \"d:51AE\"],\n  [\"2105\", \"d:51AE\"],\n  [\"2103\", \"d:51AE\"],\n  [\"2101\", \"c:4417\"],\n  [\"2102\", \"c:4417\"],\n  [\"2104\", \"c:4417\"],\n  // ring 2: four accounts paying with one card\n  [\"3301\", \"c:0932\"],\n  [\"3302\", \"c:0932\"],\n  [\"3303\", \"c:0932\"],\n  [\"3304\", \"c:0932\"],\n  [\"3301\", \"d:C7D0\"],\n  [\"3302\", \"d:C7D0\"],\n  // regular customers; a couple shares a tablet\n  [\"1001\", \"d:0A11\"],\n  [\"1001\", \"c:1188\"],\n  [\"1002\", \"d:0B22\"],\n  [\"1002\", \"c:2290\"],\n  [\"1003\", \"d:0C33\"],\n  [\"1004\", \"d:0C33\"],\n  [\"1003\", \"c:3315\"],\n  [\"1004\", \"c:3342\"],\n  [\"1005\", \"d:0D44\"],\n  [\"1005\", \"c:5561\"],\n  [\"1006\", \"d:0E55\"],\n  [\"1006\", \"c:6604\"],\n  [\"1007\", \"d:0F66\"],\n  [\"1007\", \"c:7719\"],\n  [\"1008\", \"d:1A77\"],\n  [\"1008\", \"c:8823\"],\n];\n\nconst KINDS: Kind[] = [\"account\", \"flagged\", \"device\", \"card\"];\nconst KIND_COLORS: Partial<Record<Kind, string>> = {\n  flagged: \"var(--danger-color, #ef4444)\",\n};\n\nconst kindOf = (id: string): Kind =>\n  id.startsWith(\"d:\")\n    ? \"device\"\n    : id.startsWith(\"c:\")\n      ? \"card\"\n      : FLAGGED.has(id)\n        ? \"flagged\"\n        : \"account\";\n\n/** Every node connected to `id` (accounts, devices and cards of its cluster) */\nconst clusterOf = (id: string) => {\n  const seen = new Set([id]);\n  const queue = [id];\n  while (queue.length) {\n    const current = queue.shift()!;\n    for (const [a, b] of USES) {\n      const next = a === current ? b : b === current ? a : null;\n      if (next && !seen.has(next)) {\n        seen.add(next);\n        queue.push(next);\n      }\n    }\n  }\n  return [...seen];\n};\n\nexport default function FraudRingDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const [dark, setDark] = useState(true);\n  const [cluster, setCluster] = useState<string[]>([]);\n\n  const nodes = useMemo((): GraphNode[] => {\n    const ids = [...new Set(USES.flat())];\n    return ids.map((id): GraphNode => {\n      const kind = kindOf(id);\n      const code = id.slice(2);\n      return {\n        id,\n        group: kind,\n        shape: kind === \"device\" || kind === \"card\" ? \"box\" : \"circle\",\n        label:\n          kind === \"device\"\n            ? t(\"deviceLabel\", { id: code })\n            : kind === \"card\"\n              ? t(\"cardLabel\", { last4: code })\n              : t(\"accountLabel\", { id }),\n      };\n    });\n  }, [t]);\n  const edges = useMemo(\n    (): GraphEdge[] =>\n      USES.map(([source, target]) => ({\n        source,\n        target,\n        label: t(target.startsWith(\"d:\") ? \"loggedInFrom\" : \"paidWith\"),\n      })),\n    [t],\n  );\n  const groups = useMemo(\n    () =>\n      KINDS.map((id) => ({\n        id,\n        name: t(`fraudKinds.${id}`),\n        color: KIND_COLORS[id],\n      })),\n    [t],\n  );\n\n  const accounts = cluster.filter((id) => /^\\d/.test(id)).length;\n  const risk: Risk = accounts >= 4 ? \"high\" : accounts >= 2 ? \"medium\" : \"low\";\n\n  return (\n    <ConfigProvider theme={dark ? \"dark\" : \"light\"}>\n      <div\n        style={{\n          display: \"grid\",\n          gap: 12,\n          width: \"100%\",\n          padding: 12,\n          borderRadius: 8,\n          border: \"1px solid var(--border-color)\",\n          background: \"var(--background-color)\",\n          color: \"var(--text-color)\",\n        }}\n      >\n        <Switch checked={dark} onChange={setDark} label={t(\"darkTheme\")} />\n        <GraphChart\n          // the chart reads the theme of its scope when it is created\n          key={dark ? \"dark\" : \"light\"}\n          nodes={nodes}\n          edges={edges}\n          groups={groups}\n          selected={cluster}\n          interaction={{ select: false }}\n          nodeSize={16}\n          edgeLabels=\"hover\"\n          force={{ linkDistance: 40, charge: -220, seed: 11 }}\n          height={460}\n          ariaLabel={t(\"fraudAria\")}\n          onItemClick={(event) => {\n            if (event.type === \"node\") setCluster(clusterOf(event.id));\n          }}\n        />\n        <output\n          aria-live=\"polite\"\n          style={{ color: \"var(--text-secondary-color)\" }}\n        >\n          {cluster.length\n            ? t(\"clusterReadout\", {\n                accounts,\n                devices: cluster.filter((id) => id.startsWith(\"d:\")).length,\n                cards: cluster.filter((id) => id.startsWith(\"c:\")).length,\n                risk: t(`risk.${risk}`),\n              })\n            : t(\"fraudHint\")}\n        </output>\n      </div>\n    </ConfigProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Réseaux de fraude en thème sombre",
+      "description": "Des comptes reliés aux appareils et aux cartes qu'ils ont utilisés ; la forme des nœuds dessine les appareils et les cartes en boîtes. Cliquez sur un nœud pour sélectionner tout son groupe et évaluer son risque. Le graphique est placé dans un ConfigProvider imbriqué et lit son thème sombre ou clair à sa création."
+    },
+    {
+      "id": "friend-suggestions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/friend-suggestions.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/friend-suggestions.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { GraphChart, type GraphNode } from \"minerva-design/charts\";\n\ntype Circle = \"university\" | \"work\" | \"climbing\" | \"books\";\n\nconst CIRCLES: Record<Circle, string[]> = {\n  university: [\"ana\", \"ben\", \"chen\", \"dara\", \"eli\", \"farah\"],\n  work: [\"gus\", \"hana\", \"ivan\", \"jules\", \"kai\", \"lena\"],\n  climbing: [\"mo\", \"nina\", \"omar\", \"priya\", \"quinn\", \"rosa\"],\n  books: [\"sam\", \"tariq\", \"uma\", \"vik\", \"wen\", \"yuki\"],\n};\n\nconst FRIENDSHIPS: [string, string][] = [\n  [\"ana\", \"ben\"],\n  [\"ana\", \"chen\"],\n  [\"ana\", \"dara\"],\n  [\"ben\", \"chen\"],\n  [\"ben\", \"eli\"],\n  [\"chen\", \"farah\"],\n  [\"dara\", \"eli\"],\n  [\"eli\", \"farah\"],\n  [\"dara\", \"farah\"],\n  [\"gus\", \"hana\"],\n  [\"gus\", \"ivan\"],\n  [\"hana\", \"jules\"],\n  [\"ivan\", \"jules\"],\n  [\"ivan\", \"kai\"],\n  [\"jules\", \"lena\"],\n  [\"kai\", \"lena\"],\n  [\"hana\", \"kai\"],\n  [\"mo\", \"nina\"],\n  [\"mo\", \"omar\"],\n  [\"nina\", \"priya\"],\n  [\"omar\", \"priya\"],\n  [\"omar\", \"quinn\"],\n  [\"priya\", \"rosa\"],\n  [\"quinn\", \"rosa\"],\n  [\"nina\", \"quinn\"],\n  [\"sam\", \"tariq\"],\n  [\"sam\", \"uma\"],\n  [\"tariq\", \"vik\"],\n  [\"uma\", \"wen\"],\n  [\"vik\", \"yuki\"],\n  [\"wen\", \"yuki\"],\n  [\"uma\", \"vik\"],\n  [\"sam\", \"wen\"],\n  // friendships across circles\n  [\"ana\", \"gus\"],\n  [\"ben\", \"hana\"],\n  [\"eli\", \"mo\"],\n  [\"farah\", \"nina\"],\n  [\"lena\", \"sam\"],\n  [\"kai\", \"omar\"],\n  [\"rosa\", \"yuki\"],\n  [\"chen\", \"uma\"],\n  [\"jules\", \"priya\"],\n  [\"dara\", \"tariq\"],\n];\n\nconst friendsOf = (id: string) =>\n  new Set(\n    FRIENDSHIPS.flatMap(([a, b]) => (a === id ? [b] : b === id ? [a] : [])),\n  );\n\n/** People you may know: friends of friends, ranked by the number of mutual friends */\nconst suggest = (id: string) => {\n  const friends = friendsOf(id);\n  const mutual = new Map<string, number>();\n  for (const friend of friends)\n    for (const candidate of friendsOf(friend))\n      if (candidate !== id && !friends.has(candidate))\n        mutual.set(candidate, (mutual.get(candidate) ?? 0) + 1);\n  return [...mutual]\n    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))\n    .slice(0, 3);\n};\n\nexport default function FriendSuggestionsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const [person, setPerson] = useState(\"ana\");\n\n  const nodes = useMemo(\n    (): GraphNode[] =>\n      (Object.keys(CIRCLES) as Circle[]).flatMap((circle) =>\n        CIRCLES[circle].map((id) => ({\n          id,\n          label: `@${id}`,\n          group: circle,\n          value: friendsOf(id).size,\n        })),\n      ),\n    [],\n  );\n  const edges = useMemo(\n    () => FRIENDSHIPS.map(([source, target]) => ({ source, target })),\n    [],\n  );\n  const groups = useMemo(\n    () =>\n      (Object.keys(CIRCLES) as Circle[]).map((id) => ({\n        id,\n        name: t(`circles.${id}`),\n      })),\n    [t],\n  );\n\n  const suggestions = useMemo(() => suggest(person), [person]);\n  // the person and the suggestions stay selected (highlighted)\n  const selected = useMemo(\n    () => [person, ...suggestions.map(([id]) => id)],\n    [person, suggestions],\n  );\n  const list = new Intl.ListFormat(i18n.language, { type: \"conjunction\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <GraphChart\n        nodes={nodes}\n        edges={edges}\n        groups={groups}\n        selected={selected}\n        interaction={{ select: false }}\n        nodeSize={[10, 24]}\n        edgeColor=\"source\"\n        force={{ linkDistance: 50, charge: -260, seed: 4 }}\n        height={460}\n        ariaLabel={t(\"friendsAria\")}\n        onItemClick={(event) => {\n          if (event.type === \"node\") setPerson(event.id);\n        }}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {suggestions.length\n          ? t(\"suggestions\", {\n              name: `@${person}`,\n              list: list.format(\n                suggestions.map(([id, count]) =>\n                  t(\"suggestion\", { name: `@${id}`, mutual: count }),\n                ),\n              ),\n            })\n          : t(\"noSuggestions\", { name: `@${person}` })}{\" \"}\n        {t(\"friendsHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Vous connaissez peut-être",
+      "description": "Un réseau social en quatre cercles. Cliquez sur une personne : les amis de ses amis sont classés par amis en commun, et la personne et les suggestions restent en évidence grâce à la prop selected contrôlée ; interaction={{ select: false }} laisse les clics à onItemClick."
+    },
+    {
+      "id": "knowledge-graph",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/knowledge-graph.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/knowledge-graph.tsx": "import { useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HStack, Input, Tag } from \"minerva-design\";\nimport {\n  GraphChart,\n  type GraphChartHandle,\n  type GraphEdge,\n  type GraphNode,\n} from \"minerva-design/charts\";\n\ntype Kind = \"person\" | \"place\" | \"institution\" | \"concept\";\n\nconst ENTITIES: [string, Kind][] = [\n  [\"curie\", \"person\"],\n  [\"pierre\", \"person\"],\n  [\"einstein\", \"person\"],\n  [\"planck\", \"person\"],\n  [\"bohr\", \"person\"],\n  [\"heisenberg\", \"person\"],\n  [\"meitner\", \"person\"],\n  [\"hahn\", \"person\"],\n  [\"noether\", \"person\"],\n  [\"paris\", \"place\"],\n  [\"warsaw\", \"place\"],\n  [\"vienna\", \"place\"],\n  [\"berlin\", \"place\"],\n  [\"zurich\", \"place\"],\n  [\"copenhagen\", \"place\"],\n  [\"sorbonne\", \"institution\"],\n  [\"kwg\", \"institution\"],\n  [\"eth\", \"institution\"],\n  [\"nbi\", \"institution\"],\n  [\"radioactivity\", \"concept\"],\n  [\"relativity\", \"concept\"],\n  [\"quantum\", \"concept\"],\n  [\"uncertainty\", \"concept\"],\n  [\"fission\", \"concept\"],\n  [\"symmetry\", \"concept\"],\n];\n\n// subject, object, predicate: the triples of the knowledge graph\nconst TRIPLES: [string, string, string][] = [\n  [\"curie\", \"warsaw\", \"bornIn\"],\n  [\"curie\", \"sorbonne\", \"workedAt\"],\n  [\"curie\", \"pierre\", \"marriedTo\"],\n  [\"curie\", \"radioactivity\", \"contributedTo\"],\n  [\"pierre\", \"sorbonne\", \"workedAt\"],\n  [\"pierre\", \"radioactivity\", \"contributedTo\"],\n  [\"sorbonne\", \"paris\", \"locatedIn\"],\n  [\"einstein\", \"eth\", \"studiedAt\"],\n  [\"einstein\", \"kwg\", \"workedAt\"],\n  [\"einstein\", \"relativity\", \"contributedTo\"],\n  [\"einstein\", \"quantum\", \"contributedTo\"],\n  [\"planck\", \"kwg\", \"workedAt\"],\n  [\"planck\", \"quantum\", \"contributedTo\"],\n  [\"planck\", \"einstein\", \"influenced\"],\n  [\"eth\", \"zurich\", \"locatedIn\"],\n  [\"kwg\", \"berlin\", \"locatedIn\"],\n  [\"bohr\", \"nbi\", \"workedAt\"],\n  [\"bohr\", \"quantum\", \"contributedTo\"],\n  [\"bohr\", \"heisenberg\", \"influenced\"],\n  [\"heisenberg\", \"nbi\", \"workedAt\"],\n  [\"heisenberg\", \"uncertainty\", \"contributedTo\"],\n  [\"uncertainty\", \"quantum\", \"partOf\"],\n  [\"nbi\", \"copenhagen\", \"locatedIn\"],\n  [\"meitner\", \"vienna\", \"bornIn\"],\n  [\"meitner\", \"kwg\", \"workedAt\"],\n  [\"meitner\", \"hahn\", \"collaborated\"],\n  [\"meitner\", \"fission\", \"contributedTo\"],\n  [\"hahn\", \"kwg\", \"workedAt\"],\n  [\"hahn\", \"fission\", \"contributedTo\"],\n  [\"noether\", \"symmetry\", \"contributedTo\"],\n  [\"symmetry\", \"relativity\", \"relatedTo\"],\n];\n\nconst KINDS: Kind[] = [\"person\", \"place\", \"institution\", \"concept\"];\n\nexport default function KnowledgeGraphDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const locale = i18n.language;\n  const chart = useRef<GraphChartHandle>(null);\n  const [query, setQuery] = useState(\"\");\n  const [selected, setSelected] = useState<string[]>([]);\n\n  const nodes = useMemo(\n    (): GraphNode[] =>\n      ENTITIES.map(([id, kind]) => ({\n        id,\n        label: t(`entities.${id}`),\n        group: kind,\n        value: TRIPLES.filter(([s, o]) => s === id || o === id).length,\n      })),\n    [t],\n  );\n  const edges = useMemo(\n    (): GraphEdge[] =>\n      TRIPLES.map(([source, target, predicate]) => ({\n        source,\n        target,\n        directed: true,\n        label: t(`predicates.${predicate}`),\n      })),\n    [t],\n  );\n  const groups = useMemo(\n    () => KINDS.map((id) => ({ id, name: t(`entityKinds.${id}`) })),\n    [t],\n  );\n\n  const name = (id: string) => nodes.find((node) => node.id === id)?.label;\n  const needle = query.trim().toLocaleLowerCase(locale);\n  const matches = needle\n    ? nodes.filter((node) =>\n        node.label!.toLocaleLowerCase(locale).includes(needle),\n      )\n    : [];\n\n  // select the entity and center it in the view\n  const focus = (id: string) => {\n    setSelected([id]);\n    chart.current?.focusNode(id, { zoom: 1.6 });\n  };\n\n  const current = selected[0];\n  const list = new Intl.ListFormat(locale, { style: \"narrow\", type: \"unit\" });\n  const facts = current\n    ? TRIPLES.filter(([s, o]) => s === current || o === current).map(\n        ([s, o, predicate]) =>\n          s === current\n            ? t(\"factOut\", {\n                relation: t(`predicates.${predicate}`),\n                name: name(o),\n              })\n            : t(\"factIn\", {\n                relation: t(`predicates.${predicate}`),\n                name: name(s),\n              }),\n      )\n    : [];\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Input\n        value={query}\n        clearable\n        onClear={() => setQuery(\"\")}\n        onChange={(event) => setQuery(event.target.value)}\n        onKeyDown={(event) => {\n          if (event.key === \"Enter\" && matches[0]) focus(matches[0].id);\n        }}\n        placeholder={t(\"searchPlaceholder\")}\n        aria-label={t(\"searchLabel\")}\n        style={{ maxWidth: 320 }}\n      />\n      {needle && (\n        <HStack gap={6} wrap>\n          {matches.length ? (\n            matches.slice(0, 8).map((node) => (\n              <Tag\n                key={node.id}\n                size=\"small\"\n                clickable\n                pressed={current === node.id}\n                onClick={() => focus(node.id)}\n              >\n                {node.label}\n              </Tag>\n            ))\n          ) : (\n            <span style={{ color: \"var(--text-secondary-color)\" }}>\n              {t(\"noMatch\")}\n            </span>\n          )}\n        </HStack>\n      )}\n      <GraphChart\n        ref={chart}\n        nodes={nodes}\n        edges={edges}\n        groups={groups}\n        selected={selected}\n        nodeSize={[12, 32]}\n        arrows\n        edgeLabels=\"auto\"\n        force={{ linkDistance: 70, charge: -520, seed: 7 }}\n        height={500}\n        ariaLabel={t(\"knowledgeAria\")}\n        onSelectionChange={setSelected}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {current\n          ? t(\"factsReadout\", {\n              name: name(current),\n              total: facts.length,\n              facts: list.format(facts),\n            })\n          : t(\"knowledgeHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Recherche dans un graphe de connaissances",
+      "description": "Physiciens, lieux, institutions et idées reliés par des relations orientées et nommées. Tapez dans le champ de recherche et choisissez un résultat : la prop selected et focusNode sur la ref le sélectionnent et le centrent, et les faits qui le concernent sont listés avec Intl.ListFormat."
+    },
+    {
+      "id": "large-network",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/large-network.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/large-network.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { GraphChart, type GraphNode } from \"minerva-design/charts\";\nimport { communityGraph } from \"../data\";\n\n// 40 communities of 250 people: 10,000 nodes and about 20,000 links\nconst NETWORK = communityGraph(40, 250);\n\nexport default function LargeNetworkDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const [renderer, setRenderer] = useState<string>(\"…\");\n  const [done, setDone] = useState(false);\n  const [started] = useState(() => performance.now());\n  const [seconds, setSeconds] = useState(0);\n\n  const nodes = useMemo(\n    (): GraphNode[] =>\n      NETWORK.nodes.map((node) => ({\n        ...node,\n        label: t(\"member\", { id: node.id }),\n      })),\n    [t],\n  );\n  const groups = useMemo(\n    () =>\n      Array.from({ length: 8 }, (_, i) => ({\n        id: `c${i}`,\n        name: t(\"community\", { n: i + 1 }),\n      })),\n    [t],\n  );\n  const format = new Intl.NumberFormat(i18n.language);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <GraphChart\n        nodes={nodes}\n        edges={NETWORK.edges}\n        groups={groups}\n        height={540}\n        nodeSize={6}\n        edgeWidth={0.6}\n        legend={false}\n        force={{ linkDistance: 14, charge: -40, gravity: 0.06, worker: \"auto\" }}\n        ariaLabel={t(\"largeAria\")}\n        onRendererChange={setRenderer}\n        onLayoutEnd={() => {\n          setDone(true);\n          setSeconds((performance.now() - started) / 1000);\n        }}\n      />\n      <span role=\"status\" style={{ color: \"var(--text-secondary-color)\" }}>\n        {t(\"largeStatus\", {\n          nodes: format.format(NETWORK.nodes.length),\n          edges: format.format(NETWORK.edges.length),\n          renderer,\n        })}{\" \"}\n        {done\n          ? t(\"largeDone\", {\n              seconds: new Intl.NumberFormat(i18n.language, {\n                maximumFractionDigits: 1,\n              }).format(seconds),\n            })\n          : t(\"largeRunning\")}\n      </span>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/graph-chart/data.ts": "// Data of the graph-chart demos: characters of Romance of the Three Kingdoms\n// (三国演义), their factions and relationships, and a generated community\n// network. Names and relation labels come from the page's locale file.\n\nimport type { GraphEdge, GraphGroup, GraphNode } from \"minerva-design/charts\";\n\nexport type Faction = \"shu\" | \"wei\" | \"wu\" | \"qun\";\n\n/** id, faction, importance (node size) */\nexport const CHARACTERS: [string, Faction, number][] = [\n  [\"liubei\", \"shu\", 10],\n  [\"guanyu\", \"shu\", 9],\n  [\"zhangfei\", \"shu\", 8],\n  [\"zhugeliang\", \"shu\", 10],\n  [\"zhaoyun\", \"shu\", 8],\n  [\"machao\", \"shu\", 6],\n  [\"huangzhong\", \"shu\", 6],\n  [\"pangtong\", \"shu\", 5],\n  [\"jiangwei\", \"shu\", 6],\n  [\"liushan\", \"shu\", 5],\n  [\"weiyan\", \"shu\", 5],\n  [\"fazheng\", \"shu\", 4],\n  [\"caocao\", \"wei\", 10],\n  [\"caopi\", \"wei\", 7],\n  [\"simayi\", \"wei\", 9],\n  [\"xiahoudun\", \"wei\", 6],\n  [\"xiahouyuan\", \"wei\", 5],\n  [\"zhangliao\", \"wei\", 6],\n  [\"xuchu\", \"wei\", 5],\n  [\"guojia\", \"wei\", 5],\n  [\"xunyu\", \"wei\", 5],\n  [\"dianwei\", \"wei\", 4],\n  [\"caozhi\", \"wei\", 4],\n  [\"simazhao\", \"wei\", 5],\n  [\"dengai\", \"wei\", 5],\n  [\"sunquan\", \"wu\", 9],\n  [\"sunce\", \"wu\", 7],\n  [\"sunjian\", \"wu\", 6],\n  [\"zhouyu\", \"wu\", 8],\n  [\"lusu\", \"wu\", 6],\n  [\"lumeng\", \"wu\", 6],\n  [\"luxun\", \"wu\", 7],\n  [\"ganning\", \"wu\", 5],\n  [\"huanggai\", \"wu\", 4],\n  [\"xiaoqiao\", \"wu\", 3],\n  [\"daqiao\", \"wu\", 3],\n  [\"sunshangxiang\", \"wu\", 4],\n  [\"lvbu\", \"qun\", 8],\n  [\"dongzhuo\", \"qun\", 6],\n  [\"diaochan\", \"qun\", 5],\n  [\"yuanshao\", \"qun\", 6],\n  [\"xiandi\", \"qun\", 5],\n  [\"wangyun\", \"qun\", 3],\n];\n\nexport type Relation =\n  | \"brothers\"\n  | \"serves\"\n  | \"father\"\n  | \"spouse\"\n  | \"siblings\"\n  | \"rival\"\n  | \"mentor\"\n  | \"adoptive\"\n  | \"ally\"\n  | \"defeated\"\n  | \"friends\";\n\n/** source, target, relation; `serves` points from the vassal to the lord */\nexport const RELATIONS: [string, string, Relation][] = [\n  [\"liubei\", \"guanyu\", \"brothers\"],\n  [\"liubei\", \"zhangfei\", \"brothers\"],\n  [\"guanyu\", \"zhangfei\", \"brothers\"],\n  [\"zhugeliang\", \"liubei\", \"serves\"],\n  [\"zhaoyun\", \"liubei\", \"serves\"],\n  [\"machao\", \"liubei\", \"serves\"],\n  [\"huangzhong\", \"liubei\", \"serves\"],\n  [\"pangtong\", \"liubei\", \"serves\"],\n  [\"weiyan\", \"liubei\", \"serves\"],\n  [\"fazheng\", \"liubei\", \"serves\"],\n  [\"liubei\", \"liushan\", \"father\"],\n  [\"liubei\", \"sunshangxiang\", \"spouse\"],\n  [\"sunquan\", \"sunshangxiang\", \"siblings\"],\n  [\"zhugeliang\", \"jiangwei\", \"mentor\"],\n  [\"zhugeliang\", \"simayi\", \"rival\"],\n  [\"zhugeliang\", \"zhouyu\", \"rival\"],\n  [\"jiangwei\", \"dengai\", \"rival\"],\n  [\"jiangwei\", \"liushan\", \"serves\"],\n  [\"zhugeliang\", \"liushan\", \"serves\"],\n  [\"caocao\", \"caopi\", \"father\"],\n  [\"caocao\", \"caozhi\", \"father\"],\n  [\"caopi\", \"caozhi\", \"siblings\"],\n  [\"simayi\", \"caocao\", \"serves\"],\n  [\"simayi\", \"caopi\", \"serves\"],\n  [\"simayi\", \"simazhao\", \"father\"],\n  [\"xiahoudun\", \"caocao\", \"serves\"],\n  [\"xiahouyuan\", \"caocao\", \"serves\"],\n  [\"zhangliao\", \"caocao\", \"serves\"],\n  [\"xuchu\", \"caocao\", \"serves\"],\n  [\"dianwei\", \"caocao\", \"serves\"],\n  [\"guojia\", \"caocao\", \"serves\"],\n  [\"xunyu\", \"caocao\", \"serves\"],\n  [\"dengai\", \"simazhao\", \"serves\"],\n  [\"caocao\", \"liubei\", \"rival\"],\n  [\"caocao\", \"yuanshao\", \"defeated\"],\n  [\"caocao\", \"lvbu\", \"defeated\"],\n  [\"huangzhong\", \"xiahouyuan\", \"defeated\"],\n  [\"zhangliao\", \"sunquan\", \"defeated\"],\n  [\"lumeng\", \"guanyu\", \"defeated\"],\n  [\"luxun\", \"liubei\", \"defeated\"],\n  [\"zhouyu\", \"caocao\", \"defeated\"],\n  [\"sunjian\", \"sunce\", \"father\"],\n  [\"sunjian\", \"sunquan\", \"father\"],\n  [\"sunce\", \"sunquan\", \"siblings\"],\n  [\"sunce\", \"daqiao\", \"spouse\"],\n  [\"zhouyu\", \"xiaoqiao\", \"spouse\"],\n  [\"daqiao\", \"xiaoqiao\", \"siblings\"],\n  [\"sunce\", \"zhouyu\", \"friends\"],\n  [\"zhouyu\", \"sunquan\", \"serves\"],\n  [\"lusu\", \"sunquan\", \"serves\"],\n  [\"lumeng\", \"sunquan\", \"serves\"],\n  [\"luxun\", \"sunquan\", \"serves\"],\n  [\"ganning\", \"sunquan\", \"serves\"],\n  [\"huanggai\", \"sunquan\", \"serves\"],\n  [\"huanggai\", \"zhouyu\", \"serves\"],\n  [\"liubei\", \"sunquan\", \"ally\"],\n  [\"lusu\", \"zhugeliang\", \"ally\"],\n  [\"lvbu\", \"dongzhuo\", \"adoptive\"],\n  [\"lvbu\", \"diaochan\", \"spouse\"],\n  [\"wangyun\", \"diaochan\", \"adoptive\"],\n  [\"dongzhuo\", \"xiandi\", \"serves\"],\n  [\"caocao\", \"xiandi\", \"serves\"],\n  [\"yuanshao\", \"dongzhuo\", \"rival\"],\n  [\"lvbu\", \"liubei\", \"rival\"],\n];\n\nexport const FACTIONS: Faction[] = [\"shu\", \"wei\", \"wu\", \"qun\"];\n\n/** Faction colors (Shu green, Wei blue, Wu red, warlords amber) */\nexport const FACTION_COLORS: Record<Faction, string> = {\n  shu: \"var(--success-color, #16a34a)\",\n  wei: \"var(--info-color, #0ea5e9)\",\n  wu: \"var(--danger-color, #ef4444)\",\n  qun: \"var(--warning-color, #f59e0b)\",\n};\n\ntype Translate = (key: string, options?: Record<string, unknown>) => string;\n\n/** Nodes, edges and groups of the character network in the reader's language */\nexport const characterGraph = (\n  t: Translate,\n): { nodes: GraphNode[]; edges: GraphEdge[]; groups: GraphGroup[] } => ({\n  nodes: CHARACTERS.map(([id, faction, importance]) => ({\n    id,\n    label: t(`characters.${id}`),\n    group: faction,\n    value: importance,\n  })),\n  edges: RELATIONS.map(([source, target, relation]) => ({\n    source,\n    target,\n    label: t(`relations.${relation}`),\n    directed: relation === \"serves\" || relation === \"defeated\",\n    dashed: relation === \"rival\",\n    data: relation,\n  })),\n  groups: FACTIONS.map((id) => ({\n    id,\n    name: t(`factions.${id}`),\n    color: FACTION_COLORS[id],\n  })),\n});\n\n/**\n * A large network: `communities` groups of `size` nodes, each a random\n * tree plus extra links inside the group and a few between groups\n * (seeded: the same graph on every render)\n */\nexport const communityGraph = (\n  communities: number,\n  size: number,\n): { nodes: GraphNode[]; edges: GraphEdge[] } => {\n  let seed = 42;\n  const random = () => {\n    seed = (seed * 16807) % 2147483647;\n    return seed / 2147483647;\n  };\n  const nodes: GraphNode[] = [];\n  const edges: GraphEdge[] = [];\n  for (let c = 0; c < communities; c++) {\n    const base = c * size;\n    for (let i = 0; i < size; i++) {\n      const id = base + i;\n      nodes.push({ id: String(id), group: `c${c % 8}` });\n      if (i > 0) {\n        // preferential attachment: hubs inside each community\n        const parent = base + Math.floor(Math.pow(random(), 2.2) * i);\n        edges.push({ source: String(parent), target: String(id) });\n        const other = base + Math.floor(random() * size);\n        if (other !== id)\n          edges.push({ source: String(id), target: String(other) });\n        if (random() < 0.12) {\n          const third = base + Math.floor(random() * size);\n          if (third !== id)\n            edges.push({ source: String(id), target: String(third) });\n        }\n      }\n    }\n    // bridges to other communities\n    for (let k = 0; k < 4; k++) {\n      const a = base + Math.floor(random() * size);\n      const b =\n        Math.floor(random() * communities) * size + Math.floor(random() * size);\n      if (Math.floor(b / size) !== c)\n        edges.push({ source: String(a), target: String(b) });\n    }\n  }\n  return { nodes, edges };\n};\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "10 000 nœuds sur le GPU",
+      "description": "Quarante communautés générées : 10 000 nœuds et environ 20 000 liens. La simulation tourne dans un Web Worker (worker=\"auto\" au-delà de 2 000 nœuds) pendant que le GPU dessine chaque image ; la vue suit la disposition jusqu’à ce que vous déplaciez ou zoomiez."
+    },
+    {
+      "id": "service-map",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/service-map.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/service-map.tsx": "import { useEffect, useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport {\n  GraphChart,\n  type GraphEdge,\n  type GraphNode,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\ntype Health = \"healthy\" | \"degraded\" | \"critical\";\n\n// service, column, row, typical p95 latency (ms): hand-placed with layout=\"none\"\nconst SERVICES: [string, number, number, number][] = [\n  [\"ingress\", 0, 1.5, 12],\n  [\"web\", 1, 0.5, 45],\n  [\"mobile-api\", 1, 2.5, 50],\n  [\"orders\", 2, 0, 80],\n  [\"payments\", 2, 1, 110],\n  [\"search\", 2, 2, 60],\n  [\"accounts\", 2, 3, 35],\n  [\"postgres\", 3, 0.5, 8],\n  [\"kafka\", 3, 1.5, 5],\n  [\"elastic\", 3, 2.5, 25],\n  [\"redis\", 3, 3.5, 2],\n];\n\n// caller, callee, requests per second\nconst CALLS: [string, string, number][] = [\n  [\"ingress\", \"web\", 1800],\n  [\"ingress\", \"mobile-api\", 1200],\n  [\"web\", \"orders\", 420],\n  [\"web\", \"search\", 900],\n  [\"web\", \"accounts\", 380],\n  [\"mobile-api\", \"orders\", 310],\n  [\"mobile-api\", \"payments\", 160],\n  [\"mobile-api\", \"accounts\", 290],\n  [\"mobile-api\", \"search\", 400],\n  [\"orders\", \"payments\", 240],\n  [\"orders\", \"postgres\", 650],\n  [\"orders\", \"kafka\", 240],\n  [\"payments\", \"postgres\", 310],\n  [\"payments\", \"kafka\", 150],\n  [\"search\", \"elastic\", 1300],\n  [\"accounts\", \"redis\", 900],\n  [\"accounts\", \"postgres\", 120],\n];\n\nconst HEALTH: Health[] = [\"healthy\", \"degraded\", \"critical\"];\nconst HEALTH_COLORS: Record<Health, string> = {\n  healthy: \"var(--success-color, #16a34a)\",\n  degraded: \"var(--warning-color, #f59e0b)\",\n  critical: \"var(--danger-color, #ef4444)\",\n};\n\ninterface Metrics {\n  latency: number;\n  /** error rate in percent */\n  errors: number;\n  health: Health;\n}\n\n/** Metrics of every service at sample `tick`: seeded jitter plus an incident on payments that comes and goes */\nconst sample = (tick: number): Record<string, Metrics> => {\n  const random = mulberry32(1000 + tick);\n  const incident = Math.max(0, Math.sin(tick / 3));\n  const metrics: Record<string, Metrics> = {};\n  for (const [id, , , base] of SERVICES) {\n    const hit =\n      id === \"payments\" ? incident : id === \"orders\" ? incident * 0.4 : 0;\n    const latency = Math.round(base * (0.85 + random() * 0.3) * (1 + hit * 4));\n    const errors = Math.round((0.1 + random() * 0.4 + hit * 9) * 10) / 10;\n    const health: Health =\n      errors >= 5 || latency >= 500\n        ? \"critical\"\n        : errors >= 1 || latency >= 200\n          ? \"degraded\"\n          : \"healthy\";\n    metrics[id] = { latency, errors, health };\n  }\n  return metrics;\n};\n\n/** Requests per second handled by a service (the entry point: what it sends) */\nconst traffic = (id: string) => {\n  const sum = (side: 0 | 1) =>\n    CALLS.filter((call) => call[side] === id).reduce((s, c) => s + c[2], 0);\n  return sum(1) || sum(0);\n};\n\nexport default function ServiceMapDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const locale = i18n.language;\n  const [live, setLive] = useState(true);\n  const [tick, setTick] = useState(0);\n  const [updated, setUpdated] = useState(() => new Date());\n  const [selected, setSelected] = useState<string | null>(null);\n\n  // a new sample every 1.5 s while live; the interval stops on unmount\n  useEffect(() => {\n    if (!live) return;\n    const timer = window.setInterval(() => {\n      setTick((n) => n + 1);\n      setUpdated(new Date());\n    }, 1500);\n    return () => window.clearInterval(timer);\n  }, [live]);\n\n  const metrics = useMemo(() => sample(tick), [tick]);\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n  const compact = useMemo(\n    () => new Intl.NumberFormat(locale, { notation: \"compact\" }),\n    [locale],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const time = useMemo(\n    () => new Intl.DateTimeFormat(locale, { timeStyle: \"medium\" }),\n    [locale],\n  );\n\n  // positions never change: only the colors and subtitles follow the samples\n  const nodes = useMemo(\n    (): GraphNode[] =>\n      SERVICES.map(([id, column, row]) => ({\n        id,\n        label: id,\n        subtitle: t(\"latency\", { value: number.format(metrics[id]!.latency) }),\n        group: metrics[id]!.health,\n        x: column * 220,\n        y: row * 90,\n      })),\n    [t, number, metrics],\n  );\n  const edges = useMemo(\n    (): GraphEdge[] =>\n      CALLS.map(([source, target, rps]) => ({\n        source,\n        target,\n        value: rps,\n        label: t(\"rps\", { value: compact.format(rps) }),\n      })),\n    [t, compact],\n  );\n  const groups = useMemo(\n    () =>\n      HEALTH.map((id) => ({\n        id,\n        name: t(`health.${id}`),\n        color: HEALTH_COLORS[id],\n      })),\n    [t],\n  );\n\n  const counts = HEALTH.map(\n    (h) => SERVICES.filter(([id]) => metrics[id]!.health === h).length,\n  );\n  const current = selected ? metrics[selected] : undefined;\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch checked={live} onChange={setLive} label={t(\"liveUpdates\")} />\n      <GraphChart\n        nodes={nodes}\n        edges={edges}\n        groups={groups}\n        layout=\"none\"\n        nodeShape=\"box\"\n        arrows\n        arrowStyle=\"filled\"\n        edgeStyle=\"curve\"\n        edgeWidth={[1, 5]}\n        edgeColor=\"target\"\n        edgeLabels=\"hover\"\n        animation={300}\n        height={440}\n        ariaLabel={t(\"serviceMapAria\")}\n        onSelectionChange={(ids) => setSelected(ids[0] ?? null)}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {selected && current\n          ? t(\"serviceReadout\", {\n              name: selected,\n              status: t(`health.${current.health}`),\n              latency: number.format(current.latency),\n              errors: percent.format(current.errors / 100),\n              rps: compact.format(traffic(selected)),\n            })\n          : t(\"serviceHint\")}{\" \"}\n        {t(\"serviceCounts\", {\n          healthy: counts[0],\n          degraded: counts[1],\n          critical: counts[2],\n          time: time.format(updated),\n        })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Carte des services en direct",
+      "description": "Les services d'une boutique en ligne placés à la main avec layout=\"none\" (x / y des nœuds) : les mises à jour en direct ne les déplacent jamais. Toutes les 1,5 s, un nouvel échantillon recolore chaque service par son groupe de santé et met à jour la latence p95 de son sous-titre ; edgeColor=\"target\" teinte les appels vers un service en panne. Cliquez sur un service pour lire ses métriques."
+    },
+    {
+      "id": "transitions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/transitions.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/transitions.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport {\n  GraphChart,\n  type GraphEdge,\n  type GraphNode,\n} from \"minerva-design/charts\";\n\ntype Stage = \"open\" | \"fulfilment\" | \"closed\";\n\nconst STATES: [string, Stage][] = [\n  [\"cart\", \"open\"],\n  [\"pending\", \"open\"],\n  [\"paid\", \"fulfilment\"],\n  [\"shipped\", \"fulfilment\"],\n  [\"delivered\", \"closed\"],\n  [\"refunded\", \"closed\"],\n  [\"cancelled\", \"closed\"],\n];\n\n// several events can join the same two states (parallel edges, either\n// direction), and some events keep the state (self-loops)\nconst EVENTS: [string, string, string][] = [\n  [\"cart\", \"pending\", \"checkout\"],\n  [\"pending\", \"cart\", \"edit\"],\n  [\"pending\", \"paid\", \"pay\"],\n  [\"pending\", \"pending\", \"retry\"],\n  [\"pending\", \"cancelled\", \"timeout\"],\n  [\"pending\", \"cancelled\", \"cancel\"],\n  [\"paid\", \"pending\", \"reverse\"],\n  [\"paid\", \"shipped\", \"ship\"],\n  [\"paid\", \"refunded\", \"refund\"],\n  [\"shipped\", \"shipped\", \"track\"],\n  [\"shipped\", \"delivered\", \"deliver\"],\n  [\"shipped\", \"paid\", \"bounce\"],\n  [\"delivered\", \"refunded\", \"return\"],\n  [\"delivered\", \"delivered\", \"review\"],\n];\n\nconst STAGES: Stage[] = [\"open\", \"fulfilment\", \"closed\"];\n\nexport default function TransitionsDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const [filled, setFilled] = useState(true);\n  const nodes = useMemo(\n    (): GraphNode[] =>\n      STATES.map(([id, stage]) => ({\n        id,\n        label: t(`states.${id}`),\n        group: stage,\n      })),\n    [t],\n  );\n  const edges = useMemo(\n    (): GraphEdge[] =>\n      EVENTS.map(([source, target, event]) => ({\n        source,\n        target,\n        label: t(`events.${event}`),\n      })),\n    [t],\n  );\n  const groups = useMemo(\n    () => STAGES.map((id) => ({ id, name: t(`stages.${id}`) })),\n    [t],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch checked={filled} onChange={setFilled} label={t(\"filledArrows\")} />\n      <GraphChart\n        nodes={nodes}\n        edges={edges}\n        groups={groups}\n        height={460}\n        nodeSize={22}\n        arrows\n        arrowStyle={filled ? \"filled\" : \"open\"}\n        edgeWidth={1.5}\n        edgeLabels\n        force={{ linkDistance: 110, charge: -900, seed: 3 }}\n        ariaLabel={t(\"transitionsAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Machine à états : pointes, arêtes parallèles et boucles",
+      "description": "Les états d’une commande et les événements qui les relient. Plusieurs événements peuvent relier les deux mêmes états (dans un sens ou dans l’autre) : chacun a sa propre courbe. Les événements qui conservent l’état sont dessinés en boucles du côté libre de leur nœud. arrowStyle=\"filled\" dessine des pointes pleines de la couleur de l’arête, qui suivent le thème et la mise en évidence sur tous les moteurs de rendu."
+    },
+    {
+      "id": "vanilla",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/graph-chart/demos/vanilla.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/graph-chart/demos/vanilla.tsx": "import { useEffect, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport {\n  createGraphChart,\n  type GraphChartInstance,\n  type GraphChartOptions,\n  type GraphLayoutType,\n} from \"minerva-design/charts/core\";\nimport { characterGraph } from \"../data\";\n\nconst LAYOUTS: GraphLayoutType[] = [\"force\", \"circular\", \"arc\"];\n\nexport default function VanillaDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.graph-chart.data\",\n  });\n  const container = useRef<HTMLDivElement>(null);\n  const chart = useRef<GraphChartInstance | null>(null);\n  const status = useRef<HTMLSpanElement>(null);\n  const [layout, setLayout] = useState<GraphLayoutType>(\"force\");\n  const layoutRef = useRef(layout);\n\n  const optionsFor = (next: GraphLayoutType): GraphChartOptions => ({\n    ...characterGraph(t),\n    layout: next,\n    nodeSize: [8, 28],\n    edgeLabels: \"hover\",\n    locale: i18n.language,\n    ariaLabel: t(\"charactersAria\"),\n  });\n  const optionsRef = useRef(optionsFor);\n\n  useEffect(() => {\n    layoutRef.current = layout;\n    optionsRef.current = optionsFor;\n  });\n\n  useEffect(() => {\n    if (!container.current) return;\n    // the framework-free engine: a container, options, events, destroy\n    const instance = createGraphChart(\n      container.current,\n      optionsRef.current(layoutRef.current),\n    );\n    chart.current = instance;\n    const offs = [\n      instance.on(\"click\", (event) => {\n        if (!status.current || event.type !== \"node\") return;\n        status.current.textContent = t(\"vanillaClick\", {\n          name: event.node?.label ?? event.id,\n          links: event.degree ?? 0,\n        });\n        instance.focusNode(event.id, { zoom: 1.4 });\n      }),\n      instance.on(\"layoutEnd\", (event) => {\n        if (status.current)\n          status.current.textContent = t(\"vanillaLayout\", {\n            layout: t(`layouts.${event.layout}`),\n          });\n      }),\n    ];\n    return () => {\n      offs.forEach((off) => off());\n      instance.destroy();\n      chart.current = null;\n    };\n  }, [t, i18n.language]);\n\n  const change = (next: GraphLayoutType) => {\n    setLayout(next);\n    chart.current?.setOptions(optionsFor(next));\n    chart.current?.fit();\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"layoutLabel\")}\n        direction=\"horizontal\"\n        value={layout}\n        onChange={(value) => change(value as GraphLayoutType)}\n      >\n        {LAYOUTS.map((value) => (\n          <Radio key={value} value={value} label={t(`layouts.${value}`)} />\n        ))}\n      </RadioGroup>\n      <div ref={container} style={{ height: 440 }} />\n      <span\n        ref={status}\n        role=\"status\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {t(\"vanillaHint\")}\n      </span>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/graph-chart/data.ts": "// Data of the graph-chart demos: characters of Romance of the Three Kingdoms\n// (三国演义), their factions and relationships, and a generated community\n// network. Names and relation labels come from the page's locale file.\n\nimport type { GraphEdge, GraphGroup, GraphNode } from \"minerva-design/charts\";\n\nexport type Faction = \"shu\" | \"wei\" | \"wu\" | \"qun\";\n\n/** id, faction, importance (node size) */\nexport const CHARACTERS: [string, Faction, number][] = [\n  [\"liubei\", \"shu\", 10],\n  [\"guanyu\", \"shu\", 9],\n  [\"zhangfei\", \"shu\", 8],\n  [\"zhugeliang\", \"shu\", 10],\n  [\"zhaoyun\", \"shu\", 8],\n  [\"machao\", \"shu\", 6],\n  [\"huangzhong\", \"shu\", 6],\n  [\"pangtong\", \"shu\", 5],\n  [\"jiangwei\", \"shu\", 6],\n  [\"liushan\", \"shu\", 5],\n  [\"weiyan\", \"shu\", 5],\n  [\"fazheng\", \"shu\", 4],\n  [\"caocao\", \"wei\", 10],\n  [\"caopi\", \"wei\", 7],\n  [\"simayi\", \"wei\", 9],\n  [\"xiahoudun\", \"wei\", 6],\n  [\"xiahouyuan\", \"wei\", 5],\n  [\"zhangliao\", \"wei\", 6],\n  [\"xuchu\", \"wei\", 5],\n  [\"guojia\", \"wei\", 5],\n  [\"xunyu\", \"wei\", 5],\n  [\"dianwei\", \"wei\", 4],\n  [\"caozhi\", \"wei\", 4],\n  [\"simazhao\", \"wei\", 5],\n  [\"dengai\", \"wei\", 5],\n  [\"sunquan\", \"wu\", 9],\n  [\"sunce\", \"wu\", 7],\n  [\"sunjian\", \"wu\", 6],\n  [\"zhouyu\", \"wu\", 8],\n  [\"lusu\", \"wu\", 6],\n  [\"lumeng\", \"wu\", 6],\n  [\"luxun\", \"wu\", 7],\n  [\"ganning\", \"wu\", 5],\n  [\"huanggai\", \"wu\", 4],\n  [\"xiaoqiao\", \"wu\", 3],\n  [\"daqiao\", \"wu\", 3],\n  [\"sunshangxiang\", \"wu\", 4],\n  [\"lvbu\", \"qun\", 8],\n  [\"dongzhuo\", \"qun\", 6],\n  [\"diaochan\", \"qun\", 5],\n  [\"yuanshao\", \"qun\", 6],\n  [\"xiandi\", \"qun\", 5],\n  [\"wangyun\", \"qun\", 3],\n];\n\nexport type Relation =\n  | \"brothers\"\n  | \"serves\"\n  | \"father\"\n  | \"spouse\"\n  | \"siblings\"\n  | \"rival\"\n  | \"mentor\"\n  | \"adoptive\"\n  | \"ally\"\n  | \"defeated\"\n  | \"friends\";\n\n/** source, target, relation; `serves` points from the vassal to the lord */\nexport const RELATIONS: [string, string, Relation][] = [\n  [\"liubei\", \"guanyu\", \"brothers\"],\n  [\"liubei\", \"zhangfei\", \"brothers\"],\n  [\"guanyu\", \"zhangfei\", \"brothers\"],\n  [\"zhugeliang\", \"liubei\", \"serves\"],\n  [\"zhaoyun\", \"liubei\", \"serves\"],\n  [\"machao\", \"liubei\", \"serves\"],\n  [\"huangzhong\", \"liubei\", \"serves\"],\n  [\"pangtong\", \"liubei\", \"serves\"],\n  [\"weiyan\", \"liubei\", \"serves\"],\n  [\"fazheng\", \"liubei\", \"serves\"],\n  [\"liubei\", \"liushan\", \"father\"],\n  [\"liubei\", \"sunshangxiang\", \"spouse\"],\n  [\"sunquan\", \"sunshangxiang\", \"siblings\"],\n  [\"zhugeliang\", \"jiangwei\", \"mentor\"],\n  [\"zhugeliang\", \"simayi\", \"rival\"],\n  [\"zhugeliang\", \"zhouyu\", \"rival\"],\n  [\"jiangwei\", \"dengai\", \"rival\"],\n  [\"jiangwei\", \"liushan\", \"serves\"],\n  [\"zhugeliang\", \"liushan\", \"serves\"],\n  [\"caocao\", \"caopi\", \"father\"],\n  [\"caocao\", \"caozhi\", \"father\"],\n  [\"caopi\", \"caozhi\", \"siblings\"],\n  [\"simayi\", \"caocao\", \"serves\"],\n  [\"simayi\", \"caopi\", \"serves\"],\n  [\"simayi\", \"simazhao\", \"father\"],\n  [\"xiahoudun\", \"caocao\", \"serves\"],\n  [\"xiahouyuan\", \"caocao\", \"serves\"],\n  [\"zhangliao\", \"caocao\", \"serves\"],\n  [\"xuchu\", \"caocao\", \"serves\"],\n  [\"dianwei\", \"caocao\", \"serves\"],\n  [\"guojia\", \"caocao\", \"serves\"],\n  [\"xunyu\", \"caocao\", \"serves\"],\n  [\"dengai\", \"simazhao\", \"serves\"],\n  [\"caocao\", \"liubei\", \"rival\"],\n  [\"caocao\", \"yuanshao\", \"defeated\"],\n  [\"caocao\", \"lvbu\", \"defeated\"],\n  [\"huangzhong\", \"xiahouyuan\", \"defeated\"],\n  [\"zhangliao\", \"sunquan\", \"defeated\"],\n  [\"lumeng\", \"guanyu\", \"defeated\"],\n  [\"luxun\", \"liubei\", \"defeated\"],\n  [\"zhouyu\", \"caocao\", \"defeated\"],\n  [\"sunjian\", \"sunce\", \"father\"],\n  [\"sunjian\", \"sunquan\", \"father\"],\n  [\"sunce\", \"sunquan\", \"siblings\"],\n  [\"sunce\", \"daqiao\", \"spouse\"],\n  [\"zhouyu\", \"xiaoqiao\", \"spouse\"],\n  [\"daqiao\", \"xiaoqiao\", \"siblings\"],\n  [\"sunce\", \"zhouyu\", \"friends\"],\n  [\"zhouyu\", \"sunquan\", \"serves\"],\n  [\"lusu\", \"sunquan\", \"serves\"],\n  [\"lumeng\", \"sunquan\", \"serves\"],\n  [\"luxun\", \"sunquan\", \"serves\"],\n  [\"ganning\", \"sunquan\", \"serves\"],\n  [\"huanggai\", \"sunquan\", \"serves\"],\n  [\"huanggai\", \"zhouyu\", \"serves\"],\n  [\"liubei\", \"sunquan\", \"ally\"],\n  [\"lusu\", \"zhugeliang\", \"ally\"],\n  [\"lvbu\", \"dongzhuo\", \"adoptive\"],\n  [\"lvbu\", \"diaochan\", \"spouse\"],\n  [\"wangyun\", \"diaochan\", \"adoptive\"],\n  [\"dongzhuo\", \"xiandi\", \"serves\"],\n  [\"caocao\", \"xiandi\", \"serves\"],\n  [\"yuanshao\", \"dongzhuo\", \"rival\"],\n  [\"lvbu\", \"liubei\", \"rival\"],\n];\n\nexport const FACTIONS: Faction[] = [\"shu\", \"wei\", \"wu\", \"qun\"];\n\n/** Faction colors (Shu green, Wei blue, Wu red, warlords amber) */\nexport const FACTION_COLORS: Record<Faction, string> = {\n  shu: \"var(--success-color, #16a34a)\",\n  wei: \"var(--info-color, #0ea5e9)\",\n  wu: \"var(--danger-color, #ef4444)\",\n  qun: \"var(--warning-color, #f59e0b)\",\n};\n\ntype Translate = (key: string, options?: Record<string, unknown>) => string;\n\n/** Nodes, edges and groups of the character network in the reader's language */\nexport const characterGraph = (\n  t: Translate,\n): { nodes: GraphNode[]; edges: GraphEdge[]; groups: GraphGroup[] } => ({\n  nodes: CHARACTERS.map(([id, faction, importance]) => ({\n    id,\n    label: t(`characters.${id}`),\n    group: faction,\n    value: importance,\n  })),\n  edges: RELATIONS.map(([source, target, relation]) => ({\n    source,\n    target,\n    label: t(`relations.${relation}`),\n    directed: relation === \"serves\" || relation === \"defeated\",\n    dashed: relation === \"rival\",\n    data: relation,\n  })),\n  groups: FACTIONS.map((id) => ({\n    id,\n    name: t(`factions.${id}`),\n    color: FACTION_COLORS[id],\n  })),\n});\n\n/**\n * A large network: `communities` groups of `size` nodes, each a random\n * tree plus extra links inside the group and a few between groups\n * (seeded: the same graph on every render)\n */\nexport const communityGraph = (\n  communities: number,\n  size: number,\n): { nodes: GraphNode[]; edges: GraphEdge[] } => {\n  let seed = 42;\n  const random = () => {\n    seed = (seed * 16807) % 2147483647;\n    return seed / 2147483647;\n  };\n  const nodes: GraphNode[] = [];\n  const edges: GraphEdge[] = [];\n  for (let c = 0; c < communities; c++) {\n    const base = c * size;\n    for (let i = 0; i < size; i++) {\n      const id = base + i;\n      nodes.push({ id: String(id), group: `c${c % 8}` });\n      if (i > 0) {\n        // preferential attachment: hubs inside each community\n        const parent = base + Math.floor(Math.pow(random(), 2.2) * i);\n        edges.push({ source: String(parent), target: String(id) });\n        const other = base + Math.floor(random() * size);\n        if (other !== id)\n          edges.push({ source: String(id), target: String(other) });\n        if (random() < 0.12) {\n          const third = base + Math.floor(random() * size);\n          if (third !== id)\n            edges.push({ source: String(id), target: String(third) });\n        }\n      }\n    }\n    // bridges to other communities\n    for (let k = 0; k < 4; k++) {\n      const a = base + Math.floor(random() * size);\n      const b =\n        Math.floor(random() * communities) * size + Math.floor(random() * size);\n      if (Math.floor(b / size) !== c)\n        edges.push({ source: String(a), target: String(b) });\n    }\n  }\n  return { nodes, edges };\n};\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Moteur seul",
+      "description": "createGraphChart de minerva-design/charts/core, sans React : changez de disposition avec setOptions, écoutez les événements click et layoutEnd, et centrez le nœud cliqué avec focusNode."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Graphe de relations",
+      "description": "Réseaux de relations : personnes, organisations, services ou toute entité et les liens qui les unissent. Une disposition par forces (Barnes–Hut, dans un Web Worker pour les grands graphes), un cercle ou un diagramme en arcs place les nœuds ; nœuds et arêtes sont dessinés par le GPU (WebGPU, WebGL2, WebGL, repli Canvas2D), si bien que des dizaines de milliers de nœuds restent fluides. Survolez un nœud pour mettre en avant ses voisins, déplacez-le, masquez des groupes depuis la légende et parcourez le graphe au clavier.",
+      "intro": {
+        "overview": {
+          "title": "Vue d’ensemble",
+          "text": "GraphChart reçoit des nœuds, des arêtes et éventuellement des groupes. Les groupes donnent les couleurs et la légende, la valeur des nœuds leur taille, et les libellés des arêtes nomment les relations.",
+          "layouts": "Dispositions : forces (par défaut) avec liens, répulsion, gravité, collisions et graine déterministe ; cercle (par groupe, arêtes regroupées vers le centre) ; diagramme en arcs ; les dispositions dag et arbre sont aussi disponibles (voir Graphe de dépendances et Arbre). Les algorithmes sont exportés comme fonctions pures, utilisables dans des workers et des mini-programmes.",
+          "gpu": "Le rendu passe par les mêmes moteurs GPU que les autres graphiques, avec un repli automatique WebGPU → WebGL2 → WebGL → Canvas2D ; le moteur utilisé est indiqué par onRendererChange et l’attribut data-renderer.",
+          "labels": "Les libellés s’évitent : en vue éloignée, seuls les nœuds les plus importants gardent leur libellé, et ceux des arêtes apparaissent en zoomant ou quand une arête est mise en avant."
+        },
+        "controls": {
+          "title": "Interaction et accessibilité",
+          "pointer": "Faites glisser le fond pour déplacer la vue, Ctrl / ⌘ + molette ou pincement pour zoomer, faites glisser un nœud pour le déplacer (la simulation suit), cliquez pour sélectionner (Ctrl / ⌘ + clic pour ajouter), double-cliquez sur le fond pour tout afficher. Les boutons du coin zooment et recadrent.",
+          "keyboard": "Donnez le focus au graphique puis utilisez les flèches pour passer de nœud en nœud ; Entrée sélectionne, + et - zooment, 0 recadre, Échap efface. Le nœud actif est annoncé avec son groupe et son nombre de liens.",
+          "languages": "Les textes intégrés (résumé, annonces, infobulle, boutons) existent en anglais, chinois, japonais et français et suivent la langue de la page ; les couleurs suivent les thèmes clair et sombre."
+        }
+      },
+      "demos": {
+        "characters": {
+          "title": "Relations entre personnages",
+          "description": "Les personnages du Roman des Trois Royaumes, colorés par faction, dimensionnés selon leur importance, avec la relation sur chaque arête. Survolez un personnage pour voir son entourage, une arête pour lire la relation, cliquez pour sélectionner et masquez des factions depuis la légende."
+        },
+        "large-network": {
+          "title": "10 000 nœuds sur le GPU",
+          "description": "Quarante communautés générées : 10 000 nœuds et environ 20 000 liens. La simulation tourne dans un Web Worker (worker=\"auto\" au-delà de 2 000 nœuds) pendant que le GPU dessine chaque image ; la vue suit la disposition jusqu’à ce que vous déplaciez ou zoomiez."
+        },
+        "circular": {
+          "title": "Disposition circulaire",
+          "description": "Appels entre microservices, regroupés par domaine autour d’un cercle. L’épaisseur suit le volume d’appels, edgeColor=\"source\" teinte chaque arête de la couleur de l’appelant, et la tension regroupe les arêtes vers le centre."
+        },
+        "arc": {
+          "title": "Diagramme en arcs",
+          "description": "Quels langages de programmation en ont influencé d’autres : les nœuds sont alignés par famille et chaque influence est un arc au-dessus. Survolez un langage pour voir ses ancêtres et ses descendants."
+        },
+        "transitions": {
+          "title": "Machine à états : pointes, arêtes parallèles et boucles",
+          "description": "Les états d’une commande et les événements qui les relient. Plusieurs événements peuvent relier les deux mêmes états (dans un sens ou dans l’autre) : chacun a sa propre courbe. Les événements qui conservent l’état sont dessinés en boucles du côté libre de leur nœud. arrowStyle=\"filled\" dessine des pointes pleines de la couleur de l’arête, qui suivent le thème et la mise en évidence sur tous les moteurs de rendu."
+        },
+        "vanilla": {
+          "title": "Moteur seul",
+          "description": "createGraphChart de minerva-design/charts/core, sans React : changez de disposition avec setOptions, écoutez les événements click et layoutEnd, et centrez le nœud cliqué avec focusNode."
+        },
+        "service-map": {
+          "title": "Carte des services en direct",
+          "description": "Les services d'une boutique en ligne placés à la main avec layout=\"none\" (x / y des nœuds) : les mises à jour en direct ne les déplacent jamais. Toutes les 1,5 s, un nouvel échantillon recolore chaque service par son groupe de santé et met à jour la latence p95 de son sous-titre ; edgeColor=\"target\" teinte les appels vers un service en panne. Cliquez sur un service pour lire ses métriques."
+        },
+        "knowledge-graph": {
+          "title": "Recherche dans un graphe de connaissances",
+          "description": "Physiciens, lieux, institutions et idées reliés par des relations orientées et nommées. Tapez dans le champ de recherche et choisissez un résultat : la prop selected et focusNode sur la ref le sélectionnent et le centrent, et les faits qui le concernent sont listés avec Intl.ListFormat."
+        },
+        "friend-suggestions": {
+          "title": "Vous connaissez peut-être",
+          "description": "Un réseau social en quatre cercles. Cliquez sur une personne : les amis de ses amis sont classés par amis en commun, et la personne et les suggestions restent en évidence grâce à la prop selected contrôlée ; interaction={{ select: false }} laisse les clics à onItemClick."
+        },
+        "fraud-ring": {
+          "title": "Réseaux de fraude en thème sombre",
+          "description": "Des comptes reliés aux appareils et aux cartes qu'ils ont utilisés ; la forme des nœuds dessine les appareils et les cartes en boîtes. Cliquez sur un nœud pour sélectionner tout son groupe et évaluer son risque. Le graphique est placé dans un ConfigProvider imbriqué et lit son thème sombre ou clair à sa création."
+        }
+      },
+      "api": {
+        "GraphChartProps": {
+          "layout": "Placement des nœuds : force, circular, arc, dag, tree, radial, mindmap, org, ou none (positions des nœuds)",
+          "direction": "Sens des dispositions dag et arbre : TB, LR, BT ou RL",
+          "force": "Réglages de la disposition par forces : distance des liens, répulsion, gravité, collisions, graine, worker",
+          "circular": "Réglages du cercle et du diagramme en arcs : ordre des nœuds et tension des arêtes",
+          "dag": "Réglages de la disposition en couches (layout=\"dag\") : espacements, passes, chemin critique",
+          "tree": "Réglages des arbres : racine, espacements, repli, taille des cartes"
+        },
+        "GraphCommonProps": {
+          "nodes": "Les nœuds : id, libellé, groupe, valeur, couleur, taille, forme et position facultative",
+          "edges": "Les arêtes entre ids de nœuds (parent → enfant dans un arbre, prérequis → dépendant dans un DAG) ; les ids inconnus sont ignorés",
+          "groups": "Groupes de nœuds : ordre de la légende, noms et couleurs ; les groupes seulement cités par les nœuds sont ajoutés",
+          "height": "Hauteur du graphique, légende comprise ; les nombres sont en pixels",
+          "width": "Largeur du graphique ; les nombres sont en pixels",
+          "nodeShape": "Forme des nœuds sans forme propre ; boîtes pour les DAG, organigrammes et cartes mentales, cercles sinon",
+          "nodeSize": "Diamètre des cercles en unités de disposition, ou intervalle [min, max] selon la valeur du nœud",
+          "edgeStyle": "Forme des arêtes : straight, curve, spline ou orthogonal ; dépend de la disposition par défaut",
+          "edgeWidth": "Épaisseur des arêtes en pixels, ou intervalle [min, max] selon la valeur de l’arête",
+          "edgeColor": "Couleur des arêtes : neutre, ou teintée par le nœud source ou cible",
+          "arrows": "Flèches sur les arêtes qui ne précisent pas directed ; actives pour les DAG",
+          "arrowStyle": "Forme des pointes de flèche : open (une pointe fine au contour) ou filled (une pointe pleine de la couleur de l’arête, qui suit le thème et la mise en évidence)",
+          "nodeLabels": "Libellés des nœuds : toujours, jamais, ou auto (les libellés secondaires et superposés disparaissent en vue éloignée). Le texte des boîtes garde une taille minimale lisible et est abrégé par des points de suspension ; il n’est masqué que si la boîte est trop petite pour tout texte, ou avec false",
+          "edgeLabels": "Libellés des arêtes : toujours, auto (en zoomant ou mis en avant), au survol seulement, ou jamais",
+          "highlight": "Ce que met en avant le survol ou la sélection d’un nœud : ses voisins, toute sa lignée (ancêtres et descendants) ou rien",
+          "selected": "Ids des nœuds sélectionnés ; modifier la prop met à jour la sélection",
+          "animation": "Anime les changements de disposition et de données (repli, nouvelles données) ; un nombre est la durée en millisecondes",
+          "fitPadding": "Marge autour du graphe quand il est recadré, en pixels",
+          "controls": "Affiche les boutons zoom avant, zoom arrière et tout afficher",
+          "legend": "Légende des groupes (position, bascule) ; affichée par défaut avec plusieurs groupes",
+          "tooltip": "Infobulle des nœuds et arêtes ; false la désactive, render remplace son contenu",
+          "interaction": "Déplacement, zoom, mode de molette, glisser des nœuds, sélection et clavier ; false rend le graphique statique",
+          "renderer": "Moteur de rendu des nœuds et arêtes : auto essaie WebGPU, WebGL2, WebGL puis Canvas2D",
+          "palette": "Couleurs des groupes sans couleur ; par défaut les variables CSS des graphiques, puis les couleurs du thème",
+          "ariaLabel": "Nom accessible du graphique",
+          "locale": "Langue des textes intégrés et des nombres ; par défaut celle de la page",
+          "labels": "Remplacements des textes intégrés",
+          "onHover": "Appelé quand le nœud ou l’arête survolé(e) ou actif au clavier change (null sans survol)",
+          "onItemClick": "Appelé quand un nœud ou une arête est cliqué, ou un nœud activé avec Entrée",
+          "onSelectionChange": "Appelé avec les ids des nœuds sélectionnés quand la sélection change",
+          "onToggle": "Appelé quand un nœud d’arbre est replié ou déplié",
+          "onGroupToggle": "Appelé quand la légende affiche ou masque un groupe",
+          "onLayoutEnd": "Appelé quand la disposition est terminée (pour les forces : quand la simulation s’est stabilisée)",
+          "onRendererChange": "Appelé avec le moteur de rendu quand il est prêt, puis après un repli",
+          "className": "Classe de l’élément externe",
+          "style": "Style de l’élément externe",
+          "ref": "Poignée impérative : fit, focusNode, select, expand / collapse, getPositions…"
+        },
+        "GraphChartHandle": {
+          "fit": "Recadre la vue sur les nœuds visibles (animé par défaut)",
+          "focusNode": "Centre un nœud, en dépliant ses ancêtres repliés, et zoome si demandé",
+          "setData": "Remplace les nœuds, arêtes et groupes jusqu’au prochain rendu avec de nouvelles props",
+          "select": "Sélectionne des nœuds par id ; null efface la sélection",
+          "getSelection": "Ids des nœuds sélectionnés",
+          "expand": "Déplie un nœud d’arbre, ou tous sans id",
+          "collapse": "Replie un nœud d’arbre, ou tous ceux qui ont des enfants sans id",
+          "toggle": "Replie un nœud déplié ou déplie un nœud replié",
+          "getPositions": "Positions actuelles des nœuds, en unités de disposition",
+          "relayout": "Recalcule la disposition (relance la simulation)",
+          "getRenderer": "Moteur de rendu utilisé, null tant qu’il n’est pas prêt",
+          "getInstance": "L’instance du moteur sous-jacent (minerva-design/charts/core)"
+        },
+        "GraphNode": {
+          "id": "Identifiant unique, référencé par les arêtes",
+          "label": "Texte affiché à côté ou à l’intérieur du nœud ; l’id par défaut",
+          "subtitle": "Deuxième ligne des boîtes et des cartes d’organigramme (fonction, version, statut)",
+          "group": "Id du groupe : couleur et entrée de légende",
+          "value": "Poids du nœud : taille des cercles et priorité des libellés ; durée d’une tâche pour le chemin critique",
+          "color": "Couleur du nœud (toute couleur CSS, var(--x) compris) ; prime sur celle du groupe",
+          "size": "Diamètre d’un cercle ou hauteur d’une boîte, en unités de disposition",
+          "shape": "Cercle ou boîte ; l’option nodeShape par défaut",
+          "x": "Position horizontale (disposition none, position initiale des forces)",
+          "y": "Position verticale (disposition none, position initiale des forces)",
+          "fixed": "La disposition par forces garde le nœud à son x / y",
+          "collapsed": "Arbres : les enfants du nœud sont masqués au départ",
+          "data": "Données libres, renvoyées dans les événements"
+        },
+        "GraphEdge": {
+          "source": "Id du nœud source",
+          "target": "Id du nœud cible",
+          "value": "Poids de l’arête : épaisseur et force du lien dans la disposition par forces",
+          "label": "Texte dessiné sur l’arête (nom de la relation)",
+          "directed": "Dessine une flèche vers la cible ; l’option arrows par défaut",
+          "color": "Couleur du trait (toute couleur CSS)",
+          "width": "Épaisseur du trait en pixels ; déduite de la valeur par défaut",
+          "dashed": "Trait pointillé (relation facultative ou faible)",
+          "data": "Données libres, renvoyées dans les événements"
+        },
+        "GraphGroup": {
+          "id": "Id référencé par le groupe des nœuds",
+          "name": "Nom affiché dans la légende et l’infobulle ; l’id par défaut",
+          "color": "Couleur des nœuds du groupe ; la palette par défaut",
+          "hidden": "Masqué au départ (la légende peut l’afficher)"
+        },
+        "GraphForceOptions": {
+          "linkDistance": "Longueur au repos des arêtes, entre les bords des nœuds, en unités de disposition",
+          "linkStrength": "Raideur des arêtes de 0 à 1 ; par défaut 1 / plus petit degré des deux extrémités",
+          "charge": "Force entre les nœuds ; une valeur négative les repousse",
+          "theta": "Précision de Barnes–Hut : plus grand est plus rapide et moins précis",
+          "gravity": "Attraction de chaque nœud vers le centre, qui garde ensemble les parties non connexes",
+          "collide": "Empêche les nœuds de se chevaucher ; un nombre ajoute un espacement en unités de disposition",
+          "velocityDecay": "Amortissement des vitesses à chaque pas, de 0 à 1",
+          "iterations": "Nombre de pas d’un refroidissement complet",
+          "seed": "Graine des perturbations aléatoires : les mêmes données donnent toujours la même disposition",
+          "worker": "Exécute la simulation dans un Web Worker : auto au-delà de 2 000 nœuds ; repli sur le fil principal",
+          "animate": "Montre la simulation pendant qu’elle tourne ; false ne montre que le résultat",
+          "multilevel": "Démarrage multiniveau des grands graphes (400 nœuds ou plus sans position) : un graphe simplifié est disposé d’abord, puis affiné ; plusieurs fois plus rapide qu’un refroidissement complet. false lance toujours le refroidissement complet"
+        },
+        "GraphCircularOptions": {
+          "order": "Ordre des nœuds : par groupe, par degré, ou celui des données",
+          "tension": "Attraction des arêtes vers le centre du cercle, de 0 (cordes droites) à 1"
+        },
+        "GraphInteractionOptions": {
+          "pan": "Faire glisser le fond déplace la vue",
+          "zoom": "Zoom à la molette et au pincement",
+          "wheel": "Zoom à la molette seulement avec Ctrl / ⌘ (une indication l’explique) ou toujours",
+          "drag": "Les nœuds peuvent être déplacés ; actif par défaut pour les forces, le cercle et la disposition libre",
+          "select": "Un clic sélectionne des nœuds (Ctrl / ⌘ + clic ajoute) ; multiple ajoute sans touche",
+          "keyboard": "Flèches pour passer de nœud en nœud, Entrée sélectionne ou déplie, + / - zooment, 0 recadre, Échap efface",
+          "zoomRange": "Zoom minimal et maximal"
+        },
+        "GraphLegendOptions": {
+          "position": "Légende au-dessus ou au-dessous du graphique",
+          "toggle": "Un clic sur un élément affiche ou masque les nœuds du groupe"
+        },
+        "GraphTooltipOptions": {
+          "render": "Produit le contenu de l’infobulle d’un nœud ou d’une arête : texte, nœud DOM, ou null pour la masquer"
+        },
+        "GraphHoverEvent": {
+          "type": "Type d’élément : node ou edge",
+          "id": "Id du nœud, ou source→target pour une arête",
+          "node": "Le nœud (événements de nœud)",
+          "edge": "L’arête (événements d’arête)",
+          "index": "Indice du nœud ou de l’arête dans les données",
+          "group": "Id du groupe du nœud",
+          "color": "Couleur résolue du nœud ou de l’arête",
+          "degree": "Nombre de liens du nœud",
+          "clientX": "Position horizontale en pixels, relative au conteneur du graphique",
+          "clientY": "Position verticale en pixels, relative au conteneur du graphique"
+        },
+        "GraphChartLabels": {
+          "chart": "Description du rôle et nom accessible d’un réseau",
+          "tree": "Nom accessible d’un arbre",
+          "dag": "Nom accessible d’une disposition en couches",
+          "summary": "Résumé avec le nombre de nœuds et de liens ({nodes}, {edges})",
+          "groupsSummary": "Résumé des groupes ({groups})",
+          "keyboardHelp": "Aide clavier lue dans le résumé",
+          "nodeFocus": "Annonce d’un nœud actif ({name}, {degree})",
+          "nodeFocusGroup": "Annonce d’un nœud actif d’un groupe ({name}, {group}, {degree})",
+          "selected": "Annonce de la sélection ({count})",
+          "selectionCleared": "Annonce quand la sélection est effacée",
+          "expanded": "Annonce d’un nœud déplié ({name})",
+          "collapsed": "Annonce d’un nœud replié ({name}, {count})",
+          "shown": "Annonce quand la légende affiche un groupe ({name})",
+          "hidden": "Annonce quand la légende masque un groupe ({name})",
+          "degree": "Ligne de l’infobulle : nombre de liens",
+          "incoming": "Ligne de l’infobulle : liens entrants",
+          "outgoing": "Ligne de l’infobulle : liens sortants",
+          "value": "Ligne de l’infobulle : valeur",
+          "group": "Ligne de l’infobulle : groupe",
+          "hiddenChildren": "Ligne de l’infobulle : descendants masqués d’un nœud replié",
+          "critical": "Mention d’un nœud du chemin critique dans l’infobulle",
+          "zoomIn": "Bouton zoom avant",
+          "zoomOut": "Bouton zoom arrière",
+          "fit": "Bouton tout afficher",
+          "zoomHint": "Indication affichée pour une molette sans touche ({key} vaut Ctrl ou ⌘)",
+          "listSeparator": "Séparateur des listes"
+        },
+        "GraphChartOptions": {
+          "nodes": "Les nœuds",
+          "edges": "Les arêtes (les ids inconnus sont ignorés)",
+          "groups": "Groupes : ordre de la légende, noms et couleurs",
+          "layout": "Placement des nœuds ; force par défaut",
+          "direction": "Sens de dag (TB par défaut) et tree (LR par défaut)",
+          "force": "Réglages de la disposition par forces",
+          "dag": "Réglages de la disposition en couches",
+          "tree": "Réglages des arbres",
+          "circular": "Réglages du cercle et du diagramme en arcs",
+          "nodeShape": "Forme des nœuds sans forme propre",
+          "nodeSize": "Diamètre des cercles, ou intervalle [min, max] selon la valeur",
+          "edgeStyle": "Forme des arêtes ; dépend de la disposition par défaut",
+          "edgeWidth": "Épaisseur des arêtes en pixels, ou intervalle [min, max] selon la valeur",
+          "edgeColor": "Arêtes neutres, ou teintées par la source ou la cible",
+          "arrows": "Flèches sur les arêtes qui ne précisent pas directed",
+          "arrowStyle": "Forme des pointes de flèche : open (une pointe fine au contour) ou filled (une pointe pleine de la couleur de l’arête, qui suit le thème et la mise en évidence)",
+          "nodeLabels": "Libellés des nœuds : toujours, jamais ou auto. Le texte des boîtes garde une taille minimale lisible et est abrégé par des points de suspension ; il n’est masqué que si la boîte est trop petite pour tout texte, ou avec false",
+          "edgeLabels": "Libellés des arêtes : toujours, auto, hover ou jamais",
+          "highlight": "Mise en avant d’un nœud survolé ou sélectionné : voisins, lignée ou rien",
+          "selected": "Ids des nœuds sélectionnés",
+          "animation": "Anime les changements de disposition et de données ; un nombre est la durée en millisecondes",
+          "fitPadding": "Marge autour du graphe recadré, en pixels",
+          "controls": "Boutons de zoom et de recadrage",
+          "legend": "Légende des groupes",
+          "tooltip": "Infobulle ; false la désactive",
+          "interaction": "Déplacement, zoom, glisser, sélection et clavier ; false rend le graphique statique",
+          "renderer": "Moteur de rendu : auto, webgpu, webgl2, webgl ou canvas2d",
+          "palette": "Couleurs des groupes sans couleur",
+          "ariaLabel": "Nom accessible du graphique",
+          "locale": "Langue des textes intégrés et des nombres",
+          "labels": "Remplacements des textes intégrés"
+        },
+        "GraphChartInstance": {
+          "setOptions": "Remplace les options ; les positions des nœuds conservés sont gardées et animées",
+          "setData": "Remplace les nœuds, arêtes et groupes",
+          "fit": "Recadre la vue sur les nœuds visibles",
+          "focusNode": "Centre un nœud (en dépliant ses ancêtres repliés), en zoomant si demandé",
+          "select": "Sélectionne des nœuds ; null ou une liste vide efface la sélection",
+          "getSelection": "Ids des nœuds sélectionnés",
+          "expand": "Déplie un nœud, ou tous sans id",
+          "collapse": "Replie un nœud, ou tous ceux qui ont des enfants sans id",
+          "toggle": "Replie ou déplie un nœud",
+          "getPositions": "Positions actuelles des nœuds en unités de disposition",
+          "relayout": "Recalcule la disposition",
+          "resize": "Mesure à nouveau le conteneur (un ResizeObserver le fait automatiquement)",
+          "getRenderer": "Moteur de rendu utilisé, null tant qu’il n’est pas prêt",
+          "ready": "Se résout avec le moteur de rendu dès que la première image peut être dessinée",
+          "refreshTheme": "Relit les variables CSS (les changements de thème sont détectés automatiquement)",
+          "on": "S’abonne à un événement ; renvoie la fonction de désabonnement",
+          "destroy": "Retire le DOM, arrête la simulation et libère les ressources GPU"
+        },
+        "GraphChartEventMap": {
+          "hover": "Le nœud ou l’arête survolé(e) ou actif au clavier a changé (null sans survol)",
+          "click": "Un nœud ou une arête a été cliqué, ou un nœud activé avec Entrée",
+          "select": "La sélection a changé ; ids des nœuds sélectionnés",
+          "toggle": "Un nœud d’arbre a été replié ou déplié",
+          "groupToggle": "La légende a affiché ou masqué un groupe",
+          "layoutEnd": "La disposition est terminée",
+          "renderer": "Le moteur de rendu est prêt (et après un repli)"
+        },
+        "GraphForceLayoutOptions": {
+          "radius": "Rayon de chaque nœud pour les collisions ; 6 par défaut"
+        },
+        "GraphForceSimulation": {
+          "x": "Positions horizontales, mises à jour sur place",
+          "y": "Positions verticales, mises à jour sur place",
+          "tick": "Exécute un nombre de pas ; indique si la simulation est encore active",
+          "alpha": "Température actuelle de la simulation",
+          "reheat": "Reprend le refroidissement depuis une température (0,3 par défaut)",
+          "drag": "Fixe un nœud à une position et garde la simulation active",
+          "release": "Libère un nœud déplacé, ou le garde fixé",
+          "done": "Indique si la simulation s’est stabilisée",
+          "settle": "Écarte les nœuds qui se chevauchent ; à lancer après le dernier pas"
+        }
+      },
+      "data": {
+        "characters": {
+          "liubei": "Liu Bei",
+          "guanyu": "Guan Yu",
+          "zhangfei": "Zhang Fei",
+          "zhugeliang": "Zhuge Liang",
+          "zhaoyun": "Zhao Yun",
+          "machao": "Ma Chao",
+          "huangzhong": "Huang Zhong",
+          "pangtong": "Pang Tong",
+          "jiangwei": "Jiang Wei",
+          "liushan": "Liu Shan",
+          "weiyan": "Wei Yan",
+          "fazheng": "Fa Zheng",
+          "caocao": "Cao Cao",
+          "caopi": "Cao Pi",
+          "simayi": "Sima Yi",
+          "xiahoudun": "Xiahou Dun",
+          "xiahouyuan": "Xiahou Yuan",
+          "zhangliao": "Zhang Liao",
+          "xuchu": "Xu Chu",
+          "guojia": "Guo Jia",
+          "xunyu": "Xun Yu",
+          "dianwei": "Dian Wei",
+          "caozhi": "Cao Zhi",
+          "simazhao": "Sima Zhao",
+          "dengai": "Deng Ai",
+          "sunquan": "Sun Quan",
+          "sunce": "Sun Ce",
+          "sunjian": "Sun Jian",
+          "zhouyu": "Zhou Yu",
+          "lusu": "Lu Su",
+          "lumeng": "Lü Meng",
+          "luxun": "Lu Xun",
+          "ganning": "Gan Ning",
+          "huanggai": "Huang Gai",
+          "xiaoqiao": "Xiao Qiao",
+          "daqiao": "Da Qiao",
+          "sunshangxiang": "Sun Shangxiang",
+          "lvbu": "Lü Bu",
+          "dongzhuo": "Dong Zhuo",
+          "diaochan": "Diaochan",
+          "yuanshao": "Yuan Shao",
+          "xiandi": "Empereur Xian",
+          "wangyun": "Wang Yun"
+        },
+        "factions": {
+          "shu": "Shu Han",
+          "wei": "Wei",
+          "wu": "Wu oriental",
+          "qun": "Seigneurs de guerre et cour Han"
+        },
+        "relations": {
+          "brothers": "Frères jurés",
+          "serves": "Sert",
+          "father": "Père et fils",
+          "spouse": "Mariés",
+          "siblings": "Fratrie",
+          "rival": "Rivaux",
+          "mentor": "Maître",
+          "adoptive": "Père adoptif",
+          "ally": "Alliance",
+          "defeated": "A vaincu",
+          "friends": "Amis jurés"
+        },
+        "charactersAria": "Relations entre les personnages du Roman des Trois Royaumes, par faction",
+        "charactersHint": "Survolez un personnage ou une relation, cliquez pour sélectionner ; Ctrl / ⌘ + molette pour zoomer.",
+        "selectedHint": "Sélection : {{name}}",
+        "relationHint": "{{source}} → {{target}} : {{relation}}",
+        "separator": ", ",
+        "member": "Membre {{id}}",
+        "community": "Communauté {{n}}",
+        "largeAria": "Réseau généré de 10 000 membres répartis en 40 communautés",
+        "largeStatus": "{{nodes}} nœuds · {{edges}} liens · rendu : {{renderer}} ·",
+        "largeRunning": "simulation dans un Web Worker…",
+        "largeDone": "disposition terminée en {{seconds}} s",
+        "domains": {
+          "edge": "Périphérie",
+          "commerce": "Commerce",
+          "identity": "Identité",
+          "data": "Données"
+        },
+        "bundleEdges": "Regrouper les arêtes vers le centre",
+        "circularAria": "Appels entre microservices, regroupés par domaine",
+        "families": {
+          "systems": "Système",
+          "functional": "Fonctionnel",
+          "objects": "Orienté objet",
+          "scripting": "Script"
+        },
+        "influenced": "A influencé",
+        "arcAria": "Influences entre langages de programmation",
+        "layouts": {
+          "force": "Forces",
+          "circular": "Cercle",
+          "arc": "Diagramme en arcs"
+        },
+        "layoutLabel": "Disposition",
+        "vanillaHint": "Cliquez sur un personnage pour le centrer.",
+        "vanillaClick": "{{name}} : {{links}} relations",
+        "vanillaLayout": "Disposition : {{layout}}",
+        "states": {
+          "cart": "Panier",
+          "pending": "En attente de paiement",
+          "paid": "Payée",
+          "shipped": "Expédiée",
+          "delivered": "Livrée",
+          "refunded": "Remboursée",
+          "cancelled": "Annulée"
+        },
+        "events": {
+          "checkout": "commande",
+          "edit": "modifier le panier",
+          "pay": "paiement",
+          "retry": "nouvel essai de paiement",
+          "timeout": "délai dépassé",
+          "cancel": "annulation",
+          "reverse": "paiement annulé",
+          "ship": "expédition",
+          "refund": "remboursement",
+          "track": "suivi mis à jour",
+          "deliver": "livraison",
+          "bounce": "retour à l’expéditeur",
+          "return": "retour",
+          "review": "avis"
+        },
+        "stages": {
+          "open": "En cours",
+          "fulfilment": "Traitement",
+          "closed": "Terminée"
+        },
+        "filledArrows": "Pointes pleines",
+        "transitionsAria": "États d’une commande et événements qui les relient",
+        "health": {
+          "healthy": "Sain",
+          "degraded": "Dégradé",
+          "critical": "Critique"
+        },
+        "latency": "p95 {{value}} ms",
+        "rps": "{{value}} req/s",
+        "liveUpdates": "Mises à jour en direct",
+        "serviceMapAria": "Carte des services d'une boutique en ligne avec la santé de chaque service en direct",
+        "serviceHint": "Cliquez sur un service pour lire ses métriques.",
+        "serviceReadout": "{{name}} : {{status}} · p95 {{latency}} ms · erreurs {{errors}} · {{rps}} req/s.",
+        "serviceCounts": "{{healthy}} sains, {{degraded}} dégradés, {{critical}} critiques · mis à jour à {{time}}",
+        "entities": {
+          "curie": "Marie Curie",
+          "pierre": "Pierre Curie",
+          "einstein": "Albert Einstein",
+          "planck": "Max Planck",
+          "bohr": "Niels Bohr",
+          "heisenberg": "Werner Heisenberg",
+          "meitner": "Lise Meitner",
+          "hahn": "Otto Hahn",
+          "noether": "Emmy Noether",
+          "paris": "Paris",
+          "warsaw": "Varsovie",
+          "vienna": "Vienne",
+          "berlin": "Berlin",
+          "zurich": "Zurich",
+          "copenhagen": "Copenhague",
+          "sorbonne": "Sorbonne",
+          "kwg": "Société Kaiser-Wilhelm",
+          "eth": "ETH Zurich",
+          "nbi": "Institut Niels-Bohr",
+          "radioactivity": "Radioactivité",
+          "relativity": "Relativité",
+          "quantum": "Théorie quantique",
+          "uncertainty": "Principe d'incertitude",
+          "fission": "Fission nucléaire",
+          "symmetry": "Théorème de Noether"
+        },
+        "predicates": {
+          "bornIn": "né(e) à",
+          "workedAt": "a travaillé à",
+          "studiedAt": "a étudié à",
+          "marriedTo": "marié(e) à",
+          "contributedTo": "a contribué à",
+          "locatedIn": "situé(e) à",
+          "influenced": "a influencé",
+          "partOf": "fait partie de",
+          "collaborated": "a collaboré avec",
+          "relatedTo": "lié(e) à"
+        },
+        "entityKinds": {
+          "person": "Personnes",
+          "place": "Lieux",
+          "institution": "Institutions",
+          "concept": "Idées"
+        },
+        "searchPlaceholder": "Chercher une personne, un lieu ou une idée…",
+        "searchLabel": "Rechercher dans le graphe de connaissances",
+        "noMatch": "Aucune entité ne correspond à cette recherche.",
+        "knowledgeAria": "Graphe de connaissances de physiciens, des lieux et institutions qui leur sont liés et de leurs découvertes",
+        "knowledgeHint": "Cherchez une entité ou cliquez sur un nœud pour lister ce que le graphe sait d'elle.",
+        "factsReadout": "{{name}} : {{total}} faits — {{facts}}",
+        "factOut": "→ {{name}} ({{relation}})",
+        "factIn": "← {{name}} ({{relation}})",
+        "circles": {
+          "university": "Amis de fac",
+          "work": "Collègues",
+          "climbing": "Club d'escalade",
+          "books": "Club de lecture"
+        },
+        "friendsAria": "Amitiés entre 24 personnes réparties en quatre cercles",
+        "suggestions": "Personnes que {{name}} connaît peut-être : {{list}}.",
+        "suggestion": "{{name}} (amis en commun : {{mutual}})",
+        "noSuggestions": "{{name}} connaît déjà tous les amis de ses amis.",
+        "friendsHint": "Cliquez sur une autre personne pour mettre à jour les suggestions.",
+        "deviceLabel": "Appareil {{id}}",
+        "cardLabel": "Carte •••• {{last4}}",
+        "accountLabel": "Compte {{id}}",
+        "loggedInFrom": "connecté depuis",
+        "paidWith": "a payé avec",
+        "fraudKinds": {
+          "account": "Comptes",
+          "flagged": "Comptes signalés",
+          "device": "Appareils",
+          "card": "Cartes"
+        },
+        "risk": {
+          "low": "faible",
+          "medium": "moyen",
+          "high": "élevé"
+        },
+        "darkTheme": "Thème sombre",
+        "fraudAria": "Comptes, appareils et cartes de paiement, avec deux réseaux de fraude qui partagent des appareils et des cartes",
+        "clusterReadout": "Groupe : {{accounts}} comptes, {{devices}} appareils, {{cards}} cartes · risque : {{risk}}",
+        "fraudHint": "Cliquez sur un compte, un appareil ou une carte pour sélectionner tout son groupe."
+      },
+      "wc": {
+        "demos": {
+          "routes": {
+            "title": "Liaisons aériennes entre hubs",
+            "description": "Réseau à forces des villes hubs : taille des nœuds selon la taille du hub, épaisseur des liens selon les vols hebdomadaires, couleurs par région ; les noms suivent la langue de la page."
+          },
+          "circular": {
+            "title": "Disposition circulaire et sélection",
+            "description": "Les mêmes liaisons sur un cercle, groupées par région, les liens teintés de la couleur de leur source ; cliquer sur des villes (Ctrl / ⌘ + clic pour ajouter) signale la sélection."
+          }
+        },
+        "minerva-graph-chart": {
+          "props": {
+            "options": "Autres options du moteur (GraphChartOptions : force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels…) ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Le nœud / lien survolé (ou focalisé au clavier) a changé ; detail : { type, id, node, edge, index, group, color, degree, clientX, clientY }, null quand rien n'est survolé",
+            "minerva-item-click": "Un nœud ou un lien a été cliqué (ou un nœud activé avec Entrée) ; detail : { type, id, node, edge, index, group, color, degree, clientX, clientY }",
+            "minerva-selection-change": "La sélection a changé ; detail : { ids }",
+            "minerva-toggle": "Un nœud d'arbre a été replié ou déplié ; detail : { id, collapsed }",
+            "minerva-group-toggle": "La légende a affiché / masqué un groupe ; detail : { group, hidden }",
+            "minerva-layout-end": "La disposition est terminée (la simulation de forces s'est stabilisée) ; detail : { layout }",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "fit": "Ajuste les nœuds visibles à la vue",
+            "focusNode": "Centre un nœud (en dépliant ses ancêtres repliés), avec un zoom facultatif",
+            "setData": "Remplace les données jusqu'au prochain changement des propriétés",
+            "select": "Sélectionne des nœuds (null efface la sélection)",
+            "getSelection": "Ids des nœuds sélectionnés",
+            "expand": "Déplie un nœud (tous sans id)",
+            "collapse": "Replie un nœud (tous les nœuds avec enfants sans id)",
+            "toggle": "Replie / déplie un nœud",
+            "getPositions": "Positions actuelles des nœuds en unités de disposition",
+            "relayout": "Recalcule la disposition",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null avant d'être prêt"
+          }
+        }
+      }
+    }
+  }
+}

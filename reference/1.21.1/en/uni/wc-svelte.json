@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "en",
+  "renderer": "uni",
+  "page": "wc-svelte",
+  "title": "Svelte",
+  "description": "Minerva custom elements in Svelte 5 and SvelteKit: properties and attributes, onminerva-* event attributes, bind:this, typings and server-side rendering.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {
+    "setup": {
+      "title": "Setup",
+      "text": "Svelte needs no configuration for custom elements. Register the elements and load the design tokens once, in your entry file (or in the root layout with SvelteKit, see below):"
+    },
+    "binding": {
+      "title": "Properties, events and bind:this",
+      "text": "Write the tags in your markup like native elements:",
+      "properties": "Svelte sets a prop as a DOM property when the element has a property with that name (value, checked, disabled, options...), and as an attribute otherwise. Arrays, objects and functions therefore reach the element as they are; register the elements before the component renders.",
+      "events": "Svelte 5 event attributes are case-sensitive and take the event name as written: onminerva-change, onminerva-input, onminerva-open-change. The handler receives the CustomEvent, with the new state in event.detail. onclick and other native events work as usual.",
+      "bindThis": "bind:this gives you the element instance, to call its methods (show(), hide(), focus()) or read its properties. Its type is the exported element class.",
+      "bindValue": "bind:value and bind:checked are meant for native inputs: write the value prop and update your state from the event, as above (minerva-input for each keystroke, minerva-change for a committed value)."
+    },
+    "types": {
+      "title": "Typings",
+      "text": "The package ships typings for svelte/elements, generated from its Custom Elements Manifest: attributes, properties and onminerva-* events of every tag are checked by svelte-check and completed by the Svelte extension. Reference them once:"
+    },
+    "kit": {
+      "title": "SvelteKit and server-side rendering",
+      "text": "Pages are rendered on the server first. Importing the elements there is safe (the modules do not touch the DOM when they load), but they only work in the browser, so register them in onMount (which never runs on the server) or behind the browser flag. The server sends the tags with their attributes and slotted content; the browser upgrades them when the import resolves."
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// src/main.ts (Svelte + Vite)\nimport { mount } from \"svelte\";\nimport \"minerva-design/web-components\";\nimport \"minerva-design/tokens.css\";\nimport App from \"./App.svelte\";\n\nmount(App, { target: document.getElementById(\"app\")! });",
+      "language": "ts"
+    },
+    {
+      "source": "<script lang=\"ts\">\n  import type { MinervaModal } from \"minerva-design/web-components\";\n\n  let name = $state(\"Ada\");\n  let notify = $state(true);\n  let modal: MinervaModal | undefined = $state();\n  const plans = [\n    { value: \"free\", label: \"Free\" },\n    { value: \"pro\", label: \"Pro\" },\n  ];\n</script>\n\n<!-- props that exist on the element are set as properties -->\n<minerva-input\n  aria-label=\"Name\"\n  value={name}\n  onminerva-input={(e: CustomEvent<{ value: string }>) => (name = e.detail.value)}\n></minerva-input>\n\n<minerva-select aria-label=\"Plan\" options={plans} value=\"pro\"></minerva-select>\n\n<minerva-switch\n  label=\"Email notifications\"\n  checked={notify}\n  onminerva-change={(e: CustomEvent<{ checked: boolean }>) => (notify = e.detail.checked)}\n></minerva-switch>\n\n<minerva-button disabled={!name} onclick={() => modal?.show()}>Preview</minerva-button>\n\n<!-- bind:this gives the element instance: properties and methods -->\n<minerva-modal bind:this={modal} label=\"Preview\">\n  <p>{name} · {notify ? \"emails on\" : \"emails off\"}</p>\n</minerva-modal>",
+      "language": "html"
+    },
+    {
+      "source": "// src/app.d.ts (SvelteKit) or src/vite-env.d.ts\n/// <reference types=\"minerva-design/web-components/svelte\" />",
+      "language": "ts"
+    },
+    {
+      "source": "<!-- src/routes/+layout.svelte -->\n<script lang=\"ts\">\n  import { onMount } from \"svelte\";\n  import \"minerva-design/tokens.css\";\n\n  let { children } = $props();\n\n  // onMount only runs in the browser\n  onMount(async () => {\n    await import(\"minerva-design/web-components\");\n  });\n</script>\n\n{@render children()}",
+      "language": "html"
+    },
+    {
+      "source": "// or anywhere, guarded by $app/environment\nimport { browser } from \"$app/environment\";\n\nif (browser) await import(\"minerva-design/web-components/select\");",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Svelte",
+      "description": "Minerva custom elements in Svelte 5 and SvelteKit: properties and attributes, onminerva-* event attributes, bind:this, typings and server-side rendering.",
+      "setup": {
+        "title": "Setup",
+        "text": "Svelte needs no configuration for custom elements. Register the elements and load the design tokens once, in your entry file (or in the root layout with SvelteKit, see below):"
+      },
+      "binding": {
+        "title": "Properties, events and bind:this",
+        "text": "Write the tags in your markup like native elements:",
+        "properties": "Svelte sets a prop as a DOM property when the element has a property with that name (value, checked, disabled, options...), and as an attribute otherwise. Arrays, objects and functions therefore reach the element as they are; register the elements before the component renders.",
+        "events": "Svelte 5 event attributes are case-sensitive and take the event name as written: onminerva-change, onminerva-input, onminerva-open-change. The handler receives the CustomEvent, with the new state in event.detail. onclick and other native events work as usual.",
+        "bindThis": "bind:this gives you the element instance, to call its methods (show(), hide(), focus()) or read its properties. Its type is the exported element class.",
+        "bindValue": "bind:value and bind:checked are meant for native inputs: write the value prop and update your state from the event, as above (minerva-input for each keystroke, minerva-change for a committed value)."
+      },
+      "types": {
+        "title": "Typings",
+        "text": "The package ships typings for svelte/elements, generated from its Custom Elements Manifest: attributes, properties and onminerva-* events of every tag are checked by svelte-check and completed by the Svelte extension. Reference them once:"
+      },
+      "kit": {
+        "title": "SvelteKit and server-side rendering",
+        "text": "Pages are rendered on the server first. Importing the elements there is safe (the modules do not touch the DOM when they load), but they only work in the browser, so register them in onMount (which never runs on the server) or behind the browser flag. The server sends the tags with their attributes and slotted content; the browser upgrades them when the import resolves."
+      }
+    }
+  }
+}

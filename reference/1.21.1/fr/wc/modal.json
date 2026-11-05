@@ -1,0 +1,602 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "modal",
+  "title": "Modal",
+  "description": "Une boîte de dialogue qui interrompt la page pour une tâche ciblée. Le focus reste à l'intérieur, Échap et un clic sur le fond la ferment, puis le focus revient à l'élément d'ouverture. Sur petit écran elle devient une feuille en bas de page.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Modal",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/modal",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-modal",
+        "props": [
+          {
+            "name": "open",
+            "typeText": "boolean",
+            "attribute": "open",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string",
+            "attribute": "description",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\" | \"xlarge\" | \"full\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "hideCloseButton",
+            "typeText": "boolean",
+            "attribute": "hide-close-button",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string | undefined",
+            "attribute": "close-label",
+            "required": false
+          },
+          {
+            "name": "dialogRole",
+            "typeText": "\"dialog\" | \"alertdialog\"",
+            "attribute": "dialog-role",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-open-change",
+            "typeText": "CustomEvent<{ open: boolean; reason: ModalCloseReason; }>",
+            "detailType": {
+              "typeText": "{ open: boolean; reason: ModalCloseReason; }",
+              "typeRef": "type:ab605e2d8b03a3c3c354"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state"
+          },
+          {
+            "name": "minerva-after-open",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The modal is open and focus moved in"
+          },
+          {
+            "name": "minerva-after-close",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The modal finished closing (after its exit animation)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Body content"
+          },
+          {
+            "name": "header",
+            "description": "Title (alternative to the `label` attribute)"
+          },
+          {
+            "name": "footer",
+            "description": "Actions row"
+          },
+          {
+            "name": "trigger",
+            "description": "Element that opens the modal when clicked"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalBody",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "ModalClose",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "ModalContent",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "ModalFooter",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "ModalHeader",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "ModalRoot",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "ModalTrigger",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-modal": {
+      "kind": "element",
+      "source": "web-components/src/components/modal/modal.ts",
+      "className": "MinervaModal",
+      "summary": "Modal dialog with focus trap, Escape / overlay dismissal and focus return.",
+      "description": "Modal dialog (`<Modal>` of React): centered panel (bottom sheet on narrow screens) over an overlay. Focus moves in and is trapped (Tab loops), Escape (topmost layer only) and an overlay click close it, page scroll is locked, the rest of the page is hidden from assistive technologies, and focus returns to the opener on close. The behaviour (focus scope, dismissable layer stack, scroll lock, hide-others) comes from Minerva's core package and is shared with the React components. The panel is shown in the top layer (Popover API) but stays in the DOM where the element is, so it inherits the theme of its scope.",
+      "properties": [
+        {
+          "name": "open",
+          "attribute": "open",
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the modal is open"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Title text (or use the `header` slot); names the dialog"
+        },
+        {
+          "name": "description",
+          "attribute": "description",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Description below the title (aria-describedby)"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\" | \"xlarge\" | \"full\"",
+          "default": "\"medium\"",
+          "description": "Width preset"
+        },
+        {
+          "name": "hideCloseButton",
+          "attribute": "hide-close-button",
+          "type": "boolean",
+          "default": "false",
+          "description": "Hides the close (×) button"
+        },
+        {
+          "name": "closeLabel",
+          "attribute": "close-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the close button (default: localized \"Close\")"
+        },
+        {
+          "name": "dialogRole",
+          "attribute": "dialog-role",
+          "type": "\"dialog\" | \"alertdialog\"",
+          "default": "\"dialog\"",
+          "description": "ARIA role of the panel; \"alertdialog\" for interrupting confirmations"
+        }
+      ],
+      "methods": [
+        {
+          "name": "show",
+          "signature": "() => void",
+          "description": "Opens the modal"
+        },
+        {
+          "name": "hide",
+          "signature": "() => void",
+          "description": "Closes the modal"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-open-change",
+          "description": "The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state"
+        },
+        {
+          "name": "minerva-after-open",
+          "description": "The modal is open and focus moved in"
+        },
+        {
+          "name": "minerva-after-close",
+          "description": "The modal finished closing (after its exit animation)"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "Body content"
+        },
+        {
+          "name": "header",
+          "description": "Title (alternative to the `label` attribute)"
+        },
+        {
+          "name": "footer",
+          "description": "Actions row"
+        },
+        {
+          "name": "trigger",
+          "description": "Element that opens the modal when clicked"
+        }
+      ],
+      "parts": [
+        {
+          "name": "overlay",
+          "description": "The backdrop"
+        },
+        {
+          "name": "content",
+          "description": "The dialog panel (`role=\"dialog\"`)"
+        },
+        {
+          "name": "header",
+          "description": "The title (accessible name of the dialog)"
+        },
+        {
+          "name": "description",
+          "description": "The description"
+        },
+        {
+          "name": "body",
+          "description": "The scrollable body"
+        },
+        {
+          "name": "footer",
+          "description": "The actions row"
+        },
+        {
+          "name": "close-button",
+          "description": "The close (×) button"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--modal-width",
+          "description": "Width of the panel (every size; defaults to the width of the size, capped by the viewport)"
+        },
+        {
+          "name": "--modal-max-height",
+          "description": "Maximum height of the panel (the body scrolls beyond)"
+        },
+        {
+          "name": "--modal-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--modal-radius",
+          "description": "Corner radius of the panel (defaults to --radius-xl)"
+        },
+        {
+          "name": "--modal-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--modal-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--modal-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Modal": {
+      "kind": "cssVars",
+      "source": "react/src/components/Modal",
+      "vars": [
+        {
+          "name": "--modal-width",
+          "description": "Width of the panel (every size; defaults to the width of the size, capped by the viewport)"
+        },
+        {
+          "name": "--modal-max-height",
+          "description": "Maximum height of the panel (the body scrolls beyond)"
+        },
+        {
+          "name": "--modal-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--modal-radius",
+          "description": "Corner radius of the panel (defaults to --radius-xl)"
+        },
+        {
+          "name": "--modal-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--modal-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--modal-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/modal/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/modal/wc/basic.html": "<minerva-modal\n  id=\"welcome\"\n  label=\"Invite your team\"\n  description=\"Members get access to every project of the workspace.\"\n>\n  <minerva-button slot=\"trigger\">Open modal</minerva-button>\n  <p style=\"margin: 0\">\n    Focus is trapped inside; Escape, the × button or a click on the overlay\n    close the modal, and focus returns to the button.\n  </p>\n  <minerva-button slot=\"footer\" data-close color=\"neutral\" variant=\"outline\"\n    >Cancel</minerva-button\n  >\n  <minerva-button slot=\"footer\" data-close>Send invites</minerva-button>\n</minerva-modal>\n",
+        "apps/docs/src/docs/pages/modal/wc/basic.ts": "// The trigger slot opens the modal; footer buttons close it with hide().\nexport function setup(root: HTMLElement) {\n  const modal = root.querySelector<HTMLElement & { hide(): void }>(\"#welcome\")!;\n  const onClick = (event: Event) => {\n    if ((event.target as Element).closest(\"[data-close]\")) modal.hide();\n  };\n  modal.addEventListener(\"click\", onClick);\n  return () => modal.removeEventListener(\"click\", onClick);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Le slot trigger ouvre la modale ; label et description la nomment et la décrivent. Le focus est piégé, Échap et un clic sur l'overlay la ferment, et le focus revient à l'élément d'origine."
+    },
+    {
+      "id": "events",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/modal/wc/events.html",
+      "files": {
+        "apps/docs/src/docs/pages/modal/wc/events.html": "<minerva-modal\n  id=\"draft\"\n  label=\"Edit note\"\n  description=\"Closing is blocked while the note has unsaved changes.\"\n>\n  <minerva-button slot=\"trigger\" variant=\"outline\">Edit note</minerva-button>\n  <label style=\"display: flex; gap: 8px; align-items: center\">\n    <input id=\"dirty\" type=\"checkbox\" checked />\n    Unsaved changes\n  </label>\n</minerva-modal>\n<pre id=\"draft-log\" style=\"margin: 8px 0 0; min-height: 3em\"></pre>\n",
+        "apps/docs/src/docs/pages/modal/wc/events.ts": "// minerva-open-change is cancelable: preventDefault() keeps the modal open.\ntype OpenChange = CustomEvent<{ open: boolean; reason: string }>;\n\nexport function setup(root: HTMLElement) {\n  const modal = root.querySelector<HTMLElement>(\"#draft\")!;\n  const dirty = root.querySelector<HTMLInputElement>(\"#dirty\")!;\n  const log = root.querySelector<HTMLElement>(\"#draft-log\")!;\n  const write = (line: string) =>\n    (log.textContent = `${line}\\n${log.textContent}`.split(\"\\n\", 4).join(\"\\n\"));\n  const onChange = (event: Event) => {\n    const { open, reason } = (event as OpenChange).detail;\n    if (!open && dirty.checked) {\n      event.preventDefault();\n      write(`close (${reason}) blocked: unsaved changes`);\n    } else write(`open-change: open=${open} (${reason})`);\n  };\n  const onAfterOpen = () => write(\"after-open\");\n  const onAfterClose = () => write(\"after-close\");\n  modal.addEventListener(\"minerva-open-change\", onChange);\n  modal.addEventListener(\"minerva-after-open\", onAfterOpen);\n  modal.addEventListener(\"minerva-after-close\", onAfterClose);\n  return () => {\n    modal.removeEventListener(\"minerva-open-change\", onChange);\n    modal.removeEventListener(\"minerva-after-open\", onAfterOpen);\n    modal.removeEventListener(\"minerva-after-close\", onAfterClose);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Événements et fermeture bloquée",
+      "description": "minerva-open-change est annulable : tant que « Unsaved changes » est coché, preventDefault() garde la modale ouverte. Le journal affiche la raison et les événements after-open / after-close."
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/modal/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/modal/wc/form.html": "<minerva-modal id=\"rename\" label=\"Rename project\" size=\"small\">\n  <minerva-button slot=\"trigger\" variant=\"outline\">Rename…</minerva-button>\n  <form id=\"rename-form\" style=\"display: grid; gap: 4px\">\n    <label for=\"project-name\">Name</label>\n    <input id=\"project-name\" name=\"name\" required value=\"Minerva\" />\n  </form>\n  <minerva-button slot=\"footer\" type=\"submit\" form=\"rename-form\"\n    >Save</minerva-button\n  >\n</minerva-modal>\n<p id=\"rename-result\" style=\"margin: 8px 0 0\"></p>\n",
+        "apps/docs/src/docs/pages/modal/wc/form.ts": "// The form lives in the light DOM: the browser validates it, then the\n// submit handler saves and closes the modal.\ntype Modal = HTMLElement & { hide(): void };\n\nexport function setup(root: HTMLElement) {\n  const modal = root.querySelector<Modal>(\"#rename\")!;\n  const form = root.querySelector<HTMLFormElement>(\"#rename-form\")!;\n  const result = root.querySelector<HTMLElement>(\"#rename-result\")!;\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    result.textContent = `Renamed to \"${new FormData(form).get(\"name\")}\"`;\n    modal.hide();\n  };\n  form.addEventListener(\"submit\", onSubmit);\n  return () => form.removeEventListener(\"submit\", onSubmit);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Formulaire dans une modale",
+      "description": "Un bouton submit du pied cible le formulaire par son id ; le navigateur le valide, puis le gestionnaire submit enregistre et appelle hide()."
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/modal/wc/sizes.html",
+      "files": {
+        "apps/docs/src/docs/pages/modal/wc/sizes.html": "<div id=\"sizes\" style=\"display: flex; flex-wrap: wrap; gap: 8px\">\n  <minerva-button data-size=\"small\" variant=\"outline\">Small</minerva-button>\n  <minerva-button data-size=\"medium\" variant=\"outline\">Medium</minerva-button>\n  <minerva-button data-size=\"large\" variant=\"outline\">Large</minerva-button>\n  <minerva-button data-size=\"xlarge\" variant=\"outline\">XLarge</minerva-button>\n  <minerva-button data-size=\"full\" variant=\"outline\">Full</minerva-button>\n</div>\n<minerva-modal id=\"sized\" description=\"The width follows the size preset.\">\n  <span slot=\"header\" id=\"sized-title\"></span>\n  <p style=\"margin: 0\">On narrow screens every size becomes a bottom sheet.</p>\n</minerva-modal>\n",
+        "apps/docs/src/docs/pages/modal/wc/sizes.ts": "// Without a trigger slot, set `size` and call show() (or set `open`).\ntype Modal = HTMLElement & { size: string; show(): void };\n\nexport function setup(root: HTMLElement) {\n  const buttons = root.querySelector<HTMLElement>(\"#sizes\")!;\n  const modal = root.querySelector<Modal>(\"#sized\")!;\n  const title = root.querySelector<HTMLElement>(\"#sized-title\")!;\n  const onClick = (event: Event) => {\n    const size = (event.target as Element)\n      .closest(\"[data-size]\")\n      ?.getAttribute(\"data-size\");\n    if (!size) return;\n    modal.size = size;\n    title.textContent = `Size: ${size}`;\n    modal.show();\n  };\n  buttons.addEventListener(\"click\", onClick);\n  return () => buttons.removeEventListener(\"click\", onClick);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Tailles",
+      "description": "Cinq tailles prédéfinies, réglées avant d'appeler show(). Ici, le titre vient du slot header."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Modal",
+      "description": "Une boîte de dialogue qui interrompt la page pour une tâche ciblée. Le focus reste à l'intérieur, Échap et un clic sur le fond la ferment, puis le focus revient à l'élément d'ouverture. Sur petit écran elle devient une feuille en bas de page.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Cancel ferme sans supprimer. Delete ferme le dialogue et affiche Record deleted."
+        },
+        "uncontrolled": {
+          "title": "Non contrôlée avec déclencheur",
+          "description": "Passez trigger pour laisser la modale gérer son propre état."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "small, medium (par défaut), large, xlarge et full."
+        },
+        "form": {
+          "title": "Formulaire",
+          "description": "Modifiez Name puis cliquez sur Save pour renommer Quarterly report. Le bouton affiche ensuite le nom enregistré."
+        },
+        "compound": {
+          "title": "API composée",
+          "description": "ModalRoot, ModalTrigger, ModalContent, ModalHeader, ModalBody, ModalFooter et ModalClose pour un contrôle total."
+        }
+      },
+      "api": {
+        "ModalProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "trigger": "Élément qui l'ouvre au clic (un seul élément, rendu avec asChild)",
+          "title": "Titre, utilisé comme nom accessible de la boîte de dialogue",
+          "description": "Description sous le titre, utilisée comme description accessible",
+          "size": "Préréglage de largeur",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "role": "Rôle ARIA du panneau de dialogue ; utilisez \"alertdialog\" pour les confirmations qui interrompent l’utilisateur",
+          "className": "Classe supplémentaire du panneau",
+          "ref": "Ref vers l'élément de dialogue",
+          "children": "Corps : en général ModalBody + ModalFooter, ou un <form> qui les englobe"
+        },
+        "ModalRootProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "modal": "Mode modal : affiche le fond, piège le focus, bloque le défilement de la page et les interactions extérieures, et masque la page aux technologies d'assistance",
+          "children": "Déclencheur et contenu"
+        },
+        "ModalTriggerProps": {
+          "asChild": "Fusionne le comportement sur l'unique élément enfant au lieu de rendre son propre élément"
+        },
+        "ModalContentProps": {
+          "ref": "Ref vers l'élément de dialogue",
+          "size": "Préréglage de largeur",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "description": "Description visible sous le titre, liée comme description accessible (sans description, aria-describedby est omis)",
+          "overlayClassName": "Classe de la superposition (fond)",
+          "role": "Rôle ARIA du panneau ; utilisez \"alertdialog\" pour les confirmations qui interrompent l'utilisateur",
+          "forceMount": "Garde le panneau monté une fois fermé (data-state=\"closed\"), par exemple pour une bibliothèque d'animation",
+          "onOpenAutoFocus": "Appelé avant que le focus n'entre dans le panneau à l'ouverture ; event.preventDefault() laisse le focus en place",
+          "onCloseAutoFocus": "Appelé avant que le focus ne revienne à l'élément d'ouverture à la fermeture ; event.preventDefault() l'annule",
+          "onEscapeKeyDown": "Échap pressé alors qu'il est la couche supérieure ; event.preventDefault() le garde ouvert",
+          "onPointerDownOutside": "Pointeur pressé à l'extérieur ; event.preventDefault() le garde ouvert",
+          "onInteractOutside": "Pointeur pressé ou focus à l'extérieur ; event.preventDefault() le garde ouvert"
+        }
+      },
+      "cssVars": {
+        "--modal-width": "Largeur du panneau (toutes les tailles ; par défaut celle de la taille, limitée par la fenêtre)",
+        "--modal-max-height": "Hauteur maximale du panneau (le corps défile au-delà)",
+        "--modal-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied",
+        "--modal-radius": "Rayon des coins du panneau (par défaut --radius-xl)",
+        "--modal-shadow": "Ombre du panneau (par défaut --shadow-xl)",
+        "--modal-background": "Fond du panneau",
+        "--modal-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Le slot trigger ouvre la modale ; label et description la nomment et la décrivent. Le focus est piégé, Échap et un clic sur l'overlay la ferment, et le focus revient à l'élément d'origine."
+          },
+          "sizes": {
+            "title": "Tailles",
+            "description": "Cinq tailles prédéfinies, réglées avant d'appeler show(). Ici, le titre vient du slot header."
+          },
+          "form": {
+            "title": "Formulaire dans une modale",
+            "description": "Un bouton submit du pied cible le formulaire par son id ; le navigateur le valide, puis le gestionnaire submit enregistre et appelle hide()."
+          },
+          "events": {
+            "title": "Événements et fermeture bloquée",
+            "description": "minerva-open-change est annulable : tant que « Unsaved changes » est coché, preventDefault() garde la modale ouverte. Le journal affiche la raison et les événements after-open / after-close."
+          }
+        },
+        "minerva-modal": {
+          "props": {
+            "label": "Texte du titre (ou le slot header) ; nomme la boîte de dialogue.",
+            "dialogRole": "Rôle ARIA du panneau ; \"alertdialog\" pour les confirmations qui interrompent."
+          },
+          "events": {
+            "minerva-open-change": "L'utilisateur demande l'ouverture / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+            "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+          },
+          "slots": {
+            "default": "Contenu du corps.",
+            "header": "Titre (alternative à l'attribut label).",
+            "footer": "Rangée d'actions.",
+            "trigger": "Élément qui ouvre le panneau au clic."
+          },
+          "methods": {
+            "show": "Ouvre la modale.",
+            "hide": "Ferme la modale."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Cancel ferme sans supprimer. Delete ferme le dialogue et affiche Record deleted."
+          },
+          "confirm": {
+            "title": "Confirmation",
+            "description": "confirmLabel / onConfirm et onCancel affichent les boutons du pied ; onOpenChange indique la raison de la fermeture (confirm, cancel, mask, back)."
+          },
+          "custom-footer": {
+            "title": "Pied personnalisé",
+            "description": "footer remplace les boutons par n'importe quel contenu ; size règle la largeur."
+          },
+          "form": {
+            "title": "Formulaire",
+            "description": "Modifiez Name puis cliquez sur Save pour renommer Quarterly report. Le bouton affiche ensuite le nom enregistré."
+          }
+        },
+        "limitations": "Dialog natif enregistre via onPress, sans soumission HTML. Il ne propose ni API composée ModalRoot/ModalTrigger ni taille xlarge ; ces exemples ne sont pas simulés."
+      }
+    }
+  }
+}

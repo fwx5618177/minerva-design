@@ -1,0 +1,681 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "mixed-chart",
+  "title": "複合グラフ",
+  "description": "棒・折れ線・面を 1 つのグラフに、1 本または 2 本の値軸で：売上と成長率、降水量と気温、パレート図。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {
+    "data": {
+      "quarter": "{{year}} 年 Q{{n}}",
+      "revenue": "売上",
+      "growth": "前年同期比",
+      "revenueAria": "四半期売上と前年同期比の成長率",
+      "rainfall": "降水量",
+      "temperature": "気温",
+      "climateAria": "東京の月ごとの降水量と気温",
+      "sessions": "セッション",
+      "conversionRate": "コンバージョン率",
+      "campaign": "キャンペーン",
+      "conversionAria": "2 か月間の日ごとのセッション数とコンバージョン率",
+      "returns": "返品",
+      "cumulative": "累積比率",
+      "causes": {
+        "wrongSize": "サイズ違い",
+        "damaged": "破損",
+        "notAsDescribed": "説明と異なる",
+        "late": "配達遅延",
+        "changedMind": "気が変わった",
+        "wrongItem": "誤配送",
+        "other": "その他"
+      },
+      "paretoAria": "原因別の返品数とその累積比率",
+      "pageViews": "ページビュー",
+      "locales": {
+        "chinese": "中国語（zh-CN）",
+        "french": "フランス語（fr-FR）"
+      },
+      "localeAria": "日別ページビューとコンバージョン率、{{locale}}",
+      "yearlyRevenue": "売上",
+      "users": "ユーザー数",
+      "usersLog": "ユーザー数（対数）",
+      "logAria": "2016〜2025 年の年間売上と対数軸のユーザー数",
+      "kwh": "{{value}} kWh",
+      "solarProduction": "太陽光発電量",
+      "consumption": "消費量",
+      "batteryCharge": "蓄電池の充電率",
+      "night": "夜間",
+      "withBattery": "{{value}} の蓄電池",
+      "selfSufficiency": "2 日間の自給率は {{share}}、系統からの購入は {{imported}} です。",
+      "energyPerHour": "1 時間あたりの電力量",
+      "solarAria": "ある住宅の 2 日間の時間ごとの太陽光発電量と消費量、および蓄電池の充電率",
+      "stockLevel": "在庫水準",
+      "deliveries": "入荷",
+      "promotion": "販促期間",
+      "safetyStock": "安全在庫",
+      "reorderPoint": "発注点",
+      "inventoryHint": "日付または入荷をクリックしてください。",
+      "deliveryDetails": "{{id}}：{{ordered}} に {{quantity}} 個を発注し、{{lead}} 後の {{arrived}} に入荷。",
+      "stockOn": "{{date}} の在庫は {{units}} 個。",
+      "stockLow": "{{date}} の在庫は {{units}} 個のみで、安全在庫を下回っています。",
+      "unitsInStock": "個数",
+      "inventoryAria": "ある商品の 3 か月間の日別在庫水準。入荷、発注点、安全在庫を表示",
+      "requests": "リクエスト数",
+      "errorRate": "エラー率",
+      "releases": "リリース",
+      "requestsPerHalfHour": "30 分あたりのリクエスト数",
+      "opsAria": "ある Web API の 1 日のリクエスト数とエラー率、およびリリース",
+      "incidentSummary": "{{version}} のリリース後、エラー率は {{time}} に {{peak}} でピークに達し、{{rollback}} へのロールバックまで続きました。",
+      "points": "{{value}} pt",
+      "sprintStart": "開始",
+      "remainingWork": "残作業",
+      "completedPerDay": "完了",
+      "idealBurn": "理想ペース",
+      "scopeAdded": "{{value}} 追加",
+      "idealLeft": "理想：残り {{value}}",
+      "remainingLeft": "残り {{value}}",
+      "doneThatDay": "当日の完了 {{value}}",
+      "behindBy": "理想より {{value}} 遅れ",
+      "aheadBy": "理想より {{value}} 先行",
+      "storyPoints": "ストーリーポイント",
+      "burndownAria": "スプリントのバーンダウン：10 稼働日の残作業、日ごとの完了ポイント、理想の消化ペース",
+      "burndownLate": "残り {{left}}、1 日 {{velocity}} のペースでは、スプリント終了時に約 {{forecast}} が未完了になります。",
+      "burndownOnTrack": "残り {{left}}、1 日 {{velocity}} のペースで、スプリントは順調です。"
+    }
+  },
+  "components": [
+    {
+      "name": "MixedChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "MixedChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Bars, lines, areas and dots, each with its `type`; `yAxis: \"right\"` plots a series against `yAxis2`"
+          },
+          {
+            "name": "yAxis2",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Right value axis of the series with `yAxis: \"right\"` (dual axis charts)"
+          },
+          {
+            "name": "stackMode",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "enum",
+            "values": [
+              "normal",
+              "percent"
+            ],
+            "typeText": "\"normal\" | \"percent\" | undefined",
+            "typeRef": "type:2d2343824f816d71127f",
+            "default": "normal",
+            "required": false,
+            "description": "`percent` scales every stack to 100% at each x"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "ChartOrientation | undefined",
+            "typeRef": "type:872af3679a2d7fcf3d26",
+            "default": "vertical",
+            "required": false,
+            "description": "`horizontal` puts the x axis (categories) down the left side"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:MixedChartProps": {
+      "source": "native/src/components/Charts/types.ts",
+      "description": "Props of MixedChart",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Bars, lines, areas and dots, each with its `type`; `yAxis: \"right\"` plots a series against `yAxis2`"
+        },
+        {
+          "name": "yAxis2",
+          "type": "ChartAxisOptions",
+          "required": false,
+          "description": "Right value axis of the series with `yAxis: \"right\"` (dual axis charts)"
+        },
+        {
+          "name": "stackMode",
+          "type": "\"normal\" | \"percent\"",
+          "required": false,
+          "default": "\"normal\"",
+          "description": "`percent` scales every stack to 100% at each x"
+        },
+        {
+          "name": "orientation",
+          "type": "ChartOrientation",
+          "required": false,
+          "default": "\"vertical\"",
+          "description": "`horizontal` puts the x axis (categories) down the left side"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/native/basic.tsx": "import { useTranslation } from \"react-i18next\";\nimport { MixedChart } from \"minerva-design/native\";\n\n// Climate of Tokyo: average rainfall (mm) and temperature (°C) per month\nconst rainfall = [52, 56, 118, 125, 138, 168, 154, 168, 210, 198, 93, 51];\nconst temperature = [\n  5.4, 6.1, 9.4, 14.3, 18.8, 21.9, 25.7, 26.9, 23.3, 18.0, 12.5, 7.7,\n];\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const month = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  const months = rainfall.map((_, m) => month.format(new Date(2026, m, 1)));\n  return (\n    <MixedChart\n      height={260}\n      locale={locale}\n      ariaLabel={t(\"climateAria\")}\n      yAxis2={{ zero: true }}\n      legend={{ position: \"bottom\" }}\n      series={[\n        {\n          name: t(\"rainfall\"),\n          type: \"bar\",\n          color: \"var(--chart-series-5, #0ea5e9)\",\n          data: months.map((m, i) => [m, rainfall[i] ?? 0] as const),\n        },\n        {\n          name: t(\"temperature\"),\n          type: \"line\",\n          yAxis: \"right\",\n          color: \"var(--chart-series-4, #ef4444)\",\n          data: months.map((m, i) => [m, temperature[i] ?? 0] as const),\n        },\n      ]}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "複合グラフ",
+      "description": "棒・折れ線・面を 1 つのグラフに、1 本または 2 本の値軸で：売上と成長率、降水量と気温、パレート図。",
+      "demos": {
+        "revenue-growth": {
+          "title": "売上と成長率",
+          "description": "成長率の折れ線は yAxis: \"right\" を指定し、独自の書式で yAxis2 に対して描かれます。右軸の範囲は左軸の目盛りに揃うため、グリッドが両方の軸に合います。"
+        },
+        "climate": {
+          "title": "雨温図",
+          "description": "降水量の棒を左軸、気温の曲線を右軸に。zero: true で右軸の範囲にゼロを含めます。"
+        },
+        "conversion": {
+          "title": "トラフィックとコンバージョン",
+          "description": "日ごとのセッション数の面と右軸のコンバージョン率。キャンペーン期間を rect 注釈で強調します。"
+        },
+        "pareto": {
+          "title": "パレート図",
+          "description": "並べ替えた原因とその累積比率を 0〜100% の右軸（min、max、nice: false）に。返品の 80% を占める原因を強調します。"
+        },
+        "log-scale": {
+          "title": "対数スケール",
+          "description": "10 年でユーザー数は 6,000 倍に増えます。yAxis2={{ type: \"log\" }} で右軸を対数スケールにして桁ごとの目盛りで描き、左軸の売上の棒は線形のままです。ツールチップには実際の値が表示されます。"
+        },
+        "locale": {
+          "title": "ロケール",
+          "description": "同じグラフに locale=\"zh-CN\" と locale=\"fr-FR\" を指定：エンジンはロケールに合わせて短縮単位（万 / k）、区切り文字、時間軸の月名、ツールチップの日付を書き出します。locale を指定しない場合はページの言語（<html lang>）に従います。"
+        },
+        "solar-battery": {
+          "title": "太陽光発電と家庭用蓄電池",
+          "description": "時間ごとの太陽光発電量を棒、消費量を線で左軸に描き、蓄電池の充電率を面で yAxis2 に描きます。yAxis2 は min、max、nice: false で 0〜100% に固定しています。rect 注釈で夜間を塗り、Switch で蓄電池を非表示にすると出力欄の自給率が再計算されます。"
+        },
+        "inventory": {
+          "title": "在庫と入荷",
+          "description": "在庫水準をステップ状の面で、入荷を棒で表示し、発注点の線と安全在庫の rect を重ねます。onPointClick でその日に x 方向の線を引き、発注書または在庫を出力欄に表示します。onPlotClick で消去します。"
+        },
+        "ops-overview": {
+          "title": "運用の概要",
+          "description": "リクエスト数を棒で左軸に、エラー率を右軸に描き、リリースを type: \"scatter\" 系列として showLabels で各バージョンを表示します。凡例の代わりに Checkbox で各系列の hidden を切り替えます。"
+        },
+        "burndown": {
+          "title": "スプリントのバーンダウン",
+          "description": "明示した xAxis のカテゴリ上に、残作業を面、日ごとの完了ポイントを棒、理想の消化ペースを線で描きます。text 注釈でスコープ変更を示し、renderTooltip で各日が理想線よりどれだけ進んでいるか遅れているかを表示します。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "降水量の棒を左軸、気温の折れ線を右軸（yAxis: \"right\" と yAxis2）に表示。タップで両方を比較できます。"
+          }
+        }
+      },
+      "data": {
+        "quarter": "{{year}} 年 Q{{n}}",
+        "revenue": "売上",
+        "growth": "前年同期比",
+        "revenueAria": "四半期売上と前年同期比の成長率",
+        "rainfall": "降水量",
+        "temperature": "気温",
+        "climateAria": "東京の月ごとの降水量と気温",
+        "sessions": "セッション",
+        "conversionRate": "コンバージョン率",
+        "campaign": "キャンペーン",
+        "conversionAria": "2 か月間の日ごとのセッション数とコンバージョン率",
+        "returns": "返品",
+        "cumulative": "累積比率",
+        "causes": {
+          "wrongSize": "サイズ違い",
+          "damaged": "破損",
+          "notAsDescribed": "説明と異なる",
+          "late": "配達遅延",
+          "changedMind": "気が変わった",
+          "wrongItem": "誤配送",
+          "other": "その他"
+        },
+        "paretoAria": "原因別の返品数とその累積比率",
+        "pageViews": "ページビュー",
+        "locales": {
+          "chinese": "中国語（zh-CN）",
+          "french": "フランス語（fr-FR）"
+        },
+        "localeAria": "日別ページビューとコンバージョン率、{{locale}}",
+        "yearlyRevenue": "売上",
+        "users": "ユーザー数",
+        "usersLog": "ユーザー数（対数）",
+        "logAria": "2016〜2025 年の年間売上と対数軸のユーザー数",
+        "kwh": "{{value}} kWh",
+        "solarProduction": "太陽光発電量",
+        "consumption": "消費量",
+        "batteryCharge": "蓄電池の充電率",
+        "night": "夜間",
+        "withBattery": "{{value}} の蓄電池",
+        "selfSufficiency": "2 日間の自給率は {{share}}、系統からの購入は {{imported}} です。",
+        "energyPerHour": "1 時間あたりの電力量",
+        "solarAria": "ある住宅の 2 日間の時間ごとの太陽光発電量と消費量、および蓄電池の充電率",
+        "stockLevel": "在庫水準",
+        "deliveries": "入荷",
+        "promotion": "販促期間",
+        "safetyStock": "安全在庫",
+        "reorderPoint": "発注点",
+        "inventoryHint": "日付または入荷をクリックしてください。",
+        "deliveryDetails": "{{id}}：{{ordered}} に {{quantity}} 個を発注し、{{lead}} 後の {{arrived}} に入荷。",
+        "stockOn": "{{date}} の在庫は {{units}} 個。",
+        "stockLow": "{{date}} の在庫は {{units}} 個のみで、安全在庫を下回っています。",
+        "unitsInStock": "個数",
+        "inventoryAria": "ある商品の 3 か月間の日別在庫水準。入荷、発注点、安全在庫を表示",
+        "requests": "リクエスト数",
+        "errorRate": "エラー率",
+        "releases": "リリース",
+        "requestsPerHalfHour": "30 分あたりのリクエスト数",
+        "opsAria": "ある Web API の 1 日のリクエスト数とエラー率、およびリリース",
+        "incidentSummary": "{{version}} のリリース後、エラー率は {{time}} に {{peak}} でピークに達し、{{rollback}} へのロールバックまで続きました。",
+        "points": "{{value}} pt",
+        "sprintStart": "開始",
+        "remainingWork": "残作業",
+        "completedPerDay": "完了",
+        "idealBurn": "理想ペース",
+        "scopeAdded": "{{value}} 追加",
+        "idealLeft": "理想：残り {{value}}",
+        "remainingLeft": "残り {{value}}",
+        "doneThatDay": "当日の完了 {{value}}",
+        "behindBy": "理想より {{value}} 遅れ",
+        "aheadBy": "理想より {{value}} 先行",
+        "storyPoints": "ストーリーポイント",
+        "burndownAria": "スプリントのバーンダウン：10 稼働日の残作業、日ごとの完了ポイント、理想の消化ペース",
+        "burndownLate": "残り {{left}}、1 日 {{velocity}} のペースでは、スプリント終了時に約 {{forecast}} が未完了になります。",
+        "burndownOnTrack": "残り {{left}}、1 日 {{velocity}} のペースで、スプリントは順調です。"
+      },
+      "api": {
+        "MixedChartProps": {
+          "series": "それぞれ type を持つ棒・線・面・点の系列。yAxis: \"right\" で yAxis2 に対して描画",
+          "yAxis2": "yAxis: \"right\" の系列の右側の値軸",
+          "stackMode": "\"percent\" で各積み上げを 100% に揃える",
+          "orientation": "\"horizontal\" でカテゴリを左側に並べる"
+        },
+        "ChartProps": {
+          "series": "データ系列。各系列が自身の type を指定",
+          "stackMode": "\"percent\" で各 x の積み上げを 100% に揃える",
+          "yAxis2": "yAxis: \"right\" の系列の右側の値軸。範囲は左軸の目盛りに揃えられる",
+          "orientation": "\"horizontal\" で x 軸（カテゴリ）を左側に、値を下側に配置"
+        },
+        "ChartLabels": {
+          "open": "ローソク足の始値の行名",
+          "high": "ローソク足の高値の行名",
+          "low": "ローソク足の安値の行名",
+          "close": "ローソク足の終値の行名",
+          "max": "箱ひげ図の上ひげの行名",
+          "q3": "箱ひげ図の第3四分位の行名",
+          "median": "箱ひげ図の中央値の行名",
+          "q1": "箱ひげ図の第1四分位の行名",
+          "min": "箱ひげ図の下ひげの行名",
+          "outliers": "箱の外れ値の数の行名",
+          "value": "系列に valueName がないときの散布図の value（バブル）の行名",
+          "x": "軸にタイトルがないときの散布点の x の行名",
+          "y": "軸にタイトルがないときの散布点の y の行名",
+          "series": "既定の系列名（「系列 1」「系列 2」…）",
+          "chart": "系列のないグラフのアクセシブル名",
+          "chartOf": "グラフのアクセシブル名。{series} は系列名の一覧",
+          "start": "時間軸上の範囲棒の開始（ガントのタスク）",
+          "end": "時間軸上の範囲棒の終了",
+          "duration": "時間軸上の範囲棒の期間（4 週間、26 日）",
+          "progress": "ガントのタスクの進捗率",
+          "dependencies": "ガントのタスクが待つ先行タスク",
+          "outlier": "ホバーした箱ひげ図の外れ値"
+        }
+      },
+      "wc": {
+        "demos": {
+          "revenue-growth": {
+            "title": "2 軸の売上と成長率",
+            "description": "売上を左軸の棒で、成長率を右軸の線で表示します（yAxis: \"right\"）。"
+          },
+          "climate": {
+            "title": "雨温図",
+            "description": "月降水量を棒で、平均気温を滑らかな線で表示し、クロスヘアで両方を読み取れます。"
+          }
+        },
+        "minerva-mixed-chart": {
+          "props": {
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+            "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+            "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "データ範囲全体を表示します",
+            "getView": "表示範囲。エンジンが作成されるまでは null",
+            "setView": "表示範囲を設定します",
+            "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+          }
+        }
+      }
+    }
+  }
+}

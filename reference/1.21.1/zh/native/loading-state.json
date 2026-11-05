@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "zh",
+  "renderer": "native",
+  "page": "loading-state",
+  "title": "LoadingState 加载状态",
+  "description": "页面、路由与区块的加载展示：装饰性的 ProgressIndicator 旋转图标加可见文字，位于唯一的 polite 状态区域中。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "LoadingState",
+      "support": {
+        "status": "beta",
+        "notes": "Loading (alias Spinner)"
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Loading (alias Spinner)",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Loading"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Loading/Loading.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Visible text next to the spinner, also its accessible name; `null` shows the spinner alone (named by the \"common.loading\" message)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Loading/Loading.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "LoadingSize | undefined",
+            "typeRef": "type:d1a73d4d23b2c65f7573",
+            "default": "medium",
+            "required": false,
+            "description": "Spinner and text size"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Loading/Loading.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "NativeColor | undefined",
+            "typeRef": "type:c1c4fb1afcf9f8ec5869",
+            "default": "primary",
+            "required": false,
+            "description": "Color of the spinner (`neutral`: the secondary text color)"
+          },
+          {
+            "name": "vertical",
+            "source": "packages/native/src/components/Loading/Loading.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stacks the label under the spinner instead of beside it"
+          },
+          {
+            "name": "overlay",
+            "source": "packages/native/src/components/Loading/Loading.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Covers its container (or the screen, at the root) with a translucent mask and centers the indicator on it"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:LoadingProps": {
+      "source": "native/src/components/Loading/Loading.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode | null",
+          "required": false,
+          "default": "the \"loadingState.label\" message",
+          "description": "Visible text next to the spinner, also its accessible name; `null` shows the spinner alone (named by the \"common.loading\" message)"
+        },
+        {
+          "name": "size",
+          "type": "LoadingSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Spinner and text size"
+        },
+        {
+          "name": "color",
+          "type": "NativeColor",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Color of the spinner (`neutral`: the secondary text color)"
+        },
+        {
+          "name": "vertical",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Stacks the label under the spinner instead of beside it"
+        },
+        {
+          "name": "overlay",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Covers its container (or the screen, at the root) with a translucent mask and centers the indicator on it"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the root view"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:LoadingState": {
+      "kind": "cssVars",
+      "source": "react/src/components/LoadingState",
+      "vars": [
+        {
+          "name": "--loading-state-gap",
+          "description": "Space between the spinner and the label"
+        },
+        {
+          "name": "--loading-state-padding",
+          "description": "Padding"
+        },
+        {
+          "name": "--loading-state-min-height",
+          "description": "Minimum height (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--loading-state-color",
+          "description": "Color of the label and the spinner"
+        },
+        {
+          "name": "--loading-state-font-size",
+          "description": "Font size of the label"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/loading-state/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/loading-state/native/basic.tsx": "import { LoadingState } from \"minerva-design/native\";\nexport default function Basic() {\n  return <LoadingState label=\"Loading records\" />;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "默认文字已本地化，读屏播报的就是可见文字。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "LoadingState 加载状态",
+      "description": "页面、路由与区块的加载展示：装饰性的 ProgressIndicator 旋转图标加可见文字，位于唯一的 polite 状态区域中。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "默认文字已本地化，读屏播报的就是可见文字。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "small、medium、large 分别对应 64、160、240 px 的最小高度。"
+        }
+      },
+      "api": {
+        "LoadingStateProps": {
+          "label": "可见文字，同时由状态区域播报",
+          "size": "最小高度档位",
+          "ref": "根 <div> 元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--loading-state-gap": "加载图标与标签之间的间距",
+        "--loading-state-padding": "内边距",
+        "--loading-state-min-height": "最小高度（所有尺寸；默认为对应尺寸的高度）",
+        "--loading-state-color": "标签与加载图标的颜色",
+        "--loading-state-font-size": "标签的字号"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "在礼貌型 status 区域中，旋转指示器旁显示可见标签（默认为本地化的“加载中...”）。"
+          },
+          "sizes": {
+            "title": "尺寸",
+            "description": "small、medium 和 large 设置最小高度；默认插槽可放置富文本标签。"
+          },
+          "section": {
+            "title": "加载区块",
+            "description": "该元素不会设置 aria-busy：加载期间请将容器标记为忙碌，完成后用内容替换占位。"
+          }
+        },
+        "minerva-loading-state": {
+          "slots": {
+            "default": "标签（label 属性的替代方式）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

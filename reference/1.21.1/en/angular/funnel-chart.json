@@ -1,0 +1,586 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "funnel-chart",
+  "title": "Funnel chart",
+  "description": "Stages of a process that lose volume along the way (sign-ups, sales pipeline, checkout), with the conversion rate from each stage to the next. Hover or use the arrow keys to highlight a stage; click a legend item to hide it.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {
+    "data": {
+      "signup": {
+        "pricing": "Pricing page",
+        "started": "Started sign-up",
+        "verified": "Verified email",
+        "project": "Created project",
+        "invited": "Invited teammate",
+        "upgraded": "Upgraded to paid"
+      },
+      "users": "{{users}} users",
+      "ofVisitors": "{{share}} of the visitors",
+      "droppedSince": "{{users}} dropped since “{{stage}}”",
+      "signupAria": "Sign-up funnel",
+      "features": {
+        "alerts": "Alerts",
+        "dashboards": "Dashboards",
+        "integrations": "Integrations",
+        "reports": "Reports",
+        "api": "Public API"
+      },
+      "sortOrder": "Sort order",
+      "sorts": {
+        "descending": "Descending",
+        "ascending": "Ascending",
+        "none": "Data order"
+      },
+      "weeklyUsers": "{{users}} weekly users",
+      "featuresAria": "Weekly active users per feature",
+      "shop": {
+        "visits": "Visits",
+        "product": "Product page",
+        "cart": "Added to cart",
+        "checkout": "Checkout",
+        "payment": "Payment",
+        "order": "Order placed"
+      },
+      "stage": "Stage",
+      "visitors": "Visitors",
+      "dropOff": "Drop-off",
+      "conversionOverall": "{{share}} of the first stage",
+      "shopAria": "Checkout funnel of an online shop",
+      "dropOffTable": "Drop-off between the stages",
+      "hiring": {
+        "applied": "Applied",
+        "screened": "Screened",
+        "technical": "Technical interview",
+        "onsite": "On-site interview",
+        "offer": "Offer",
+        "hired": "Hired"
+      },
+      "candidates": "{{candidates}} candidates",
+      "stageTime": "Typical time in this stage: {{days}}",
+      "hiringAria": "Hiring pipeline of an engineering role",
+      "hiringSelected": "{{stage}}: {{candidates}} candidates ({{share}} of the applicants)",
+      "hiringSummary": "{{rate}} of the applicants are hired, after {{days}} on average",
+      "devices": {
+        "desktop": "Desktop",
+        "mobile": "Mobile"
+      },
+      "conversionRate": "{{rate}} conversion",
+      "deviceFunnelAria": "Checkout funnel on {{device}}",
+      "campaigns": {
+        "stages": {
+          "impressions": "Impressions",
+          "clicks": "Clicks",
+          "leads": "Leads",
+          "qualified": "Qualified leads",
+          "customers": "Customers"
+        },
+        "channels": {
+          "all": "All channels",
+          "search": "Search ads",
+          "social": "Social media",
+          "email": "Email",
+          "partners": "Partners"
+        },
+        "channel": "Channel",
+        "fromPrevious": "{{share}} of the previous stage",
+        "costPer": "Cost per result: {{cost}}",
+        "aria": "Marketing funnel of this month: {{channel}}",
+        "summary": "Spend: {{spend}} · Customers: {{customers}} · Acquisition cost: {{cac}} per customer"
+      },
+      "whatIf": {
+        "stages": {
+          "visits": "Visits",
+          "cart": "Added to cart",
+          "checkout": "Checkout",
+          "paid": "Paid orders"
+        },
+        "aria": "Monthly checkout funnel computed from the conversion rates",
+        "step": "{{from}} → {{to}}",
+        "lower": "Lower the conversion of {{step}}",
+        "raise": "Raise the conversion of {{step}}",
+        "reset": "Reset to today's rates",
+        "summary": "{{orders}} orders ({{ordersDelta}}) · {{revenue}} revenue ({{revenueDelta}}) per month"
+      },
+      "sale": {
+        "stages": {
+          "visitors": "Visitors",
+          "product": "Viewed the deal",
+          "cart": "Added to cart",
+          "checkout": "Checkout",
+          "orders": "Orders"
+        },
+        "aria": "Flash sale funnel, updated live",
+        "pause": "Pause",
+        "resume": "Resume",
+        "restart": "Restart",
+        "status": "{{time}} · {{orders}} orders · {{rate}} of the visitors",
+        "ended": "The sale is over: {{orders}} orders."
+      },
+      "pipeline": {
+        "stages": {
+          "lead": "Lead",
+          "qualified": "Qualified",
+          "demo": "Demo",
+          "proposal": "Proposal",
+          "negotiation": "Negotiation"
+        },
+        "dealsAmount": "{{deals}} deals · {{amount}}",
+        "probability": "Win probability: {{share}}",
+        "aria": "Open deals by pipeline stage, by amount",
+        "stageTitle": "{{stage}}: {{deals}} open deals",
+        "forecast": "Weighted forecast: {{amount}}",
+        "hint": "Click a stage to list its deals."
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "FunnelChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnFunnelChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnFunnelChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnFunnelChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-funnel-chart",
+        "props": [
+          {
+            "name": "data",
+            "typeText": "readonly ShapeDatum[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "sort",
+            "typeText": "\"none\" | \"ascending\" | \"descending\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "gap",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "conversion",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "shape",
+            "typeText": "\"bar\" | \"trapezoid\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "ChartRendererPreference | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "palette",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "legend",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "tooltip",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "format",
+            "typeText": "((value: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "percentFormat",
+            "typeText": "((share: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "hidden",
+            "typeText": "readonly number[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "animation",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "padding",
+            "typeText": "ChartPadding | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "texts",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "ShapeHoverEvent | null",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "itemClick",
+            "typeText": "ShapeHoverEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "visibilityChange",
+            "typeText": "ShapeToggleEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "conversion",
+      "title": "Conversion funnel",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnFunnelChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnFunnelChart],\n  template: `\n@let t = labels[language()];\n<mn-funnel-chart\n  [data]=\"[\n    { name: t[0], value: 12000 },\n    { name: t[1], value: 4800 },\n    { name: t[2], value: 2100 },\n    { name: t[3], value: 860 }\n  ]\"\n  [height]=\"300\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": [\"Visits\", \"Sign-ups\", \"Trials\", \"Purchases\"],\n  \"zh\": [\"访问\", \"注册\", \"试用\", \"购买\"],\n  \"ja\": [\"訪問\", \"登録\", \"トライアル\", \"購入\"],\n  \"fr\": [\"Visites\", \"Inscriptions\", \"Essais\", \"Achats\"]\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "bars",
+      "title": "Bars and sorting",
+      "description": "shape=\"bar\" draws centered bars for values that are not a sequence; sort orders them (animated) and conversion={false} hides the rates.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnFunnelChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnFunnelChart],\n  template: `\n@let t = labels[language()];\n<mn-funnel-chart\n  [data]=\"[\n    { name: t[0], value: 180 },\n    { name: t[1], value: 940 },\n    { name: t[2], value: 42 },\n    { name: t[3], value: 410 },\n    { name: t[4], value: 31 }\n  ]\"\n  shape=\"bar\"\n  sort=\"descending\"\n  [height]=\"300\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": [\"Interviews\", \"Applications\", \"Offers\", \"Screenings\", \"Hires\"],\n  \"zh\": [\"面试\", \"申请\", \"录用通知\", \"筛选\", \"入职\"],\n  \"ja\": [\"面接\", \"応募\", \"内定\", \"書類選考\", \"採用\"],\n  \"fr\": [\"Entretiens\", \"Candidatures\", \"Offres\", \"Présélections\", \"Embauches\"]\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Funnel chart",
+      "description": "Stages of a process that lose volume along the way (sign-ups, sales pipeline, checkout), with the conversion rate from each stage to the next. Hover or use the arrow keys to highlight a stage; click a legend item to hide it.",
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "Trapezoids narrow to the next stage and show the conversion rate; renderTooltip adds the share of visitors and the drop-off in React."
+        },
+        "bars": {
+          "title": "Bars and sorting",
+          "description": "shape=\"bar\" draws centered bars for values that are not a sequence; sort orders them (animated) and conversion={false} hides the rates."
+        },
+        "ecommerce": {
+          "title": "E-commerce checkout",
+          "description": "A shop's checkout funnel next to a Table of the drop-off between stages; the stage that loses the most visitors is highlighted in red in both."
+        },
+        "recruiting": {
+          "title": "Hiring pipeline",
+          "description": "Candidates of one role from application to hire as bars with one color per stage; the tooltip adds the typical time spent in the stage and a click selects it."
+        },
+        "compare": {
+          "title": "Comparing segments",
+          "description": "The same funnel split by device, side by side with the same stages and one color per segment, to see where mobile users drop out."
+        },
+        "campaigns": {
+          "title": "Marketing funnel by channel",
+          "description": "A Select filters the funnel to one acquisition channel and the stages animate to the new counts. renderTooltip adds the conversion from the previous stage and the cost per result, computed from the channel's spend; the line below gives the customer acquisition cost."
+        },
+        "what-if": {
+          "title": "What-if conversion model",
+          "description": "The −1 / +1 buttons change the conversion rate of one checkout step and the funnel is recomputed from the visits; the summary compares the orders and the revenue with today's rates. Rates are kept in whole percent points so that Reset knows when nothing has changed."
+        },
+        "live-sale": {
+          "title": "Live flash sale",
+          "description": "A one-hour sale replayed in 30 ticks (setInterval, cleared on pause, at the end and on unmount): new visitors arrive and move down the stages with a seeded random generator. The status line follows the clock, and only the end of the sale is announced."
+        },
+        "sales-pipeline": {
+          "title": "B2B sales pipeline",
+          "description": "Stages sized by the amount of their open deals, with conversion={false} because each stage holds different deals. onClick lists the deals of a stage next to the funnel, and renderTooltip shows their count and win probability."
+        }
+      },
+      "data": {
+        "signup": {
+          "pricing": "Pricing page",
+          "started": "Started sign-up",
+          "verified": "Verified email",
+          "project": "Created project",
+          "invited": "Invited teammate",
+          "upgraded": "Upgraded to paid"
+        },
+        "users": "{{users}} users",
+        "ofVisitors": "{{share}} of the visitors",
+        "droppedSince": "{{users}} dropped since “{{stage}}”",
+        "signupAria": "Sign-up funnel",
+        "features": {
+          "alerts": "Alerts",
+          "dashboards": "Dashboards",
+          "integrations": "Integrations",
+          "reports": "Reports",
+          "api": "Public API"
+        },
+        "sortOrder": "Sort order",
+        "sorts": {
+          "descending": "Descending",
+          "ascending": "Ascending",
+          "none": "Data order"
+        },
+        "weeklyUsers": "{{users}} weekly users",
+        "featuresAria": "Weekly active users per feature",
+        "shop": {
+          "visits": "Visits",
+          "product": "Product page",
+          "cart": "Added to cart",
+          "checkout": "Checkout",
+          "payment": "Payment",
+          "order": "Order placed"
+        },
+        "stage": "Stage",
+        "visitors": "Visitors",
+        "dropOff": "Drop-off",
+        "conversionOverall": "{{share}} of the first stage",
+        "shopAria": "Checkout funnel of an online shop",
+        "dropOffTable": "Drop-off between the stages",
+        "hiring": {
+          "applied": "Applied",
+          "screened": "Screened",
+          "technical": "Technical interview",
+          "onsite": "On-site interview",
+          "offer": "Offer",
+          "hired": "Hired"
+        },
+        "candidates": "{{candidates}} candidates",
+        "stageTime": "Typical time in this stage: {{days}}",
+        "hiringAria": "Hiring pipeline of an engineering role",
+        "hiringSelected": "{{stage}}: {{candidates}} candidates ({{share}} of the applicants)",
+        "hiringSummary": "{{rate}} of the applicants are hired, after {{days}} on average",
+        "devices": {
+          "desktop": "Desktop",
+          "mobile": "Mobile"
+        },
+        "conversionRate": "{{rate}} conversion",
+        "deviceFunnelAria": "Checkout funnel on {{device}}",
+        "campaigns": {
+          "stages": {
+            "impressions": "Impressions",
+            "clicks": "Clicks",
+            "leads": "Leads",
+            "qualified": "Qualified leads",
+            "customers": "Customers"
+          },
+          "channels": {
+            "all": "All channels",
+            "search": "Search ads",
+            "social": "Social media",
+            "email": "Email",
+            "partners": "Partners"
+          },
+          "channel": "Channel",
+          "fromPrevious": "{{share}} of the previous stage",
+          "costPer": "Cost per result: {{cost}}",
+          "aria": "Marketing funnel of this month: {{channel}}",
+          "summary": "Spend: {{spend}} · Customers: {{customers}} · Acquisition cost: {{cac}} per customer"
+        },
+        "whatIf": {
+          "stages": {
+            "visits": "Visits",
+            "cart": "Added to cart",
+            "checkout": "Checkout",
+            "paid": "Paid orders"
+          },
+          "aria": "Monthly checkout funnel computed from the conversion rates",
+          "step": "{{from}} → {{to}}",
+          "lower": "Lower the conversion of {{step}}",
+          "raise": "Raise the conversion of {{step}}",
+          "reset": "Reset to today's rates",
+          "summary": "{{orders}} orders ({{ordersDelta}}) · {{revenue}} revenue ({{revenueDelta}}) per month"
+        },
+        "sale": {
+          "stages": {
+            "visitors": "Visitors",
+            "product": "Viewed the deal",
+            "cart": "Added to cart",
+            "checkout": "Checkout",
+            "orders": "Orders"
+          },
+          "aria": "Flash sale funnel, updated live",
+          "pause": "Pause",
+          "resume": "Resume",
+          "restart": "Restart",
+          "status": "{{time}} · {{orders}} orders · {{rate}} of the visitors",
+          "ended": "The sale is over: {{orders}} orders."
+        },
+        "pipeline": {
+          "stages": {
+            "lead": "Lead",
+            "qualified": "Qualified",
+            "demo": "Demo",
+            "proposal": "Proposal",
+            "negotiation": "Negotiation"
+          },
+          "dealsAmount": "{{deals}} deals · {{amount}}",
+          "probability": "Win probability: {{share}}",
+          "aria": "Open deals by pipeline stage, by amount",
+          "stageTitle": "{{stage}}: {{deals}} open deals",
+          "forecast": "Weighted forecast: {{amount}}",
+          "hint": "Click a stage to list its deals."
+        }
+      },
+      "api": {
+        "FunnelChartProps": {
+          "data": "Stages: a name, a value and an optional color",
+          "sort": "Order of the stages: descending, ascending or the data order",
+          "gap": "Vertical gap between the stages, in pixels",
+          "conversion": "Shows the conversion rate from the previous stage",
+          "shape": "Shape of the stages: trapezoids that narrow to the next stage, or centered bars"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Each stage narrows to the next one and shows the conversion from the previous stage; tap a stage to select it."
+          }
+        },
+        "data": {
+          "stages": {
+            "install": "Installed",
+            "open": "Opened",
+            "signup": "Signed up",
+            "trial": "Started a trial",
+            "paid": "Paid"
+          },
+          "signupAria": "Sign-up funnel of a mobile app",
+          "selectedStage": "{{stage}}: {{users}} users ({{share}} of the installs)",
+          "tapStage": "Tap a stage to select it"
+        }
+      },
+      "wc": {
+        "demos": {
+          "conversion": {
+            "title": "Conversion funnel",
+            "description": "Stages narrowing to the next one, each labelled with its conversion rate from the previous stage."
+          },
+          "bars": {
+            "title": "Sorted bars",
+            "description": "Centered bars instead of trapezoids, with the stages sorted by value."
+          }
+        },
+        "minerva-funnel-chart": {
+          "props": {
+            "hideConversion": "Hides the conversion rates from the previous stage",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, null when nothing is hovered",
+            "minerva-click": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+            "minerva-toggle": "A legend item was clicked (or toggle() called); detail: { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node by index",
+            "getRenderer": "Backend drawing the shapes (webgpu, webgl2, webgl, canvas2d), null until ready; set it with the renderer engine option"
+          }
+        }
+      }
+    }
+  }
+}

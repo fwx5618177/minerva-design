@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "week-strip",
+  "title": "WeekStrip",
+  "description": "Les sept jours d’une semaine sur une ligne : sélectionnez un jour, repérez aujourd’hui d’un coup d’œil, marquez les jours qui ont des tâches et passez d’une semaine à l’autre.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "WeekStrip",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "WeekStrip"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "string",
+            "required": false,
+            "description": "Selected day, \"YYYY-MM-DD\" (controlled, `v-model`)",
+            "typeText": "string"
+          },
+          {
+            "name": "defaultValue",
+            "type": "string",
+            "required": false,
+            "description": "Initially selected day, \"YYYY-MM-DD\" (uncontrolled)",
+            "typeText": "string"
+          },
+          {
+            "name": "week",
+            "type": "Date",
+            "required": false,
+            "description": "Displayed week (controlled, `v-model:week`; any day of the week)",
+            "typeText": "Date"
+          },
+          {
+            "name": "defaultWeek",
+            "type": "Date",
+            "required": false,
+            "description": "Initially displayed week (uncontrolled; any day of the week). While the\nweek is uncontrolled it follows the selected day.",
+            "typeText": "Date"
+          },
+          {
+            "name": "firstDayOfWeek",
+            "type": "number",
+            "default": "1",
+            "required": false,
+            "description": "First day of the week: 0 = Sunday, 1 = Monday ... 6 = Saturday",
+            "typeText": "number"
+          },
+          {
+            "name": "today",
+            "type": "string",
+            "required": false,
+            "description": "The day marked as today, \"YYYY-MM-DD\" (e.g. a server date or a fixed\ndate in tests)",
+            "typeText": "string"
+          },
+          {
+            "name": "markers",
+            "type": "Readonly<Record<string, WeekStripMarker>>",
+            "required": false,
+            "description": "Per-day markers keyed by \"YYYY-MM-DD\": a number shows a count badge\n(99+ above 99), true shows a dot",
+            "typeText": "Readonly<Record<string, WeekStripMarker>>"
+          },
+          {
+            "name": "getDayLabel",
+            "type": "((day: string, marker: WeekStripMarker | undefined) => string)",
+            "required": false,
+            "description": "Accessible label of a day; receives the day (\"YYYY-MM-DD\") and its marker",
+            "typeText": "((day: string, marker: WeekStripMarker | undefined) => string)"
+          },
+          {
+            "name": "showNavigation",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows previous / next week buttons around the month of the week",
+            "typeText": "boolean"
+          },
+          {
+            "name": "previousWeekLabel",
+            "type": "string",
+            "required": false,
+            "description": "Label of the previous-week button",
+            "typeText": "string"
+          },
+          {
+            "name": "nextWeekLabel",
+            "type": "string",
+            "required": false,
+            "description": "Label of the next-week button",
+            "typeText": "string"
+          },
+          {
+            "name": "weekdayLabels",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Weekday names, Monday first (7 labels), whatever firstDayOfWeek is",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "Locale of the dates (Intl.DateTimeFormat)",
+            "typeText": "string"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Blocks selection and navigation",
+            "typeText": "boolean"
+          },
+          {
+            "name": "size",
+            "type": "WeekStripSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Cell density",
+            "typeText": "WeekStripSize"
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the day list",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[day: string]",
+            "typeText": "[day: string]",
+            "parameters": [
+              {
+                "name": "day",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[day: string]",
+            "typeText": "[day: string]",
+            "parameters": [
+              {
+                "name": "day",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:week",
+            "type": "[week: Date]",
+            "typeText": "[week: Date]",
+            "parameters": [
+              {
+                "name": "week",
+                "position": 0,
+                "typeText": "Date",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "weekChange",
+            "type": "[weekStart: Date]",
+            "typeText": "[weekStart: Date]",
+            "parameters": [
+              {
+                "name": "weekStart",
+                "position": 0,
+                "typeText": "Date",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          },
+          {
+            "prop": "week",
+            "event": "update:week",
+            "syntax": "v-model:week"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:WeekStrip": {
+      "kind": "cssVars",
+      "source": "react/src/components/WeekStrip",
+      "vars": [
+        {
+          "name": "--week-strip-gap",
+          "description": "Space between the day cells"
+        },
+        {
+          "name": "--week-strip-day-height",
+          "description": "Minimum height of a day cell (defaults to 3.5rem; 2.75rem with size=\"small\", 4.5rem with size=\"large\"); cells grow to fit a count badge"
+        },
+        {
+          "name": "--week-strip-radius",
+          "description": "Corner radius of the day cells and buttons (defaults to --radius-md)"
+        },
+        {
+          "name": "--week-strip-hover-background",
+          "description": "Background of a hovered day"
+        },
+        {
+          "name": "--week-strip-selected-background",
+          "description": "Background of the selected day (defaults to --primary-color)"
+        },
+        {
+          "name": "--week-strip-selected-color",
+          "description": "Text color of the selected day"
+        },
+        {
+          "name": "--week-strip-today-color",
+          "description": "Ring and number color marking today"
+        },
+        {
+          "name": "--week-strip-weekday-color",
+          "description": "Text color of the weekday names"
+        },
+        {
+          "name": "--week-strip-marker-background",
+          "description": "Background of the count badge"
+        },
+        {
+          "name": "--week-strip-marker-color",
+          "description": "Text color of the count badge (and color of the dot)"
+        },
+        {
+          "name": "--week-strip-nav-height",
+          "description": "Size of the previous / next week buttons (defaults to the density's small control height)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/week-strip/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/week-strip/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { VStack, WeekStrip } from \"minerva-design/vue\";\nconst pad = (n: number) => String(n).padStart(2, \"0\");\nconst now = new Date();\nconst day = ref(\n  `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`,\n);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\" style=\"max-width: 480px\"\n    ><WeekStrip v-model=\"day\" aria-label=\"Study days\" /><output\n      >Selected: {{ day }}</output\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "markers",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/week-strip/vue/markers.vue",
+      "files": {
+        "apps/docs/src/docs/pages/week-strip/vue/markers.vue": "<script setup lang=\"ts\">\nimport { VStack, WeekStrip, type WeekStripMarker } from \"minerva-design/vue\";\nconst pad = (n: number) => String(n).padStart(2, \"0\");\nconst inDays = (offset: number) => {\n  const date = new Date();\n  date.setDate(date.getDate() + offset);\n  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;\n};\n// A number shows a count badge, true shows a dot\nconst markers: Record<string, WeekStripMarker> = {\n  [inDays(-1)]: 2,\n  [inDays(0)]: 3,\n  [inDays(1)]: true,\n  [inDays(3)]: 1,\n};\nconst dayLabel = (day: string, marker: WeekStripMarker | undefined) =>\n  typeof marker === \"number\"\n    ? `${day}: ${marker} tasks`\n    : marker\n      ? `${day}: reminder`\n      : day;\n</script>\n<template>\n  <VStack :gap=\"6\" align=\"stretch\" style=\"max-width: 480px\"\n    ><WeekStrip :default-value=\"inDays(0)\" :markers=\"markers\" /><WeekStrip\n      :default-value=\"inDays(0)\"\n      :markers=\"markers\"\n      :first-day-of-week=\"0\"\n      :get-day-label=\"dayLabel\"\n      aria-label=\"Tasks this week (Sunday first)\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "markers",
+      "description": ""
+    },
+    {
+      "id": "navigation",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/week-strip/vue/navigation.vue",
+      "files": {
+        "apps/docs/src/docs/pages/week-strip/vue/navigation.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { VStack, WeekStrip } from \"minerva-design/vue\";\nconst day = ref<string>();\nconst week = ref(new Date());\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\" style=\"max-width: 480px\"\n    ><WeekStrip v-model=\"day\" v-model:week=\"week\" show-navigation /><output\n      >Week of {{ week.toLocaleDateString()\n      }}{{ day ? ` · selected ${day}` : \"\" }}</output\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "navigation",
+      "description": ""
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/week-strip/vue/sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/week-strip/vue/sizes.vue": "<script setup lang=\"ts\">\nimport { VStack, WeekStrip } from \"minerva-design/vue\";\nconst pad = (n: number) => String(n).padStart(2, \"0\");\nconst now = new Date();\nconst markers = {\n  [`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`]: 4,\n};\n</script>\n<template>\n  <VStack :gap=\"6\" align=\"stretch\" style=\"max-width: 480px\"\n    ><WeekStrip\n      size=\"small\"\n      :markers=\"markers\"\n      aria-label=\"Small week\" /><WeekStrip\n      :markers=\"markers\"\n      aria-label=\"Medium week\" /><WeekStrip\n      size=\"large\"\n      :markers=\"markers\"\n      aria-label=\"Large week\" /><WeekStrip\n      disabled\n      :markers=\"markers\"\n      aria-label=\"Disabled week\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "WeekStrip",
+      "description": "Les sept jours d’une semaine sur une ligne : sélectionnez un jour, repérez aujourd’hui d’un coup d’œil, marquez les jours qui ont des tâches et passez d’une semaine à l’autre.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Un jour sélectionné contrôlé (« YYYY-MM-DD »). Aujourd’hui est cerclé et porte aria-current=\"date\" ; la bande est une listbox horizontale utilisable avec les flèches, Home / End et PageUp / PageDown."
+        },
+        "markers": {
+          "title": "Marqueurs",
+          "description": "markers associe un jour à un nombre (un badge de comptage, 99+ au-delà de 99) ou à true (un point). firstDayOfWeek choisit la première colonne ; getDayLabel personnalise les noms accessibles."
+        },
+        "navigation": {
+          "title": "Navigation par semaine",
+          "description": "showNavigation ajoute des boutons semaine précédente / suivante et le mois de la semaine. Contrôlez la semaine affichée avec week / onWeekChange ; les flèches passent aussi aux semaines voisines."
+        },
+        "sizes": {
+          "title": "Tailles et désactivation",
+          "description": "Trois densités (les comptages deviennent des points en taille small) et une bande désactivée."
+        }
+      },
+      "api": {
+        "WeekStripProps": {
+          "value": "Jour sélectionné, « YYYY-MM-DD » (contrôlé ; à associer à onChange)",
+          "defaultValue": "Jour sélectionné initialement, « YYYY-MM-DD » (non contrôlé)",
+          "onChange": "Appelé avec le jour sélectionné (« YYYY-MM-DD »)",
+          "week": "Semaine affichée (contrôlée ; n’importe quel jour de la semaine ; à associer à onWeekChange)",
+          "defaultWeek": "Semaine affichée initialement (non contrôlée ; n’importe quel jour de la semaine) ; une semaine non contrôlée suit le jour sélectionné",
+          "onWeekChange": "Appelé avec le premier jour de la semaine demandée, à minuit local",
+          "firstDayOfWeek": "Premier jour de la semaine : 0 = dimanche, 1 = lundi … 6 = samedi",
+          "today": "Le jour marqué comme aujourd’hui, « YYYY-MM-DD » (par exemple une date serveur ou une date fixe dans les tests)",
+          "markers": "Marqueurs par jour, indexés par « YYYY-MM-DD » : un nombre affiche un badge de comptage (99+ au-delà de 99), true affiche un point",
+          "getDayLabel": "Libellé accessible d’un jour ; reçoit le jour (« YYYY-MM-DD ») et son marqueur",
+          "showNavigation": "Affiche des boutons semaine précédente / suivante autour du mois de la semaine",
+          "previousWeekLabel": "Libellé du bouton semaine précédente",
+          "nextWeekLabel": "Libellé du bouton semaine suivante",
+          "weekdayLabels": "Noms des jours, en commençant par lundi (7 libellés), quel que soit firstDayOfWeek",
+          "locale": "Locale des dates (Intl.DateTimeFormat)",
+          "disabled": "Bloque la sélection et la navigation",
+          "size": "Densité des cellules",
+          "aria-label": "Libellé accessible de la liste des jours",
+          "className": "Nom de classe supplémentaire",
+          "ref": "Ref vers le <div> racine"
+        }
+      },
+      "cssVars": {
+        "--week-strip-gap": "Espace entre les cellules des jours",
+        "--week-strip-day-height": "Hauteur d’une cellule (3.5rem par défaut ; 2.75rem avec size=\"small\", 4.5rem avec size=\"large\")",
+        "--week-strip-radius": "Rayon des angles des cellules et des boutons (--radius-md par défaut)",
+        "--week-strip-hover-background": "Fond d’un jour survolé",
+        "--week-strip-selected-background": "Fond du jour sélectionné (--primary-color par défaut)",
+        "--week-strip-selected-color": "Couleur du texte du jour sélectionné",
+        "--week-strip-today-color": "Couleur de l’anneau et du numéro d’aujourd’hui",
+        "--week-strip-weekday-color": "Couleur du texte des noms des jours",
+        "--week-strip-marker-background": "Fond du badge de comptage",
+        "--week-strip-marker-color": "Couleur du texte du badge de comptage (et du point)",
+        "--week-strip-nav-height": "Taille des boutons semaine précédente / suivante (par défaut la hauteur des petits contrôles de la densité)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "value (« AAAA-MM-JJ ») est un attribut ; minerva-change signale le jour sélectionné. Un seul arrêt de tabulation : les flèches, Début / Fin et Page préc. / Page suiv. parcourent les jours."
+          },
+          "markers": {
+            "title": "Marqueurs",
+            "description": "markers est une propriété associant un jour à un nombre (un badge de compte, 99+ au-delà de 99) ou à true (un point). first-day-of-week choisit la première colonne ; la propriété getDayLabel personnalise les noms accessibles."
+          },
+          "navigation": {
+            "title": "Navigation par semaine",
+            "description": "show-navigation ajoute les boutons semaine précédente / suivante et le mois de la semaine ; minerva-week-change signale le premier jour de la semaine affichée, y compris quand les flèches passent à une autre semaine."
+          },
+          "sizes": {
+            "title": "Tailles et désactivé",
+            "description": "Trois densités (les comptes deviennent des points avec size=\"small\" ; voir aussi les états personnalisés :state(size-small) …) et une bande désactivée."
+          }
+        },
+        "minerva-week-strip": {
+          "events": {
+            "minerva-change": "L'utilisateur a sélectionné un jour (detail : { value }, « AAAA-MM-JJ »).",
+            "minerva-week-change": "L'utilisateur a affiché une autre semaine (detail : { week }, son premier jour à minuit local)."
+          },
+          "methods": {
+            "focus": "Donne le focus au jour actif."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Interagissez avec le composant natif dans cet aperçu de téléphone."
+          }
+        }
+      }
+    }
+  }
+}

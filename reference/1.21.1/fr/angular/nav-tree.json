@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "nav-tree",
+  "title": "NavTree",
+  "description": "Navigation latérale avec sections, branches dépliables, élément actif et mode compact à icônes. Les flèches déplacent le focus et ouvrent ou ferment les branches.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "NavTree",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnNavTree. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnNavTree. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnNavTree"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-nav-tree",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly NavTreeItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "expanded",
+            "typeText": "readonly string[]",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string",
+            "required": false
+          },
+          {
+            "name": "expandedChange",
+            "typeText": "readonly string[]",
+            "required": false
+          },
+          {
+            "name": "selected",
+            "typeText": "NavTreeItem",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "NavTreeItem",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          },
+          {
+            "prop": "expanded",
+            "event": "expandedChange",
+            "syntax": "[(expanded)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:NavTree": {
+      "kind": "cssVars",
+      "source": "react/src/components/NavTree",
+      "vars": [
+        {
+          "name": "--nav-tree-gap",
+          "description": "Space between the sections"
+        },
+        {
+          "name": "--nav-tree-item-height",
+          "description": "Minimum height of a top-level row (defaults to the density's control height)"
+        },
+        {
+          "name": "--nav-tree-item-padding-x",
+          "description": "Horizontal padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--nav-tree-item-radius",
+          "description": "Corner radius of a row (defaults to --radius-md)"
+        },
+        {
+          "name": "--nav-tree-indent",
+          "description": "Indentation of nested rows"
+        },
+        {
+          "name": "--nav-tree-active-background",
+          "description": "Background of the active row"
+        },
+        {
+          "name": "--nav-tree-active-color",
+          "description": "Accent color of the active row's icon"
+        },
+        {
+          "name": "--nav-tree-hover-background",
+          "description": "Background of a hovered row (defaults to --hover-color)"
+        },
+        {
+          "name": "--nav-tree-guide-color",
+          "description": "Color of the indent guide of an expanded branch (defaults to --border-color)"
+        },
+        {
+          "name": "--nav-tree-guide-active-color",
+          "description": "Color of the indent guide of the branch holding the active row"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "hierarchical-navigation",
+      "title": "Hierarchical navigation",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnNavTree } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnNavTree],\n  template: `\n<mn-nav-tree [items]=\"items\" [(value)]=\"value\" [expanded]=\"['projects']\"/><output>Selected: {{value}}</output>\n  `,\n})\nexport class Example {\n  value = \"overview\";\n  items = [\n  {\n    \"id\": \"overview\",\n    \"label\": \"Overview\",\n    \"icon\": \"⌂\"\n  },\n  {\n    \"id\": \"projects\",\n    \"label\": \"Projects\",\n    \"children\": [\n      {\n        \"id\": \"design\",\n        \"label\": \"Design\",\n        \"description\": \"Active project\"\n      },\n      {\n        \"id\": \"engineering\",\n        \"label\": \"Engineering\"\n      }\n    ]\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "disabled-destinations",
+      "title": "Disabled destinations",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnNavTree } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnNavTree],\n  template: `\n<mn-nav-tree label=\"Administration\" [items]=\"items\"/>\n  `,\n})\nexport class Example {\n  items = [\n  {\n    \"id\": \"settings\",\n    \"label\": \"Settings\"\n  },\n  {\n    \"id\": \"billing\",\n    \"label\": \"Billing\",\n    \"disabled\": true\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "NavTree",
+      "description": "Navigation latérale avec sections, branches dépliables, élément actif et mode compact à icônes. Les flèches déplacent le focus et ouvrent ou ferment les branches.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Les branches contenant l'élément actif s'ouvrent automatiquement ; une fermeture manuelle est mémorisée. Les éléments acceptent icône, description et contenu de fin."
+        },
+        "collapsed": {
+          "title": "Mode compact et retour à la ligne",
+          "description": "collapsed n'affiche que les icônes ; wrapLabels renvoie les libellés longs à la ligne au lieu de les tronquer."
+        },
+        "custom-link": {
+          "title": "Liens de routeur",
+          "description": "renderLink rend les feuilles avec le lien de votre routeur ; conservez state.className. Les branches dépliées peuvent être contrôlées."
+        }
+      },
+      "api": {
+        "NavTreeProps": {
+          "sections": "Sections d'éléments",
+          "activeId": "Id de l'élément actif (page courante) ; ses ancêtres se déplient",
+          "collapsed": "Mode compact : icônes seules",
+          "wrapLabels": "Renvoie à la ligne les libellés et descriptions longs au lieu de les tronquer",
+          "defaultExpandedIds": "Ids des branches dépliées au départ (non contrôlé)",
+          "expandedIds": "Ids des branches dépliées (contrôlé ; avec onExpandedChange)",
+          "onExpandedChange": "Appelée avec les ids dépliés quand une branche bascule",
+          "onItemSelect": "Appelée quand un lien ou une branche est activé",
+          "renderLink": "Rendu personnalisé des liens (p. ex. un Link de routeur) ; ajoutez-y state.className",
+          "className": "Classe supplémentaire",
+          "style": "Styles en ligne",
+          "aria-label": "Nom accessible du repère <nav>",
+          "ref": "Ref vers l'élément <nav>",
+          "aria-labelledby": "id du ou des éléments qui étiquettent le repère <nav> (remplace le libellé par défaut)",
+          "id": "id de l’élément <nav>"
+        },
+        "NavTreeSection": {
+          "id": "Id unique de la section",
+          "title": "Titre facultatif de la section",
+          "items": "Éléments de la section"
+        },
+        "NavTreeItem": {
+          "id": "Id unique (comparé à activeId / aux ids dépliés)",
+          "label": "Libellé visible",
+          "description": "Ligne secondaire sous le libellé (masquée pour les éléments imbriqués)",
+          "href": "Cible du lien d'une feuille",
+          "icon": "Icône de début",
+          "endContent": "Contenu de fin, p. ex. un badge ou un compteur",
+          "disabled": "Désactive l'élément",
+          "children": "Éléments enfants ; l'élément devient une branche dépliable"
+        },
+        "NavTreeItemState": {
+          "active": "L'élément est actif",
+          "ancestorActive": "Un descendant de l'élément est actif",
+          "expanded": "La branche est dépliée",
+          "depth": "Profondeur d'imbrication (0 au premier niveau)",
+          "collapsed": "L'arbre est en mode compact",
+          "hasChildren": "L'élément a des enfants",
+          "disabled": "L'élément est désactivé",
+          "className": "Classes à mettre sur le lien rendu"
+        }
+      },
+      "cssVars": {
+        "--nav-tree-gap": "Espace entre les sections",
+        "--nav-tree-item-height": "Hauteur minimale d'une ligne de premier niveau (par défaut la hauteur de contrôle de la densité)",
+        "--nav-tree-item-padding-x": "Marge intérieure horizontale d'une ligne (suit celle des lignes de la densité)",
+        "--nav-tree-item-radius": "Rayon des coins d'une ligne (par défaut --radius-md)",
+        "--nav-tree-indent": "Retrait des lignes imbriquées",
+        "--nav-tree-active-background": "Fond de la ligne active",
+        "--nav-tree-active-color": "Couleur d'accent de l'icône de la ligne active",
+        "--nav-tree-hover-background": "Fond d'une ligne survolée (par défaut --hover-color)",
+        "--nav-tree-guide-color": "Couleur du guide d'indentation d'une branche dépliée (par défaut --border-color)",
+        "--nav-tree-guide-active-color": "Couleur du guide d'indentation de la branche contenant la ligne active"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Sections, icônes, compteurs et branche via la propriété sections. minerva-select est annulé pour router côté client et déplacer active-id."
+          },
+          "collapsed": {
+            "title": "Mode compact",
+            "description": "collapsed ne garde que les icônes, pour une barre latérale étroite ; les libellés restent les noms accessibles."
+          },
+          "expansion": {
+            "title": "Dépliage contrôlé",
+            "description": "expandedIds fixe les branches ouvertes et minerva-expanded-change est annulable (Getting started reste ouvert) ; wrap-labels replie les libellés longs."
+          }
+        },
+        "minerva-nav-tree": {
+          "events": {
+            "minerva-select": "Un lien / une action feuille ou une branche a été activé (detail : { value, item }) ; annulable : preventDefault() empêche aussi la navigation du lien (routage côté client).",
+            "minerva-expanded-change": "L'utilisateur a déplié ou replié une branche (detail : { expandedIds, item, expanded }) ; annulable : preventDefault() conserve l'état courant."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

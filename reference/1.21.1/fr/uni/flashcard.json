@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "fr",
+  "renderer": "uni",
+  "page": "flashcard",
+  "title": "Flashcard",
+  "description": "Une carte d'étude à deux faces qui se retourne entre une question et sa réponse, pour la révision espacée.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Flashcard",
+      "support": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer slots with plain-text front/back fallbacks, translated front/back captions and optional hint, controlled/default flipped (v-model:flipped, flippedChange), flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region; H5 adds role=button with aria-pressed, Enter/Space and ignores taps on interactive face content. Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). Device rendering is not validated. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer slots with plain-text front/back fallbacks, translated front/back captions and optional hint, controlled/default flipped (v-model:flipped, flippedChange), flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region; H5 adds role=button with aria-pressed, Enter/Space and ignores taps on interactive face content. Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). Device rendering is not validated. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "Flashcard"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "front",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "back",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "frontLabel",
+            "typeText": "string | null | undefined",
+            "required": false
+          },
+          {
+            "name": "backLabel",
+            "typeText": "string | null | undefined",
+            "required": false
+          },
+          {
+            "name": "hint",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "showHint",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "flipped",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultFlipped",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "flipOnClick",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "axis",
+            "typeText": "\"y\" | \"x\" | undefined",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"outline\" | \"filled\" | \"elevated\" | undefined",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"medium\" | \"small\" | \"large\" | undefined",
+            "required": false
+          },
+          {
+            "name": "minHeight",
+            "typeText": "string | number | undefined",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "flippedChange",
+            "typeText": "[flipped: boolean]",
+            "parameters": [
+              {
+                "name": "flipped",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:flipped",
+            "typeText": "[flipped: boolean]",
+            "parameters": [
+              {
+                "name": "flipped",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "front",
+            "typeText": "{}"
+          },
+          {
+            "name": "back",
+            "typeText": "{}"
+          },
+          {
+            "name": "footer",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "flipped",
+            "event": "update:flipped",
+            "syntax": "v-model:flipped"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Flashcard": {
+      "kind": "cssVars",
+      "source": "react/src/components/Flashcard",
+      "vars": [
+        {
+          "name": "--flashcard-min-height",
+          "description": "Minimum height of the card (defaults to 12rem; the minHeight prop sets it); the card grows to fit the taller face"
+        },
+        {
+          "name": "--flashcard-bg-color",
+          "description": "Background color of the faces (defaults to --surface-color, --surface-muted-color with variant=\"filled\")"
+        },
+        {
+          "name": "--flashcard-border-color",
+          "description": "Border color of the faces (variant=\"outline\")"
+        },
+        {
+          "name": "--flashcard-radius",
+          "description": "Corner radius of the faces (defaults to --radius-lg)"
+        },
+        {
+          "name": "--flashcard-shadow",
+          "description": "Shadow of the faces (variant=\"elevated\"; defaults to --shadow-lg)"
+        },
+        {
+          "name": "--flashcard-padding",
+          "description": "Padding of the faces (defaults to the size's spacing)"
+        },
+        {
+          "name": "--flashcard-font-size",
+          "description": "Font size of the face content (defaults to the size's font size)"
+        },
+        {
+          "name": "--flashcard-label-color",
+          "description": "Text color of the face captions"
+        },
+        {
+          "name": "--flashcard-perspective",
+          "description": "Perspective of the 3D flip (defaults to 1200px)"
+        },
+        {
+          "name": "--flashcard-duration",
+          "description": "Duration of the flip (defaults to 0.5s)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Flashcard",
+      "description": "Une carte d'étude à deux faces qui se retourne entre une question et sa réponse, pour la révision espacée.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Cliquez sur la carte, ou appuyez sur Entrée / Espace dessus, pour la retourner avec une rotation 3D. La carte est un bouton bascule (aria-pressed) ; la face cachée est inert et le verso est une région live polite, la réponse révélée est donc annoncée."
+        },
+        "controlled": {
+          "title": "Révision contrôlée avec boutons de notation",
+          "description": "flipped / onFlippedChange contrôlent la face ; footer place des boutons de notation sous la carte (il ne se retourne pas). frontLabel / backLabel remplacent les légendes par défaut « Question » / « Réponse »."
+        },
+        "axis-variants": {
+          "title": "Axe, variantes et tailles",
+          "description": "axis=\"x\" retourne verticalement ; variant reprend Card (elevated, outline, filled) et size ajuste les marges et le texte. Les deux faces partagent une même cellule de grille : la carte prend la hauteur de la plus haute."
+        },
+        "reduced-disabled": {
+          "title": "Désactivée et retournement programmé",
+          "description": "disabled bloque le retournement et estompe la carte ; avec flipOnClick={false} la carte n'est pas un bouton et seul flipped la retourne. Avec prefers-reduced-motion les faces se fondent au lieu de pivoter."
+        }
+      },
+      "api": {
+        "FlashcardProps": {
+          "front": "Contenu du recto (la question)",
+          "back": "Contenu du verso (la réponse)",
+          "footer": "Contenu sous la carte, non retourné (p. ex. des boutons de notation)",
+          "frontLabel": "Petite légende du recto ; null, false ou \"\" la masque",
+          "backLabel": "Petite légende du verso ; null, false ou \"\" la masque",
+          "hint": "Indication sur le recto (affichée avec showHint quand la carte se retourne au clic)",
+          "showHint": "Affiche l'indication sur le recto",
+          "flipped": "Indique si le verso est affiché (contrôlé ; à associer à onFlippedChange)",
+          "defaultFlipped": "Indique si le verso est affiché au départ (non contrôlé)",
+          "onFlippedChange": "Appelé avec le nouvel état retourné",
+          "flipOnClick": "Un clic sur la carte (ou Entrée / Espace) la retourne ; à false la carte n'est pas un bouton et seul flipped la retourne",
+          "disabled": "Bloque le retournement et estompe la carte",
+          "axis": "Axe de rotation : \"y\" retourne horizontalement, \"x\" verticalement",
+          "variant": "Style de surface",
+          "size": "Échelle des marges et du texte",
+          "minHeight": "Hauteur minimale de la carte (un nombre est en px) ; la carte s'agrandit pour contenir la face la plus haute",
+          "aria-label": "Libellé accessible de la carte",
+          "className": "Nom de classe supplémentaire",
+          "ref": "Ref vers le <div> racine"
+        }
+      },
+      "cssVars": {
+        "--flashcard-min-height": "Hauteur minimale de la carte (12rem par défaut ; définie par la prop minHeight) ; la carte s'agrandit pour contenir la face la plus haute",
+        "--flashcard-bg-color": "Couleur de fond des faces (--surface-color par défaut, --surface-muted-color avec variant=\"filled\")",
+        "--flashcard-border-color": "Couleur de bordure des faces (variant=\"outline\")",
+        "--flashcard-radius": "Rayon des coins des faces (--radius-lg par défaut)",
+        "--flashcard-shadow": "Ombre des faces (variant=\"elevated\" ; --shadow-lg par défaut)",
+        "--flashcard-padding": "Marge intérieure des faces (selon size par défaut)",
+        "--flashcard-font-size": "Taille de police du contenu des faces (selon size par défaut)",
+        "--flashcard-label-color": "Couleur du texte des légendes",
+        "--flashcard-perspective": "Perspective du retournement 3D (1200px par défaut)",
+        "--flashcard-duration": "Durée du retournement (0.5s par défaut)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "front / back sont des attributs texte (les slots front / back acceptent du contenu riche). Cliquez sur la carte, ou appuyez sur Entrée / Espace, pour la retourner ; l'attribut flipped reflète la face."
+          },
+          "controlled": {
+            "title": "Révision avec boutons de notation",
+            "description": "minerva-flipped-change signale les retournements de l'utilisateur (annulable : preventDefault() garde la face) ; le slot footer contient les boutons de notation, qui définissent la propriété flipped."
+          },
+          "axis-variants": {
+            "title": "Axe, variantes et tailles",
+            "description": "axis=\"x\" retourne verticalement ; variant (elevated, outline, filled) et size sont aussi des états personnalisés (:state(variant-outline), :state(size-small)...)."
+          },
+          "reduced-disabled": {
+            "title": "Désactivée et retournement programmé",
+            "description": "disabled bloque le retournement ; flip-on-click=\"false\" ne laisse que la propriété flipped. Avec prefers-reduced-motion les faces se fondent."
+          }
+        },
+        "minerva-flashcard": {
+          "events": {
+            "minerva-flipped-change": "L'utilisateur a retourné la carte (detail: { flipped }) ; annulable."
+          },
+          "slots": {
+            "front": "Contenu du recto (la question ; à défaut, l'attribut front)",
+            "back": "Contenu du verso (la réponse ; à défaut, l'attribut back)",
+            "footer": "Contenu sous la carte, non retourné (p. ex. des boutons de notation)"
+          },
+          "methods": {
+            "focus": "Donne le focus à la carte.",
+            "toggle": "Retourne la carte comme un geste utilisateur (déclenche minerva-flipped-change)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Interagissez avec le composant natif dans cet aperçu de téléphone."
+          }
+        }
+      }
+    }
+  }
+}

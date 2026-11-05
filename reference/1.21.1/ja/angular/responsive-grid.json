@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "responsive-grid",
+  "title": "ResponsiveGrid レスポンシブグリッド",
+  "description": "列数がビューポートではなく自身の幅（コンテナクエリ）に従う等幅カラムのグリッド。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "GridItem",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnGridItem. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnGridItem. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnGridItem"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-grid-item, [mnGridItem]",
+        "props": [
+          {
+            "name": "span",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "fullWidth",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ResponsiveGrid",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnResponsiveGrid. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnResponsiveGrid. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnResponsiveGrid"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-responsive-grid, [mnResponsiveGrid]",
+        "props": [
+          {
+            "name": "minColumnWidth",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "gap",
+            "typeText": "string | number",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:ResponsiveGrid": {
+      "kind": "cssVars",
+      "source": "react/src/components/ResponsiveGrid",
+      "vars": [
+        {
+          "name": "--responsive-grid-align-items",
+          "description": "Vertical alignment of the items in their row (default: stretch)"
+        },
+        {
+          "name": "--responsive-grid-justify-items",
+          "description": "Horizontal alignment of the items in their column (default: stretch)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "automatic-columns",
+      "title": "Automatic columns",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnResponsiveGrid, MnCard } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnResponsiveGrid, MnCard],\n  template: `\n<mn-responsive-grid minColumnWidth=\"160px\"><mn-card>Design</mn-card><mn-card>Engineering</mn-card><mn-card>Research</mn-card></mn-responsive-grid>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "spanning-a-row",
+      "title": "Spanning a row",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnResponsiveGrid, MnGridItem, MnCard } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnResponsiveGrid, MnGridItem, MnCard],\n  template: `\n<mn-responsive-grid minColumnWidth=\"140px\"><mn-grid-item fullWidth><mn-card>Full-width summary</mn-card></mn-grid-item><mn-card>Left</mn-card><mn-card>Right</mn-card></mn-responsive-grid>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ResponsiveGrid レスポンシブグリッド",
+      "description": "列数がビューポートではなく自身の幅（コンテナクエリ）に従う等幅カラムのグリッド。",
+      "demos": {
+        "basic": {
+          "title": "レスポンシブな列",
+          "description": "columns は利用可能幅 0・480・768・1200px に対応する base / sm / md / lg の列数を受け付けます。"
+        },
+        "full-width": {
+          "title": "全幅アイテム",
+          "description": "GridItem の fullWidth は行全体にまたがります。rowGap と columnGap は独立しています。"
+        }
+      },
+      "api": {
+        "ResponsiveGridProps": {
+          "ref": "外側（クエリコンテナ）要素への ref",
+          "as": "外側のコンテナとして描画する要素またはコンポーネント（div、section、nav など）",
+          "columns": "列数（1〜12 の整数）：数値、または 480 / 768 / 1200px に対応する { base, sm, md, lg }。それ以外は RangeError",
+          "gap": "行と列の間隔（スペーシングトークンまたは CSS 値）",
+          "rowGap": "行の間隔。既定は gap",
+          "columnGap": "列の間隔。既定は gap"
+        },
+        "GridItemProps": {
+          "ref": "アイテム要素（asChild 時は子要素）への ref",
+          "fullWidth": "親グリッドの行全体にまたがります",
+          "asChild": "ラッパー div を描画せず、props・クラス・ref を唯一の子要素にマージします"
+        }
+      },
+      "cssVars": {
+        "--responsive-grid-align-items": "行内でのアイテムの縦方向の配置（既定値は stretch）",
+        "--responsive-grid-justify-items": "列内でのアイテムの横方向の配置（既定値は stretch）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "columns=\"1 2 3 4\" は base、sm、md、lg のコンテナ幅ごとの列数を設定します。グリッドはビューポートではなく自身の幅に従います。"
+          },
+          "container": {
+            "title": "コンテナのブレークポイント",
+            "description": "columns は JSON（{\"base\": 1, \"sm\": 2, \"lg\": 4}、指定のないブレークポイントは前の値を継承）も受け付け、row-gap / column-gap で間隔を個別に指定できます。スライダーでコンテナの幅を変えてみてください。"
+          },
+          "full-width": {
+            "title": "全幅のアイテム",
+            "description": "子要素を <minerva-grid-item full-width> で囲むと行全体に広がります。"
+          }
+        },
+        "minerva-responsive-grid": {
+          "slots": {
+            "default": "グリッドのアイテム。"
+          }
+        },
+        "minerva-grid-item": {
+          "slots": {
+            "default": "セルのコンテンツ。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

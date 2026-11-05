@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "zh",
+  "renderer": "weapp",
+  "page": "theming",
+  "title": "主题",
+  "description": "内置的浅色与深色主题、以 CSS 变量形式存在的设计令牌，以及如何创建你自己的主题。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {
+    "builtIn": {
+      "title": "内置主题",
+      "text": "React 版内置三套主题：light、dark 和 github-dark。通过 ConfigProvider 的 theme 属性选择其一，或保留默认值 \"auto\"——它会跟随操作系统的配色方案，并在其变化时实时更新。"
+    },
+    "live": {
+      "title": "动手试试",
+      "text": "这个切换器控制整个文档站点的主题。下方的组件以及每个页面都会立即更新，因为它们只读取 CSS 变量。",
+      "current": "当前应用的主题：",
+      "alert": "组件无需重新渲染即可切换主题：变化的只是 <html> 上的 CSS 变量。"
+    },
+    "values": {
+      "title": "可接受的主题值",
+      "text": "ConfigProvider 的 theme 属性（以及 useAutoTheme / applyThemeStyles）接受：",
+      "value": "取值",
+      "auto": "默认值。根据 prefers-color-scheme 使用 light 或 dark，并跟随其变化。",
+      "light": "内置浅色主题。",
+      "dark": "内置深色主题。",
+      "githubDark": "基于 GitHub 深色配色的深色主题。",
+      "object": "完整的主题对象（包含所有基础令牌，以及可选的语义令牌和组件令牌）。通常通过展开一个内置主题来创建。",
+      "pair": "两个主题对象；会应用与系统配色方案匹配的那一个，并自动切换。"
+    },
+    "how": {
+      "title": "工作原理",
+      "p1": "主题是一个由令牌名到 CSS 值组成的扁平映射。ConfigProvider 会把每一项写成名为 --<token> 的 CSS 自定义属性，放在 <html> 元素的内联样式中：",
+      "p2": "组件样式只引用这些变量（例如 background: var(--primary-color)），因此切换主题永远不会重新渲染 React 组件。样式表还在 :root 上声明了所有令牌，所以即使在 ConfigProvider 生效之前（或没有使用它）组件也会以浅色主题的值呈现。"
+    },
+    "custom": {
+      "title": "自定义主题",
+      "text": "展开一个内置主题并覆盖所需的令牌来创建主题，然后传给 ConfigProvider。传入 { light, dark } 组合可继续跟随系统配色。悬停、浅色背景、焦点环等语义令牌由基础令牌派生，因此通常只需覆盖 primary-color。"
+    },
+    "colorProps": {
+      "title": "颜色与变体属性",
+      "color": "所有组件都通过同一个 color 属性选择语义颜色，其类型来自共享的 ColorScheme：primary、neutral、success、warning、danger 或 info（部分组件只接受文档中说明的子集）。它始终是主题角色，而不是原始 CSS 颜色：如需修改组件颜色，请修改主题令牌或组件的 CSS 自定义属性。",
+      "variant": "variant 只用于选择视觉样式，并且在所有组件中含义一致：solid（以该颜色填充，反色文字）、subtle（浅色着色背景）、outline（透明背景，彩色边框和文字）以及 ghost（透明且无边框）。组件可在需要时提供自有样式（Tabs 的 line / enclosed、Input 的 filled 等）。"
+    },
+    "css": {
+      "title": "用 CSS 覆盖令牌",
+      "text": "你也可以在普通样式表中设置令牌。请注意每个值是在哪里定义的：",
+      "note": "ConfigProvider 会把当前主题以内联样式写在 <html> 上，其优先级高于样式表中的 :root 规则。由主题设置的令牌需要 !important 才能被全局覆盖；组件令牌（btn-*、card-*、avatar-*）不会被内置主题设置，可以正常定义。"
+    },
+    "tokens": {
+      "title": "令牌参考",
+      "text": "每个令牌都可以通过 var(--<token>) 使用。色块显示的是当前主题中的值。",
+      "variable": "CSS 变量",
+      "base": "基础令牌",
+      "baseText": "每个主题对象都必须提供（ThemeProps）。",
+      "semantic": "语义令牌",
+      "semanticText": "可选（SemanticThemeProps）。默认值由基础令牌通过 color-mix() 派生；内置深色主题会显式设置其中一部分。",
+      "roles": "角色令牌",
+      "rolesText": "每种角色颜色都会派生出 hover、active、subtle（着色背景）、border 和 text 令牌，例如 --primary-color-hover 或 --danger-color-subtle。",
+      "role": "角色",
+      "component": "组件令牌",
+      "componentText": "可选的组件级覆盖（ComponentThemeProps）。未设置时组件会回退到语义令牌。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { ConfigProvider } from \"minerva-design\";\nimport \"minerva-design/style.css\";\n\nexport default function App() {\n  // \"auto\" (default) follows the operating system's color scheme\n  return <ConfigProvider theme=\"github-dark\">{/* your app */}</ConfigProvider>;\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "<!-- what ConfigProvider writes on the document root -->\n<html style=\"--primary-color: #58a6ff; --background-color: #0d1117; ...\">",
+      "language": "html"
+    },
+    {
+      "source": "import { ConfigProvider, themes, type ComponentTheme } from \"minerva-design\";\n\n// Start from a built-in theme and override the tokens you need.\n// Derived tokens (hover, subtle, focus ring...) follow automatically.\nconst brandLight: ComponentTheme = {\n  ...themes.light,\n  \"primary-color\": \"#7c3aed\",\n  \"link-color\": \"#6d28d9\",\n};\n\nconst brandDark: ComponentTheme = {\n  ...themes.dark,\n  \"primary-color\": \"#a78bfa\",\n  \"focus-ring-color\": \"rgba(167, 139, 250, 0.55)\",\n};\n\nexport default function App() {\n  return (\n    // a single object: always this theme\n    // <ConfigProvider theme={brandLight}>\n    // a { light, dark } pair: follows the system color scheme\n    <ConfigProvider theme={{ light: brandLight, dark: brandDark }}>\n      {/* your app */}\n    </ConfigProvider>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Button, Badge, Alert, Tooltip, toast } from \"minerva-design\";\nimport type { ColorScheme } from \"minerva-design\";\n// \"primary\" | \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\"\n\n<Button color=\"danger\" variant=\"outline\">Delete</Button>\n<Badge color=\"success\" variant=\"subtle\" content=\"Live\" />\n<Alert color=\"warning\" variant=\"solid\" title=\"Quota almost reached\" />\n<Tooltip color=\"info\" content=\"Synced\"><Button>Status</Button></Tooltip>\ntoast.success(\"Saved\"); // toast({ color: \"success\", title: \"Saved\" })",
+      "language": "tsx"
+    },
+    {
+      "source": "/* Component-level tokens are not set by the built-in themes,\n   so a plain stylesheet can define them */\n:root {\n  --card-bg-color: #fdf6e3;\n  --btn-bg-color-hover: #1e40af;\n}\n\n/* Theme tokens are written as inline styles on <html> by ConfigProvider,\n   which beat :root rules: use !important to force a value globally... */\n:root {\n  --radius-md: 10px !important;\n}\n\n/* ...or override them for one part of the page */\n.checkout {\n  --primary-color: #16a34a;\n  /* derived tokens are computed on :root: redeclare the ones you need */\n  --primary-color-hover: color-mix(in srgb, var(--primary-color) 85%, var(--foreground-color));\n}",
+      "language": "scss"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "主题",
+      "description": "内置的浅色与深色主题、以 CSS 变量形式存在的设计令牌，以及如何创建你自己的主题。",
+      "builtIn": {
+        "title": "内置主题",
+        "text": "React 版内置三套主题：light、dark 和 github-dark。通过 ConfigProvider 的 theme 属性选择其一，或保留默认值 \"auto\"——它会跟随操作系统的配色方案，并在其变化时实时更新。"
+      },
+      "live": {
+        "title": "动手试试",
+        "text": "这个切换器控制整个文档站点的主题。下方的组件以及每个页面都会立即更新，因为它们只读取 CSS 变量。",
+        "current": "当前应用的主题：",
+        "alert": "组件无需重新渲染即可切换主题：变化的只是 <html> 上的 CSS 变量。"
+      },
+      "values": {
+        "title": "可接受的主题值",
+        "text": "ConfigProvider 的 theme 属性（以及 useAutoTheme / applyThemeStyles）接受：",
+        "value": "取值",
+        "auto": "默认值。根据 prefers-color-scheme 使用 light 或 dark，并跟随其变化。",
+        "light": "内置浅色主题。",
+        "dark": "内置深色主题。",
+        "githubDark": "基于 GitHub 深色配色的深色主题。",
+        "object": "完整的主题对象（包含所有基础令牌，以及可选的语义令牌和组件令牌）。通常通过展开一个内置主题来创建。",
+        "pair": "两个主题对象；会应用与系统配色方案匹配的那一个，并自动切换。"
+      },
+      "how": {
+        "title": "工作原理",
+        "p1": "主题是一个由令牌名到 CSS 值组成的扁平映射。ConfigProvider 会把每一项写成名为 --<token> 的 CSS 自定义属性，放在 <html> 元素的内联样式中：",
+        "p2": "组件样式只引用这些变量（例如 background: var(--primary-color)），因此切换主题永远不会重新渲染 React 组件。样式表还在 :root 上声明了所有令牌，所以即使在 ConfigProvider 生效之前（或没有使用它）组件也会以浅色主题的值呈现。"
+      },
+      "demos": {
+        "scoped-theme": {
+          "title": "局部主题",
+          "description": "令牌就是普通的 CSS 变量：在包裹元素上覆盖它们，即可只为页面的一部分换肤。"
+        }
+      },
+      "custom": {
+        "title": "自定义主题",
+        "text": "展开一个内置主题并覆盖所需的令牌来创建主题，然后传给 ConfigProvider。传入 { light, dark } 组合可继续跟随系统配色。悬停、浅色背景、焦点环等语义令牌由基础令牌派生，因此通常只需覆盖 primary-color。"
+      },
+      "colorProps": {
+        "title": "颜色与变体属性",
+        "color": "所有组件都通过同一个 color 属性选择语义颜色，其类型来自共享的 ColorScheme：primary、neutral、success、warning、danger 或 info（部分组件只接受文档中说明的子集）。它始终是主题角色，而不是原始 CSS 颜色：如需修改组件颜色，请修改主题令牌或组件的 CSS 自定义属性。",
+        "variant": "variant 只用于选择视觉样式，并且在所有组件中含义一致：solid（以该颜色填充，反色文字）、subtle（浅色着色背景）、outline（透明背景，彩色边框和文字）以及 ghost（透明且无边框）。组件可在需要时提供自有样式（Tabs 的 line / enclosed、Input 的 filled 等）。"
+      },
+      "css": {
+        "title": "用 CSS 覆盖令牌",
+        "text": "你也可以在普通样式表中设置令牌。请注意每个值是在哪里定义的：",
+        "note": "ConfigProvider 会把当前主题以内联样式写在 <html> 上，其优先级高于样式表中的 :root 规则。由主题设置的令牌需要 !important 才能被全局覆盖；组件令牌（btn-*、card-*、avatar-*）不会被内置主题设置，可以正常定义。"
+      },
+      "tokens": {
+        "title": "令牌参考",
+        "text": "每个令牌都可以通过 var(--<token>) 使用。色块显示的是当前主题中的值。",
+        "variable": "CSS 变量",
+        "base": "基础令牌",
+        "baseText": "每个主题对象都必须提供（ThemeProps）。",
+        "semantic": "语义令牌",
+        "semanticText": "可选（SemanticThemeProps）。默认值由基础令牌通过 color-mix() 派生；内置深色主题会显式设置其中一部分。",
+        "roles": "角色令牌",
+        "rolesText": "每种角色颜色都会派生出 hover、active、subtle（着色背景）、border 和 text 令牌，例如 --primary-color-hover 或 --danger-color-subtle。",
+        "role": "角色",
+        "component": "组件令牌",
+        "componentText": "可选的组件级覆盖（ComponentThemeProps）。未设置时组件会回退到语义令牌。"
+      }
+    }
+  }
+}

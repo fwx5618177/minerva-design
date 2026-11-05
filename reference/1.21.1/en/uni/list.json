@@ -1,0 +1,376 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "en",
+  "renderer": "uni",
+  "page": "list",
+  "title": "List",
+  "description": "Quiet operational lists on native ul / li elements with primary and secondary text, a decorative icon and trailing actions.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Cell",
+      "support": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      }
+    },
+    {
+      "name": "CellGroup",
+      "support": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      }
+    },
+    {
+      "name": "List",
+      "support": {
+        "status": "beta",
+        "notes": "Dividers/border/density and role; slot or array items, primary/secondary/icon/action slots, disabled activation and original item/index callbacks. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Dividers/border/density and role; slot or array items, primary/secondary/icon/action slots, disabled activation and original item/index callbacks. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "List"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "typeText": "{ id?: string | undefined; title: string; description?: string | undefined; disabled?: boolean | undefined; }[] | undefined",
+            "required": false
+          },
+          {
+            "name": "divided",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "dividers",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "bordered",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "density",
+            "typeText": "\"default\" | \"compact\" | \"comfortable\" | undefined",
+            "required": false
+          },
+          {
+            "name": "role",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "itemClick",
+            "typeText": "[item: { id?: string | undefined; title: string; description?: string | undefined; disabled?: boolean | undefined; }, index: number]",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "typeText": "{ id?: string | undefined; title: string; description?: string | undefined; disabled?: boolean | undefined; }",
+                "required": true,
+                "rest": false
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ListItem",
+      "support": {
+        "status": "beta",
+        "notes": "Dividers/border/density and role; slot or array items, primary/secondary/icon/action slots, disabled activation and original item/index callbacks. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Dividers/border/density and role; slot or array items, primary/secondary/icon/action slots, disabled activation and original item/index callbacks. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ListItem"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "primary",
+            "typeText": "string | number | undefined",
+            "required": false
+          },
+          {
+            "name": "secondary",
+            "typeText": "string | number | null | undefined",
+            "required": false
+          },
+          {
+            "name": "icon",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "actions",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "click",
+            "typeText": "[event: unknown]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "unknown",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "icon",
+            "typeText": "{}"
+          },
+          {
+            "name": "leading",
+            "typeText": "{}"
+          },
+          {
+            "name": "primary",
+            "typeText": "{}"
+          },
+          {
+            "name": "secondary",
+            "typeText": "{}"
+          },
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "actions",
+            "typeText": "{}"
+          },
+          {
+            "name": "trailing",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:List": {
+      "kind": "cssVars",
+      "source": "react/src/components/List",
+      "vars": [
+        {
+          "name": "--list-item-min-height",
+          "description": "Minimum height of an item (follows the density; compact lists are shorter)"
+        },
+        {
+          "name": "--list-item-padding-y",
+          "description": "Vertical padding of an item (follows the density's row padding)"
+        },
+        {
+          "name": "--list-item-padding-x",
+          "description": "Horizontal padding of an item (follows the density's row padding)"
+        },
+        {
+          "name": "--list-item-gap",
+          "description": "Space between the icon, the content and the actions"
+        },
+        {
+          "name": "--list-divider-color",
+          "description": "Color of the dividers between items"
+        },
+        {
+          "name": "--list-icon-size",
+          "description": "Size of the leading icon slot"
+        },
+        {
+          "name": "--list-border-color",
+          "description": "Border color of a bordered list (defaults to --border-color)"
+        },
+        {
+          "name": "--list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--list-item-hover-background",
+          "description": "Background of a row of a bordered list on hover / while a control inside it has the focus"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "List",
+      "description": "Quiet operational lists on native ul / li elements with primary and secondary text, a decorative icon and trailing actions.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "The list contains iPhone 16 and MacBook Air. Each Delete action removes only its own device."
+        },
+        "compact": {
+          "title": "Compact density",
+          "description": "density=\"compact\" lowers the minimum row height; dividers can be turned off."
+        },
+        "bordered": {
+          "title": "Bordered card",
+          "description": "bordered frames the list as a card whose rows are tinted on hover and while a control inside them has the focus; density=\"comfortable\" gives taller rows."
+        }
+      },
+      "api": {
+        "ListProps": {
+          "density": "Minimum row height and vertical padding",
+          "dividers": "Draws separators between adjacent rows",
+          "role": "List role, kept so Safari / VoiceOver keep list semantics",
+          "ref": "Ref to the <ul> element",
+          "bordered": "Frames the list as a card whose rows are tinted on hover / focus-within"
+        },
+        "ListItemProps": {
+          "primary": "Main content",
+          "secondary": "Supporting content, muted and smaller",
+          "icon": "Decorative leading slot, hidden from assistive technologies",
+          "actions": "Trailing controls owned by the caller",
+          "ref": "Ref to the <li> element"
+        }
+      },
+      "cssVars": {
+        "--list-item-min-height": "Minimum height of an item (follows the density; compact lists are shorter)",
+        "--list-item-padding-y": "Vertical padding of an item (follows the density's row padding)",
+        "--list-item-padding-x": "Horizontal padding of an item (follows the density's row padding)",
+        "--list-item-gap": "Space between the icon, the content and the actions",
+        "--list-divider-color": "Color of the dividers between items",
+        "--list-icon-size": "Size of the leading icon slot",
+        "--list-border-color": "Border color of a bordered list (defaults to --border-color)",
+        "--list-radius": "Corner radius of a bordered list (defaults to --radius-lg)",
+        "--list-background": "Background of a bordered list (defaults to --surface-color)",
+        "--list-item-hover-background": "Background of a row of a bordered list on hover / while a control inside it has the focus"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "<minerva-list-item> rows with primary and secondary attributes; dividers separate adjacent items."
+          },
+          "slots": {
+            "title": "Icons, rich text and actions",
+            "description": "The icon, default, secondary and actions slots. The rows add no command: Remove is a regular button in the actions slot."
+          },
+          "density": {
+            "title": "Density and dividers",
+            "description": "density=\"compact\" shortens the rows, no-dividers removes the separators, CSS variables tune color and padding."
+          },
+          "bordered": {
+            "title": "Bordered card",
+            "description": "The bordered attribute frames the list as a card (rows tinted on hover / focus-within); density=\"comfortable\" gives taller rows."
+          }
+        },
+        "minerva-list": {
+          "props": {
+            "noDividers": "Removes the separators between items (the React library's dividers={false})."
+          },
+          "slots": {
+            "default": "<minerva-list-item> rows."
+          }
+        },
+        "minerva-list-item": {
+          "slots": {
+            "default": "Primary content (alternative to the primary attribute).",
+            "secondary": "Supporting content (alternative to the secondary attribute).",
+            "icon": "Decorative leading icon (hidden from assistive technologies).",
+            "actions": "Trailing controls."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "The list contains iPhone 16 and MacBook Air. Each Delete action removes only its own device."
+          },
+          "inset-groups": {
+            "title": "Inset groups",
+            "description": "Inset groups using Cell; the preview follows the selected site theme and palette."
+          },
+          "rich-rows": {
+            "title": "Rich rows",
+            "description": "Rich rows using Cell; the preview follows the selected site theme and palette."
+          }
+        },
+        "limitations": "React Native uses CellGroup and Cell for this list. Browser ul/li semantics, DOM refs and CSS hover styling do not apply; the device deletion scenario is shared."
+      }
+    }
+  }
+}

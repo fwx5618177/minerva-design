@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "fr",
+  "renderer": "native",
+  "page": "tab-bar",
+  "title": "TabBar",
+  "description": "Barre d’onglets avec commandes natives et variables de design partagées.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TabBar",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TabBar"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/native/src/components/TabBar/TabBar.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Value of the selected item (controlled; pair with `onChange`)"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/TabBar/TabBar.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Value of the initially selected item (uncontrolled)"
+          },
+          {
+            "name": "activeColor",
+            "source": "packages/native/src/components/TabBar/TabBar.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Icon / label color of the selected item"
+          },
+          {
+            "name": "inactiveColor",
+            "source": "packages/native/src/components/TabBar/TabBar.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Icon / label color of the other items"
+          },
+          {
+            "name": "safeAreaInsetBottom",
+            "source": "packages/native/src/components/TabBar/TabBar.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Pads the bar with the bottom safe-area inset (home indicator) of `MinervaProvider`"
+          },
+          {
+            "name": "border",
+            "source": "packages/native/src/components/TabBar/TabBar.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Hairline border above the bar"
+          },
+          {
+            "name": "accessibilityLabel",
+            "source": "packages/native/src/components/TabBar/TabBar.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the tab list"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/TabBar/TabBar.tsx",
+            "kind": "function",
+            "typeText": "((value: string) => void) | undefined",
+            "typeRef": "type:f280e05b92fc300ac49a",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the value of the item the user selects"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:TabBarProps": {
+      "source": "native/src/components/TabBar/TabBar.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Value of the selected item (controlled; pair with `onChange`)"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "default": "the first enabled item's value",
+          "description": "Value of the initially selected item (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "required": false,
+          "description": "Called with the value of the item the user selects"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Items: `TabBarItem` elements"
+        },
+        {
+          "name": "activeColor",
+          "type": "string",
+          "required": false,
+          "default": "the \"primary-color\" token",
+          "description": "Icon / label color of the selected item"
+        },
+        {
+          "name": "inactiveColor",
+          "type": "string",
+          "required": false,
+          "default": "the \"text-muted-color\" token",
+          "description": "Icon / label color of the other items"
+        },
+        {
+          "name": "safeAreaInsetBottom",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Pads the bar with the bottom safe-area inset (home indicator) of `MinervaProvider`"
+        },
+        {
+          "name": "border",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Hairline border above the bar"
+        },
+        {
+          "name": "accessibilityLabel",
+          "type": "string",
+          "required": false,
+          "default": "the \"tabBar.label\" message",
+          "description": "Accessible label of the tab list"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the bar"
+        }
+      ]
+    },
+    "native:TabBarItemProps": {
+      "source": "native/src/components/TabBar/TabBar.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<PressableProps, \"children\" | \"style\" | \"disabled\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "description": "Value identifying the item (reported by `onChange`)"
+        },
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label under the icon"
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode | ((active: boolean, color: string) => ReactNode)",
+          "required": false,
+          "description": "Icon: an element, or a function of the selected state and the current item color returning one (e.g. a filled icon when active)"
+        },
+        {
+          "name": "badge",
+          "type": "number | string",
+          "required": false,
+          "description": "Badge content (a count or a short text) on the icon's corner"
+        },
+        {
+          "name": "badgeMax",
+          "type": "number",
+          "required": false,
+          "default": "99",
+          "description": "Largest count shown in the badge (`99+` beyond)"
+        },
+        {
+          "name": "dot",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a small dot on the icon's corner instead of a badge"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the item"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the item"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "badges",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tab-bar/native/badges.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tab-bar/native/badges.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Button, TabBar, TabBarItem, useTheme } from \"minerva-design/native\";\n\nexport default function Badges() {\n  const { colors } = useTheme();\n  const [cart, setCart] = useState(3);\n  const [unread, setUnread] = useState(128);\n  const glyph = (char: string) => (_active: boolean, color: string) => (\n    <Text style={{ fontSize: 20, color }}>{char}</Text>\n  );\n  return (\n    <View style={{ gap: 16 }}>\n      <View style={{ flexDirection: \"row\", gap: 8 }}>\n        <Button size=\"small\" onPress={() => setCart((n) => n + 1)}>\n          Add to cart\n        </Button>\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          color=\"neutral\"\n          onPress={() => setUnread(0)}\n        >\n          Read all\n        </Button>\n      </View>\n      <Text style={{ color: colors[\"text-secondary-color\"] }}>\n        {cart} items in cart · {unread} unread messages\n      </Text>\n      <TabBar defaultValue=\"shop\" safeAreaInsetBottom={false}>\n        <TabBarItem value=\"shop\" label=\"Shop\" icon={glyph(\"⌂\")} dot />\n        <TabBarItem\n          value=\"chat\"\n          label=\"Chat\"\n          icon={glyph(\"✉\")}\n          badge={unread || undefined}\n        />\n        <TabBarItem\n          value=\"cart\"\n          label=\"Cart\"\n          icon={glyph(\"🛒\")}\n          badge={cart}\n          badgeMax={9}\n        />\n        <TabBarItem value=\"me\" label=\"Me\" icon={glyph(\"☺\")} badge=\"New\" />\n      </TabBar>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "badges",
+      "description": ""
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tab-bar/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tab-bar/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { TabBar, TabBarItem, useTheme } from \"minerva-design/native\";\n\nconst TABS = [\n  { value: \"home\", label: \"Home\", icon: \"🏠\" },\n  { value: \"search\", label: \"Search\", icon: \"🔍\" },\n  { value: \"orders\", label: \"Orders\", icon: \"🧾\" },\n  { value: \"me\", label: \"Me\", icon: \"👤\" },\n];\n\nexport default function Basic() {\n  const { colors } = useTheme();\n  const [tab, setTab] = useState(\"home\");\n  return (\n    <View style={{ gap: 16 }}>\n      <Text style={{ color: colors[\"text-secondary-color\"] }}>\n        Current screen: {tab}\n      </Text>\n      <TabBar value={tab} onChange={setTab} safeAreaInsetBottom={false}>\n        {TABS.map((item) => (\n          <TabBarItem\n            key={item.value}\n            value={item.value}\n            label={item.label}\n            icon={(active) => (\n              <Text style={{ fontSize: 20, opacity: active ? 1 : 0.5 }}>\n                {item.icon}\n              </Text>\n            )}\n          />\n        ))}\n      </TabBar>\n      <TabBar\n        defaultValue=\"discover\"\n        activeColor={colors[\"danger-color\"]}\n        safeAreaInsetBottom={false}\n      >\n        <TabBarItem value=\"discover\" label=\"Discover\" />\n        <TabBarItem value=\"deals\" label=\"Deals\" />\n        <TabBarItem value=\"saved\" label=\"Saved\" disabled />\n      </TabBar>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TabBar",
+      "description": "Barre d’onglets avec commandes natives et variables de design partagées.",
+      "native": {
+        "demos": {
+          "badges": {
+            "title": "Badges",
+            "description": "Badges avec TabBar ; l’aperçu suit le thème et la palette du site."
+          },
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Utilisation de base avec TabBar ; l’aperçu suit le thème et la palette du site."
+          }
+        }
+      }
+    }
+  }
+}

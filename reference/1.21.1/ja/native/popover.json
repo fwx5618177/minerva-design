@@ -1,0 +1,940 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "popover",
+  "title": "Popover ポップオーバー",
+  "description": "クリックで開き、トリガーに固定されるフローティングパネル。フィルターやアカウントメニューなどの操作可能なコンテンツに使います。Tooltip と異なりフォーカス可能な内容を持ち、フォーカス・Escape・外側クリックを自身で管理します。Modal 内では Modal より先に閉じます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Popover",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Popover"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "source": "packages/native/src/components/Popover/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/native/src/components/Popover/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/native/src/components/Popover/index.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:e31433a604bbaf909b7e",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PopoverAnchor",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "PopoverAnchor"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverClose",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "PopoverClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "source": "packages/native/src/components/Popover/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "NativeColor | undefined",
+            "typeRef": "type:c1c4fb1afcf9f8ec5869",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the button"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "ghost",
+              "link",
+              "outline",
+              "solid"
+            ],
+            "typeText": "ButtonVariant | undefined",
+            "typeRef": "type:1e3b5884a3a7673a4553",
+            "default": "solid",
+            "required": false,
+            "description": "Visual style: `solid` (filled), `outline` (border only), `ghost` (transparent, tinted while pressed) or `link` (text link look)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small",
+              "xlarge",
+              "xsmall"
+            ],
+            "typeText": "ButtonSize | undefined",
+            "typeRef": "type:4f1445f517e28a7afd60",
+            "default": "medium",
+            "required": false,
+            "description": "Button size (heights from the `--control-height-*` tokens)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the button"
+          },
+          {
+            "name": "loading",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a spinner and ignores presses (`accessibilityState.busy`)"
+          },
+          {
+            "name": "loadingText",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Text shown instead of the label while loading"
+          },
+          {
+            "name": "startIcon",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Element rendered before the label"
+          },
+          {
+            "name": "endIcon",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Element rendered after the label"
+          },
+          {
+            "name": "fullWidth",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stretches the button to the full width of its container"
+          },
+          {
+            "name": "active",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Renders the button in its pressed / active state"
+          },
+          {
+            "name": "shape",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "rounded",
+              "square"
+            ],
+            "typeText": "\"square\" | \"rounded\" | \"circle\" | undefined",
+            "typeRef": "type:bc311df462bffff00236",
+            "default": "rounded",
+            "required": false,
+            "description": "Preset shape: `rounded` (theme radius), `square` (no radius) or `circle` (pill; a square button when the label is an icon)"
+          },
+          {
+            "name": "textStyle",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the label text"
+          }
+        ],
+        "events": [
+          {
+            "name": "onPress",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "function",
+            "typeText": "((event: GestureResponderEvent) => void) | undefined",
+            "typeRef": "type:79e82a664defccdac2e6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GestureResponderEvent",
+                "typeRef": "type:2a25eb9466bc75075bdf"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called on press (not while disabled or loading)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverContent",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "PopoverContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "accessibilityLabel",
+            "source": "packages/native/src/components/Popover/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "role",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "enum",
+            "values": [
+              "alertdialog",
+              "dialog"
+            ],
+            "typeText": "\"dialog\" | \"alertdialog\" | undefined",
+            "typeRef": "type:2cc2e24324879bcc4737",
+            "default": "dialog",
+            "required": false,
+            "description": "`alertdialog` for confirmations that need an answer"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "enum",
+            "values": [
+              "full",
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | \"full\" | undefined",
+            "typeRef": "type:336d1e282a12d0ceef8d",
+            "default": "medium",
+            "required": false,
+            "description": "Width preset (`full`: the whole screen)"
+          },
+          {
+            "name": "title",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Title (also the accessible name of the dialog)"
+          },
+          {
+            "name": "description",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Text under the title"
+          },
+          {
+            "name": "footer",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Custom footer, replacing the confirm / cancel buttons"
+          },
+          {
+            "name": "hideCloseButton",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Hides the close (×) button"
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the close button"
+          },
+          {
+            "name": "closeOnMaskPress",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Closes on a press on the mask"
+          },
+          {
+            "name": "confirmLabel",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label of the confirm button (shown when set or with `onConfirm`)"
+          },
+          {
+            "name": "cancelLabel",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label of the cancel button (shown when set or with `onCancel`)"
+          },
+          {
+            "name": "confirmColor",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "\"primary\" | \"success\" | \"warning\" | \"danger\" | undefined",
+            "typeRef": "type:56ead6e033d723e3d471",
+            "default": "primary",
+            "required": false,
+            "description": "Color of the confirm button"
+          },
+          {
+            "name": "confirmLoading",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Spinner on the confirm button; the dialog stays open"
+          }
+        ],
+        "events": [
+          {
+            "name": "onConfirm",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "function",
+            "typeText": "(() => void) | undefined",
+            "typeRef": "type:3ec8fe0c6c6fd4def411",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called by the confirm button; the dialog then closes unless `confirmLoading`"
+          },
+          {
+            "name": "onCancel",
+            "source": "packages/native/src/components/Dialog/Dialog.tsx",
+            "kind": "function",
+            "typeText": "(() => void) | undefined",
+            "typeRef": "type:796ccf30b40fb762003e",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called by the cancel button; the dialog then closes"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverTrigger",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "PopoverTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "source": "packages/native/src/components/Popover/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "NativeColor | undefined",
+            "typeRef": "type:c1c4fb1afcf9f8ec5869",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the button"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "ghost",
+              "link",
+              "outline",
+              "solid"
+            ],
+            "typeText": "ButtonVariant | undefined",
+            "typeRef": "type:1e3b5884a3a7673a4553",
+            "default": "solid",
+            "required": false,
+            "description": "Visual style: `solid` (filled), `outline` (border only), `ghost` (transparent, tinted while pressed) or `link` (text link look)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small",
+              "xlarge",
+              "xsmall"
+            ],
+            "typeText": "ButtonSize | undefined",
+            "typeRef": "type:4f1445f517e28a7afd60",
+            "default": "medium",
+            "required": false,
+            "description": "Button size (heights from the `--control-height-*` tokens)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the button"
+          },
+          {
+            "name": "loading",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a spinner and ignores presses (`accessibilityState.busy`)"
+          },
+          {
+            "name": "loadingText",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Text shown instead of the label while loading"
+          },
+          {
+            "name": "startIcon",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Element rendered before the label"
+          },
+          {
+            "name": "endIcon",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Element rendered after the label"
+          },
+          {
+            "name": "fullWidth",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stretches the button to the full width of its container"
+          },
+          {
+            "name": "active",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Renders the button in its pressed / active state"
+          },
+          {
+            "name": "shape",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "rounded",
+              "square"
+            ],
+            "typeText": "\"square\" | \"rounded\" | \"circle\" | undefined",
+            "typeRef": "type:bc311df462bffff00236",
+            "default": "rounded",
+            "required": false,
+            "description": "Preset shape: `rounded` (theme radius), `square` (no radius) or `circle` (pill; a square button when the label is an icon)"
+          },
+          {
+            "name": "textStyle",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the label text"
+          }
+        ],
+        "events": [
+          {
+            "name": "onPress",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "function",
+            "typeText": "((event: GestureResponderEvent) => void) | undefined",
+            "typeRef": "type:79e82a664defccdac2e6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GestureResponderEvent",
+                "typeRef": "type:2a25eb9466bc75075bdf"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called on press (not while disabled or loading)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:PopoverProps": {
+      "source": "native/src/components/Popover/index.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false
+        }
+      ]
+    },
+    "native:PopoverTriggerProps": {
+      "source": "native/src/components/Popover/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "ButtonProps"
+      ],
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        }
+      ]
+    },
+    "native:PopoverContentProps": {
+      "source": "native/src/components/Popover/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<DialogProps, \"open\" | \"defaultOpen\" | \"onOpenChange\">"
+      ],
+      "props": [
+        {
+          "name": "accessibilityLabel",
+          "type": "string",
+          "required": false
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Popover": {
+      "kind": "cssVars",
+      "source": "react/src/components/Popover",
+      "vars": [
+        {
+          "name": "--popover-min-width",
+          "description": "Minimum width of the panel"
+        },
+        {
+          "name": "--popover-max-width",
+          "description": "Maximum width of the panel"
+        },
+        {
+          "name": "--popover-padding",
+          "description": "Inner padding of the panel"
+        },
+        {
+          "name": "--popover-radius",
+          "description": "Corner radius of the panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--popover-background",
+          "description": "Background of the panel and its arrow"
+        },
+        {
+          "name": "--popover-border-color",
+          "description": "Border color of the panel and its arrow"
+        },
+        {
+          "name": "--popover-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)"
+        },
+        {
+          "name": "--popover-z-index",
+          "description": "Stacking order of the panel (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/popover/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/popover/native/basic.tsx": "import { Text } from \"react-native\";\nimport {\n  Popover,\n  PopoverTrigger,\n  PopoverContent,\n  PopoverClose,\n  Button,\n} from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <Popover>\n      <PopoverTrigger asChild>\n        <Button>Details</Button>\n      </PopoverTrigger>\n      <PopoverContent title=\"Account\">\n        <Text>Signed in as Ada.</Text>\n        <PopoverClose asChild>\n          <Button>Done</Button>\n        </PopoverClose>\n      </PopoverContent>\n    </Popover>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "PopoverTrigger でパネルを切り替えます。フォーカスは内部に移り、閉じるとトリガーに戻ります。PopoverClose で閉じます。非モーダルでは、最後の要素で Tab（最初の要素で Shift+Tab）を押すとパネルが閉じ、フォーカスはトリガーの次（前）の要素へ移ります。パネル内でループしません。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Popover ポップオーバー",
+      "description": "クリックで開き、トリガーに固定されるフローティングパネル。フィルターやアカウントメニューなどの操作可能なコンテンツに使います。Tooltip と異なりフォーカス可能な内容を持ち、フォーカス・Escape・外側クリックを自身で管理します。Modal 内では Modal より先に閉じます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "PopoverTrigger でパネルを切り替えます。フォーカスは内部に移り、閉じるとトリガーに戻ります。PopoverClose で閉じます。非モーダルでは、最後の要素で Tab（最初の要素で Shift+Tab）を押すとパネルが閉じ、フォーカスはトリガーの次（前）の要素へ移ります。パネル内でループしません。"
+        },
+        "placement": {
+          "title": "配置",
+          "description": "side、align、sideOffset でパネルを配置します。収まらない場合は反転・移動して表示を保ちます。arrow はトリガーを指す矢印です。"
+        },
+        "controlled": {
+          "title": "アンカー付きの制御",
+          "description": "open + onOpenChange で状態を制御し、PopoverAnchor で別の要素を基準に配置します。"
+        }
+      },
+      "api": {
+        "PopoverProps": {
+          "open": "制御された開閉状態。undefined のままにすると非制御になります",
+          "defaultOpen": "非制御時の初期の開閉状態",
+          "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（トリガー、Escape、外部クリック、PopoverClose）",
+          "modal": "モーダルモード：フォーカスを閉じ込め（Tab はパネル内でループ）、ページのスクロールをロックし、ページの他の部分を支援技術から隠し、外側のポインター操作を無効にします（外側クリックでは閉じます）",
+          "children": "PopoverTrigger / PopoverAnchor と PopoverContent"
+        },
+        "PopoverContentProps": {
+          "ref": "パネル要素への ref",
+          "side": "優先する側。余白が足りないと反転します",
+          "align": "トリガーに沿った揃え位置",
+          "sideOffset": "トリガーとの間隔（ピクセル）",
+          "arrow": "トリガーを指す矢印を表示します",
+          "portal": "パネルをポータルに描画します（ネストした ConfigProvider のテーマスコープのコンテナ、なければ document.body）",
+          "alignOffset": "トリガーに沿ったずれ（ピクセル、正の値は末尾方向）",
+          "collisionPadding": "ビューポート端との最小距離（ピクセル）。現在は 8px 固定で、他の値は予約されています",
+          "matchAnchorWidth": "トリガー / アンカーの幅に合わせてパネルのサイズを決めます：\"min\" は同じ幅以上、\"exact\" はちょうど同じ幅",
+          "forceMount": "閉じている間もマウントしたままにします（data-state=\"closed\"）。アニメーションライブラリ向け",
+          "onOpenAutoFocus": "開くときフォーカスがパネルに移る前に呼ばれます。event.preventDefault() でフォーカスをそのままにします",
+          "onCloseAutoFocus": "閉じるときフォーカスが開いた要素に戻る前に呼ばれます。event.preventDefault() でスキップします",
+          "onEscapeKeyDown": "最前面のレイヤーで Escape が押されたとき。event.preventDefault() で開いたままにします",
+          "onPointerDownOutside": "外側でポインターが押されたとき。event.preventDefault() で開いたままにします",
+          "onFocusOutside": "フォーカスが外側に移ったとき。event.preventDefault() で開いたままにします",
+          "onInteractOutside": "外側でのポインター押下またはフォーカス移動。event.preventDefault() で開いたままにします"
+        },
+        "PopoverTriggerProps": {
+          "asChild": "独自の要素を描画せず、単一の子要素に振る舞いをマージします"
+        }
+      },
+      "cssVars": {
+        "--popover-min-width": "パネルの最小幅",
+        "--popover-max-width": "パネルの最大幅",
+        "--popover-padding": "パネルの内側の余白",
+        "--popover-radius": "パネルの角丸（既定値は --radius-lg）",
+        "--popover-background": "パネルと矢印の背景",
+        "--popover-border-color": "パネルと矢印の枠線の色",
+        "--popover-shadow": "パネルの影（既定値は --shadow-lg、ダークテーマでは --shadow-xl）",
+        "--popover-z-index": "パネルの重なり順（既定値は --z-popover）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "trigger スロットでインタラクティブなパネルを切り替えます。開くとフォーカスが移動し、閉じると戻ります。Escape、外側のクリック、data-popover-close を持つ要素で閉じます。"
+          },
+          "placement": {
+            "title": "配置",
+            "description": "side と align でトリガーに対するパネルの位置を決め、side-offset で間隔を、arrow で矢印を指定します。ビューポート内に収まるよう反転・移動します。"
+          },
+          "anchor": {
+            "title": "アンカーとモーダル",
+            "description": "anchor で別の要素（id で指定）を基準にパネルを配置し、任意のボタンから show() で開きます。modal はフォーカスを閉じ込め、ページの他の部分を操作できなくします。"
+          }
+        },
+        "minerva-popover": {
+          "props": {
+            "label": "パネルのアクセシブルな名前（または要素に aria-label を設定）。",
+            "anchor": "基準にする要素の id（同じツリー内）。",
+            "anchorElement": "トリガーの代わりにパネルの位置の基準とする要素。anchor より優先されます。"
+          },
+          "events": {
+            "minerva-open-change": "ユーザーが開閉を要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で現在の状態を維持します。",
+            "minerva-after-open": "ポップオーバーが開きました。",
+            "minerva-after-close": "パネルが閉じ終わった後（終了アニメーションの後）に発火します。"
+          },
+          "slots": {
+            "default": "パネルの内容。",
+            "trigger": "クリックでポップオーバーを切り替える要素。"
+          },
+          "methods": {
+            "show": "ポップオーバーを開きます。",
+            "hide": "ポップオーバーを閉じます。",
+            "toggle": "ポップオーバーを切り替えます。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        },
+        "limitations": "タッチ端末では閉じられるネイティブダイアログを使用し、DOM の座標やホバー位置には依存しません。"
+      }
+    }
+  }
+}

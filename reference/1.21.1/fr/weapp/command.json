@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "command",
+  "title": "Command",
+  "description": "Une palette de commandes avec recherche dans une modale. Tapez pour filtrer par titre, description, groupe et mots-clés, déplacez-vous avec les flèches, choisissez avec Entrée ou un clic. Un raccourci global optionnel l'ouvre.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CommandDialog",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default native dialog, trigger, trimmed command search, disabled exclusion, configured custom filter/ranking before cap, selection/close and localized labels. Global desktop shortcut/focus trap uses application-owned native navigation; native devices have no document keyboard listener. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default native dialog, trigger, trimmed command search, disabled exclusion, configured custom filter/ranking before cap, selection/close and localized labels. Global desktop shortcut/focus trap uses application-owned native navigation; native devices have no document keyboard listener. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/command-dialog/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "command-dialog",
+        "props": [
+          {
+            "name": "open",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "items",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "maxResults",
+            "typeText": "number",
+            "required": false,
+            "default": 12
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "description",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "emptyText",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "shortcutLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "resultsLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "enterLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "openchange",
+            "typeText": "{ open: boolean }",
+            "description": "Requested visible state; controlled owners may reject it."
+          },
+          {
+            "name": "select",
+            "typeText": "{ item: NativeCommandItem }",
+            "description": "Original chosen enabled command."
+          }
+        ],
+        "slots": [
+          {
+            "name": "trigger"
+          },
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-command-dialog\": \"minerva-design/dist/weapp/command-dialog/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Command": {
+      "kind": "cssVars",
+      "source": "react/src/components/Command",
+      "vars": [
+        {
+          "name": "--command-search-height",
+          "description": "Minimum height of the search field (defaults to --control-height-md)"
+        },
+        {
+          "name": "--command-results-max-height",
+          "description": "Maximum height of the scrolling result list"
+        },
+        {
+          "name": "--command-item-min-height",
+          "description": "Minimum height of a result row"
+        },
+        {
+          "name": "--command-item-padding-y",
+          "description": "Vertical padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-padding-x",
+          "description": "Horizontal padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-active-background",
+          "description": "Background of the hovered / active row (defaults to a 10% primary tint)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Command",
+      "description": "Une palette de commandes avec recherche dans une modale. Tapez pour filtrer par titre, description, groupe et mots-clés, déplacez-vous avec les flèches, choisissez avec Entrée ou un clic. Un raccourci global optionnel l'ouvre.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Palette contrôlée ; onSelect reçoit l'élément choisi puis la palette se ferme."
+        },
+        "shortcut": {
+          "title": "Raccourci global",
+          "description": "shortcut=\"mod+k\" ouvre la palette avec Cmd+K sur macOS et Ctrl+K ailleurs ; shortcutLabel affiche l'indication."
+        },
+        "custom-filter": {
+          "title": "Résultats classés",
+          "description": "filter remplace la recherche par sous-chaîne par défaut : elle reçoit les éléments actifs et la requête sans espaces superflus, et renvoie les résultats dans l'ordre d'affichage. Ici, les titres qui commencent par la requête passent en premier."
+        },
+        "site-search": {
+          "title": "Recherche du site",
+          "description": "Button et CommandDialog composent la recherche : filtrage, groupes, résultats vides, sélection au clavier et retour du focus. Cet exemple utilise Ctrl+Maj+K ; le site utilise Cmd/Ctrl+K. Reliez onSelect à votre routeur."
+        }
+      },
+      "api": {
+        "CommandDialogProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (raccourci, sélection, Échap, clic sur le fond)",
+          "items": "Commandes à rechercher ; les éléments désactivés ne sont jamais affichés",
+          "onSelect": "Appelé avec l'élément choisi (clic ou Entrée) ; la palette se ferme ensuite",
+          "title": "Titre de la boîte ; par défaut « Palette de commandes » localisé",
+          "description": "Description accessible de la palette ; par défaut une indication localisée",
+          "placeholder": "Texte indicatif du champ de recherche ; par défaut une indication localisée",
+          "emptyText": "Affiché quand rien ne correspond",
+          "shortcutLabel": "Indication du raccourci rendue en <kbd> à côté du titre, p. ex. « ⌘K »",
+          "shortcut": "Raccourci(s) clavier global(aux) qui ouvrent la palette, p. ex. « mod+k » ; modificateurs : mod, ctrl, meta/cmd, shift, alt/option",
+          "maxResults": "Nombre maximal de résultats affichés",
+          "filter": "Recherche personnalisée, par exemple pour classer les résultats par pertinence : reçoit les éléments actifs et la requête sans espaces superflus (jamais vide) et renvoie les éléments correspondants dans l'ordre d'affichage (puis limités à maxResults) ; par défaut, correspondance de sous-chaîne insensible à la casse dans l'ordre de items",
+          "resultsLabel": "Libellé accessible de la liste de résultats",
+          "enterLabel": "Indication de touche affichée à la fin du champ de recherche ; par défaut « Entrée » localisé",
+          "className": "Classe supplémentaire du panneau de dialogue"
+        },
+        "CommandItem": {
+          "id": "Identifiant unique, renvoyé par onSelect",
+          "title": "Libellé principal",
+          "description": "Ligne secondaire sous le titre",
+          "group": "Nom du groupe, affiché en badge et pris en compte par la recherche",
+          "keywords": "Termes de recherche supplémentaires (non affichés)",
+          "disabled": "Masque l'élément des résultats"
+        }
+      },
+      "cssVars": {
+        "--command-search-height": "Hauteur minimale du champ de recherche (par défaut --control-height-md)",
+        "--command-results-max-height": "Hauteur maximale de la liste de résultats défilante",
+        "--command-item-min-height": "Hauteur minimale d'une ligne de résultat",
+        "--command-item-padding-y": "Marge intérieure verticale d'une ligne de résultat (suit celle des lignes de la densité)",
+        "--command-item-padding-x": "Marge intérieure horizontale d'une ligne de résultat (suit celle des lignes de la densité)",
+        "--command-item-active-background": "Fond de la ligne survolée / active (par défaut une teinte primaire à 10 %)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "items est une propriété JS (id, title, description, group, keywords, disabled). Tapez pour filtrer, déplacez-vous avec les flèches, choisissez avec Entrée ou un clic ; minerva-select donne l'id choisi."
+          },
+          "shortcut": {
+            "title": "Raccourci global",
+            "description": "shortcut accepte une liste séparée par des virgules (\"mod+k, /\" ; mod vaut Ctrl, ou ⌘ sur macOS) et ouvre la palette depuis n'importe où, sauf pendant la saisie dans un champ. max-results limite la liste."
+          },
+          "custom-filter": {
+            "title": "Résultats classés",
+            "description": "filter remplace la recherche par sous-chaîne par défaut : elle reçoit les éléments actifs et la requête sans espaces superflus, et renvoie les résultats dans l'ordre d'affichage. Ici, les titres qui commencent par la requête passent en premier."
+          }
+        },
+        "minerva-command-dialog": {
+          "props": {
+            "label": "Titre de la boîte de dialogue (par défaut : « Palette de commandes » localisé)."
+          },
+          "events": {
+            "minerva-select": "Une commande a été choisie (detail : { value, item }, value = l'id de l'élément) ; la palette se ferme ensuite.",
+            "minerva-open-change": "L'utilisateur demande l'ouverture (raccourci) / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-after-open": "La palette est ouverte et le focus est dans le champ de recherche.",
+            "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+          },
+          "cssVars": {
+            "--modal-width": "Largeur du panneau (par défaut celle de la taille, limitée par la fenêtre).",
+            "--modal-max-height": "Hauteur maximale du panneau (le corps défile au-delà).",
+            "--modal-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied.",
+            "--modal-radius": "Rayon des coins du panneau (par défaut --radius-xl).",
+            "--modal-shadow": "Ombre du panneau (par défaut --shadow-xl).",
+            "--modal-background": "Arrière-plan du panneau.",
+            "--modal-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)."
+          },
+          "methods": {
+            "show": "Ouvre la palette.",
+            "hide": "Ferme la palette."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

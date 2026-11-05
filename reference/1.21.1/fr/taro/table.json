@@ -1,0 +1,1219 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "fr",
+  "renderer": "taro",
+  "page": "table",
+  "title": "Table",
+  "description": "Affiche des lignes de données. Utilisez Table avec columns et data dans le cas courant, TableRoot et ses parties pour des en-têtes personnalisés ou des cellules fusionnées, et DataTable pour la pagination et les états de chargement et d'erreur.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DataTable",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "DataTable"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "columns",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "array",
+            "typeText": "TableColumn<T>[]",
+            "typeRef": "type:73e4b90285cf0b5b600d",
+            "required": true
+          },
+          {
+            "name": "data",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "array",
+            "typeText": "T[]",
+            "typeRef": "type:c7184d0658a985e5a80a",
+            "required": true
+          },
+          {
+            "name": "rowKey",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "function",
+            "typeText": "((row: T, index: number) => TableRowKey) | undefined",
+            "typeRef": "type:879e13726068d00a6085",
+            "parameters": [
+              {
+                "name": "row",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "T",
+                "typeRef": "type:6944d41289e0c556e050"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "TableRowKey",
+              "typeRef": "type:a2db9f2e556c03b8fb9b"
+            },
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "loadingRows",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "sortState",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "TableSortState | null | undefined",
+            "typeRef": "type:c3de4a905353a45f4d22",
+            "required": false
+          },
+          {
+            "name": "defaultSortState",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "TableSortState | null | undefined",
+            "typeRef": "type:c3de4a905353a45f4d22",
+            "required": false
+          },
+          {
+            "name": "manualSort",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "rowSelection",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "TableRowSelection<T> | undefined",
+            "typeRef": "type:13d7317393409f54ffac",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "hoverable",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "scroll",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "{ x?: string | number | undefined; y?: string | number | undefined; } | undefined",
+            "typeRef": "type:1168d3be98bbb4d12738",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "pagination",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "PaginationProps | undefined",
+            "typeRef": "type:bf857f279d9c03e53a5b",
+            "required": false
+          },
+          {
+            "name": "error",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "retryLabel",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onSortChange",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "function",
+            "typeText": "((state: TableSortState) => void) | undefined",
+            "typeRef": "type:8c0bbf5add991e290086",
+            "parameters": [
+              {
+                "name": "state",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "TableSortState",
+                "typeRef": "type:db91c2a624e3335e1e4c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onRetry",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "function",
+            "typeText": "(() => void) | undefined",
+            "typeRef": "type:39bae33d625c14c3b009",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "Table",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "Table"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "columns",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "array",
+            "typeText": "TableColumn<T>[]",
+            "typeRef": "type:b9474777dd95565712f3",
+            "required": true
+          },
+          {
+            "name": "data",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "array",
+            "typeText": "T[]",
+            "typeRef": "type:537b08d25edb0f5c31a1",
+            "required": true
+          },
+          {
+            "name": "rowKey",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "function",
+            "typeText": "((row: T, index: number) => TableRowKey) | undefined",
+            "typeRef": "type:b1a2c0de1d831f5a782a",
+            "parameters": [
+              {
+                "name": "row",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "T",
+                "typeRef": "type:037aa233d9afade80f8a"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "TableRowKey",
+              "typeRef": "type:a2db9f2e556c03b8fb9b"
+            },
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "loadingRows",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "sortState",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "TableSortState | null | undefined",
+            "typeRef": "type:c3de4a905353a45f4d22",
+            "required": false
+          },
+          {
+            "name": "defaultSortState",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "TableSortState | null | undefined",
+            "typeRef": "type:c3de4a905353a45f4d22",
+            "required": false
+          },
+          {
+            "name": "manualSort",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "rowSelection",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "TableRowSelection<T> | undefined",
+            "typeRef": "type:52f6c164f79cd8a7d72f",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "hoverable",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "scroll",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "{ x?: string | number | undefined; y?: string | number | undefined; } | undefined",
+            "typeRef": "type:1168d3be98bbb4d12738",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onSortChange",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "function",
+            "typeText": "((state: TableSortState) => void) | undefined",
+            "typeRef": "type:8c0bbf5add991e290086",
+            "parameters": [
+              {
+                "name": "state",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "TableSortState",
+                "typeRef": "type:db91c2a624e3335e1e4c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableBody",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "TableBody"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableCell",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "TableCell"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableCellContent",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "TableCellContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "primary",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": true
+          },
+          {
+            "name": "secondary",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "monospace",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "maxWidth",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableHead",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "TableHead"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableHeader",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "TableHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableRoot",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "TableRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "scroll",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "object",
+            "typeText": "{ x?: string | number | undefined; y?: string | number | undefined; } | undefined",
+            "typeRef": "type:4d5d6da0235b3c2314f9",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "hoverable",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableRow",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative or compound native tables, shared-core local/custom sorting, disabled-row selection, configurable loading skeleton rows, size/striping/selection colors, native touch row hover, empty/error/retry and pagination composition. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Fixed column offsets use shared-core layout; native View cells replace browser table elements; arbitrary HTML cell attributes are not forwarded. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "TableRow"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Table": {
+      "kind": "cssVars",
+      "source": "react/src/components/Table",
+      "vars": [
+        {
+          "name": "--table-cell-padding-y",
+          "description": "Vertical padding of the cells (every size; follows the density by default)"
+        },
+        {
+          "name": "--table-cell-padding-x",
+          "description": "Horizontal padding of the cells (every size; follows the density by default)"
+        },
+        {
+          "name": "--table-font-size",
+          "description": "Font size of the body cells (every size)"
+        },
+        {
+          "name": "--table-header-bg",
+          "description": "Background color of the header row"
+        },
+        {
+          "name": "--table-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--table-radius",
+          "description": "Corner radius of the wrapper (defaults to --radius-lg)"
+        },
+        {
+          "name": "--table-stripe-bg",
+          "description": "Background color of the odd rows of a striped table"
+        },
+        {
+          "name": "--table-hover-bg",
+          "description": "Background color of the hovered row of a hoverable table"
+        },
+        {
+          "name": "--table-selected-bg",
+          "description": "Background color of the selected rows (row selection)"
+        },
+        {
+          "name": "--table-sort-icon-color",
+          "description": "Color of the sort indicator of an unsorted sortable column"
+        },
+        {
+          "name": "--table-focus-ring-color",
+          "description": "Outline color of the focused scroll region"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Table",
+      "description": "Affiche des lignes de données. Utilisez Table avec columns et data dans le cas courant, TableRoot et ses parties pour des en-têtes personnalisés ou des cellules fusionnées, et DataTable pour la pagination et les états de chargement et d'erreur.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Chaque colonne affiche row[key] sauf si elle a une fonction render. Donnez aux lignes un rowKey stable."
+        },
+        "variants": {
+          "title": "Variantes et tailles",
+          "description": "Lignes simples, zébrées ou bordées, en densité small, medium ou large, avec surbrillance au survol en option."
+        },
+        "fixed-columns": {
+          "title": "Colonnes fixes et défilement",
+          "description": "scroll.x fixe une largeur minimale, scroll.y limite la hauteur avec un en-tête collant. Les colonnes fixes exigent une largeur et doivent être déclarées au début (left) ou à la fin (right) ; ellipsis tronque les textes longs. Le composant libère les colonnes fixes lorsque leur largeur mesurée laisse moins de 120px pour la zone défilante ; tous les champs et actions restent accessibles par défilement horizontal."
+        },
+        "states": {
+          "title": "États de chargement et vide",
+          "description": "loading affiche des lignes squelettes (masquées aux technologies d'assistance) ; un tableau data vide affiche emptyText."
+        },
+        "data-table": {
+          "title": "DataTable",
+          "description": "Ajoute une pagination sous le tableau et le remplace par une alerte et un bouton Réessayer quand error est défini. Les lignes doivent déjà être paginées."
+        },
+        "compound": {
+          "title": "Parties composées",
+          "description": "TableRoot, TableHead, TableBody, TableRow, TableHeader et TableCell rendent des éléments de tableau natifs pour des en-têtes sur plusieurs lignes ou des cellules fusionnées."
+        },
+        "cell-content": {
+          "title": "Contenu de cellule",
+          "description": "TableCellContent borne et renvoie à la ligne les contenus longs, avec une seconde ligne atténuée ou un texte principal à chasse fixe en option."
+        },
+        "sorting": {
+          "title": "Tri",
+          "description": "sortable transforme l’en-tête en bouton qui alterne entre tri croissant, décroissant et aucun tri (aria-sort suit). true compare row[key] ; une fonction compare deux lignes. Contrôlez l’état avec sortState et onSortChange, ou utilisez manualSort pour trier côté serveur."
+        },
+        "selection": {
+          "title": "Sélection de lignes",
+          "description": "rowSelection ajoute une colonne de cases à cocher et une case « tout sélectionner » (indéterminée en cas de sélection partielle). Les lignes désactivées sont ignorées par « tout sélectionner » ; les lignes sélectionnées reçoivent aria-selected et une mise en évidence."
+        }
+      },
+      "api": {
+        "TableProps": {
+          "columns": "Définitions des colonnes",
+          "data": "Lignes à afficher",
+          "rowKey": "Extrait une clé stable d'une ligne (par défaut l'index de la ligne)",
+          "emptyText": "Contenu de la ligne unique affichée quand data est vide",
+          "loading": "Affiche des lignes squelettes à la place des données",
+          "loadingRows": "Nombre de lignes squelettes pendant le chargement",
+          "sortState": "État du tri (contrôlé) ; null signifie aucun tri",
+          "defaultSortState": "État initial du tri (non contrôlé)",
+          "onSortChange": "Appelé avec l’état de tri suivant lorsqu’un en-tête triable est activé",
+          "manualSort": "Désactive le tri local : data est affiché tel quel (trié par son propriétaire, par ex. un serveur) tandis que les en-têtes reflètent l’état du tri",
+          "rowSelection": "Ajoute une première colonne de cases à cocher pour sélectionner les lignes"
+        },
+        "TableColumn": {
+          "key": "Clé unique de la colonne ; aussi le champ lu par défaut dans chaque ligne",
+          "header": "Contenu de l'en-tête",
+          "render": "Rend une cellule ; par défaut row[key]",
+          "width": "Largeur de colonne (nombres en pixels), appliquée en width et min-width ; obligatoire pour les colonnes fixes",
+          "align": "Alignement horizontal de l'en-tête et des cellules",
+          "ellipsis": "Tronque le contenu sur une seule ligne avec des points de suspension",
+          "fixed": "Fixe la colonne au bord gauche ou droit pendant le défilement horizontal",
+          "sortable": "Rend la colonne triable : true compare row[key] (valeurs vides en dernier), une fonction (a, b) => number compare deux lignes pour l’ordre croissant"
+        },
+        "DataTableProps": {
+          "pagination": "Props de la pagination affichée sous le tableau (les lignes doivent déjà être paginées)",
+          "error": "Message d'erreur ; remplace le tableau et la pagination par une alerte",
+          "onRetry": "Appelée par le bouton Réessayer affiché avec error",
+          "retryLabel": "Texte du bouton Réessayer"
+        },
+        "TableRootProps": {
+          "size": "Densité des cellules",
+          "variant": "Style : lignes simples, zébrées ou cellules bordées",
+          "hoverable": "Met en surbrillance les lignes au survol",
+          "scroll": "Largeur minimale horizontale / hauteur maximale verticale de la zone de défilement ; un conteneur qui défile devient une région focalisable nommée d’après le tableau (par défaut : « Tableau défilant »)",
+          "ref": "Ref vers l'élément <table>"
+        },
+        "TableScrollConfig": {
+          "x": "Largeur minimale du tableau ; le conteneur défile horizontalement s'il est plus étroit",
+          "y": "Hauteur visible maximale ; le conteneur défile verticalement et l'en-tête reste collé"
+        },
+        "TableSortState": {
+          "key": "Clé de la colonne triée",
+          "order": "Sens du tri (\"ascend\" ou \"descend\") ; null signifie aucun tri"
+        },
+        "TableRowSelection": {
+          "type": "Mode de sélection (sélection multiple par cases à cocher)",
+          "selectedRowKeys": "Clés des lignes sélectionnées (contrôlé)",
+          "defaultSelectedRowKeys": "Clés des lignes sélectionnées au départ (non contrôlé)",
+          "onChange": "Appelé avec les nouvelles clés sélectionnées et les lignes correspondantes de data",
+          "getCheckboxProps": "Options de la case de chaque ligne ; les lignes désactivées ne peuvent pas être basculées et sont ignorées par « tout sélectionner »",
+          "getRowLabel": "Nomme une ligne dans le libellé accessible de sa case (« Sélectionner la ligne {name} ») ; par défaut la clé de la ligne"
+        },
+        "TableCellContentProps": {
+          "primary": "Contenu principal",
+          "secondary": "Contenu secondaire atténué sous le contenu principal",
+          "monospace": "Rend le contenu principal en <code> à chasse fixe",
+          "maxWidth": "Largeur maximale (nombres en pixels) ; le contenu long revient à la ligne",
+          "ref": "Ref vers l'élément <div> racine"
+        },
+        "FixedColumnLayout": {
+          "leftOffsets": "Décalage gauche (px) de chaque colonne fixée à gauche, par clé",
+          "rightOffsets": "Décalage droit (px) de chaque colonne fixée à droite, par clé",
+          "lastLeftFixedKey": "Dernière colonne du bloc fixé à gauche (reçoit l'ombre de bord)",
+          "firstRightFixedKey": "Première colonne du bloc fixé à droite (reçoit l'ombre de bord)"
+        }
+      },
+      "cssVars": {
+        "--table-cell-padding-y": "Marge intérieure verticale des cellules (toutes les tailles ; suit la densité par défaut)",
+        "--table-cell-padding-x": "Marge intérieure horizontale des cellules (toutes les tailles ; suit la densité par défaut)",
+        "--table-font-size": "Taille de police des cellules du corps (toutes les tailles)",
+        "--table-header-bg": "Couleur de fond de la ligne d'en-tête",
+        "--table-border-color": "Couleur des séparateurs de lignes",
+        "--table-radius": "Rayon des coins du conteneur (par défaut --radius-lg)",
+        "--table-stripe-bg": "Couleur de fond des lignes impaires d'un tableau rayé",
+        "--table-hover-bg": "Couleur de fond de la ligne survolée d'un tableau survolable",
+        "--table-selected-bg": "Couleur de fond des lignes sélectionnées (sélection de lignes)",
+        "--table-sort-icon-color": "Couleur de l’indicateur de tri d’une colonne triable non triée",
+        "--table-focus-ring-color": "Couleur du contour de la zone de défilement focalisée"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "columns et rows sont des propriétés JS définies depuis un script ; row-key désigne le champ servant de clé. Une fonction render de cellule peut renvoyer un nœud DOM, ici un <minerva-table-cell-content> sur deux lignes."
+          },
+          "sorting": {
+            "title": "Tri",
+            "description": "sortable: true trie selon le champ de la ligne, une fonction sert de comparateur personnalisé. Un clic sur l'en-tête alterne entre croissant, décroissant et non trié, et déclenche minerva-sort-change ; sortState définit le tri initial."
+          },
+          "selection": {
+            "title": "Sélection de lignes",
+            "description": "selectable ajoute une colonne de cases à cocher avec un en-tête « tout sélectionner ». isRowDisabled verrouille les factures payées, getRowLabel nomme chaque case et minerva-selection-change indique les clés sélectionnées."
+          },
+          "pagination": {
+            "title": "Pagination et chargement",
+            "description": "La propriété pagination affiche un <minerva-pagination> sous le tableau. Les lignes ne sont pas découpées : chargez la page demandée sur minerva-page-change ; loading affiche des lignes squelettes pendant ce temps."
+          }
+        },
+        "minerva-data-table": {
+          "props": {
+            "selectable": "Ajoute une colonne de cases à cocher pour sélectionner les lignes.",
+            "scrollX": "Défilement horizontal : largeur minimale du tableau (nombre en px ou longueur CSS).",
+            "scrollY": "Défilement vertical : hauteur maximale du conteneur ; l'en-tête reste fixe.",
+            "retryable": "Affiche un bouton « Réessayer » dans l'état d'erreur (déclenche minerva-retry).",
+            "rows": "Données des lignes.",
+            "isRowDisabled": "Renvoie true pour les lignes dont la case à cocher est désactivée."
+          },
+          "events": {
+            "minerva-sort-change": "L'utilisateur a changé le tri (detail : { key, order }, order null = non trié). Annulable : preventDefault() conserve le tri actuel.",
+            "minerva-selection-change": "L'utilisateur a changé les lignes sélectionnées (detail : { selectedRowKeys, selectedRows }). Annulable : preventDefault() conserve la sélection actuelle.",
+            "minerva-page-change": "Réémis depuis la pagination (detail : { page, pageSize }). Annulable.",
+            "minerva-retry": "Le bouton « Réessayer » de l'état d'erreur a été activé."
+          },
+          "slots": {
+            "empty": "Contenu de l'état vide (par défaut : empty-text ou « Aucune donnée » localisé).",
+            "error": "Contenu de l'état d'erreur (par défaut : le texte de error)."
+          },
+          "cssVars": {
+            "--button-height": "Hauteur minimale du bouton « Réessayer ».",
+            "--button-padding-x": "Marge intérieure horizontale du bouton « Réessayer ».",
+            "--button-radius": "Rayon des coins du bouton « Réessayer ».",
+            "--button-font-size": "Taille de police du bouton « Réessayer ».",
+            "--button-font-weight": "Graisse de police du bouton « Réessayer ».",
+            "--button-gap": "Espace entre l'icône et le libellé du bouton « Réessayer ».",
+            "--button-label-white-space": "white-space du libellé du bouton « Réessayer » : nowrap (par défaut, tronque) ou normal (retour à la ligne)."
+          }
+        },
+        "minerva-table-cell-content": {
+          "slots": {
+            "default": "Contenu principal (alternative à l'attribut primary).",
+            "secondary": "Ligne secondaire (alternative à l'attribut secondary)."
+          },
+          "cssVars": {
+            "--button-height": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+            "--button-padding-x": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+            "--button-radius": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+            "--button-font-size": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+            "--button-font-weight": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+            "--button-gap": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas.",
+            "--button-label-white-space": "Variable de Button listée car le module partage la feuille de style de Button avec le tableau ; cet élément ne l'utilise pas."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

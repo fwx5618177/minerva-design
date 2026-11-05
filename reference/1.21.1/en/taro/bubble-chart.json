@@ -1,0 +1,600 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.1",
+  "locale": "en",
+  "renderer": "taro",
+  "page": "bubble-chart",
+  "title": "Bubble chart",
+  "description": "Scatter charts with a third value drawn as the size of the dots: the area of a bubble is proportional to its value.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.1",
+    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
+    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  },
+  "content": {
+    "data": {
+      "continents": {
+        "asia": "Asia",
+        "europe": "Europe",
+        "americas": "Americas",
+        "africa": "Africa"
+      },
+      "population": "Population",
+      "gdp": "GDP per capita",
+      "lifeExpectancy": "Life expectancy (years)",
+      "countriesAria": "GDP per capita, life expectancy and population of countries",
+      "products": "Products",
+      "revenue": "Revenue",
+      "portfolio": {
+        "cloudStorage": "Cloud storage",
+        "analytics": "Analytics",
+        "mobileSdk": "Mobile SDK",
+        "payments": "Payments",
+        "desktop": "Desktop app",
+        "hardware": "Hardware",
+        "consulting": "Consulting"
+      },
+      "marketShare": "Relative market share",
+      "marketGrowth": "Market growth",
+      "leader": "Market leader",
+      "highGrowth": "High growth",
+      "portfolioAria": "Market share, growth and revenue of the products",
+      "stages": {
+        "qualified": "Qualified",
+        "proposal": "Proposal",
+        "negotiation": "Negotiation"
+      },
+      "amount": "Amount",
+      "deal": "Deal #{{id}}",
+      "daysInPipeline": "Days in the pipeline",
+      "winProbability": "Win probability",
+      "dealStatus": "{{deal}} ({{stage}}): {{amount}}",
+      "clickBubble": "Click a bubble",
+      "pipelineAria": "Open deals by age, win probability and amount",
+      "gdpLog": "GDP per capita (log scale)",
+      "highIncome": "High income",
+      "logAria": "Life expectancy against GDP per capita on a log scale, sized by population",
+      "visibleIncomes": "Visible incomes: {{from}} – {{to}}",
+      "zoomHint": "Zoom to see the visible range in dollars",
+      "teams": {
+        "infrastructure": "Infrastructure",
+        "security": "Security",
+        "people": "People",
+        "budget": "Budget"
+      },
+      "exposure": "Exposure",
+      "risks": {
+        "powerOutage": "Power outage",
+        "hardwareDelay": "Hardware delivery delay",
+        "networkCutover": "Network cutover",
+        "dataLeak": "Data leak",
+        "accessReview": "Access review backlog",
+        "keyPerson": "Key person leaves",
+        "vendorSkills": "Vendor skills shortage",
+        "trainingGap": "Training gap",
+        "licenseCost": "License cost increase",
+        "exchangeRate": "Exchange rate"
+      },
+      "zones": {
+        "low": "Acceptable",
+        "high": "Critical"
+      },
+      "riskScore": "Likelihood {{likelihood}} × impact {{impact}} = {{score}}",
+      "exposureRow": "Exposure: {{value}}",
+      "likelihood": "Likelihood",
+      "impact": "Impact",
+      "riskAria": "Project risks by likelihood, impact and cost exposure",
+      "channels": {
+        "search": "Search",
+        "social": "Social",
+        "video": "Video",
+        "email": "Email"
+      },
+      "budget": "Budget",
+      "launchedOn": "Launched on {{date}}",
+      "launch": "Launch date",
+      "roas": "Return on ad spend",
+      "breakEven": "Break-even",
+      "campaignsAria": "Marketing campaigns by launch date, return on ad spend and budget",
+      "regions": {
+        "north": "North",
+        "south": "South",
+        "east": "East",
+        "west": "West",
+        "center": "Center"
+      },
+      "sharedScale": "Same size scale in both charts",
+      "sharedScaleOn": "Both charts draw {{value}} with the largest bubble.",
+      "sharedScaleOff": "Each chart draws its own largest revenue with the largest bubble.",
+      "salesPerMeter": "Sales per m²",
+      "margin": "Margin",
+      "sharedScaleAria": "Sales per square meter, margin and revenue of the store regions in {{year}}",
+      "play": "Play",
+      "pause": "Pause",
+      "replay": "Replay",
+      "restart": "Restart",
+      "yearStatus": "Year: {{year}}",
+      "fertility": "Fertility (children per woman)",
+      "playbackAria": "Fertility, life expectancy and population of countries from 1990 to 2025"
+    }
+  },
+  "components": [
+    {
+      "name": "BubbleChart",
+      "support": {
+        "status": "beta",
+        "notes": "Cartesian charts drawn on a Canvas 2D node by the DOM-free engine (minerva-design/charts presets): the web component props mapped to the same engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset, H5 mouse hover; ref exposes resetZoom/getView/setView/getInstance/resize. No WebGPU / WebGL renderer (one Canvas 2D path), no keyboard navigation and no React tooltip content: tooltip.render may only return text. QuadrantChart accessible points: a visually hidden list of the points (role / aria-role, aria-label with name, quadrant and values; a tap is onPointClick) with 'Move to …' buttons calling onPointDrop with the center of the neighbouring quadrant. Mini-program views take no keyboard focus, so there is no focus ring nor Shift + arrow moves, and no live region: the move is announced (role=status) on H5 only. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Cartesian charts drawn on a Canvas 2D node by the DOM-free engine (minerva-design/charts presets): the web component props mapped to the same engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset, H5 mouse hover; ref exposes resetZoom/getView/setView/getInstance/resize. No WebGPU / WebGL renderer (one Canvas 2D path), no keyboard navigation and no React tooltip content: tooltip.render may only return text. QuadrantChart accessible points: a visually hidden list of the points (role / aria-role, aria-label with name, quadrant and values; a tap is onPointClick) with 'Move to …' buttons calling onPointDrop with the center of the neighbouring quadrant. Mini-program views take no keyboard focus, so there is no focus ring nor Shift + arrow moves, and no live region: the move is announced (role=status) on H5 only. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "BubbleChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series of points with a `value` sizing their bubble (area ∝ value)"
+          },
+          {
+            "name": "height",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch zoom, pan (drag when zoomed) and double-tap reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes). Mini-programs have no `<html lang>`: pass the app language"
+          },
+          {
+            "name": "labels",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "disableScroll",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Keeps the page from scrolling while a finger moves on the chart (needed to pan a zoomed chart or drag points)"
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the `<Canvas>` (generated by default)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:980cbee566a575ab834d",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the touched (or hovered) points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:054b6d565969c517cbb1",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:02c2f014ba9839a6e936",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:6871f590139907a5872c",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Bubble chart",
+      "description": "Scatter charts with a third value drawn as the size of the dots: the area of a bubble is proportional to its value.",
+      "demos": {
+        "countries": {
+          "title": "Countries",
+          "description": "GDP per capita against life expectancy, the bubbles sized by population and colored by continent; valueName and format name and format the value in the tooltip."
+        },
+        "log-scale": {
+          "title": "Log scale",
+          "description": "Incomes from $900 to $140k: xAxis.type: \"log\" spreads them evenly (×10 is the same distance anywhere) with ticks at 1, 2 and 5 of each decade. The default range snaps to the closest 1, 2 or 5 × 10^k bounds around the data ($500 to $200k) instead of whole decades; xAxis.min / max override it. Annotations and the tooltip use dollars, and onZoom reports the visible range in dollars, not in logarithms (Ctrl / ⌘ + wheel or a pinch zooms)."
+        },
+        "portfolio": {
+          "title": "Product portfolio",
+          "description": "Market share, market growth and revenue of the products, split in four quadrants by two reference lines; showLabels writes the names around the bubbles."
+        },
+        "pipeline": {
+          "title": "Sales pipeline",
+          "description": "Open deals by days in the pipeline and win probability, sized by amount; onPointClick receives the value of the clicked bubble."
+        },
+        "risk-matrix": {
+          "title": "Risk matrix",
+          "description": "Project risks placed by likelihood and impact on a 5 × 5 grid, sized by their cost exposure; open-ended rect annotations shade the low and high zones and renderTooltip computes the risk score."
+        },
+        "campaigns": {
+          "title": "Marketing campaigns",
+          "description": "Campaigns by launch date (xAxis.type: \"time\") and return on ad spend, sized by budget, one series per channel; a line annotation marks the break-even and the legend items toggle the channels."
+        },
+        "shared-scale": {
+          "title": "Shared size scale",
+          "description": "Two charts compare the store regions of two years. With the same maxValue, a given revenue gets the same area in both charts; without it, each chart sizes its bubbles from its own largest value."
+        },
+        "playback": {
+          "title": "Animated years",
+          "description": "Fertility against life expectancy from 1990 to 2025, played one year at a time with setInterval (cleared on pause and unmount). Fixed axis ranges and a constant maxValue keep the frames comparable, and a text annotation writes the year."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "GDP per capita, life expectancy and population: the bubble areas are proportional to the populations, written with the compact units of the locale in the tooltip."
+          }
+        }
+      },
+      "data": {
+        "continents": {
+          "asia": "Asia",
+          "europe": "Europe",
+          "americas": "Americas",
+          "africa": "Africa"
+        },
+        "population": "Population",
+        "gdp": "GDP per capita",
+        "lifeExpectancy": "Life expectancy (years)",
+        "countriesAria": "GDP per capita, life expectancy and population of countries",
+        "products": "Products",
+        "revenue": "Revenue",
+        "portfolio": {
+          "cloudStorage": "Cloud storage",
+          "analytics": "Analytics",
+          "mobileSdk": "Mobile SDK",
+          "payments": "Payments",
+          "desktop": "Desktop app",
+          "hardware": "Hardware",
+          "consulting": "Consulting"
+        },
+        "marketShare": "Relative market share",
+        "marketGrowth": "Market growth",
+        "leader": "Market leader",
+        "highGrowth": "High growth",
+        "portfolioAria": "Market share, growth and revenue of the products",
+        "stages": {
+          "qualified": "Qualified",
+          "proposal": "Proposal",
+          "negotiation": "Negotiation"
+        },
+        "amount": "Amount",
+        "deal": "Deal #{{id}}",
+        "daysInPipeline": "Days in the pipeline",
+        "winProbability": "Win probability",
+        "dealStatus": "{{deal}} ({{stage}}): {{amount}}",
+        "clickBubble": "Click a bubble",
+        "pipelineAria": "Open deals by age, win probability and amount",
+        "gdpLog": "GDP per capita (log scale)",
+        "highIncome": "High income",
+        "logAria": "Life expectancy against GDP per capita on a log scale, sized by population",
+        "visibleIncomes": "Visible incomes: {{from}} – {{to}}",
+        "zoomHint": "Zoom to see the visible range in dollars",
+        "teams": {
+          "infrastructure": "Infrastructure",
+          "security": "Security",
+          "people": "People",
+          "budget": "Budget"
+        },
+        "exposure": "Exposure",
+        "risks": {
+          "powerOutage": "Power outage",
+          "hardwareDelay": "Hardware delivery delay",
+          "networkCutover": "Network cutover",
+          "dataLeak": "Data leak",
+          "accessReview": "Access review backlog",
+          "keyPerson": "Key person leaves",
+          "vendorSkills": "Vendor skills shortage",
+          "trainingGap": "Training gap",
+          "licenseCost": "License cost increase",
+          "exchangeRate": "Exchange rate"
+        },
+        "zones": {
+          "low": "Acceptable",
+          "high": "Critical"
+        },
+        "riskScore": "Likelihood {{likelihood}} × impact {{impact}} = {{score}}",
+        "exposureRow": "Exposure: {{value}}",
+        "likelihood": "Likelihood",
+        "impact": "Impact",
+        "riskAria": "Project risks by likelihood, impact and cost exposure",
+        "channels": {
+          "search": "Search",
+          "social": "Social",
+          "video": "Video",
+          "email": "Email"
+        },
+        "budget": "Budget",
+        "launchedOn": "Launched on {{date}}",
+        "launch": "Launch date",
+        "roas": "Return on ad spend",
+        "breakEven": "Break-even",
+        "campaignsAria": "Marketing campaigns by launch date, return on ad spend and budget",
+        "regions": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West",
+          "center": "Center"
+        },
+        "sharedScale": "Same size scale in both charts",
+        "sharedScaleOn": "Both charts draw {{value}} with the largest bubble.",
+        "sharedScaleOff": "Each chart draws its own largest revenue with the largest bubble.",
+        "salesPerMeter": "Sales per m²",
+        "margin": "Margin",
+        "sharedScaleAria": "Sales per square meter, margin and revenue of the store regions in {{year}}",
+        "play": "Play",
+        "pause": "Pause",
+        "replay": "Replay",
+        "restart": "Restart",
+        "yearStatus": "Year: {{year}}",
+        "fertility": "Fertility (children per woman)",
+        "playbackAria": "Fertility, life expectancy and population of countries from 1990 to 2025"
+      },
+      "api": {
+        "BubbleChartProps": {
+          "series": "Series of points with a value sizing their bubble (area proportional to the value)"
+        },
+        "BubbleOptions": {
+          "minSize": "Diameter in pixels of the smallest bubbles",
+          "maxSize": "Diameter in pixels of the largest value",
+          "maxValue": "Value drawn with maxSize, to share a scale between charts; the largest value by default"
+        }
+      },
+      "wc": {
+        "demos": {
+          "countries": {
+            "title": "Wealth, health and population",
+            "description": "GDP per capita against life expectancy, bubbles sized by population (area proportional to the value)."
+          },
+          "portfolio": {
+            "title": "Portfolio risk and return",
+            "description": "One series per asset, sized by its share of the portfolio; clicking a bubble reports the asset."
+          }
+        },
+        "minerva-bubble-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}
