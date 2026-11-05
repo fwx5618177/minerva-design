@@ -62,6 +62,9 @@ export class MinervaSkeleton extends MinervaElement {
       :host {
         display: block;
       }
+      :host(:not([decorative])) {
+        width: 100%;
+      }
       :host([decorative][variant="circular"]) {
         display: inline-block;
         vertical-align: middle;
@@ -271,6 +274,7 @@ export class MinervaSkeletonText extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
       }
     `,
     sharedStyles(styles),

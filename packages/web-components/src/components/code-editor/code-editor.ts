@@ -164,6 +164,7 @@ export class MinervaCodeEditor extends FormAssociatedElement {
     css`
       :host {
         display: block;
+        width: 100%;
         min-width: 0;
       }
       ::slotted([slot="editor"]) {

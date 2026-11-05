@@ -217,6 +217,8 @@ export class MinervaAvatarGroup extends MinervaElement {
     css`
       :host {
         display: flex;
+        width: fit-content;
+        max-width: 100%;
       }
       .avatarGroup {
         flex: 1 1 auto;

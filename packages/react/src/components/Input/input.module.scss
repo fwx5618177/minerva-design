@@ -211,8 +211,9 @@
 }
 
 // Read-only values retain normal contrast, selection and focus feedback.
-.root[data-readonly]:not(.disabled),
-.root:has(.field[readonly]):not(.disabled) {
+// Unstyled fields (e.g. the Cascader's value) keep no surface.
+.root[data-readonly]:not(.disabled, .unstyled),
+.root:has(.field[readonly]):not(.disabled, .unstyled) {
   background-color: var(--readonly-surface-color);
   cursor: default;
 }

@@ -604,4 +604,15 @@ describe("<minerva-table-cell-content>", () => {
     expect($(el, "code.cellPrimary.cellMono")).toBeTruthy();
     expect($(el, ".cellSecondary slot[name=secondary]")).toBeTruthy();
   });
+
+  it("shows `primary` beside a whitespace-only default slot", async () => {
+    const el = await mount<MinervaTableCellContent>(
+      `<minerva-table-cell-content primary="Main">
+        <span slot="secondary">Sub</span>
+      </minerva-table-cell-content>`,
+    );
+    const primary = $(el, ".cellPrimary");
+    expect(primary.querySelector("slot")!.textContent).toBe("");
+    expect(primary.textContent?.trim()).toBe("Main");
+  });
 });

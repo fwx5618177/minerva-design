@@ -1,10 +1,11 @@
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import styles from "@react-styles/components/LoadingState/loadingState.module.scss?inline";
 import { DEV, devWarn } from "../../internal/dev";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
+import { HasSlotController } from "../../internal/slots";
 import { MinervaProgress } from "../progress/progress";
 import { sharedStyles } from "../../internal/styles";
 
@@ -48,6 +49,7 @@ export class MinervaLoadingState extends MinervaElement {
   size: LoadingStateSize = "medium";
 
   private readonly locale = new LocaleController(this);
+  private readonly slots = new HasSlotController(this);
 
   protected override hookStates() {
     return { size: this.size };
@@ -77,7 +79,11 @@ export class MinervaLoadingState extends MinervaElement {
         decorative
       ></minerva-progress>
       <span part="label" class="label"
-        ><slot>${this.label ?? this.locale.t("loadingState.label")}</slot></span
+        ><slot></slot>${
+          this.slots.test("[default]")
+            ? nothing
+            : (this.label ?? this.locale.t("loadingState.label"))
+        }</span
       >
     </div>`;
   }

@@ -194,7 +194,9 @@ export class MinervaListItem extends MinervaElement {
           : nothing
       }
       <div class="content">
-        <div part="label" class="primary"><slot>${this.primary}</slot></div>
+        <div part="label" class="primary">
+          <slot></slot>${this.slots.test("[default]") ? nothing : this.primary}
+        </div>
         ${
           hasSecondary
             ? html`<div part="description" class="secondary">

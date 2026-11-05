@@ -70,7 +70,11 @@ export class MinervaDatePicker extends FormAssociatedElement {
     css`
       :host {
         display: inline-block;
+        width: var(--date-picker-width, 100%);
         vertical-align: middle;
+      }
+      :host .datePicker {
+        width: 100%;
       }
       .datePicker .root {
         width: 100%;

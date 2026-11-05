@@ -31,6 +31,7 @@ export class MinervaPage extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
         min-width: 0;
       }
     `,

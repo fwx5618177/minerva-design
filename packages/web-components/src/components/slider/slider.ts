@@ -120,9 +120,11 @@ export class MinervaSlider extends FormAssociatedElement {
     css`
       :host {
         display: block;
+        width: 100%;
       }
       :host([orientation="vertical"]) {
         display: inline-block;
+        width: auto;
       }
     `,
     sharedStyles(styles),

@@ -322,6 +322,14 @@ $demo: "[data-demo-preview]";
   align-items: center;
   gap: 12px;
   width: 100%;
+
+  // A demo's wrapper fills the row, as a block does on a plain page (inline
+  // width / max-width still apply); a shrink-to-fit flex item would size the
+  // full-width elements inside it to their content.
+  > :is(div, form, section) {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 // Keep percentage-width Vue components at the same width as React demos.

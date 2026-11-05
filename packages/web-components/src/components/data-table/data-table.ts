@@ -30,6 +30,7 @@ import {
   nextSortState,
 } from "@minerva/core";
 import { itemParts } from "../../internal/styling-hooks";
+import { hasDefaultSlotContent } from "../../internal/slots";
 import { sharedStyles } from "../../internal/styles";
 
 export type TableSize = "small" | "medium" | "large";
@@ -162,6 +163,7 @@ export class MinervaDataTable<
     css`
       :host {
         display: block;
+        width: 100%;
         min-width: 0;
       }
       .retry {
@@ -782,7 +784,9 @@ export class MinervaTableCellContent extends MinervaElement {
       cellMono: this.monospace,
       cellStrong: hasSecondary,
     });
-    const primary = html`<slot>${this.primary}</slot>`;
+    const primary = html`<slot></slot>${
+        hasDefaultSlotContent(this) ? nothing : this.primary
+      }`;
     return html`<div
       part="root"
       class="cellContent"

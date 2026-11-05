@@ -510,6 +510,7 @@ export class MinervaCardTitle extends MinervaElement {
         min-width: 0;
       }
       .cardTitle {
+        margin: 0;
         font-size: var(--card-title-font-size, 1.25rem);
         font-weight: var(--font-weight-bold);
         color: var(--text-color);
@@ -559,6 +560,7 @@ export class MinervaCardDescription extends MinervaElement {
         min-width: 0;
       }
       .cardDescription {
+        margin: 0;
         font-size: var(--font-size-md);
         color: var(--text-secondary-color);
         white-space: nowrap;

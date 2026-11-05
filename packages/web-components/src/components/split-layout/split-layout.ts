@@ -35,6 +35,7 @@ export class MinervaSplitLayout extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
         min-width: 0;
       }
     `,

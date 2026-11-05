@@ -93,6 +93,7 @@ export class MinervaAppShell extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
       }
     `,
     sharedStyles(iconButtonStyles),

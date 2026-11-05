@@ -58,6 +58,7 @@ export class MinervaFormControl extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
       }
       .label {
         cursor: default;

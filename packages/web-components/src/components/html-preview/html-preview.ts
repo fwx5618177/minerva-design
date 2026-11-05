@@ -36,6 +36,7 @@ export class MinervaHtmlPreview extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
       }
     `,
     sharedStyles(styles),

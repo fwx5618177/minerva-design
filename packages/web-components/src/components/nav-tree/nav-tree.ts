@@ -131,6 +131,7 @@ export class MinervaNavTree extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
       }
     `,
     sharedStyles(styles),

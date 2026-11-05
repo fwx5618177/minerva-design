@@ -63,6 +63,23 @@ describe("<minerva-list>", () => {
     expect($(el, ".actions slot[name=actions]")).not.toBeNull();
   });
 
+  it("shows `primary` despite the whitespace around slotted parts", async () => {
+    // indentation text nodes go to the default slot: a slot fallback would
+    // never render, so `primary` must be rendered beside the slot
+    const el = await mount<MinervaListItem>(
+      `<minerva-list-item primary="main">
+        <button slot="actions">Open</button>
+      </minerva-list-item>`,
+    );
+    const primary = $(el, ".primary");
+    expect(primary.querySelector("slot")!.textContent).toBe("");
+    expect(primary.textContent?.trim()).toBe("main");
+    el.append("Custom");
+    await new Promise((r) => setTimeout(r));
+    await el.updateComplete;
+    expect(primary.textContent?.trim()).toBe("");
+  });
+
   it("skips empty optional parts and renders 0 as secondary content", async () => {
     const el = await mount<MinervaListItem>(
       `<minerva-list-item>Plain</minerva-list-item>`,

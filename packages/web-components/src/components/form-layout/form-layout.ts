@@ -38,6 +38,7 @@ export class MinervaFormLayout extends MinervaElement {
     css`
       :host {
         display: block;
+        width: 100%;
         min-width: 0;
       }
       .layout ::slotted(*) {

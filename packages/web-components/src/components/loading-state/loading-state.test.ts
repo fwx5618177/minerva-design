@@ -47,6 +47,16 @@ describe("<minerva-loading-state>", () => {
     expect(el.getAttribute("size")).toBe("large");
   });
 
+  it("shows the label when the element only holds whitespace", async () => {
+    const el = await mount<MinervaLoadingState>(
+      `<minerva-loading-state label="Fetching orders">
+      </minerva-loading-state>`,
+    );
+    const label = $(el, ".label");
+    expect(label.querySelector("slot")!.textContent).toBe("");
+    expect(label.textContent?.trim()).toBe("Fetching orders");
+  });
+
   it("follows the locale", async () => {
     const el = await mount<MinervaLoadingState>(
       `<minerva-config locale="zh"><minerva-loading-state></minerva-loading-state></minerva-config>`,
