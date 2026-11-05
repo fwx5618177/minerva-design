@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n,r,i;function a(){return(a=e((()=>{t=`_avatarGroup_fs9me_1`,n=`_avatarGroupItem_fs9me_12`,r=`_count_fs9me_32`,i={avatarGroup:t,avatarGroupItem:n,count:r}})))()}export{i as n,a as t};

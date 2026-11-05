@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.0",
-  "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
-  "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
-  "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  "sourceCommit": "3e3fd42fed9bd7320e0095e9008ad52d1dd44024",
+  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
+  "referenceSourceDigest": "sha256:bdc377ab7ed5f94120cdda24084c48e40370128fac18b85708e5f8b5fbaf5e95"
 }
 ```
 
@@ -412,7 +412,7 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/list/wc/basic.html
 
 ```html
-<minerva-list style="max-width: 420px">
+<minerva-list style="width: 100%; max-width: 420px">
   <minerva-list-item
     primary="Billing service"
     secondary="Deployed 2 hours ago"
@@ -446,7 +446,7 @@ Documentation context imports: none
   bordered
   density="comfortable"
   aria-label="Branches"
-  style="max-width: 560px"
+  style="width: 100%; max-width: 560px"
 >
   <minerva-list-item primary="main" secondary="Production · deployed 3 min ago">
     <minerva-button slot="actions" size="small" variant="outline"
@@ -528,7 +528,7 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/list/wc/slots.html
 
 ```html
-<minerva-list id="members" style="max-width: 460px">
+<minerva-list id="members" style="width: 100%; max-width: 460px">
   <minerva-list-item>
     <span slot="icon">👩‍💼</span>
     Jane Cooper
