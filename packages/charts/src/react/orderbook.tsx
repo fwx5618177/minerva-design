@@ -26,6 +26,8 @@ import type {
   OrderBookHeatmapHoverEvent,
   OrderBookHeatmapInstance,
   OrderBookHeatmapOptions,
+  OrderBookHeatmapViewInput,
+  OrderBookHeatmapViewData,
   OrderBookInstance,
   OrderBookLevelEvent,
   OrderBookOptions,
@@ -34,6 +36,7 @@ import type {
   TimeAndSalesOptions,
   TimeAndSalesRowEvent,
 } from "../engine/orderbook/types";
+import type { TradingBar, TradingBarsInput } from "../engine/trading/types";
 import type { ChartRendererKind } from "../engine/types";
 
 /** Container props shared by the order book components */
@@ -112,6 +115,14 @@ export interface OrderBookHeatmapHandle {
   applyDeltas(deltas: OrderBookDelta | readonly OrderBookDelta[]): void;
   /** Adds trades (bubbles) */
   addTrades(trades: MarketTrade | readonly MarketTrade[]): void;
+  /** Replaces the candle history */
+  setBars(bars: TradingBarsInput): void;
+  /** Updates the latest candle or appends a new one */
+  updateBar(bar: TradingBar): void;
+  /** Sets the visible time and/or price range */
+  setView(view: OrderBookHeatmapViewInput): void;
+  /** Available history and current viewport; null before mount */
+  getView(): OrderBookHeatmapViewData | null;
   /** Removes the book, the history and the trades */
   clear(): void;
   /** Follows the market again */
@@ -127,6 +138,10 @@ export interface OrderBookHeatmapProps
   book?: OrderBookSnapshot;
   /** Trades; when the array grows, only the appended ones are added */
   trades?: readonly MarketTrade[];
+  /** Candle history, passed through setBars when its identity changes */
+  bars?: TradingBarsInput;
+  /** Available history or current viewport changed */
+  onViewChange?: (data: OrderBookHeatmapViewData) => void;
   /** Hovered cell (`null` when the pointer leaves) */
   onHover?: (event: OrderBookHeatmapHoverEvent | null) => void;
   /** Backend in use (also after a GPU loss) */
@@ -484,6 +499,7 @@ interface HeatmapHandlers {
   onHover?: OrderBookHeatmapProps["onHover"];
   onRendererChange?: OrderBookHeatmapProps["onRendererChange"];
   onFollowChange?: OrderBookHeatmapProps["onFollowChange"];
+  onViewChange?: OrderBookHeatmapProps["onViewChange"];
 }
 
 const connectHeatmap = (
@@ -493,6 +509,7 @@ const connectHeatmap = (
   heatmap.on("hover", (e) => h().onHover?.(e)),
   heatmap.on("renderer", (r) => h().onRendererChange?.(r)),
   heatmap.on("follow", (f) => h().onFollowChange?.(f)),
+  heatmap.on("view", (data) => h().onViewChange?.(data)),
 ];
 
 /**
@@ -506,19 +523,24 @@ export function OrderBookHeatmap({
   style,
   book,
   trades,
+  bars,
   onHover,
   onRendererChange,
   onFollowChange,
+  onViewChange,
   ref,
   ...options
 }: OrderBookHeatmapProps) {
   const { containerRef, instanceRef } = useWidget(
     createOrderBookHeatmap,
     options,
-    { onHover, onRendererChange, onFollowChange },
+    { onHover, onRendererChange, onFollowChange, onViewChange },
     connectHeatmap,
   );
   useBook(instanceRef, book);
+  useEffect(() => {
+    if (bars !== undefined) instanceRef.current?.setBars(bars);
+  }, [instanceRef, bars]);
   useTrades(
     instanceRef,
     trades,
@@ -531,6 +553,10 @@ export function OrderBookHeatmap({
       setBook: (snapshot) => instanceRef.current?.setBook(snapshot),
       applyDeltas: (deltas) => instanceRef.current?.applyDeltas(deltas),
       addTrades: (list) => instanceRef.current?.addTrades(list),
+      setBars: (bars) => instanceRef.current?.setBars(bars),
+      updateBar: (bar) => instanceRef.current?.updateBar(bar),
+      setView: (view) => instanceRef.current?.setView(view),
+      getView: () => instanceRef.current?.getView() ?? null,
       clear: () => instanceRef.current?.clear(),
       resetView: () => instanceRef.current?.resetView(),
       getInstance: () => instanceRef.current,

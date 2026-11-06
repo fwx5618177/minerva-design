@@ -13,6 +13,7 @@ import type {
   OrderBookSnapshot,
   TimeAndSalesColumn,
   TimeAndSalesLabels,
+  TradingBarsInput,
 } from "minerva-design/charts/core";
 import { raw, useChartEngine, type EngineInstance } from "./engine";
 import { chartFrameProps } from "./props";
@@ -131,6 +132,18 @@ export const orderBookHeatmapProps = {
   book: Object as PropType<OrderBookSnapshot>,
   /** Trades; when the array grows, only the appended ones are added */
   trades: Array as PropType<ChartTrades>,
+  /** Candle history; property only, applied through setBars */
+  bars: [Array, Object] as PropType<TradingBarsInput>,
+  /** Candle overlay (default true when bars are supplied) */
+  candles: optionalBoolean,
+  /** Last close price line (default true) */
+  lastPriceLine: optionalBoolean,
+  /** Normalized liquidity intensity bounds, 0..1 */
+  intensityRange: Array as unknown as PropType<readonly [number, number]>,
+  /** Maximum retained columns (default 6000) */
+  maxColumns: Number,
+  /** Maximum retained candles (default 20000) */
+  maxBars: Number,
   /** Price step of the rows; detected from the book by default */
   tickSize: Number,
   /** Duration of a column, in ms (default 100) */
@@ -213,9 +226,10 @@ export const timeAndSalesProps = {
 };
 
 /** Props passed through engine methods rather than the options */
-const STREAMED = ["book", "trades", "lastPrice"];
+const STREAMED = ["book", "trades", "lastPrice", "bars"];
 
 interface Widget<O> extends EngineInstance<O> {
+  setBars?(bars: TradingBarsInput): void;
   setBook?(snapshot: OrderBookSnapshot): void;
   applyDeltas?(deltas: OrderBookDelta | readonly OrderBookDelta[]): void;
 }
@@ -230,6 +244,7 @@ export function useBookWidget<O, I extends Widget<O>>(
   factory: (container: HTMLElement, options: O) => I,
   props: Record<string, unknown> & {
     book?: OrderBookSnapshot;
+    bars?: TradingBarsInput;
     trades?: ChartTrades;
     deep?: boolean;
   },
@@ -265,6 +280,7 @@ export function useBookWidget<O, I extends Widget<O>>(
     (instance) => {
       previous = undefined;
       if (props.book) instance.setBook?.(raw(props.book));
+      if (props.bars !== undefined) instance.setBars?.(raw(props.bars));
       feed(instance);
       return bind(instance);
     },
@@ -280,6 +296,12 @@ export function useBookWidget<O, I extends Widget<O>>(
     () => props.trades,
     () => {
       if (engine.instance.value) feed(engine.instance.value);
+    },
+  );
+  watch(
+    () => props.bars,
+    (bars) => {
+      if (bars !== undefined) engine.instance.value?.setBars?.(raw(bars));
     },
   );
   return engine;

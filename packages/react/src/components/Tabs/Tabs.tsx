@@ -101,12 +101,16 @@ export const Tabs = ({
   }
   useControlledSwitchWarning(valueProp !== undefined, "Tabs");
   // Selection and automatic / manual activation: core's tabs machine.
-  const [{ value }, send] = useMachine(createTabsMachine, {
-    value: valueProp,
-    defaultValue,
-    onValueChange: onChange,
-    activationMode,
-  });
+  const [value, send] = useMachine(
+    createTabsMachine,
+    {
+      value: valueProp,
+      defaultValue,
+      onValueChange: onChange,
+      activationMode,
+    },
+    (state) => state.value,
+  );
 
   return (
     <TabsContext.Provider

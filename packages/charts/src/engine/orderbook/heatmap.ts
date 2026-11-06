@@ -18,6 +18,11 @@ import {
   toOklab,
   type Rgba,
 } from "../color";
+import { createHeatmapCandles } from "./candles";
+import type {
+  OrderBookHeatmapViewData,
+  OrderBookHeatmapViewInput,
+} from "./types";
 import { followDefaultRenderer } from "../renderers/follow";
 import { linearTicks } from "../scale";
 import { timeTicks } from "../time";
@@ -365,6 +370,9 @@ export const createOrderBookHeatmap = (
   let openStart = NaN;
   const open = { buyVolume: 0, buyNotional: 0, sellVolume: 0, sellNotional: 0 };
   let lastTrade: MarketTrade | null = null;
+  const candles = createHeatmapCandles();
+  let viewEventKey = "";
+  let emittingView = false;
 
   /** Time source: exchange times once any is given, the local clock otherwise */
   let dataTime = NaN;
@@ -400,6 +408,7 @@ export const createOrderBookHeatmap = (
   let follow = true;
   let windowSpan = NaN;
   let viewX: [number, number] = [0, 1];
+  let viewXReady = false;
   let viewY: [number, number] = [0, 1];
   /** `viewY` holds a fitted range (it eases toward `yTarget` afterwards) */
   let viewYReady = false;
@@ -442,9 +451,51 @@ export const createOrderBookHeatmap = (
     texts = localeLabels(LABELS, options.locale, options.labels);
     root.setAttribute("aria-label", options.ariaLabel ?? texts.name);
   };
-  const interval = () => Math.max(10, options.interval ?? 100);
-  const history = () => Math.max(interval() * 4, options.history ?? 300_000);
-  const depth = () => Math.max(4, Math.round(options.depth ?? 160));
+  const finite = (
+    value: number | undefined,
+    fallback: number,
+    min: number,
+    max: number,
+  ) => (Number.isFinite(value) ? clamp(value!, min, max) : fallback);
+  const interval = () => finite(options.interval, 100, 10, 86400000);
+  const history = () =>
+    finite(options.history, 300000, interval() * 4, 604800000);
+  const depth = () => Math.round(finite(options.depth, 160, 4, 2000));
+  const maxColumns = () =>
+    Math.min(
+      Math.round(finite(options.maxColumns, 6000, 4, 12000)),
+      Math.floor(1000000 / (depth() * 2)),
+    );
+  const maxBars = () => Math.round(finite(options.maxBars, 20000, 1, 100000));
+  const trimColumns = () => {
+    const oldest = openStart - history();
+    let drop = Math.max(0, columns.length - maxColumns());
+    while (drop < columns.length && columns[drop]!.time < oldest) drop++;
+    if (drop) columns = columns.slice(drop);
+  };
+  const validRange = (range: readonly [number, number] | undefined) =>
+    range &&
+    range.every(Number.isFinite) &&
+    Number.isFinite(range[1] - range[0]) &&
+    range[1] > range[0];
+  const getView = (): OrderBookHeatmapViewData => ({
+    availableTime: Number.isFinite(openStart)
+      ? [columns[0]?.time ?? openStart, openStart + interval()]
+      : null,
+    view: { time: [...viewX], price: [...viewY], follow },
+  });
+  const emitView = () => {
+    const payload = getView();
+    const key = JSON.stringify(payload);
+    if (key === viewEventKey || emittingView) return;
+    viewEventKey = key;
+    emittingView = true;
+    try {
+      emitter.emit("view", payload);
+    } finally {
+      emittingView = false;
+    }
+  };
   const nowTime = () => {
     if (!Number.isFinite(dataTime)) return Date.now();
     const elapsed = perfNow() - dataWall;
@@ -524,7 +575,8 @@ export const createOrderBookHeatmap = (
     if (tick > 0) return;
     const base = inferTickSize(store);
     const mid = store.mid();
-    if (options.tickSize && options.tickSize > 0) tick = options.tickSize;
+    if (Number.isFinite(options.tickSize) && options.tickSize! > 0)
+      tick = options.tickSize!;
     else if (base > 0 && Number.isFinite(mid)) {
       // rows of about 0.1 basis point: a round multiple of the tick (BTC at
       // 64,000 with a 0.1 tick: 0.5 rows)
@@ -587,7 +639,7 @@ export const createOrderBookHeatmap = (
     columns.push(column);
     // history
     const oldest = start - history();
-    let drop = 0;
+    let drop = Math.max(0, columns.length - maxColumns());
     while (drop < columns.length && columns[drop]!.time < oldest) drop++;
     if (drop) columns = columns.slice(drop);
   };
@@ -606,6 +658,10 @@ export const createOrderBookHeatmap = (
       openStart = Math.floor(time / step) * step;
       return;
     }
+    // Skip intervals that cannot survive either the time or row-memory budget.
+    const keep = Math.min(history(), step * maxColumns());
+    if (time - openStart > keep)
+      openStart = Math.floor((time - keep) / step) * step;
     while (time >= openStart + step) {
       closeColumn(openStart);
       openStart += step;
@@ -704,7 +760,8 @@ export const createOrderBookHeatmap = (
     if (!grid) return null;
     // auto scale: a robust "hot" size, sampled at most 4 times a second
     const fixed = options.maxSize;
-    if (fixed !== undefined && fixed > 0) scaleMax = fixed;
+    if (fixed !== undefined && Number.isFinite(fixed) && fixed > 0)
+      scaleMax = fixed;
     else {
       const now = perfNow();
       if (now - scaleAt > 250 || !(scaleTarget > 0)) {
@@ -717,13 +774,28 @@ export const createOrderBookHeatmap = (
       else if (scaleTarget > 0 && Math.abs(scaleTarget / scaleMax - 1) > 1e-3)
         scaleMax += (scaleTarget - scaleMax) * ease(dt, 700);
     }
-    const contrast = Math.max(0.01, options.contrast ?? 1);
+    const contrast = finite(options.contrast, 1, 0.01, 100);
     const k = scaleMax > 0 ? (HEAT_TABLE_SIZE * contrast) / scaleMax : 0;
-    const paint = `${grid.version}|${k}|${dist?.version ?? -1}`;
+    const range = options.intensityRange;
+    const low = validRange(range)
+      ? clamp(range![0], 0, 1)
+      : range?.[0] === range?.[1] && Number.isFinite(range?.[0])
+        ? clamp(range![0], 0, 1)
+        : 0;
+    const high = validRange(range)
+      ? clamp(range![1], low, 1)
+      : range?.[0] === range?.[1] && Number.isFinite(range?.[1])
+        ? low
+        : 1;
+    const paint = `${grid.version}|${k}|${dist?.version ?? -1}|${low}|${high}`;
     if (paint !== paintKey) {
       // the table maps a size (through `k`) to the mix of its absolute
       // intensity and its rank among the visible cells
-      table = heatTable(lut, heatCurve(dist, scaleMax / contrast, curve));
+      const intensity = heatCurve(dist, scaleMax / contrast, curve);
+      table = heatTable(lut, (r) => {
+        const value = intensity(r);
+        return value < low || value > high ? 0 : value;
+      });
       paintHeatGrid(grid, table, k);
       paintKey = paint;
     }
@@ -1312,8 +1384,13 @@ export const createOrderBookHeatmap = (
     // view: the following view fits the data (history fills the plot from
     // the left) and keeps the price range while the market stays inside it
     if (!Number.isFinite(windowSpan))
-      windowSpan = Math.max(step * 10, options.window ?? 60_000);
-    if (follow) {
+      windowSpan = finite(
+        options.window,
+        Math.min(60000, history()),
+        step * 10,
+        Math.max(step * 10, history()),
+      );
+    if (follow || !viewXReady) {
       const first = columns.length ? columns[0]!.time : openStart;
       // the view ends at the live time: the open column (the live book) is
       // cut by the right edge, so no gap opens while it is being sampled
@@ -1323,6 +1400,9 @@ export const createOrderBookHeatmap = (
         windowSpan,
         Math.min(windowSpan, step * 60),
       );
+      viewXReady = Number.isFinite(openStart);
+    }
+    if (follow || !viewYReady) {
       let lo = store.bestBid();
       let hi = store.bestAsk();
       for (const c of visibleColumns()) {
@@ -1331,9 +1411,17 @@ export const createOrderBookHeatmap = (
       }
       if (!Number.isFinite(lo)) lo = hi;
       if (!Number.isFinite(hi)) hi = lo;
+      if (options.candles !== false) {
+        for (const bar of candles.visible(viewX[0], viewX[1], plot.w)) {
+          lo = Number.isFinite(lo) ? Math.min(lo, bar.low) : bar.low;
+          hi = Number.isFinite(hi) ? Math.max(hi, bar.high) : bar.high;
+        }
+      }
       const minSpan = tick > 0 ? tick * Math.max(40, plot.h / 6) : 0;
       const fixed =
-        options.priceSpan ?? (Number.isFinite(ySpan) ? ySpan : undefined);
+        (Number.isFinite(options.priceSpan) && options.priceSpan! > 0
+          ? options.priceSpan
+          : undefined) ?? (Number.isFinite(ySpan) ? ySpan : undefined);
       if (minSpan > 0 || fixed !== undefined) {
         yTarget = fitPriceRange(yTarget, lo, hi, minSpan, fixed);
         const [t0, t1] = yTarget;
@@ -1423,6 +1511,59 @@ export const createOrderBookHeatmap = (
     }
     ctx.stroke();
 
+    // Supplied OHLC envelopes share the exact liquidity viewport and clipping.
+    const latestBar = candles.last();
+    const last =
+      (lastTrade && (!latestBar || lastTrade.time >= latestBar.time)
+        ? lastTrade
+        : null) ??
+      (latestBar
+        ? {
+            price: latestBar.close,
+            side:
+              latestBar.close >= latestBar.open
+                ? ("buy" as const)
+                : ("sell" as const),
+          }
+        : null);
+    if (ready && options.candles !== false) {
+      ctx.save();
+      clipPlot(ctx);
+      for (const bar of candles.visible(x0, x1, plot.w)) {
+        const x = xOf((bar.time + bar.end) / 2);
+        const w = Math.max(
+          1,
+          Math.min(24, Math.abs(xOf(bar.end) - xOf(bar.time)) * 0.72),
+        );
+        const color = bar.close >= bar.open ? colors.up : colors.down;
+        ctx.strokeStyle = toCss(color);
+        ctx.fillStyle = toCss(color);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, yOf(bar.high));
+        ctx.lineTo(x, yOf(bar.low));
+        ctx.stroke();
+        ctx.fillRect(
+          x - w / 2,
+          Math.min(yOf(bar.open), yOf(bar.close)),
+          w,
+          Math.max(1, Math.abs(yOf(bar.open) - yOf(bar.close))),
+        );
+      }
+      ctx.restore();
+    }
+    if (ready && last && options.lastPriceLine !== false) {
+      ctx.save();
+      clipPlot(ctx);
+      ctx.strokeStyle = toCss(last.side === "buy" ? colors.up : colors.down);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(plot.x, yOf(last.price));
+      ctx.lineTo(plot.x + plot.w, yOf(last.price));
+      ctx.stroke();
+      ctx.restore();
+    }
     // trades, then the best bid / ask on top of them, the current book
     if (ready) {
       if (options.bubbles !== false)
@@ -1474,13 +1615,13 @@ export const createOrderBookHeatmap = (
 
     // price axis: pinned tags (best ask / bid, last trade) win over the
     // ticks, the hover tag over everything
-    const last = lastTrade;
     const pins: { price: number; color: Rgba; filled: boolean }[] = [
       { price: store.bestAsk(), color: colors.down, filled: true },
       { price: store.bestBid(), color: colors.up, filled: true },
     ];
     if (
       last &&
+      options.lastPriceLine !== false &&
       last.price !== store.bestBid() &&
       last.price !== store.bestAsk()
     )
@@ -1540,6 +1681,7 @@ export const createOrderBookHeatmap = (
     host.describe(
       `${options.ariaLabel ?? l.name}. ${l.bid} ${fmt.price(store.bestBid())}, ${l.ask} ${fmt.price(store.bestAsk())}.`,
     );
+    emitView();
     // keep scrolling while following a live market
     const fresh = live || perfNow() - dataWall < 2000;
     return (
@@ -1644,6 +1786,7 @@ export const createOrderBookHeatmap = (
       "center",
     );
 
+    const hoveredBar = candles.at(time);
     const sideColor =
       side === "bid" ? colors.up : side === "ask" ? colors.down : null;
     tooltipHtml(
@@ -1675,6 +1818,14 @@ export const createOrderBookHeatmap = (
         [l.liquidity, withUnit(fmt.size(size))],
         [l.buys, withUnit(fmt.size(buyVolume))],
         [l.sells, withUnit(fmt.size(sellVolume))],
+        ...(hoveredBar
+          ? ([
+              ["O", fmt.price(hoveredBar.open)],
+              ["H", fmt.price(hoveredBar.high)],
+              ["L", fmt.price(hoveredBar.low)],
+              ["C", fmt.price(hoveredBar.close)],
+            ] as [string, string][])
+          : []),
       ],
     );
     host.tooltip.style.display = "block";
@@ -1685,10 +1836,11 @@ export const createOrderBookHeatmap = (
       hx > plot.w * 0.6 ? "left" : "right",
     );
 
-    const key = `${start}|${bucket}|${ry}|${size}|${buyVolume}|${sellVolume}`;
+    const key = `${start}|${bucket}|${ry}|${size}|${buyVolume}|${sellVolume}|${hoveredBar?.time}|${hoveredBar?.open}|${hoveredBar?.high}|${hoveredBar?.low}|${hoveredBar?.close}`;
     if (key !== hoverKey) {
       hoverKey = key;
       const event: OrderBookHeatmapHoverEvent = {
+        bar: hoveredBar ? { ...hoveredBar } : undefined,
         time: Number.isFinite(start) ? start : time,
         price: low,
         priceHigh: high,
@@ -1917,6 +2069,33 @@ export const createOrderBookHeatmap = (
   };
 
   const instance: OrderBookHeatmapInstance = {
+    setBars(bars) {
+      candles.set(bars, maxBars());
+      hoverKey = "";
+      host.invalidate();
+    },
+    updateBar(bar) {
+      candles.update(bar, maxBars());
+      hoverKey = "";
+      host.invalidate();
+    },
+    setView(next: OrderBookHeatmapViewInput) {
+      if (!validRange(next.time) && !validRange(next.price)) return;
+      if (validRange(next.time)) {
+        viewX = clampTime([...next.time!]);
+        viewXReady = true;
+        windowSpan = viewX[1] - viewX[0];
+      }
+      if (validRange(next.price)) {
+        viewY = [...next.price!];
+        yTarget = [...viewY];
+        ySpan = viewY[1] - viewY[0];
+        viewYReady = true;
+      }
+      setFollow(false);
+      host.invalidate();
+    },
+    getView,
     setBook(snapshot) {
       const time = noteTime(snapshot.time);
       if (store.count("bid") + store.count("ask") > 0) advance(time);
@@ -1938,7 +2117,13 @@ export const createOrderBookHeatmap = (
         ? (trades as readonly MarketTrade[])
         : [trades as MarketTrade];
       for (const trade of list) {
-        if (!(trade.size > 0) || !Number.isFinite(trade.price)) continue;
+        if (
+          !(trade.size > 0) ||
+          !Number.isFinite(trade.size) ||
+          !Number.isFinite(trade.price) ||
+          !Number.isFinite(trade.time)
+        )
+          continue;
         if (Number.isFinite(dataTime)) {
           noteTime(trade.time);
           advance(trade.time);
@@ -1962,6 +2147,7 @@ export const createOrderBookHeatmap = (
     },
     clear() {
       store.clear();
+      candles.clear();
       clearHistory();
       lastTrade = null;
       dataTime = NaN;
@@ -1974,6 +2160,8 @@ export const createOrderBookHeatmap = (
     setOptions(next) {
       const previous = options;
       options = next;
+      trimColumns();
+      candles.trim(maxBars());
       applyTexts();
       if (
         next.tickSize !== previous.tickSize ||

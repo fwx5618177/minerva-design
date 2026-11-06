@@ -5390,6 +5390,132 @@ Object.assign(angularExamples, {
   ],
   "order-book-heatmap": [
     chart(
+      "candles-navigation",
+      "Supplied candles and history navigation",
+      ["MnOrderBookHeatmap", "MnButton", "MnSlider"],
+      `@let t = labels[language()];
+<div style="display:grid;gap:12px;width:100%">
+<p>{{t.source}}</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button mnButton size="small" variant="outline" (click)="show(10)">{{t.latest}}</button>
+<button mnButton size="small" variant="outline" (click)="show(30)">{{t.full}}</button>
+<button mnButton size="small" (click)="heatmap.resetView()">{{t.follow}}</button>
+</div>
+<mn-slider [attr.aria-label]="t.minimum" [value]="minimum" (valueChange)="filter($event)" [min]="0" [max]="90" [step]="5" showValue style="max-width:320px"/>
+<mn-order-book-heatmap #heatmap [height]="400" [options]="{ interval:250, window:30000, history:60000, maxBars:30, maxColumns:240, intensityRange:[minimum / 100, 1] }" (viewChange)="viewState = $event"/>
+<output aria-live="polite">{{viewState?.view?.follow ? t.following : t.manual}} · {{t.minimum}} {{minimum}}% · {{viewState ? ((viewState.view.time[1] - viewState.view.time[0]) / 1000).toFixed(0) : 30}} {{t.visible}}</output>
+</div>`,
+      {
+        minimum: 0,
+        labels: {
+          en: {
+            source:
+              "Simulated resting book · 30 supplied OHLC candles aggregated from simulated executions.",
+            latest: "Latest 10s",
+            full: "Full 30s",
+            follow: "Follow market",
+            following: "Following market",
+            manual: "Manual view",
+            minimum: "Minimum liquidity intensity (%)",
+            visible: "s visible",
+          },
+          zh: {
+            source: "模拟挂单簿 · 显式传入 30 根由模拟成交聚合的 OHLC K 线。",
+            latest: "最近 10 秒",
+            full: "完整 30 秒",
+            follow: "跟随行情",
+            following: "正在跟随行情",
+            manual: "手动视图",
+            minimum: "最低流动性强度（%）",
+            visible: "秒可见",
+          },
+          ja: {
+            source:
+              "模擬指値注文板 · 模擬約定から集計した OHLC ローソク足 30 本を明示的に入力。",
+            latest: "直近 10 秒",
+            full: "全 30 秒",
+            follow: "相場に追従",
+            following: "相場に追従中",
+            manual: "手動表示",
+            minimum: "流動性強度の下限（%）",
+            visible: "秒を表示",
+          },
+          fr: {
+            source:
+              "Carnet d’ordres simulé · 30 bougies OHLC fournies, agrégées à partir d’exécutions simulées.",
+            latest: "10 dernières s",
+            full: "30 s complètes",
+            follow: "Suivre le marché",
+            following: "Suivi du marché",
+            manual: "Vue manuelle",
+            minimum: "Intensité minimale de liquidité (%)",
+            visible: "s visibles",
+          },
+        },
+        viewState: code(
+          `null as import("minerva-design/charts/core").OrderBookHeatmapViewData | null`,
+        ),
+        filter: code(
+          `(value: number | [number, number]) => { this.minimum = typeof value === 'number' ? value : value[0]; }`,
+        ),
+        chart: code(
+          `viewChild<import('minerva-design/angular').MnOrderBookHeatmap>('heatmap')`,
+          { "@angular/core": ["viewChild"] },
+        ),
+        history: code(
+          `(() => {
+  const end = Math.floor(Date.now() / 1000) * 1000;
+  const start = end - 30_000;
+  const trades: MarketTrade[] = [];
+  const books: OrderBookSnapshot[] = [];
+  const bars: TradingBar[] = [];
+  const round = (value: number) => Math.round(value * 100) / 100;
+  for (let i = 0; i < 120; i += 1) {
+    const time = start + i * 250;
+    const price = round(100 + Math.sin(i / 11) * 0.7 + Math.sin(i * 1.7) * 0.12);
+    const size = 1 + (i * 7 % 9);
+    trades.push({ time, price, size, side: i % 3 ? "buy" : "sell" });
+    const side = (sign: number) => Array.from({ length: 36 }, (_, level) =>
+      [round(price + sign * (level + 1) * 0.05), 2 + ((level * 13 + i * 7) % 19) + (level % 11 === 0 ? 65 : 0)] as [number, number]);
+    books.push({ time, bids: side(-1), asks: side(1) });
+    const bucket = Math.floor(i / 4);
+    if (i % 4 === 0) bars.push({ time: start + bucket * 1000, open: price, high: price, low: price, close: price, volume: size });
+    else {
+      const bar = bars[bucket];
+      bar.high = Math.max(bar.high, price); bar.low = Math.min(bar.low, price);
+      bar.close = price; bar.volume = (bar.volume ?? 0) + size;
+    }
+  }
+  return { start, end, trades, books, bars };
+})()`,
+          {
+            "minerva-design/charts/core": [
+              "MarketTrade",
+              "OrderBookSnapshot",
+              "TradingBar",
+            ],
+          },
+        ),
+        show: code(
+          `(seconds: number) => this.chart()?.setView({ time: [this.history.end - seconds * 1000, this.history.end], price: [98, 102] })`,
+        ),
+        initialize: code(
+          `effect(() => {
+  const heatmap = this.chart();
+  if (!heatmap?.instance()) return;
+  // instance is a public readiness signal; the engine is created after render.
+  untracked(() => {
+    for (const book of this.history.books) heatmap.setBook(book);
+    heatmap.addTrades(this.history.trades);
+    heatmap.setBars(this.history.bars);
+    this.show(30);
+  });
+})`,
+          { "@angular/core": ["effect", "untracked"] },
+        ),
+      },
+    ),
+    chart(
       "liquidity",
       "Live liquidity heatmap",
       ["MnOrderBookHeatmap"],

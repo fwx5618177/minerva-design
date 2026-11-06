@@ -2,6 +2,8 @@
 // liquidity heatmap and time and sales (listed in
 // apps/docs/scripts/generate-api.mjs).
 
+import type { TradingBar, TradingBarsInput } from "../trading/types";
+
 import type {
   ChartRendererKind,
   ChartRendererPreference,
@@ -525,6 +527,17 @@ export type OrderBookHeatmapScale = "linear" | "sqrt" | "log";
 
 /** Options of the liquidity heatmap */
 export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
+  /** Supplied OHLC bars drawn over liquidity; duration uses the lower median of the last 256 observed intervals (1 s for a single bar), leaving missing intervals empty. @default true */
+  candles?: boolean;
+  /** Dashed latest trade price and axis tag; a bar opened after that trade supplies its newer close instead. @default true */
+  lastPriceLine?: boolean;
+  /** Inclusive normalized intensity range, after the color curve; display-only. @default [0, 1] */
+  intensityRange?: readonly [number, number];
+  /** Maximum retained columns, clamped to 4–12000 and a 1000000 sampled-row budget. @default 6000 */
+  maxColumns?: number;
+  /** Maximum retained OHLC bars, clamped to 1–100000. @default 20000 */
+  maxBars?: number;
+
   /** Height of a price row (levels are aggregated into rows); a round multiple of the book's tick of about 0.1 basis point when omitted */
   tickSize?: number;
   /**
@@ -642,6 +655,8 @@ export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
 
 /** Hovered cell of the heatmap */
 export interface OrderBookHeatmapHoverEvent {
+  /** Actual supplied OHLC bar covering the pointer time; absent in gaps and beyond its inferred duration. */
+  bar?: TradingBar;
   /** Start time of the hovered column */
   time: number;
   /**
@@ -661,8 +676,27 @@ export interface OrderBookHeatmapHoverEvent {
   sellVolume: number;
 }
 
+/** A heatmap viewport; time is epoch milliseconds, price is low to high. */
+export interface OrderBookHeatmapView {
+  time: readonly [number, number];
+  price: readonly [number, number];
+  follow: boolean;
+}
+/** Partial manual viewport. Invalid or nonascending ranges are ignored. */
+export interface OrderBookHeatmapViewInput {
+  time?: readonly [number, number];
+  price?: readonly [number, number];
+}
+/** Current viewport and retained liquidity history bounds. */
+export interface OrderBookHeatmapViewData {
+  availableTime: readonly [number, number] | null;
+  view: OrderBookHeatmapView;
+}
+
 /** Events of the liquidity heatmap */
 export interface OrderBookHeatmapEventMap {
+  /** Viewport or retained history changed, at most once per drawn frame. */
+  view: OrderBookHeatmapViewData;
   /** Hovered cell (`null` when the pointer leaves) */
   hover: OrderBookHeatmapHoverEvent | null;
   /** Backend in use (also after a GPU loss) */
@@ -673,6 +707,14 @@ export interface OrderBookHeatmapEventMap {
 
 /** Liquidity heatmap created by `createOrderBookHeatmap` */
 export interface OrderBookHeatmapInstance {
+  /** Replaces the supplied, ascending OHLC history; retains its bounded tail. */
+  setBars(bars: TradingBarsInput): void;
+  /** Replaces the latest candle at equal time or appends a newer candle; older/invalid bars are ignored. */
+  updateBar(bar: TradingBar): void;
+  /** Applies valid explicit ranges and pauses following; resetView resumes it. */
+  setView(view: OrderBookHeatmapViewInput): void;
+  /** Returns copied ranges; availableTime is null before liquidity data exists. */
+  getView(): OrderBookHeatmapViewData;
   /** Replaces the book (closes the columns up to its time) */
   setBook(snapshot: OrderBookSnapshot): void;
   /** Applies updates (closes the columns up to their time) */

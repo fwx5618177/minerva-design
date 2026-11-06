@@ -11,11 +11,15 @@ import {
   type OrderBookDelta,
   type OrderBookHeatmapInstance,
   type OrderBookHeatmapOptions,
+  type OrderBookHeatmapViewInput,
+  type OrderBookHeatmapViewData,
   type OrderBookInstance,
   type OrderBookOptions,
   type OrderBookSnapshot,
   type TimeAndSalesInstance,
   type TimeAndSalesOptions,
+  type TradingBar,
+  type TradingBarsInput,
 } from "minerva-design/charts/core";
 import {
   MinervaEngineElement,
@@ -229,6 +233,7 @@ export class MinervaOrderBook extends BookElement<
  * Published as the optional entry `minerva-design/web-components/order-book`.
  *
  * @summary GPU liquidity heatmap of an order book over time.
+ * @fires {CustomEvent<OrderBookHeatmapViewData>} minerva-view-change - Available history or viewport changed
  * @tag minerva-order-book-heatmap
  * @csspart root - The sized box of the heatmap
  * @csspart surface - The element the engine renders into
@@ -241,6 +246,10 @@ export class MinervaOrderBookHeatmap extends BookElement<
   OrderBookHeatmapInstance
 > {
   static override tagName = "minerva-order-book-heatmap";
+
+  /** Candle history (object rows or typed columns); property only */
+  @property({ attribute: false })
+  bars?: TradingBarsInput;
 
   /** Trades `{ time, price, size, side }`; when the array grows, only the appended ones are added; property only */
   @property({ attribute: false })
@@ -268,6 +277,7 @@ export class MinervaOrderBookHeatmap extends BookElement<
     heatmap: OrderBookHeatmapInstance,
   ): Array<() => void> {
     return [
+      heatmap.on("view", (data) => this.emit("minerva-view-change", data)),
       heatmap.on("hover", (e) => this.emit("minerva-hover", e)),
       heatmap.on("renderer", (renderer) =>
         this.emit("minerva-renderer-change", { renderer }),
@@ -286,6 +296,7 @@ export class MinervaOrderBookHeatmap extends BookElement<
   protected override engineMounted(engine: OrderBookHeatmapInstance): void {
     super.engineMounted(engine);
     this.feedTrades(engine);
+    if (this.bars !== undefined) engine.setBars(this.bars);
   }
 
   protected override syncEngine(
@@ -294,11 +305,38 @@ export class MinervaOrderBookHeatmap extends BookElement<
   ): void {
     super.syncEngine(engine, changed);
     if (changed.has("trades")) this.feedTrades(engine);
+    if (changed.has("bars") && this.bars !== undefined)
+      engine.setBars(this.bars);
   }
 
   /** Adds trades (bubbles) */
   addTrades(trades: Trades[number] | Trades): void {
     this.instance?.addTrades(trades);
+  }
+
+  /** Replaces the candle history */
+  setBars(bars: TradingBarsInput): void {
+    this.instance?.setBars(bars);
+  }
+
+  /** Updates or appends a candle */
+  updateBar(bar: TradingBar): void {
+    this.instance?.updateBar(bar);
+  }
+
+  /** Sets visible time and/or price ranges */
+  setView(view: OrderBookHeatmapViewInput): void {
+    this.instance?.setView(view);
+  }
+
+  /** Available history and viewport, null before mount */
+  getView(): OrderBookHeatmapViewData | null {
+    return this.instance?.getView() ?? null;
+  }
+
+  /** Removes the book, history, trades and candles */
+  clear(): void {
+    this.instance?.clear();
   }
 
   /** Follows the market again (latest time, centered on the mid price) */

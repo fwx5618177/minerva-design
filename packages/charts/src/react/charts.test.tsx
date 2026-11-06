@@ -100,6 +100,7 @@ describe("chart components", () => {
     stage.dispatchEvent(
       new PointerEvent("pointermove", { clientX: 400, clientY: 150 }),
     );
+    await flush();
     expect(onHover).toHaveBeenCalled();
     expect(onHover.mock.calls[0][0].xLabel).toBe("b");
   });
@@ -951,6 +952,7 @@ describe("chart components", () => {
     stage.dispatchEvent(
       new PointerEvent("pointermove", { clientX: 250, clientY: 150 }),
     );
+    await flush();
     expect(container.querySelector(".minerva-chart-tooltip em")).not.toBeNull();
   });
 });
@@ -1092,6 +1094,7 @@ describe("cartesian chart components", () => {
         pointerId: 1,
       }),
     );
+    await flush();
     expect(
       box.container.querySelector(".minerva-chart-tooltip")?.textContent,
     ).toContain("Outlier");

@@ -52,6 +52,10 @@
     "compare": {
       "title": "Renderer comparison",
       "description": "The same million points on the four backends. Until you run the benchmark, each panel shows a light Canvas2D preview; the run then mounts the full data set on one backend at a time, follows the same zoom path for three seconds and compares the frame rates and the main-thread time per frame. A GPU backend that would run on a software GPU here is skipped (it would block the page), and a backend that cannot start shows the one it fell back to."
+    },
+    "hover-burst": {
+      "title": "Hover burst: one update per frame",
+      "description": "Dispatch 240 alternating pointer moves in one frame through the public engine. Only the latest position is hit-tested and rendered; press, drag and release keep their synchronous interaction path. The counters are real browser measurements, not a frame-rate guarantee."
     }
   },
   "data": {
@@ -199,5 +203,16 @@
         "description": "200,000 points from two typed arrays, drawn by the GPU and hovered through a spatial index; zoom on both axes."
       }
     }
+  },
+  "hoverBurst": {
+    "title": "Hover burst: one update per frame",
+    "description": "Dispatch 240 alternating pointer moves in one frame through the public engine. Only the latest position is hit-tested and rendered; press, drag and release keep their synchronous interaction path. The counters are real browser measurements, not a frame-rate guarantee.",
+    "run": "Run 240 moves",
+    "moves": "Pointer moves",
+    "hitNotifications": "Hover notifications",
+    "tooltipRenders": "Tooltip renders",
+    "elapsed": "Dispatch + frame (ms)",
+    "lastPoint": "Final point",
+    "aria": "Hover coalescing benchmark"
   }
 }

@@ -2675,6 +2675,11 @@
         "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
       },
       {
+        "name": "bars",
+        "type": "TradingBarsInput | undefined",
+        "description": "Candle history (object rows or typed columns); property only"
+      },
+      {
         "name": "trades",
         "type": "Trades | undefined",
         "description": "Trades `{ time, price, size, side }`; when the array grows, only the appended ones are added; property only"
@@ -2703,6 +2708,31 @@
         "description": "Adds trades (bubbles)"
       },
       {
+        "name": "setBars",
+        "signature": "(bars: TradingBarsInput) => void",
+        "description": "Replaces the candle history"
+      },
+      {
+        "name": "updateBar",
+        "signature": "(bar: TradingBar) => void",
+        "description": "Updates or appends a candle"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: OrderBookHeatmapViewInput) => void",
+        "description": "Sets visible time and/or price ranges"
+      },
+      {
+        "name": "getView",
+        "signature": "() => OrderBookHeatmapViewData | null",
+        "description": "Available history and viewport, null before mount"
+      },
+      {
+        "name": "clear",
+        "signature": "() => void",
+        "description": "Removes the book, history, trades and candles"
+      },
+      {
         "name": "resetView",
         "signature": "() => void",
         "description": "Follows the market again (latest time, centered on the mid price)"
@@ -2724,6 +2754,10 @@
       }
     ],
     "events": [
+      {
+        "name": "minerva-view-change",
+        "description": "Available history or viewport changed"
+      },
       {
         "name": "minerva-hover",
         "description": "A cell is hovered; detail: { time, price, size, side, buyVolume, sellVolume }, `null` when the pointer left"

@@ -21,6 +21,8 @@ import {
   type OrderBookHeatmapHoverEvent,
   type OrderBookHeatmapInstance,
   type OrderBookHeatmapOptions,
+  type OrderBookHeatmapViewInput,
+  type OrderBookHeatmapViewData,
   type OrderBookInstance,
   type OrderBookLevelEvent,
   type OrderBookOptions,
@@ -537,6 +539,8 @@ export class MnOrderBookHeatmap extends MnBookWidgetBase<
   OrderBookHeatmapOptions,
   OrderBookHeatmapInstance
 > {
+  /** Candle history, applied through setBars when the input changes */
+  readonly bars = input<TradingBarsInput | undefined>(undefined);
   /** Trades; when the array grows, only the appended ones are added */
   readonly trades = input<ChartTrades | undefined>(undefined);
   /** Hovered cell (`null` when the pointer leaves) */
@@ -545,11 +549,18 @@ export class MnOrderBookHeatmap extends MnBookWidgetBase<
   readonly rendererChange = output<ChartRendererKind>();
   /** `true` while the view follows the market, `false` after a zoom / pan */
   readonly followChange = output<boolean>();
+  /** Available history or viewport changed */
+  readonly viewChange = output<OrderBookHeatmapViewData>();
 
   constructor() {
     super();
     const add = (list: ChartTrades) => this.instance()?.addTrades(list);
     tradeFeed(this.instance, this.trades, add, add);
+    effect(() => {
+      const engine = this.instance();
+      const bars = this.bars();
+      if (engine && bars !== undefined) untracked(() => engine.setBars(bars));
+    });
   }
 
   protected override defaultHeight(): number {
@@ -568,12 +579,38 @@ export class MnOrderBookHeatmap extends MnBookWidgetBase<
       heatmap.on("hover", (e) => this.hover.emit(e)),
       heatmap.on("renderer", (r) => this.rendererChange.emit(r)),
       heatmap.on("follow", (f) => this.followChange.emit(f)),
+      heatmap.on("view", (data) => this.viewChange.emit(data)),
     ];
   }
 
   /** Adds trades (bubbles) */
   addTrades(trades: ChartTrades[number] | ChartTrades): void {
     this.instance()?.addTrades(trades);
+  }
+
+  /** Replaces the candle history */
+  setBars(bars: TradingBarsInput): void {
+    this.instance()?.setBars(bars);
+  }
+
+  /** Updates or appends a candle */
+  updateBar(bar: TradingBar): void {
+    this.instance()?.updateBar(bar);
+  }
+
+  /** Sets visible time and/or price ranges */
+  setView(view: OrderBookHeatmapViewInput): void {
+    this.instance()?.setView(view);
+  }
+
+  /** Available history and viewport, null before mount */
+  getView(): OrderBookHeatmapViewData | null {
+    return this.instance()?.getView() ?? null;
+  }
+
+  /** Removes the book, history, trades and candles */
+  clear(): void {
+    this.instance()?.clear();
   }
 
   /** Follows the market again */

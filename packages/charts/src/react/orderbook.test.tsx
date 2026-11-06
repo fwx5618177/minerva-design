@@ -8,6 +8,7 @@ import {
   TimeAndSales,
   type DepthChartHandle,
   type OrderBookHandle,
+  type OrderBookHeatmapHandle,
   type MarketTrade,
   type TimeAndSalesHandle,
 } from "../index";
@@ -143,4 +144,57 @@ describe("order book components", () => {
     expect(onRenderer).toHaveBeenCalledWith("canvas2d");
     unmount();
   });
+});
+
+it("heatmap streams bars and exposes view navigation without remounting", async () => {
+  const bars = [{ time: 0, open: 100, high: 102, low: 99, close: 101 }];
+  const ref = createRef<OrderBookHeatmapHandle>();
+  const changed = vi.fn();
+  const { rerender } = render(
+    <OrderBookHeatmap
+      ref={ref}
+      bars={bars}
+      onViewChange={changed}
+      renderer="canvas2d"
+    />,
+  );
+  const engine = ref.current!.getInstance()!;
+  expect(ref.current!.getView()).toEqual(engine.getView());
+  const setBars = vi.spyOn(engine, "setBars");
+  const update = vi.spyOn(engine, "updateBar");
+  const setView = vi.spyOn(engine, "setView");
+  ref.current!.setBars([]);
+  ref.current!.updateBar(bars[0]);
+  ref.current!.setView({ time: [0, 10], price: [90, 110] });
+  expect(setBars).toHaveBeenCalledWith([]);
+  expect(update).toHaveBeenCalledWith(bars[0]);
+  expect(setView).toHaveBeenCalledWith({ time: [0, 10], price: [90, 110] });
+  await flush();
+  expect(changed).toHaveBeenCalledWith(ref.current!.getView());
+  const options = vi.spyOn(engine, "setOptions");
+  rerender(
+    <OrderBookHeatmap
+      ref={ref}
+      bars={[]}
+      onViewChange={changed}
+      candles={false}
+      renderer="canvas2d"
+    />,
+  );
+  expect(ref.current!.getInstance()).toBe(engine);
+  expect(setBars).toHaveBeenLastCalledWith([]);
+  expect(options).toHaveBeenLastCalledWith({
+    candles: false,
+    renderer: "canvas2d",
+  });
+  const columns = {
+    time: new Float64Array([0]),
+    open: new Float64Array([100]),
+    high: new Float64Array([102]),
+    low: new Float64Array([99]),
+    close: new Float64Array([101]),
+  };
+  rerender(<OrderBookHeatmap ref={ref} bars={columns} renderer="canvas2d" />);
+  expect(setBars).toHaveBeenLastCalledWith(columns);
+  expect(options).toHaveBeenLastCalledWith({ renderer: "canvas2d" });
 });

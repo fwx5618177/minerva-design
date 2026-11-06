@@ -233,6 +233,7 @@ describe("createChart rebuilds", () => {
         new PointerEvent("pointermove", { clientX: x, clientY: y }),
       );
     move(300, 150);
+    await nextFrame();
     expect(tooltip.style.display).toBe("block");
     const header = tooltip.firstElementChild;
     const transform = tooltip.style.transform;
@@ -242,11 +243,14 @@ describe("createChart rebuilds", () => {
     });
     expect(tooltip.firstElementChild).toBe(header);
     expect(tooltip.style.transform).not.toBe("");
+    await nextFrame();
     move(300, 120);
+    await nextFrame();
     expect(tooltip.firstElementChild).toBe(header);
     expect(tooltip.style.transform).not.toBe(transform);
     // another point: new content
     move(100, 150);
+    await nextFrame();
     expect(tooltip.firstElementChild).not.toBe(header);
     expect(ms).toBeLessThan(500 * BUDGET);
   });

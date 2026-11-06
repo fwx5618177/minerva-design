@@ -28619,6 +28619,14 @@
           "members": [
             {
               "kind": "field",
+              "name": "bars",
+              "type": {
+                "text": "TradingBarsInput | undefined"
+              },
+              "description": "Candle history (object rows or typed columns); property only"
+            },
+            {
+              "kind": "field",
               "name": "trades",
               "type": {
                 "text": "Trades | undefined"
@@ -28654,6 +28662,80 @@
                 }
               ],
               "description": "Adds trades (bubbles)"
+            },
+            {
+              "kind": "method",
+              "name": "setBars",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "bars",
+                  "type": {
+                    "text": "TradingBarsInput"
+                  }
+                }
+              ],
+              "description": "Replaces the candle history"
+            },
+            {
+              "kind": "method",
+              "name": "updateBar",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "bar",
+                  "type": {
+                    "text": "TradingBar"
+                  }
+                }
+              ],
+              "description": "Updates or appends a candle"
+            },
+            {
+              "kind": "method",
+              "name": "setView",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "view",
+                  "type": {
+                    "text": "OrderBookHeatmapViewInput"
+                  }
+                }
+              ],
+              "description": "Sets visible time and/or price ranges"
+            },
+            {
+              "kind": "method",
+              "name": "getView",
+              "return": {
+                "type": {
+                  "text": "OrderBookHeatmapViewData | null"
+                }
+              },
+              "description": "Available history and viewport, null before mount"
+            },
+            {
+              "kind": "method",
+              "name": "clear",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Removes the book, history, trades and candles"
             },
             {
               "kind": "method",
@@ -28759,6 +28841,13 @@
             }
           ],
           "events": [
+            {
+              "type": {
+                "text": "CustomEvent<OrderBookHeatmapViewData>"
+              },
+              "description": "Available history or viewport changed",
+              "name": "minerva-view-change"
+            },
             {
               "description": "A cell is hovered; detail: { time, price, size, side, buyVolume, sellVolume }, `null` when the pointer left",
               "name": "minerva-hover"

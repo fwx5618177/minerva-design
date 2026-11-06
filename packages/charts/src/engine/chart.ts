@@ -178,6 +178,8 @@ export const createChart = (
   let rendererToken = 0;
   let destroyed = false;
   let frameId = 0;
+  let hoverFrameId = 0;
+  let pendingHover: { x: number; y: number } | null = null;
   /** The next frame draws everything; otherwise only the labels changed */
   let fullFrame = false;
   /** Size of the last full frame (a labels-only frame keeps it) */
@@ -1412,6 +1414,44 @@ export const createChart = (
     return { x: fromPlotX(model, p.x), y: fromPlotY(model, p.y) };
   };
 
+  const cancelPendingHover = () => {
+    pendingHover = null;
+    if (!hoverFrameId) return;
+    if (win?.cancelAnimationFrame) win.cancelAnimationFrame(hoverFrameId);
+    else clearTimeout(hoverFrameId);
+    hoverFrameId = 0;
+  };
+
+  const updatePointerHover = (x: number, y: number) => {
+    const event2 = hitAt(x, y);
+    setHover(
+      event2
+        ? { event: event2, anchorX: x, anchorY: y, keyboard: false }
+        : null,
+    );
+    if (!drag && interaction()?.dragPoints) {
+      dom.stage.style.cursor = draggableAt(x, y)
+        ? "grab"
+        : zoomed && interaction()?.pan
+          ? "grab"
+          : "";
+    }
+  };
+
+  const schedulePointerHover = (x: number, y: number) => {
+    pendingHover = { x, y };
+    if (hoverFrameId) return;
+    const flush = () => {
+      hoverFrameId = 0;
+      const pending = pendingHover;
+      pendingHover = null;
+      if (!destroyed && pending) updatePointerHover(pending.x, pending.y);
+    };
+    hoverFrameId = win?.requestAnimationFrame
+      ? win.requestAnimationFrame(flush)
+      : (setTimeout(flush, 16) as unknown as number);
+  };
+
   const onPointerMove = (event: PointerEvent) => {
     if (
       (pointDrag?.id === event.pointerId || drag?.id === event.pointerId) &&
@@ -1467,22 +1507,12 @@ export const createChart = (
         return;
       }
     }
-    const event2 = hitAt(x, y);
-    setHover(
-      event2
-        ? { event: event2, anchorX: x, anchorY: y, keyboard: false }
-        : null,
-    );
-    if (!drag && interaction()?.dragPoints) {
-      dom.stage.style.cursor = draggableAt(x, y)
-        ? "grab"
-        : zoomed && interaction()?.pan
-          ? "grab"
-          : "";
-    }
+    if (drag) updatePointerHover(x, y);
+    else schedulePointerHover(x, y);
   };
 
   const onPointerDown = (event: PointerEvent) => {
+    cancelPendingHover();
     if (event.button !== 0) return;
     // A new press cannot silently replace an unfinished point or pan gesture.
     cancelInteraction();
@@ -1510,6 +1540,7 @@ export const createChart = (
   };
 
   const onPointerUp = (event: PointerEvent) => {
+    cancelPendingHover();
     if (event.type === "pointercancel") {
       cancelInteraction(event.pointerId);
       return;
@@ -1572,6 +1603,7 @@ export const createChart = (
   };
 
   const onPointerLeave = () => {
+    cancelPendingHover();
     if (!drag?.moved && !pointDrag?.moved) setHover(null);
   };
 
@@ -1579,12 +1611,18 @@ export const createChart = (
   // so releases on cards/headers (even if propagation is stopped) end gestures.
   // Captured releases keep the normal stage drop behavior.
   const onWindowPointerUp = (event: PointerEvent) => {
+    cancelPendingHover();
     if (event.composedPath().includes(dom.stage)) onPointerUp(event);
     else cancelInteraction(event.pointerId);
   };
-  const onLostPointerCapture = (event: PointerEvent) =>
+  const onLostPointerCapture = (event: PointerEvent) => {
+    cancelPendingHover();
     cancelInteraction(event.pointerId);
-  const onWindowBlur = () => cancelInteraction();
+  };
+  const onWindowBlur = () => {
+    cancelPendingHover();
+    cancelInteraction();
+  };
 
   const onWheel = (event: WheelEvent) => {
     const it = interaction();
@@ -1746,6 +1784,7 @@ export const createChart = (
   };
 
   const onBlur = () => {
+    cancelPendingHover();
     dom.stage.style.boxShadow = "";
     if (hover?.keyboard) setHover(null);
   };
@@ -1912,6 +1951,7 @@ export const createChart = (
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      cancelPendingHover();
       cancelInteraction();
       win?.removeEventListener("pointerup", onWindowPointerUp, true);
       win?.removeEventListener("pointercancel", onWindowPointerUp, true);

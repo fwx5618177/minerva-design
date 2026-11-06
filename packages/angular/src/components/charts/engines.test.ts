@@ -1,7 +1,14 @@
 // The extended chart components (cartesian / shape presets, trading, order
 // book, 3D) with fake engines: option presets, the data streamed apart from
 // the options (books, trades), outputs and instance methods.
-import { Component, signal, viewChild } from "@angular/core";
+import {
+  Component,
+  signal,
+  viewChild,
+  afterNextRender,
+  effect,
+  untracked,
+} from "@angular/core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, settle } from "../../testing";
 import {
@@ -11,6 +18,7 @@ import {
   MnChordChart,
   MnDependencyGraph,
   MnDepthChart,
+  MnOrderBookHeatmap,
   MnGraphChart,
   MnTreeChart,
   MnGanttChart,
@@ -61,6 +69,10 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
           engine.options = next;
           engine.calls.push(["setOptions", [next]]);
         },
+        getView: () => ({
+          availableTime: [0, 10],
+          view: { time: [0, 10], price: [90, 110], follow: false },
+        }),
         getBarCount: () => 42,
         getCamera: () => ({ azimuth: 30 }),
         getSelection: () => ["a"],
@@ -555,4 +567,109 @@ describe("3D components", () => {
     byKind("3d").fire("click", { index: 1 });
     expect(fixture.componentInstance.clicked).toEqual({ index: 1 });
   });
+});
+
+it("heatmap streams bars and forwards navigation and view outputs", async () => {
+  const bar = { time: 0, open: 100, high: 102, low: 99, close: 101 };
+  @Component({
+    imports: [MnOrderBookHeatmap],
+    template: `<mn-order-book-heatmap
+      [bars]="bars()"
+      [options]="options()"
+      (viewChange)="changed = $event"
+    />`,
+  })
+  class Host {
+    bars = signal<import("minerva-design/charts/core").TradingBarsInput>([bar]);
+    options = signal({ candles: false });
+    changed: unknown;
+    chart = viewChild.required(MnOrderBookHeatmap);
+  }
+  const fixture = await render(Host);
+  await settle(fixture);
+  const engine = last();
+  const host = fixture.componentInstance;
+  const chart = host.chart();
+  expect(engine.options).toEqual({ candles: false });
+  expect(called(engine, "setBars")).toEqual([[host.bars()]]);
+  const view = { time: [0, 10], price: [90, 110] } as const;
+  chart.setBars([]);
+  chart.updateBar(bar);
+  chart.setView(view);
+  chart.clear();
+  expect(called(engine, "setBars")).toEqual([[host.bars()], [[]]]);
+  expect(called(engine, "updateBar")).toEqual([[bar]]);
+  expect(called(engine, "setView")).toEqual([[view]]);
+  expect(called(engine, "clear")).toHaveLength(1);
+  const data = chart.getView();
+  engine.fire("view", data);
+  expect(data).toEqual({
+    availableTime: [0, 10],
+    view: { ...view, follow: false },
+  });
+  expect(host.changed).toEqual(data);
+  host.bars.set([]);
+  host.options.set({ candles: true });
+  await settle(fixture);
+  expect(last()).toBe(engine);
+  expect(called(engine, "setBars").at(-1)).toEqual([[]]);
+  expect(engine.options).toEqual({ candles: true });
+  const columns = {
+    time: new Float64Array([0]),
+    open: new Float64Array([100]),
+    high: new Float64Array([102]),
+    low: new Float64Array([99]),
+    close: new Float64Array([101]),
+  };
+  host.bars.set(columns);
+  await settle(fixture);
+  expect(called(engine, "setBars").at(-1)).toEqual([columns]);
+  expect(engine.options).not.toHaveProperty("bars");
+});
+
+it("the authored candle-navigation demo seeds history after the chart engine exists", async () => {
+  const { angularExamples, isCodeField } =
+    await import("../../../../../apps/docs/src/docs/angular/examples");
+  const { createFrameworkHistory } =
+    await import("../../../../../apps/docs/src/docs/pages/order-book-heatmap/framework-history");
+  const authored = angularExamples["order-book-heatmap"].find(
+    (example) => example.id === "candles-navigation",
+  )!;
+  const field = authored.state.initialize;
+  if (!isCodeField(field))
+    throw new Error("Expected authored initialization code");
+  const initializeSource = field.$code;
+  @Component({
+    imports: [MnOrderBookHeatmap],
+    template: `<mn-order-book-heatmap #heatmap />`,
+  })
+  class Host {
+    chart = viewChild<MnOrderBookHeatmap>("heatmap");
+    history = createFrameworkHistory(60_000);
+    show = (seconds: number) =>
+      this.chart()?.setView({
+        time: [this.history.end - seconds * 1000, this.history.end],
+        price: [98, 102],
+      });
+    initialize = new Function(
+      "afterNextRender",
+      "effect",
+      "untracked",
+      `return ${initializeSource}`,
+    ).call(this, afterNextRender, effect, untracked);
+  }
+  const fixture = await render(Host);
+  await settle(fixture);
+  const engine = byKind("heatmap");
+  expect(called(engine, "setBook")).toHaveLength(120);
+  expect(called(engine, "setBars")).toEqual([
+    [fixture.componentInstance.history.bars],
+  ]);
+  expect(called(engine, "setView")).toEqual([
+    [{ time: [30_000, 60_000], price: [98, 102] }],
+  ]);
+  const methods = engine.calls.map(([method]) => method);
+  expect(methods.indexOf("setBook")).toBeLessThan(methods.indexOf("setBars"));
+  await settle(fixture);
+  expect(called(engine, "setBook")).toHaveLength(120);
 });

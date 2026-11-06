@@ -16,7 +16,12 @@
       "pull": "Pulled orders (spoofing): a bright line disappears as the price comes close without any trade bubble there, the order was cancelled, not filled.",
       "sweep": "Sweeps: a burst of large bubbles crosses several prices, the price line jumps and the liquidity on its way goes dark.",
       "thin": "Thin liquidity: a large dark area near the price means few resting orders, the price can move through it quickly."
-    }
+    },
+    "candles": "Candles: supply actual OHLC bars on the same millisecond time and price axes. Missing periods remain empty; book snapshots are never used to invent executions. The last-price line uses the newest supplied trade or newer candle close.",
+    "navigation": "History navigation: zooming and panning stop following. Select a retained time range in the navigator; reset restores the current market. getView / setView and viewChange share one viewport model.",
+    "intensity": "Intensity filtering: intensityRange selects a 0–1 interval after color mapping. It does not change raw resting sizes, tooltip values or the automatic reference scale.",
+    "dataTitle": "Data semantics",
+    "dataSemantics": "This component displays resting liquidity and supplied execution candles. Examples use reproducible simulated matching. A liquidation heatmap requires its own liquidation data; resting order size is not liquidation size."
   },
   "demos": {
     "basic": {
@@ -62,6 +67,26 @@
     "perpetual": {
       "title": "Perpetual futures in contracts",
       "description": "A BTC perpetual quoted in contracts of 0.001 BTC: formatSize converts the sizes, formatPrice shows dollars, sizeUnit and labels rename the units of the legend and tooltip, and timeZone=\"utc\" matches the exchange clock of the funding countdown above."
+    },
+    "candles": {
+      "title": "Execution candles",
+      "description": "Actual simulated executions form sparse 2-second OHLC candles over the recorded resting liquidity."
+    },
+    "intensity-filter": {
+      "title": "Intensity filter",
+      "description": "Use the range slider to isolate visible liquidity intensity without changing the underlying order book."
+    },
+    "history-navigation": {
+      "title": "History navigation",
+      "description": "Inspect retained history through the range navigator, then return to following the market."
+    },
+    "terminal": {
+      "title": "Liquidity terminal",
+      "description": "A complete simulated workspace: six market metrics, execution candles, liquidity filters, retained-history navigation and a synchronized order book."
+    },
+    "candles-navigation": {
+      "title": "Candles and history navigation",
+      "description": "Actual executions become OHLC candles over resting liquidity. Select retained history, then restore market following."
     }
   },
   "data": {
@@ -121,7 +146,32 @@
     "takerSells": "Taker sells",
     "perpAria": "BTC-USD perpetual liquidity heatmap",
     "perpReadout": "{{price}}: {{contracts}} contracts resting (≈ {{notional}})",
-    "perpHint": "Hover the heatmap to read the resting contracts and their value."
+    "perpHint": "Hover the heatmap to read the resting contracts and their value.",
+    "simulated": "SIMULATED MARKET",
+    "showCandles": "Execution candles",
+    "executionsOnly": "Each 2-second candle aggregates actual executions from this seeded matching engine. Empty buckets are omitted; resting orders never become candles.",
+    "intensityFilter": "Visible intensity range",
+    "filterHint": "Filter the normalized color intensity of resting liquidity. This changes visibility, not book sizes or executed volume.",
+    "historyNavigator": "Retained execution history",
+    "navigatorHint": "Move the range handles to inspect retained history. Follow the market restores the latest time and automatic price centering.",
+    "liquidityTerminal": "LIQUIDITY TERMINAL",
+    "latest": "Latest execution",
+    "bidDepth": "Bid depth",
+    "askDepth": "Ask depth",
+    "imbalance": "Book imbalance",
+    "bidWall": "Largest bid wall",
+    "askWall": "Largest ask wall",
+    "palette": "Palette",
+    "ocean": "Ocean",
+    "ember": "Ember",
+    "resetViewport": "Reset view",
+    "currentBook": "CURRENT ORDER BOOK",
+    "terminalHint": "Seeded simulation, not an external exchange feed. All six metrics, execution candles and the ladder use the same matching engine. Summary metrics refresh once per second; book updates stream independently.",
+    "candlesAria": "Simulated liquidity with execution candles",
+    "filterAria": "Simulated liquidity with intensity filter",
+    "navigationAria": "Navigable simulated liquidity history",
+    "terminalAria": "Simulated BTC USDT liquidity terminal",
+    "ladderAria": "Current simulated BTC USDT order book"
   },
   "api": {
     "OrderBookHeatmapProps": {
@@ -130,7 +180,9 @@
       "onHover": "Hovered cell (null when the pointer leaves)",
       "onRendererChange": "Backend in use (also after a GPU loss)",
       "onFollowChange": "true while the view follows the market, false after a zoom or pan",
-      "ref": "Imperative handle: setBook, applyDeltas, addTrades, resetView, getInstance"
+      "ref": "Imperative handle: setBook, applyDeltas, addTrades, resetView, getInstance",
+      "bars": "Supplied OHLC candles as object rows or typed columns; sent through setBars when the value changes. Candles are never inferred from the order book.",
+      "onViewChange": "Emits retained time bounds and the current time/price viewport, including follow mode."
     },
     "OrderBookHeatmapHandle": {
       "setBook": "Replaces the book (closes the columns up to its time)",
@@ -138,7 +190,11 @@
       "addTrades": "Adds trades (bubbles)",
       "clear": "Removes the book, the history and the trades",
       "resetView": "Follows the market again",
-      "getInstance": "The underlying engine instance (minerva-design/charts/core)"
+      "getInstance": "The underlying engine instance (minerva-design/charts/core)",
+      "setBars": "Replace supplied OHLC candle history (object rows or typed columns).",
+      "updateBar": "Update the latest supplied candle or append a newer candle.",
+      "setView": "Set visible time and/or price bounds; pauses following the market.",
+      "getView": "Read retained liquidity time bounds and the current viewport; null before mount."
     },
     "OrderBookHeatmapOptions": {
       "tickSize": "Height of a price row (levels are aggregated into rows); a round multiple of the book's tick of about 0.1 basis point when omitted",
@@ -162,7 +218,12 @@
       "tooltip": "Hover crosshair and tooltip",
       "renderer": "Backend of the cells: the GPU when available",
       "timeZone": "Clock of the time axis and the tooltip: the local time or UTC (the clock of most exchanges)",
-      "labels": "Overrides of the built-in texts, which follow locale (English, Chinese, Japanese and French built in)"
+      "labels": "Overrides of the built-in texts, which follow locale (English, Chinese, Japanese and French built in)",
+      "candles": "Draw supplied OHLC candles; enabled by default when bars are available.",
+      "lastPriceLine": "Draw the latest supplied candle close as a price line.",
+      "intensityRange": "Normalized lower and upper liquidity intensity bounds, each from 0 to 1.",
+      "maxColumns": "Maximum retained liquidity columns; default 6000, bounded by the engine.",
+      "maxBars": "Maximum retained supplied candles; default 20000, bounded by the engine."
     },
     "OrderBookCommonOptions": {
       "upColor": "Color of the bids and buys (the \"up\" side); --success-color by default, --danger-color with colorConvention \"red-up\"",
@@ -203,13 +264,43 @@
       "size": "Resting size of the cell (summed over the bucket's prices)",
       "side": "Side of the cell (null inside the spread)",
       "buyVolume": "Volume bought during the column",
-      "sellVolume": "Volume sold during the column"
+      "sellVolume": "Volume sold during the column",
+      "bar": "Actual supplied OHLC candle covering the pointer time; absent in gaps."
     },
     "MarketTrade": {
       "time": "Execution time (ms since epoch)",
       "price": "Execution price",
       "size": "Executed size (base currency)",
       "side": "Aggressor side: \"buy\" lifted an ask, \"sell\" hit a bid"
+    },
+    "OrderBookHeatmapView": {
+      "time": "Visible start and end times, in epoch milliseconds.",
+      "price": "Visible lower and upper prices.",
+      "follow": "Whether the viewport follows the latest market."
+    },
+    "OrderBookHeatmapViewInput": {
+      "time": "Visible start and end times, in epoch milliseconds.",
+      "price": "Visible lower and upper prices."
+    },
+    "OrderBookHeatmapViewData": {
+      "availableTime": "Earliest and latest retained liquidity times, or null when empty.",
+      "view": "Current visible time/price bounds and follow state."
+    },
+    "TradingBar": {
+      "time": "Opening time in milliseconds since the epoch",
+      "open": "First traded price",
+      "high": "Highest traded price",
+      "low": "Lowest traded price",
+      "close": "Last traded price",
+      "volume": "Traded volume"
+    },
+    "TradingBarColumns": {
+      "time": "Opening times in milliseconds, ascending",
+      "open": "Opening prices",
+      "high": "Highest prices",
+      "low": "Lowest prices",
+      "close": "Closing prices",
+      "volume": "Volumes"
     }
   },
   "wc": {
@@ -221,24 +312,35 @@
       "red-up": {
         "title": "Red-up colors, square-root scale",
         "description": "The mainland China convention (buys in red), a square-root color scale and no size profile."
+      },
+      "candles-navigation": {
+        "title": "Supplied candles and history navigation",
+        "description": "Filter simulated liquidity and navigate history alongside 30 supplied OHLC candles aggregated from simulated executions."
       }
     },
     "minerva-order-book-heatmap": {
       "props": {
         "options": "Other engine options (OrderBookHeatmapOptions of minerva-design/charts/core: colors, texts, locale, labels…); property only",
-        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected",
+        "bars": "Supplied OHLC candles as object rows or typed columns; sent through setBars when the value changes. Candles are never inferred from the order book."
       },
       "events": {
         "minerva-hover": "A cell is hovered; detail: { time, price, size, side, buyVolume, sellVolume }, null when the pointer left",
         "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }",
-        "minerva-follow-change": "The view follows the market (true) or not after a zoom or a pan (false); detail: { follow }"
+        "minerva-follow-change": "The view follows the market (true) or not after a zoom or a pan (false); detail: { follow }",
+        "minerva-view-change": "Retained history or viewport changed; detail contains availableTime and view."
       },
       "methods": {
         "addTrades": "Adds trades (bubbles)",
         "resetView": "Follows the market again (latest time, centered on the mid price)",
         "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready",
         "setBook": "Replaces the book (closes the columns up to its time)",
-        "applyDeltas": "Applies updates (closes the columns up to their time)"
+        "applyDeltas": "Applies updates (closes the columns up to their time)",
+        "setBars": "Replace supplied OHLC candle history (object rows or typed columns).",
+        "updateBar": "Update the latest supplied candle or append a newer candle.",
+        "setView": "Set visible time and/or price bounds; pauses following the market.",
+        "getView": "Read retained liquidity time bounds and the current viewport; null before mount.",
+        "clear": "Removes the book, the history and the trades"
       }
     }
   }

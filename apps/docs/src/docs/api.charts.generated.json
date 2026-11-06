@@ -9411,6 +9411,12 @@
     "extends": [],
     "props": [
       {
+        "name": "view",
+        "type": "OrderBookHeatmapViewData",
+        "required": true,
+        "description": "Viewport or retained history changed, at most once per drawn frame."
+      },
+      {
         "name": "hover",
         "type": "OrderBookHeatmapHoverEvent | null",
         "required": true,
@@ -9455,6 +9461,30 @@
         "description": "Adds trades (bubbles)"
       },
       {
+        "name": "setBars",
+        "type": "(bars: TradingBarsInput) => void",
+        "required": true,
+        "description": "Replaces the candle history"
+      },
+      {
+        "name": "updateBar",
+        "type": "(bar: TradingBar) => void",
+        "required": true,
+        "description": "Updates the latest candle or appends a new one"
+      },
+      {
+        "name": "setView",
+        "type": "(view: OrderBookHeatmapViewInput) => void",
+        "required": true,
+        "description": "Sets the visible time and/or price range"
+      },
+      {
+        "name": "getView",
+        "type": "() => OrderBookHeatmapViewData | null",
+        "required": true,
+        "description": "Available history and current viewport; null before mount"
+      },
+      {
         "name": "clear",
         "type": "() => void",
         "required": true,
@@ -9480,6 +9510,12 @@
     "kind": "interface",
     "extends": [],
     "props": [
+      {
+        "name": "bar",
+        "type": "TradingBar",
+        "required": false,
+        "description": "Actual supplied OHLC bar covering the pointer time; absent in gaps and beyond its inferred duration."
+      },
       {
         "name": "time",
         "type": "number",
@@ -9530,6 +9566,30 @@
     "kind": "interface",
     "extends": [],
     "props": [
+      {
+        "name": "setBars",
+        "type": "(bars: TradingBarsInput) => void",
+        "required": true,
+        "description": "Replaces the supplied, ascending OHLC history; retains its bounded tail."
+      },
+      {
+        "name": "updateBar",
+        "type": "(bar: TradingBar) => void",
+        "required": true,
+        "description": "Replaces the latest candle at equal time or appends a newer candle; older/invalid bars are ignored."
+      },
+      {
+        "name": "setView",
+        "type": "(view: OrderBookHeatmapViewInput) => void",
+        "required": true,
+        "description": "Applies valid explicit ranges and pauses following; resetView resumes it."
+      },
+      {
+        "name": "getView",
+        "type": "() => OrderBookHeatmapViewData",
+        "required": true,
+        "description": "Returns copied ranges; availableTime is null before liquidity data exists."
+      },
       {
         "name": "setBook",
         "type": "(snapshot: OrderBookSnapshot) => void",
@@ -9695,6 +9755,41 @@
       "OrderBookCommonOptions"
     ],
     "props": [
+      {
+        "name": "candles",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Supplied OHLC bars drawn over liquidity; duration uses the lower median of the last 256 observed intervals (1 s for a single bar), leaving missing intervals empty."
+      },
+      {
+        "name": "lastPriceLine",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Dashed latest trade price and axis tag; a bar opened after that trade supplies its newer close instead."
+      },
+      {
+        "name": "intensityRange",
+        "type": "readonly [number, number]",
+        "required": false,
+        "default": "[0, 1]",
+        "description": "Inclusive normalized intensity range, after the color curve; display-only."
+      },
+      {
+        "name": "maxColumns",
+        "type": "number",
+        "required": false,
+        "default": "6000",
+        "description": "Maximum retained columns, clamped to 4–12000 and a 1000000 sampled-row budget."
+      },
+      {
+        "name": "maxBars",
+        "type": "number",
+        "required": false,
+        "default": "20000",
+        "description": "Maximum retained OHLC bars, clamped to 1–100000."
+      },
       {
         "name": "tickSize",
         "type": "number",
@@ -9866,6 +9961,18 @@
         "description": "Trades; when the array grows, only the appended ones are added"
       },
       {
+        "name": "bars",
+        "type": "TradingBarsInput",
+        "required": false,
+        "description": "Candle history, passed through setBars when its identity changes"
+      },
+      {
+        "name": "onViewChange",
+        "type": "(data: OrderBookHeatmapViewData) => void",
+        "required": false,
+        "description": "Available history or current viewport changed"
+      },
+      {
         "name": "onHover",
         "type": "(event: OrderBookHeatmapHoverEvent | null) => void",
         "required": false,
@@ -9896,6 +10003,65 @@
     "description": "Scale mapping resting sizes to colors",
     "kind": "alias",
     "type": "\"linear\" | \"sqrt\" | \"log\""
+  },
+  "OrderBookHeatmapView": {
+    "source": "charts/src/engine/orderbook/types.ts",
+    "description": "A heatmap viewport; time is epoch milliseconds, price is low to high.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "time",
+        "type": "readonly [number, number]",
+        "required": true
+      },
+      {
+        "name": "price",
+        "type": "readonly [number, number]",
+        "required": true
+      },
+      {
+        "name": "follow",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  },
+  "OrderBookHeatmapViewData": {
+    "source": "charts/src/engine/orderbook/types.ts",
+    "description": "Current viewport and retained liquidity history bounds.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "availableTime",
+        "type": "readonly [number, number] | null",
+        "required": true
+      },
+      {
+        "name": "view",
+        "type": "OrderBookHeatmapView",
+        "required": true
+      }
+    ]
+  },
+  "OrderBookHeatmapViewInput": {
+    "source": "charts/src/engine/orderbook/types.ts",
+    "description": "Partial manual viewport. Invalid or nonascending ranges are ignored.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "time",
+        "type": "readonly [number, number]",
+        "required": false
+      },
+      {
+        "name": "price",
+        "type": "readonly [number, number]",
+        "required": false
+      }
+    ]
   },
   "OrderBookInstance": {
     "source": "charts/src/engine/orderbook/types.ts",

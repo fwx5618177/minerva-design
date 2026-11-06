@@ -111,6 +111,7 @@ describe("createChart", () => {
     const events: (ChartHoverEvent | null)[] = [];
     c.on("hover", (e) => events.push(e));
     pointer("pointermove", WIDTH / 2, HEIGHT / 2);
+    await nextFrame();
     expect(
       events[events.length - 1]?.items.map((i) => [i.seriesName, i.x]),
     ).toEqual([
@@ -256,6 +257,7 @@ describe("createChart", () => {
       yAxis: { min: 0, max: 2, nice: false },
     });
     pointer("pointermove", WIDTH / 2, HEIGHT / 2);
+    await nextFrame();
     const tooltip = container.querySelector<HTMLElement>(
       ".minerva-chart-tooltip",
     )!;
@@ -315,6 +317,7 @@ describe("createChart", () => {
     c.on("hover", (event) => hovers.push(event));
     const at = c.toPixel(2, 2)!;
     pointer("pointermove", at.x, at.y);
+    await nextFrame();
     expect(hovers[hovers.length - 1]?.items[0]?.index).toBe(1);
     const count = hovers.length;
     c.setOptions(options(1));

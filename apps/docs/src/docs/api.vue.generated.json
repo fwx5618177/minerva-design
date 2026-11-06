@@ -3325,6 +3325,8 @@
       { "name": "legend", "type": "boolean", "required": false, "description": "Color legend with its size range at the top left (default `true`)" },
       { "name": "tooltip", "type": "boolean", "required": false, "description": "Hover readout (default `true`)" },
       { "name": "interactive", "type": "boolean", "required": false, "description": "Zoom and pan (default `true`)" },
+      { "name": "candles", "type": "boolean", "required": false, "description": "Candle overlay (default true when bars are supplied)" },
+      { "name": "lastPriceLine", "type": "boolean", "required": false, "description": "Last close price line (default true)" },
       { "name": "bubbles", "type": "boolean", "required": false, "description": "Trades as bubbles (default `true`)" },
       { "name": "bestLines", "type": "boolean", "required": false, "description": "Best bid / ask lines (default `true`)" },
       { "name": "profile", "type": "boolean", "required": false, "description": "Size profile of the current book at the right (default `true`)" },
@@ -3335,6 +3337,7 @@
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label" },
       { "name": "locale", "type": "string", "required": false, "description": "Locale of the numbers and texts (`\"zh-CN\"`); the page language by default" },
       { "name": "colorScale", "type": "OrderBookHeatmapScale", "required": false, "description": "Scale of the sizes to the colors (default `log`)" },
+      { "name": "bars", "type": "TradingBarsInput", "required": false, "description": "Candle history; property only, applied through setBars" },
       { "name": "maxSize", "type": "number", "required": false, "description": "Size drawn with the last color; follows the data by default" },
       { "name": "colors", "type": "readonly string[]", "required": false, "description": "Colors from no liquidity to `maxSize` (any CSS colors)" },
       { "name": "book", "type": "OrderBookSnapshot", "required": false, "description": "Book, applied when the object changes (stream updates through the handle's `applyDeltas`)" },
@@ -3348,6 +3351,9 @@
       { "name": "fontFamily", "type": "string", "required": false, "description": "Font family of the texts (default: the theme font)" },
       { "name": "fontSize", "type": "number", "required": false, "description": "Font size of the texts, in pixels (default 12)" },
       { "name": "trades", "type": "readonly MarketTrade[]", "required": false, "description": "Trades; when the array grows, only the appended ones are added" },
+      { "name": "intensityRange", "type": "readonly [number, number]", "required": false, "description": "Normalized liquidity intensity bounds, 0..1" },
+      { "name": "maxColumns", "type": "number", "required": false, "description": "Maximum retained columns (default 6000)" },
+      { "name": "maxBars", "type": "number", "required": false, "description": "Maximum retained candles (default 20000)" },
       { "name": "tickSize", "type": "number", "required": false, "description": "Price step of the rows; detected from the book by default" },
       { "name": "interval", "type": "number", "required": false, "description": "Duration of a column, in ms (default 100)" },
       { "name": "window", "type": "number", "required": false, "description": "Time shown, in ms (default 60000)" },
@@ -3363,7 +3369,8 @@
     "events": [
       { "name": "hover", "type": "[event: OrderBookHeatmapHoverEvent | null]" },
       { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
-      { "name": "followChange", "type": "[follow: boolean]" }
+      { "name": "followChange", "type": "[follow: boolean]" },
+      { "name": "viewChange", "type": "[data: OrderBookHeatmapViewData]" }
     ],
     "slots": []
   },
@@ -5435,8 +5442,8 @@
       },
       { "name": "legend", "type": "boolean", "required": false, "description": "Legends with the values at the crosshair and the indicator toggles (default `true`)" },
       { "name": "grid", "type": "boolean", "required": false, "description": "Grid lines (default `true`)" },
-      { "name": "sessionBreaks", "type": "boolean", "required": false, "description": "Dashed vertical lines where a day starts (intraday bars; default `false`)" },
       { "name": "lastPriceLine", "type": "boolean", "required": false, "description": "Line and axis label at the last price (default `true`)" },
+      { "name": "sessionBreaks", "type": "boolean", "required": false, "description": "Dashed vertical lines where a day starts (intraday bars; default `false`)" },
       { "name": "countdown", "type": "boolean", "required": false, "description": "Time left until the current bar closes, under the last price label (default `false`)" },
       { "name": "highLowMarkers", "type": "boolean", "required": false, "description": "Marks the highest and lowest prices of the visible bars (default `true`)" },
       {

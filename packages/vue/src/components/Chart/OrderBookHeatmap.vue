@@ -5,6 +5,7 @@ import {
   type OrderBookHeatmapHoverEvent,
   type OrderBookHeatmapInstance,
   type OrderBookHeatmapOptions,
+  type OrderBookHeatmapViewData,
 } from "minerva-design/charts/core";
 import { useRootStyle } from "./engine";
 import { orderBookHeatmapProps, useBookWidget } from "./orderbook";
@@ -24,6 +25,8 @@ const emit = defineEmits<{
   rendererChange: [renderer: ChartRendererKind];
   /** `true` while the view follows the market, `false` after a zoom / pan */
   followChange: [follow: boolean];
+  /** Available history or viewport changed */
+  viewChange: [data: OrderBookHeatmapViewData];
 }>();
 const { setContainer, instance } = useBookWidget<
   OrderBookHeatmapOptions,
@@ -35,6 +38,7 @@ const { setContainer, instance } = useBookWidget<
     heatmap.on("hover", (e) => emit("hover", e)),
     heatmap.on("renderer", (r) => emit("rendererChange", r)),
     heatmap.on("follow", (f) => emit("followChange", f)),
+    heatmap.on("view", (data) => emit("viewChange", data)),
   ],
   {
     add: (heatmap, trades) => heatmap.addTrades(trades),
@@ -46,6 +50,11 @@ const handle: OrderBookHeatmapHandle = {
   setBook: (snapshot) => instance.value?.setBook(snapshot),
   applyDeltas: (deltas) => instance.value?.applyDeltas(deltas),
   addTrades: (trades) => instance.value?.addTrades(trades),
+  setBars: (bars) => instance.value?.setBars(bars),
+  updateBar: (bar) => instance.value?.updateBar(bar),
+  setView: (view) => instance.value?.setView(view),
+  getView: () => instance.value?.getView() ?? null,
+  clear: () => instance.value?.clear(),
   resetView: () => instance.value?.resetView(),
   getInstance: () => instance.value,
 };

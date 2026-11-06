@@ -75,7 +75,7 @@ afterEach(() => {
 
 it.each(["pointerup", "pointercancel"])(
   "clears a pending point press released outside the stage (%s)",
-  (type) => {
+  async (type) => {
     send("pointerdown");
     send("pointerleave");
     send(type, 2, 8, document.body, 0);
@@ -84,20 +84,24 @@ it.each(["pointerup", "pointercancel"])(
     expect(start).not.toHaveBeenCalled();
     expect(end).not.toHaveBeenCalled();
     expect(click).not.toHaveBeenCalled();
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(card.index).toBe(1);
   },
 );
 
-it("does not start a pending drag from a buttonless move after a missed release", () => {
+it("does not start a pending drag from a buttonless move after a missed release", async () => {
   send("pointerdown");
   send("pointermove", 8, 2, stage, 0);
   expect(start).not.toHaveBeenCalled();
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
   expect(card.index).toBe(1);
 });
 
 it.each(["pointercancel", "lostpointercapture"])(
   "cancels an active drag exactly once on %s",
-  (type) => {
+  async (type) => {
     send("pointerdown");
     send("pointermove", 3, 7);
     expect(start).toHaveBeenCalledTimes(1);
@@ -114,13 +118,16 @@ it.each(["pointercancel", "lostpointercapture"])(
       ),
     ).toBe(true);
     send("pointermove", 8, 2, stage, 0);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(card.index).toBe(1);
   },
 );
 
 it.each([0, 2])(
   "cancels an active drag when the primary button is no longer held (buttons=%s)",
-  (buttons) => {
+  async (buttons) => {
     send("pointerdown");
     send("pointermove", 3, 7);
     send("pointermove", 8, 2, stage, buttons);
@@ -128,11 +135,14 @@ it.each([0, 2])(
       expect.objectContaining({ cancelled: true }),
     );
     expect(drop).not.toHaveBeenCalled();
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(card.index).toBe(1);
   },
 );
 
-it("cancels on window blur even without a release event", () => {
+it("cancels on window blur even without a release event", async () => {
   send("pointerdown");
   send("pointermove", 3, 7);
   window.dispatchEvent(new Event("blur"));
@@ -140,6 +150,7 @@ it("cancels on window blur even without a release event", () => {
     expect.objectContaining({ cancelled: true }),
   );
   send("pointermove", 8, 2, stage, 0);
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
   expect(card.index).toBe(1);
 });
 

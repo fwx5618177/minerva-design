@@ -153,7 +153,7 @@ export async function checkQuadrantPointer({
     `(()=>{const r=window.__quadrantTest.preview.querySelector('[data-card-content]').getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`,
   );
   await mouse("mouseMoved", body);
-  await mouse("mouseMoved", await point(3));
+  await hover(3);
   assert.equal(
     await evaluate(
       `window.__quadrantTest.preview.querySelector('[data-point-preview]')?.dataset.pointPreview`,
@@ -258,8 +258,9 @@ export async function checkQuadrantPointer({
   await idle();
   results.push({ check: "quadrant-normal-drop", hover: 3 });
 
-  // Diagnostic only: synchronous dispatch includes hit testing and hover DOM
-  // work. This small demo is not a dense-chart or hardware input benchmark.
+  // Diagnostic only: synchronous dispatch measures event collection; idle hit
+  // testing and hover DOM work run on the next frame. This small demo is not
+  // a dense-chart or hardware input benchmark.
   const profile = await evaluate(`(()=>{
     const stage=window.__quadrantTest.stage;
     const r=stage.getBoundingClientRect();const samples=[];

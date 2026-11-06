@@ -10,6 +10,8 @@ import type {
   GraphPoint,
   OrderBookDelta,
   OrderBookHeatmapInstance,
+  OrderBookHeatmapViewInput,
+  OrderBookHeatmapViewData,
   OrderBookInstance,
   OrderBookSnapshot,
   QuadrantCorner,
@@ -93,6 +95,9 @@ export type {
   OrderBookDelta,
   OrderBookHeatmapHoverEvent,
   OrderBookHeatmapInstance,
+  OrderBookHeatmapView,
+  OrderBookHeatmapViewInput,
+  OrderBookHeatmapViewData,
   OrderBookHeatmapOptions,
   OrderBookInstance,
   OrderBookLevelEvent,
@@ -305,6 +310,16 @@ export interface OrderBookHeatmapHandle {
   applyDeltas(deltas: OrderBookDelta | readonly OrderBookDelta[]): void;
   /** Adds trades (bubbles) */
   addTrades(trades: ChartTrades[number] | ChartTrades): void;
+  /** Replaces the candle history */
+  setBars(bars: TradingBarsInput): void;
+  /** Updates or appends a candle */
+  updateBar(bar: TradingBar): void;
+  /** Sets visible time and/or price ranges */
+  setView(view: OrderBookHeatmapViewInput): void;
+  /** Available history and viewport, null before mount */
+  getView(): OrderBookHeatmapViewData | null;
+  /** Removes the book, history, trades and candles */
+  clear(): void;
   /** Follows the market again */
   resetView(): void;
   /** The underlying engine instance (minerva-design/charts/core), `null` before mount */

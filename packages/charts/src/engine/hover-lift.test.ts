@@ -450,6 +450,9 @@ describe("DOM lift layer", () => {
     const c = await mount(columns);
     const p = c.toPixel(1, 2.5)!;
     move(p.x, p.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     const [el] = liftedBars();
     expect(el).toBeDefined();
     expect(el.style.background).toContain("rgb");
@@ -460,13 +463,22 @@ describe("DOM lift layer", () => {
     expect(String(from.transform)).toMatch(/^scaleX\(0\.\d+\)$/);
     // the same bar: no new entry
     move(p.x + 1, p.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(animate).toHaveBeenCalledTimes(1);
     // another bar
     const q = c.toPixel(2, 1)!;
     move(q.x, q.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(animate).toHaveBeenCalledTimes(2);
     // away: hidden
     move(1, 1);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(liftedBars()).toHaveLength(0);
   });
 
@@ -475,6 +487,9 @@ describe("DOM lift layer", () => {
     const c = await mount(columns);
     const p = c.toPixel(1, 2.5)!;
     move(p.x, p.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(liftedBars()).toHaveLength(1);
     expect(animate).not.toHaveBeenCalled();
   });
@@ -485,6 +500,9 @@ describe("DOM lift layer", () => {
     const layers = [...stage.children];
     const p = c.toPixel(1, 2.5)!;
     move(p.x, p.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     const bar = stage.querySelector<HTMLElement>('[data-hover-mark="bar"]')!;
     expect(bar.style.display).toBe("block");
     // in the layer below the data canvas (and no veil over the line)
@@ -514,6 +532,9 @@ describe("DOM lift layer", () => {
       requestAnimationFrame(() => setTimeout(resolve, 0)),
     );
     move(p.x, p.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(liftLayer().contains(bar)).toBe(true);
   });
 
@@ -533,6 +554,9 @@ describe("DOM lift layer", () => {
     });
     const p = c.toPixel(6, 7)!;
     move(p.x, p.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     const stage = container.querySelector(".minerva-chart-stage")!;
     const dot = [...stage.querySelectorAll<HTMLElement>("div")].find(
       (el) => el.style.borderRadius === "50%" && el.style.display === "block",
@@ -545,6 +569,9 @@ describe("DOM lift layer", () => {
       expect(chip.style.background).toContain("color-mix");
     }
     move(1, 1);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     if (chip) expect(chip.style.display).toBe("none");
   });
 });

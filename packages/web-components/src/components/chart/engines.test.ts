@@ -42,6 +42,10 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
           engine.options = next;
           engine.calls.push(["setOptions", [next]]);
         },
+        getView: () => ({
+          availableTime: [0, 10],
+          view: { time: [0, 10], price: [90, 110], follow: false },
+        }),
         getBarCount: () => 42,
         getCamera: () => ({ azimuth: 30 }),
         getRenderer: () => "canvas2d",
@@ -384,4 +388,53 @@ describe("3D chart elements", () => {
       { type: "surface", wireframe: true },
     ]);
   });
+});
+
+it("heatmap streams bars and forwards navigation and view events", async () => {
+  const bars = [{ time: 0, open: 100, high: 102, low: 99, close: 101 }];
+  const chart = await create("minerva-order-book-heatmap", {
+    bars,
+    options: { candles: false },
+  });
+  const engine = last();
+  expect(engine.options).toEqual({ candles: false });
+  expect(called(engine, "setBars")).toEqual([[bars]]);
+  const view = { time: [0, 10], price: [90, 110] } as const;
+  chart.setBars([]);
+  chart.updateBar(bars[0]);
+  chart.setView(view);
+  chart.clear();
+  expect(called(engine, "setBars")).toEqual([[bars], [[]]]);
+  expect(called(engine, "updateBar")).toEqual([[bars[0]]]);
+  expect(called(engine, "setView")).toEqual([[view]]);
+  expect(called(engine, "clear")).toHaveLength(1);
+  const data = chart.getView();
+  const changed = vi.fn();
+  chart.addEventListener("minerva-view-change", changed);
+  engine.fire("view", data);
+  expect(data).toEqual({
+    availableTime: [0, 10],
+    view: { ...view, follow: false },
+  });
+  expect(changed.mock.calls[0][0].detail).toEqual(data);
+  chart.bars = [];
+  chart.options = { candles: true };
+  await settle();
+  expect(last()).toBe(engine);
+  expect(called(engine, "setBars").at(-1)).toEqual([[]]);
+  expect(engine.options).toEqual({ candles: true });
+  const columns = {
+    time: new Float64Array([0]),
+    open: new Float64Array([100]),
+    high: new Float64Array([102]),
+    low: new Float64Array([99]),
+    close: new Float64Array([101]),
+  };
+  chart.bars = columns;
+  await settle();
+  expect(called(engine, "setBars").at(-1)).toEqual([columns]);
+  expect(engine.options).not.toHaveProperty("bars");
+  chart.remove();
+  engine.fire("view", data);
+  expect(changed).toHaveBeenCalledTimes(1);
 });

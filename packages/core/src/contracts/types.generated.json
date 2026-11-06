@@ -27,6 +27,18 @@
       }
     ]
   },
+  "type:0084c9a9ac2aae3a3b57": {
+    "typeText": "(event: DepthChartHoverEvent | null) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "event", "position": 0, "required": true, "rest": false, "typeText": "DepthChartHoverEvent | null", "typeRef": "type:25dc49c8f1844b62d353" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:008c9c382cb69b58e459": {
     "typeText": "(point: QuadrantPoint, index: number) => void",
     "kind": "function",
@@ -106,13 +118,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:e15e314d298fc0d116fc", "type:274816e86812a0932c24"]
   },
   "type:00e7a2461af25577581a": { "typeText": "\"close\"", "kind": "literal", "nullable": false, "optional": false, "value": "close" },
-  "type:00efd68f45f73b4ff027": {
-    "typeText": "OrderBookLevelEvent | null",
-    "kind": "union",
-    "nullable": true,
-    "optional": false,
-    "members": ["type:c5bee59b714cbc06e946", "type:b38de21ac2389b3d0297"]
-  },
   "type:00f70bb1b653d0a437fe": {
     "typeText": "BoxSize | undefined",
     "kind": "union",
@@ -465,6 +470,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:8a42ea8977fae0d1c6b0"]
   },
+  "type:043dea0277add4784b24": {
+    "typeText": "readonly DepthChartPriceLine[] | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:76cce880c34cce936505"]
+  },
   "type:0444a957363bcc787eb3": { "typeText": "\"scatter\" | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:66fc8d29390968258043"] },
   "type:045d8e84e08ca53ddfca": {
     "typeText": "{ open: false; reason: ConfirmCloseReason; }",
@@ -629,14 +641,14 @@
     "members": ["type:16535f0fd6ab598eec83", "type:c600e708e6645bb5abfa", "type:9cd86c09490db68d090c", "type:b18be8f3cd78dacb2cff"]
   },
   "type:067df1c151998198ac06": { "typeText": "\"menu\"", "kind": "literal", "nullable": false, "optional": false, "value": "menu" },
-  "type:0680b1a5a1ca09cf9b78": {
-    "typeText": "((row: TimeAndSalesRowEvent | null) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:f5bb7e04dd4d1c112279"]
-  },
   "type:06835def16c505de8e22": { "typeText": "\"vwap\"", "kind": "literal", "nullable": false, "optional": false, "value": "vwap" },
+  "type:068474ce52d01381d363": {
+    "typeText": "OrderBookHeatmapHoverEvent | null",
+    "kind": "union",
+    "nullable": true,
+    "optional": false,
+    "members": ["type:c5bee59b714cbc06e946", "type:5e3fae18d87da527ac53"]
+  },
   "type:0692147a997c31e16369": { "typeText": "\"billing work tel-local\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing work tel-local" },
   "type:06b87f5c4395eb76f9af": {
     "typeText": "MonthCalendarSize | undefined",
@@ -1887,6 +1899,13 @@
     "members": ["type:16535f0fd6ab598eec83", "type:7554d121649c556e3d98", "type:8e7927c7c21690fbb931"]
   },
   "type:0ad72496e005bbd5017a": { "typeText": "\"spinner\"", "kind": "literal", "nullable": false, "optional": false, "value": "spinner" },
+  "type:0aed560c4bb2bc3d696e": {
+    "typeText": "((price: number) => string) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:23bfe3c0898faeec7c76"]
+  },
   "type:0af2da11961c02efd442": {
     "typeText": "Readonly<Record<string, WeekStripMarker>>",
     "kind": "external",
@@ -2081,13 +2100,6 @@
   },
   "type:0cc9dacc0d28b4abc5b4": { "typeText": "\"characters\"", "kind": "literal", "nullable": false, "optional": false, "value": "characters" },
   "type:0cf697d8339eeb050cc2": { "typeText": "`section-${string} billing mobile tel-local`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:0d0271659092d80ac20e": {
-    "typeText": "((renderer: ChartRendererKind) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:2aeff85395b8835e8564"]
-  },
   "type:0d18e5f07e3106d084c4": {
     "typeText": "((a: unknown, b: unknown) => boolean) | undefined",
     "kind": "union",
@@ -2270,6 +2282,13 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:e766b09e0bb59b873ba2"]
+  },
+  "type:0f249726aafc95343b2b": {
+    "typeText": "((row: TimeAndSalesRowEvent | null) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:d725f82bde73ef6245fb"]
   },
   "type:0f472ddec5074c8079d7": { "typeText": "\"radialBar\"", "kind": "literal", "nullable": false, "optional": false, "value": "radialBar" },
   "type:0f5b394bdf9389f386b4": { "typeText": "\"billing email webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing email webauthn" },
@@ -2537,7 +2556,6 @@
       { "name": "id", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" }
     ]
   },
-  "type:114a1d1a8991982858f8": { "typeText": "Partial<OrderBookHeatmapLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:1158e24eb483a4cd6fbe": {
     "typeText": "\"none\" | \"small\" | \"medium\" | \"large\" | undefined",
     "kind": "union",
@@ -2606,13 +2624,6 @@
   "type:11ef074dbba2a20c2a51": { "typeText": "\"tspan\"", "kind": "literal", "nullable": false, "optional": false, "value": "tspan" },
   "type:11f7c1a247a511ffd524": { "typeText": "\"feImage\"", "kind": "literal", "nullable": false, "optional": false, "value": "feImage" },
   "type:12058a09e44c12c4d6fa": { "typeText": "\"RESET\"", "kind": "literal", "nullable": false, "optional": false, "value": "RESET" },
-  "type:1216b90bee387538e31e": {
-    "typeText": "readonly TimeAndSalesColumn[] | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:760dfa4d64e86c230e8c"]
-  },
   "type:12205154fc006c8e4fcb": { "typeText": "`section-${string} shipping mobile tel-area-code webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:1241da7b4fe4a3f2c10a": { "typeText": "\"work email webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "work email webauthn" },
   "type:12479fc5f7e35c1fa32a": { "typeText": "\"billing mobile tel webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing mobile tel webauthn" },
@@ -2737,6 +2748,7 @@
   },
   "type:137a3a4d46baead39eb6": { "typeText": "readonly (string | ChordGroup)[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:08f899b38808348ef245" },
   "type:138119084579cf6ded4b": { "typeText": "`section-${string} work tel-extension`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:13c08631f4ed7591a552": { "typeText": "Partial<TimeAndSalesLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:13d7317393409f54ffac": {
     "typeText": "TableRowSelection<T> | undefined",
     "kind": "union",
@@ -2950,6 +2962,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:59ab23cb2e9d7eee6ade"]
   },
+  "type:164626f00a66e9d1df9a": {
+    "typeText": "TimeAndSalesRowEvent | null",
+    "kind": "union",
+    "nullable": true,
+    "optional": false,
+    "members": ["type:c5bee59b714cbc06e946", "type:60a122159f8109824ff7"]
+  },
   "type:16535f0fd6ab598eec83": { "typeText": "undefined", "kind": "primitive", "nullable": false, "optional": true },
   "type:167734f7bd5dd7f686a6": {
     "typeText": "((renderer: ChartRendererKind) => void) | undefined",
@@ -2987,6 +3006,7 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:cce373371e8661a8a195"]
   },
+  "type:16c8c47915081d754ff1": { "typeText": "DepthPoint | null", "kind": "union", "nullable": true, "optional": false, "members": ["type:c5bee59b714cbc06e946", "type:8b149d9faf592eb7dad6"] },
   "type:16cd1c1cb16afc0c85de": {
     "typeText": "\"none\" | \"search\" | \"text\" | \"email\" | \"tel\" | \"url\" | \"numeric\" | \"decimal\" | undefined",
     "kind": "union",
@@ -3166,7 +3186,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:4688eff171cafdabbf74", "type:a9c60e5471fe99b924c5", "type:183fa455bb1aed26eb6c"]
   },
   "type:17d314790de541c59e20": { "typeText": "\"title\"", "kind": "literal", "nullable": false, "optional": false, "value": "title" },
-  "type:17d3a92c0729c55b1b7b": { "typeText": "readonly MarketTrade[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:8b2379dca51d87e7a25d" },
   "type:17e76c536c4bf752ca9d": { "typeText": "\"work tel\"", "kind": "literal", "nullable": false, "optional": false, "value": "work tel" },
   "type:1819182eb441e26a0fb1": { "typeText": "\"system\"", "kind": "literal", "nullable": false, "optional": false, "value": "system" },
   "type:181b85ff08a4a0f81e9e": { "typeText": "\"shipping mobile tel-local-prefix\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping mobile tel-local-prefix" },
@@ -3424,13 +3443,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:d3616d8222566e660c0b"]
   },
-  "type:19e659cd83abf0eb4534": {
-    "typeText": "((time: number) => string) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:8867a3875f923b7edec1"]
-  },
   "type:19ee289701c1fcce103e": {
     "typeText": "(values: PickerValue[], selectedOptions: PickerOption[]) => void",
     "kind": "function",
@@ -3470,7 +3482,6 @@
   },
   "type:1a4f2feb64c43d09ffc3": { "typeText": "\"ray\"", "kind": "literal", "nullable": false, "optional": false, "value": "ray" },
   "type:1a510f126387b644d467": { "typeText": "UploadLabels | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:800feb56f3db9bbf240f"] },
-  "type:1a6f68b946a72af09afa": { "typeText": "readonly OrderBookLevel[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:97e0702d0851738ea953" },
   "type:1a85fe2184348a3aac82": { "typeText": "`section-${string} shipping cc-exp webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:1a98f3b15294c0c1d839": { "typeText": "`section-${string} billing bday-day`", "kind": "primitive", "nullable": false, "optional": false },
   "type:1ab7b9c19427af29978a": {
@@ -3694,6 +3705,19 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:adc9caa72f6f8f0dba07", "type:3f4aa3fe058ce91ae492", "type:4167e51de557aa598520", "type:efe281aedd186926a66d"]
+  },
+  "type:1c284ab304370ee318f5": {
+    "typeText": "DepthChartPriceLine",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "DepthChartPriceLine",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "label", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
+      { "name": "color", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" }
+    ]
   },
   "type:1c4e2326a12082e9989e": { "typeText": "`section-${string} email`", "kind": "primitive", "nullable": false, "optional": false },
   "type:1c7f7c1cdfa6e7a85fb8": {
@@ -4442,13 +4466,6 @@
   },
   "type:235af3584150d8e1e276": { "typeText": "\"feConvolveMatrix\"", "kind": "literal", "nullable": false, "optional": false, "value": "feConvolveMatrix" },
   "type:2377ee120436b6e09e32": { "typeText": "\"kdj\"", "kind": "literal", "nullable": false, "optional": false, "value": "kdj" },
-  "type:238102e5c3a702452477": {
-    "typeText": "((event: DepthChartHoverEvent) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:dbdd8f3a1a6da6c3d86c"]
-  },
   "type:2397d4126a200616e590": {
     "typeText": "(handlers: FormHandlers) => void",
     "kind": "function",
@@ -4471,6 +4488,18 @@
   },
   "type:23b05386477adc9f0561": { "typeText": "`section-${string} shipping one-time-code webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:23b4ba9f235974518146": { "typeText": "TableColumn<T>[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:2d82dbd2724f7ef812d8" },
+  "type:23bfe3c0898faeec7c76": {
+    "typeText": "(price: number) => string",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "price", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
+        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+      }
+    ]
+  },
   "type:23caf58ea9cb6b434981": {
     "typeText": "Record<string, KeyValueEntryErrors> | undefined",
     "kind": "union",
@@ -4745,6 +4774,13 @@
   },
   "type:25c15e083de771f503a4": { "typeText": "\"marquee\"", "kind": "literal", "nullable": false, "optional": false, "value": "marquee" },
   "type:25c1e6e80b9cb8097cce": { "typeText": "\"tangential\"", "kind": "literal", "nullable": false, "optional": false, "value": "tangential" },
+  "type:25dc49c8f1844b62d353": {
+    "typeText": "DepthChartHoverEvent | null",
+    "kind": "union",
+    "nullable": true,
+    "optional": false,
+    "members": ["type:c5bee59b714cbc06e946", "type:827840257ae9c4658b14"]
+  },
   "type:25f1171a62421f802274": { "typeText": "ToastQueueItem<ReactNode, object>[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:a67615ff009a6dfe06a2" },
   "type:25f7212df20e4aa165f1": {
     "typeText": "\"fadeIn\" | \"slideIn\" | \"zoomIn\" | undefined",
@@ -4939,19 +4975,14 @@
   },
   "type:26f7996af4ebcb338eef": { "typeText": "\"info\"", "kind": "literal", "nullable": false, "optional": false, "value": "info" },
   "type:270095e289be4f6cec94": { "typeText": "\"shipping home tel-local-suffix\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping home tel-local-suffix" },
-  "type:270e40160578a93bc308": {
-    "typeText": "(price: number) => string",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "price", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
-        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
-      }
-    ]
-  },
   "type:27141a0fcb16fdd46bca": { "typeText": "\"shipping address-line2\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping address-line2" },
+  "type:2719392ae96ff603e25d": {
+    "typeText": "OrderBookLevelEvent | null",
+    "kind": "union",
+    "nullable": true,
+    "optional": false,
+    "members": ["type:c5bee59b714cbc06e946", "type:4a60f156049948f90d1e"]
+  },
   "type:2726b1e761e64345d66d": {
     "typeText": "AutoCompleteOption",
     "kind": "object",
@@ -5088,6 +5119,13 @@
   "type:2975cbff3ebd369a472d": { "typeText": "\"progress\"", "kind": "literal", "nullable": false, "optional": false, "value": "progress" },
   "type:298c0925f8d2ac2e56d3": { "typeText": "\"sankey\"", "kind": "literal", "nullable": false, "optional": false, "value": "sankey" },
   "type:29924efb2bf4bd085765": { "typeText": "MenuEntry[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:9d8055e76569a2a70ef1" },
+  "type:29a22e057bd3a633d012": {
+    "typeText": "((event: DepthChartHoverEvent) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:e8afe0f3f1ca459e9c7e"]
+  },
   "type:29ba5c6bdad539317a0c": { "typeText": "\"abbr\"", "kind": "literal", "nullable": false, "optional": false, "value": "abbr" },
   "type:29ba6181cc711da7bf3a": { "typeText": "\"shipping cc-exp-month\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping cc-exp-month" },
   "type:29c51132966c3489332e": {
@@ -5211,24 +5249,24 @@
       }
     ]
   },
+  "type:2ae20377c56cc282aa29": {
+    "typeText": "(level: OrderBookLevelEvent) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "level", "position": 0, "required": true, "rest": false, "typeText": "OrderBookLevelEvent", "typeRef": "type:4a60f156049948f90d1e" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:2ae3dcdc5c09f89e15f2": {
     "typeText": "((open: boolean) => void) | undefined",
     "kind": "union",
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:5cfd54b0f1e4ca420dac"]
-  },
-  "type:2aeff85395b8835e8564": {
-    "typeText": "(renderer: ChartRendererKind) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "renderer", "position": 0, "required": true, "rest": false, "typeText": "ChartRendererKind", "typeRef": "type:3439f360c8a2b0649d25" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
   },
   "type:2b020a69250bed926ef4": { "typeText": "`section-${string} shipping address-level3 webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:2b03ab7629ee2fb30776": { "typeText": "`section-${string} work email webauthn`", "kind": "primitive", "nullable": false, "optional": false },
@@ -5258,6 +5296,13 @@
   "type:2b4e483f703971be41c7": { "typeText": "\"feDisplacementMap\"", "kind": "literal", "nullable": false, "optional": false, "value": "feDisplacementMap" },
   "type:2b4f60db3759fe03bccb": { "typeText": "\"shipping work tel-country-code\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping work tel-country-code" },
   "type:2b6559ca7b8f909c7499": { "typeText": "`section-${string} billing mobile tel-national`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:2b8335b1888add1c7fed": {
+    "typeText": "OrderBookSnapshot | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:acc3b6ba9169525896c2"]
+  },
   "type:2ba04086b2e43978eee9": {
     "typeText": "\"text\" | \"arrow\" | \"trendLine\" | \"ray\" | \"extendedLine\" | \"horizontalLine\" | \"verticalLine\" | \"parallelChannel\" | \"pitchfork\" | \"rectangle\" | \"fibRetracement\" | \"longPosition\" | \"shortPosition\" | \"measure\"",
     "kind": "union",
@@ -5303,13 +5348,6 @@
     "nullable": false,
     "optional": false,
     "signatures": [{ "parameters": [], "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" } }]
-  },
-  "type:2bb9fbaebc82f6bde237": {
-    "typeText": "readonly DepthChartPriceLine[] | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:ed0bae1d8cd66a55ceed"]
   },
   "type:2c0f67d8e3f25c89c943": { "typeText": "\"shipping home tel-local webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping home tel-local webauthn" },
   "type:2c2a28d2745612a8146d": { "typeText": "\"banner\"", "kind": "literal", "nullable": false, "optional": false, "value": "banner" },
@@ -5680,6 +5718,13 @@
   "type:2e43b7f9e13f3f1ab47c": { "typeText": "`section-${string} cc-exp-month webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:2e4d8b20c4d8d32d2693": { "typeText": "readonly RatingDimension[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:58476c4a76d3f34880a8" },
   "type:2e6df5502ce331dc3328": { "typeText": "\"trapezoid\"", "kind": "literal", "nullable": false, "optional": false, "value": "trapezoid" },
+  "type:2e819b75d499c23f357f": {
+    "typeText": "Partial<OrderBookHeatmapLabels> | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:3ee929784c6cd18e0c7a"]
+  },
   "type:2e8d29e70483f9a3c792": { "typeText": "\"tick\"", "kind": "literal", "nullable": false, "optional": false, "value": "tick" },
   "type:2eb6a0bb7131c92d9438": {
     "typeText": "ProgressSize | undefined",
@@ -6202,6 +6247,18 @@
       { "name": "region", "required": true, "typeText": "QuadrantRegion | undefined", "typeRef": "type:57ecc59c1a5da9472ec9" }
     ]
   },
+  "type:33102bc1068131a62890": {
+    "typeText": "(size: number) => string",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "size", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
+        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+      }
+    ]
+  },
   "type:3324952958566de739d7": {
     "typeText": "CommandOpenChangeReason",
     "kind": "union",
@@ -6212,23 +6269,6 @@
   },
   "type:3359c694e29a22db62eb": { "typeText": "\"shipping bday-year webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping bday-year webauthn" },
   "type:335b732be658c046bd66": { "typeText": "`section-${string} billing honorific-suffix webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:335c88bf82a31a0ef327": {
-    "typeText": "OrderBookHeatmapHoverEvent",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "OrderBookHeatmapHoverEvent",
-    "source": "packages/charts/src/engine/orderbook/types.ts",
-    "fields": [
-      { "name": "time", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "priceHigh", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "size", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "side", "required": true, "typeText": "OrderBookSide | null", "typeRef": "type:cf270943a71c4169d517" },
-      { "name": "buyVolume", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "sellVolume", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-    ]
-  },
   "type:335dc275144317e11062": { "typeText": "\"buy\"", "kind": "literal", "nullable": false, "optional": false, "value": "buy" },
   "type:336d1e282a12d0ceef8d": {
     "typeText": "\"small\" | \"medium\" | \"large\" | \"full\" | undefined",
@@ -6758,6 +6798,13 @@
       }
     ]
   },
+  "type:39001f3ac97ee03a62e3": {
+    "typeText": "Partial<TimeAndSalesLabels> | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:13c08631f4ed7591a552"]
+  },
   "type:3901fef9d54a73feb0a5": {
     "typeText": "(tag: string) => string",
     "kind": "function",
@@ -7182,6 +7229,20 @@
       }
     ]
   },
+  "type:3e580426a3550f77eb36": {
+    "typeText": "MarketTrade",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "MarketTrade",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "time", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "size", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "side", "required": true, "typeText": "TradeSide", "typeRef": "type:cc0b3d692013d3226ffd" }
+    ]
+  },
   "type:3e6b11b8ad458191e6cb": {
     "typeText": "(event: PointerEvent) => void",
     "kind": "external",
@@ -7191,13 +7252,6 @@
     "source": "react-native/Libraries/Types/CoreEventTypes.d.ts"
   },
   "type:3e715c75208f29e7e7c0": { "typeText": "\"shipping mobile email\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping mobile email" },
-  "type:3e7426fcf817c68f8a90": {
-    "typeText": "OrderBookHeatmapHoverEvent | null",
-    "kind": "union",
-    "nullable": true,
-    "optional": false,
-    "members": ["type:c5bee59b714cbc06e946", "type:335c88bf82a31a0ef327"]
-  },
   "type:3e85c7558b22fb61854d": { "typeText": "\"step\"", "kind": "literal", "nullable": false, "optional": false, "value": "step" },
   "type:3e8fa99a9e378b6e029c": {
     "typeText": "((detail: MediaPlayerTimeDetail) => void) | undefined",
@@ -7208,6 +7262,7 @@
   },
   "type:3e9cc7a20dca844de159": { "typeText": "\"overflow\"", "kind": "literal", "nullable": false, "optional": false, "value": "overflow" },
   "type:3ec8fe0c6c6fd4def411": { "typeText": "(() => void) | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:7ba52633d8e82e14f804"] },
+  "type:3ee929784c6cd18e0c7a": { "typeText": "Partial<OrderBookHeatmapLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:3eec50dcdb8e16a7c3ec": { "typeText": "`section-${string} billing bday-day webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:3eed45caed63eddffbd1": {
     "typeText": "(event: TradingHistoryRequestEvent) => void",
@@ -7298,13 +7353,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:43c7b074c346ddf99391", "type:0a829f63acb2784df7ac", "type:bf53b25ec1603d406cfb", "type:f43dd3e76343fbd483d1"]
   },
-  "type:3fa992c0bbf3ff909bfc": {
-    "typeText": "((event: OrderBookHeatmapHoverEvent | null) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:82dc0955b4db25215740"]
-  },
   "type:3fc094b14a356efa8a0b": {
     "typeText": "(index: number) => void",
     "kind": "function",
@@ -7378,6 +7426,18 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:cad1b8c5db4b51e5b136"]
+  },
+  "type:401953b75b313c960c62": {
+    "typeText": "(data: OrderBookHeatmapViewData) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "data", "position": 0, "required": true, "rest": false, "typeText": "OrderBookHeatmapViewData", "typeRef": "type:d39c86a0df055e254111" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
   },
   "type:4023225dbd8f96e8ac1b": {
     "typeText": "{ label: ReactNode; value: ReactNode; }[] | undefined",
@@ -7518,14 +7578,6 @@
       }
     ]
   },
-  "type:417e3a3a441a05ce465d": {
-    "typeText": "TradeSide",
-    "kind": "union",
-    "nullable": false,
-    "optional": false,
-    "members": ["type:335dc275144317e11062", "type:a16c084e69b0f66e2d1f"],
-    "values": ["buy", "sell"]
-  },
   "type:4184fb5d9e3e43713a39": {
     "typeText": "(row: T) => { disabled?: boolean | undefined; }",
     "kind": "function",
@@ -7609,6 +7661,7 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:4c21315047a86e15f822"]
   },
+  "type:424b06a512513dd3b16f": { "typeText": "readonly OrderBookLevel[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:6270f84f3e18447b0b9f" },
   "type:424ed2a83f48b04251bc": {
     "typeText": "((name: string) => string) | undefined",
     "kind": "union",
@@ -8103,6 +8156,13 @@
   },
   "type:47f2275b5e844d4f0c31": { "typeText": "\"billing bday-month\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing bday-month" },
   "type:4811dea976ddb967ecfb": { "typeText": "T[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:7ec5a284d2788664820c" },
+  "type:481d1690b484f66f5c8c": {
+    "typeText": "((level: OrderBookLevelEvent) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:2ae20377c56cc282aa29"]
+  },
   "type:481d9295461d3d2525a6": { "typeText": "`section-${string} shipping home tel-extension webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:481ee991ad84d86869fd": {
     "typeText": "boolean | \"pulse\" | \"wave\" | \"false\" | undefined",
@@ -8271,13 +8331,6 @@
       { "name": "item", "required": true, "typeText": "NavTreeItem", "typeRef": "type:4606da0c86a0054b4e2f" }
     ]
   },
-  "type:496d3d0551c496d87964": {
-    "typeText": "((paused: boolean) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:b3152d5f70887ccf8229"]
-  },
   "type:49858580a3b46acd1de5": {
     "typeText": "\"center\" | \"start\" | \"end\" | \"stretch\" | \"baseline\" | undefined",
     "kind": "union",
@@ -8383,6 +8436,23 @@
     "nullable": false,
     "optional": false,
     "signatures": [{ "parameters": [], "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" } }]
+  },
+  "type:4a60f156049948f90d1e": {
+    "typeText": "OrderBookLevelEvent",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "OrderBookLevelEvent",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "side", "required": true, "typeText": "OrderBookSide", "typeRef": "type:ffe4bdd3d3d7a44b4914" },
+      { "name": "index", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "size", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "sum", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "notional", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "average", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
+    ]
   },
   "type:4a68ea144ed75edb9aa6": {
     "typeText": "((selectedRowKeys: TableRowKey[], selectedRows: T[]) => void) | undefined",
@@ -8599,6 +8669,13 @@
   },
   "type:4c1ff5eedc7e9f348698": { "typeText": "\"words\"", "kind": "literal", "nullable": false, "optional": false, "value": "words" },
   "type:4c21315047a86e15f822": { "typeText": "PointerEventHandler<HTMLElement>", "kind": "external", "nullable": false, "optional": false, "name": "PointerEventHandler", "source": "@types/react" },
+  "type:4c22ccd733bbe4832cfb": {
+    "typeText": "((time: number) => string) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:6bba56380939f9b4976e"]
+  },
   "type:4c2487a5e44eece28ea7": { "typeText": "\"bottom-left\"", "kind": "literal", "nullable": false, "optional": false, "value": "bottom-left" },
   "type:4c35555a9a428a82725a": {
     "typeText": "(value: string, option: AutoCompleteOption) => boolean",
@@ -8825,19 +8902,6 @@
   },
   "type:4f3dd381919959f0eb82": { "typeText": "`section-${string} current-password`", "kind": "primitive", "nullable": false, "optional": false },
   "type:4f4da121bde36d63b7cd": { "typeText": "`section-${string} cc-exp-month`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:4f563b74fab898e065cd": {
-    "typeText": "TimeAndSalesRowEvent",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "TimeAndSalesRowEvent",
-    "source": "packages/charts/src/engine/orderbook/types.ts",
-    "fields": [
-      { "name": "trade", "required": true, "typeText": "MarketTrade", "typeRef": "type:8b2379dca51d87e7a25d" },
-      { "name": "count", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "index", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-    ]
-  },
   "type:4f579d9bb8a7acd2dff6": {
     "typeText": "(share: number) => string",
     "kind": "function",
@@ -9010,18 +9074,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:4aef6e87bd2d8d54a527", "type:d747e355c97d437ca39b"]
-  },
-  "type:504317ad8820c741d0c7": {
-    "typeText": "(event: DepthChartHoverEvent | null) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "event", "position": 0, "required": true, "rest": false, "typeText": "DepthChartHoverEvent | null", "typeRef": "type:f8989570b59b8fd034a9" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
   },
   "type:505334d568a3f72c4fac": { "typeText": "`section-${string} home tel-local`", "kind": "primitive", "nullable": false, "optional": false },
   "type:5078eb3be0adcff24413": {
@@ -9229,13 +9281,6 @@
   },
   "type:52206064f18a31ed7e2e": { "typeText": "`section-${string} shipping address-level4 webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:52226b2521f7aa6bbcca": { "typeText": "readonly ChartPointDatum[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:66398c0f7b00ea303615" },
-  "type:522974e77ad0f6e83e2b": {
-    "typeText": "OrderBookSnapshot | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:97505ca44b0d105a47a2"]
-  },
   "type:52302e6ccddc17684a8f": { "typeText": "`section-${string} mobile tel-local-prefix`", "kind": "primitive", "nullable": false, "optional": false },
   "type:52354a7157c2cc11588b": {
     "typeText": "(event: ChartPlotClickEvent) => void",
@@ -9544,6 +9589,7 @@
     "source": "packages/web-components/src/components/tag/tag.ts",
     "fields": [{ "name": "pressed", "required": true, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }]
   },
+  "type:54f4d63a65c49ad0f939": { "typeText": "readonly TimeAndSalesColumn[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:6b46a67c3b414d82a818" },
   "type:552176c5255d329a68a0": { "typeText": "\"billing address-level1\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing address-level1" },
   "type:552505dc8da2e3f7edfc": {
     "typeText": "\"fade\" | \"scale\" | \"shift-away\" | \"shift-toward\" | \"perspective\" | undefined",
@@ -9865,6 +9911,18 @@
       { "name": "hint", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" }
     ]
   },
+  "type:584c640e0ad5fc1cf94f": {
+    "typeText": "(level: OrderBookLevelEvent | null) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "level", "position": 0, "required": true, "rest": false, "typeText": "OrderBookLevelEvent | null", "typeRef": "type:2719392ae96ff603e25d" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:586967ec1d1c0f72ed92": { "typeText": "`section-${string} home tel-country-code webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:586f3ef993b3bf633700": { "typeText": "`section-${string} tel-area-code webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:5878cee8810a7289d558": {
@@ -10139,7 +10197,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:d2ff34250a3523e6d723"]
   },
-  "type:5a676cf0e1dcd7562d1e": { "typeText": "Partial<OrderBookLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:5a745fdaf70a3668a57f": {
     "typeText": "((a: AutoCompleteOption, b: AutoCompleteOption) => number) | undefined",
     "kind": "union",
@@ -10230,6 +10287,13 @@
   },
   "type:5b4dae1fd0745cc4e2a4": { "typeText": "NavTreeSection[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:33f2097eb07f823905cd" },
   "type:5b75a5a1cf5cd137f5ee": { "typeText": "CommandItem[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:f2871cebb5525058852f" },
+  "type:5b7fc37779cc21e3693a": {
+    "typeText": "readonly TimeAndSalesColumn[] | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:54f4d63a65c49ad0f939"]
+  },
   "type:5b9dda73054d6aa05be8": {
     "typeText": "(event: GestureResponderEvent) => void",
     "kind": "external",
@@ -10279,6 +10343,13 @@
       "type:0cc9dacc0d28b4abc5b4"
     ]
   },
+  "type:5bf8ea30bc8650f149a5": {
+    "typeText": "((event: DepthChartHoverEvent | null) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:0084c9a9ac2aae3a3b57"]
+  },
   "type:5bfc1184b082171dcbfd": {
     "typeText": "((share: number) => string) | undefined",
     "kind": "union",
@@ -10287,6 +10358,7 @@
     "members": ["type:16535f0fd6ab598eec83", "type:4f579d9bb8a7acd2dff6"]
   },
   "type:5c05fd5434236b72ea66": { "typeText": "HTMLDivElement", "kind": "external", "nullable": false, "optional": false, "name": "HTMLDivElement", "source": "typescript/lib/lib.dom.d.ts" },
+  "type:5c373b975c85f4aa6a45": { "typeText": "Partial<DepthChartLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:5c4818c2a044a6d0737b": { "typeText": "\"given-name webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "given-name webauthn" },
   "type:5c7fefc2a49b2eddeb2a": {
     "typeText": "{ item: VirtualListItem; index: number; }",
@@ -10352,6 +10424,13 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:8ac8183dae054a02cdc9", "type:2cfca7e4e92961e21408", "type:8f7b363307bfe096a256", "type:7e29e4a23437b35e6cd7", "type:ecbbcc2cea92ff4afe95"]
+  },
+  "type:5d251419674e78680f2a": {
+    "typeText": "((event: OrderBookHeatmapHoverEvent | null) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:85264c17ce71d274a2fc"]
   },
   "type:5d2b488b76f96bffd07d": { "typeText": "\"close-slot\"", "kind": "literal", "nullable": false, "optional": false, "value": "close-slot" },
   "type:5d41dbcd550049d8b738": { "typeText": "\"billing tel-local-prefix webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing tel-local-prefix webauthn" },
@@ -10431,18 +10510,6 @@
   },
   "type:5dcb666d3b13e0f7bfe7": { "typeText": "\"work tel-local-suffix webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "work tel-local-suffix webauthn" },
   "type:5de38816852a3cb591f4": { "typeText": "`section-${string} shipping work tel-area-code`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:5de9dc9fed3a5483286a": {
-    "typeText": "(range: number) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "range", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:5deee2359aefdb76c5f5": {
     "typeText": "((day: string) => string) | undefined",
     "kind": "union",
@@ -10452,6 +10519,24 @@
   },
   "type:5df15f25bb4444b35462": { "typeText": "\"billing address-line3\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing address-line3" },
   "type:5e3d102f2d78776628f3": { "typeText": "\"span\"", "kind": "literal", "nullable": false, "optional": false, "value": "span" },
+  "type:5e3fae18d87da527ac53": {
+    "typeText": "OrderBookHeatmapHoverEvent",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "OrderBookHeatmapHoverEvent",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "bar", "required": false, "typeText": "TradingBar | undefined", "typeRef": "type:d914ac72f150e9b9eea9" },
+      { "name": "time", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "priceHigh", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "size", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "side", "required": true, "typeText": "OrderBookSide | null", "typeRef": "type:cf270943a71c4169d517" },
+      { "name": "buyVolume", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "sellVolume", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
+    ]
+  },
   "type:5e53466e74fe076792ef": {
     "typeText": "((event: GestureResponderEvent) => void) | undefined",
     "kind": "union",
@@ -10692,6 +10777,19 @@
       }
     ]
   },
+  "type:60a122159f8109824ff7": {
+    "typeText": "TimeAndSalesRowEvent",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "TimeAndSalesRowEvent",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "trade", "required": true, "typeText": "MarketTrade", "typeRef": "type:3e580426a3550f77eb36" },
+      { "name": "count", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "index", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
+    ]
+  },
   "type:60b9091f27364eed7484": { "typeText": "\"billing mobile tel-local-suffix\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing mobile tel-local-suffix" },
   "type:60ba54b4ec457b002fcb": {
     "typeText": "number | \"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\" | \"xxlarge\" | undefined",
@@ -10833,6 +10931,7 @@
       }
     ]
   },
+  "type:6270f84f3e18447b0b9f": { "typeText": "OrderBookLevel", "kind": "tuple", "nullable": false, "optional": false, "elements": ["type:7d1137535c313783dadd", "type:7d1137535c313783dadd"] },
   "type:627178c85012172b31ea": {
     "typeText": "(event: ShapeHoverEvent) => void",
     "kind": "function",
@@ -10894,6 +10993,7 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:d0be5546ba44da84f495"]
   },
+  "type:6311d864d2a9ae5a7726": { "typeText": "OrderBookLevels", "kind": "union", "nullable": false, "optional": false, "members": ["type:424b06a512513dd3b16f", "type:e7329b6206af3d79609f"] },
   "type:631e2683960e8316bef0": {
     "typeText": "(theme: ThemeMode) => void",
     "kind": "function",
@@ -11769,6 +11869,14 @@
   "type:6b14d72f0b49a2e0437b": { "typeText": "\"billing bday-day webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing bday-day webauthn" },
   "type:6b1fc702754b140a2881": { "typeText": "`section-${string} billing home tel-extension webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:6b20b2510af78bb31552": { "typeText": "`section-${string} billing mobile tel-country-code webauthn`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:6b46a67c3b414d82a818": {
+    "typeText": "TimeAndSalesColumn",
+    "kind": "union",
+    "nullable": false,
+    "optional": false,
+    "members": ["type:5d12f52ba0af9befc1da", "type:135b2b4c5ec55a253d70", "type:977ecbee81bf97be0c48", "type:ba423e95b795c37ce4d7"],
+    "values": ["price", "side", "size", "time"]
+  },
   "type:6b4c481ec7fb6361c079": { "typeText": "\"home tel-national\"", "kind": "literal", "nullable": false, "optional": false, "value": "home tel-national" },
   "type:6b4f66186ba4b66f65dc": {
     "typeText": "\"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"all\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
@@ -11820,6 +11928,18 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:ed4a66d2513d4e67f7ed"]
+  },
+  "type:6bba56380939f9b4976e": {
+    "typeText": "(time: number) => string",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "time", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
+        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+      }
+    ]
   },
   "type:6bd815f6537879fbed2c": {
     "typeText": "(row: T, index: number) => TableRowKey",
@@ -13071,7 +13191,6 @@
   "type:75d217c56c621ef03b09": { "typeText": "\"sup\"", "kind": "literal", "nullable": false, "optional": false, "value": "sup" },
   "type:75dfe0bcab6821ddc0e2": { "typeText": "\"center\"", "kind": "literal", "nullable": false, "optional": false, "value": "center" },
   "type:760475abb7c91a6a941e": { "typeText": "readonly PickerValue[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:517074336830d9d1ec98" },
-  "type:760dfa4d64e86c230e8c": { "typeText": "readonly TimeAndSalesColumn[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:7ebf332edbf9792558ba" },
   "type:762cd239fe8e090c5827": { "typeText": "`section-${string} shipping address-level1 webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:7636d0dbd7650cd7b38e": {
     "typeText": "TableSortState | null | undefined",
@@ -13153,6 +13272,7 @@
     ]
   },
   "type:76b397caf24fd8df0317": { "typeText": "\"shipping cc-csc\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping cc-csc" },
+  "type:76cce880c34cce936505": { "typeText": "readonly DepthChartPriceLine[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:1c284ab304370ee318f5" },
   "type:76daf93cb6263b9c1356": {
     "typeText": "(name: string) => string",
     "kind": "function",
@@ -13263,6 +13383,18 @@
     "signatures": [
       {
         "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "SliderValue", "typeRef": "type:35ce1d2f89f8eab1e586" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
+  "type:781f4b1e7ce067d81645": {
+    "typeText": "(row: TimeAndSalesRowEvent) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "row", "position": 0, "required": true, "rest": false, "typeText": "TimeAndSalesRowEvent", "typeRef": "type:60a122159f8109824ff7" }],
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
     ]
@@ -13903,14 +14035,6 @@
   },
   "type:7ea1a0604e5d2ab6a1ee": { "typeText": "`section-${string} country`", "kind": "primitive", "nullable": false, "optional": false },
   "type:7ea715ca41bab0fdb133": { "typeText": "`section-${string} shipping address-line1`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:7ebf332edbf9792558ba": {
-    "typeText": "TimeAndSalesColumn",
-    "kind": "union",
-    "nullable": false,
-    "optional": false,
-    "members": ["type:5d12f52ba0af9befc1da", "type:135b2b4c5ec55a253d70", "type:977ecbee81bf97be0c48", "type:ba423e95b795c37ce4d7"],
-    "values": ["price", "side", "size", "time"]
-  },
   "type:7ec5a284d2788664820c": { "typeText": "T", "kind": "parameter", "nullable": false, "optional": false, "name": "T" },
   "type:7ed2f398daab4df3bb1a": { "typeText": "\"home tel webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "home tel webauthn" },
   "type:7ed520255d950ff09dad": { "typeText": "`${number}H`", "kind": "primitive", "nullable": false, "optional": false },
@@ -14067,6 +14191,19 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:6c986ae3bb5aa213c796"]
   },
+  "type:800078618ef4e4b5ed79": {
+    "typeText": "OrderBookHeatmapView",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "OrderBookHeatmapView",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "time", "required": true, "typeText": "readonly [number, number]", "typeRef": "type:8a54529d40be07c989f7" },
+      { "name": "price", "required": true, "typeText": "readonly [number, number]", "typeRef": "type:8a54529d40be07c989f7" },
+      { "name": "follow", "required": true, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }
+    ]
+  },
   "type:800f462c775df9adc28c": {
     "typeText": "(value: number) => string",
     "kind": "function",
@@ -14146,6 +14283,13 @@
     "source": "packages/web-components/src/components/slider/slider.ts",
     "fields": [{ "name": "value", "required": true, "typeText": "SliderValue", "typeRef": "type:35ce1d2f89f8eab1e586" }]
   },
+  "type:80abb06a095c45fe86b6": {
+    "typeText": "((row: TimeAndSalesRowEvent) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:781f4b1e7ce067d81645"]
+  },
   "type:80ac7da3b32be412864a": {
     "typeText": "{ value: string; }",
     "kind": "object",
@@ -14164,18 +14308,6 @@
   "type:80d8ed2cc879d836162f": { "typeText": "TableRowKey", "kind": "union", "nullable": false, "optional": false, "members": ["type:e15e314d298fc0d116fc", "type:7d1137535c313783dadd"] },
   "type:80d993c7224e7116fd35": { "typeText": "`section-${string} shipping mobile tel-local-prefix webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:80e7e212dc3e333e7c06": { "typeText": "`section-${string} billing cc-family-name webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:810002d88950bb80d72b": {
-    "typeText": "(size: number) => string",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "size", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
-        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
-      }
-    ]
-  },
   "type:81161d69ee006e66b2fe": {
     "typeText": "{ expanded: boolean; }",
     "kind": "object",
@@ -14287,6 +14419,23 @@
   },
   "type:82574dd0bc12458a5ad6": { "typeText": "\"address-level4 webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "address-level4 webauthn" },
   "type:8270850b6c16befc010d": { "typeText": "\"bordered\"", "kind": "literal", "nullable": false, "optional": false, "value": "bordered" },
+  "type:827840257ae9c4658b14": {
+    "typeText": "DepthChartHoverEvent",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "DepthChartHoverEvent",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "mirror", "required": true, "typeText": "DepthPoint | null", "typeRef": "type:16c8c47915081d754ff1" },
+      { "name": "side", "required": true, "typeText": "OrderBookSide", "typeRef": "type:ffe4bdd3d3d7a44b4914" },
+      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "amount", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "total", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "average", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "distance", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
+    ]
+  },
   "type:828a4a51d7936ce6bcd0": {
     "typeText": "ChartTooltipLabels",
     "kind": "object",
@@ -14331,18 +14480,6 @@
     ]
   },
   "type:82d5e78d4a6eac3a900f": { "typeText": "readonly AnswerSheetGroup[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:4bd6e88011daa6bd9d22" },
-  "type:82dc0955b4db25215740": {
-    "typeText": "(event: OrderBookHeatmapHoverEvent | null) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "event", "position": 0, "required": true, "rest": false, "typeText": "OrderBookHeatmapHoverEvent | null", "typeRef": "type:3e7426fcf817c68f8a90" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:82dda6d1374b4d893fb2": { "typeText": "`section-${string} shipping bday-day webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:82e71274bb2f4a409450": { "typeText": "`section-${string} billing country`", "kind": "primitive", "nullable": false, "optional": false },
   "type:82efde8fd8e2d65a6766": {
@@ -14576,16 +14713,21 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:2c5698ef1448ce62631d"]
   },
+  "type:85264c17ce71d274a2fc": {
+    "typeText": "(event: OrderBookHeatmapHoverEvent | null) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "event", "position": 0, "required": true, "rest": false, "typeText": "OrderBookHeatmapHoverEvent | null", "typeRef": "type:068474ce52d01381d363" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:854e9f2df932b352302e": { "typeText": "\"enclosed\"", "kind": "literal", "nullable": false, "optional": false, "value": "enclosed" },
   "type:8551006c7c6ae4610aea": { "typeText": "RefObject<HTMLElement | null>", "kind": "external", "nullable": false, "optional": false, "name": "RefObject", "source": "@types/react" },
   "type:857436854265dee430fb": { "typeText": "`section-${string} billing mobile tel-local-prefix webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:859bd008e3fdb34377dd": {
-    "typeText": "((size: number) => string) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:810002d88950bb80d72b"]
-  },
   "type:85c3c0588323940d3ef1": { "typeText": "HTMLDivElement | null", "kind": "union", "nullable": true, "optional": false, "members": ["type:c5bee59b714cbc06e946", "type:5c05fd5434236b72ea66"] },
   "type:85cc49356c495bdbffec": {
     "typeText": "(value: string) => void",
@@ -14700,13 +14842,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:68f60d0e487f713ec881", "type:01eb8f3ad12d70e86078"]
   },
-  "type:87376b3ff93025bda711": {
-    "typeText": "((level: OrderBookLevelEvent) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:97a943fb475bae3bffee"]
-  },
   "type:874b5d41dbfae196ef42": { "typeText": "\"shipping given-name webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping given-name webauthn" },
   "type:874b666a898d42786883": {
     "typeText": "((e: BlurEvent) => void) | null | undefined",
@@ -14801,18 +14936,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:a7cba70719a25fde659c"]
   },
   "type:885e6b3a780bbce342f6": { "typeText": "GraphEdge | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:37c5875e5fd83a9fd58f"] },
-  "type:8867a3875f923b7edec1": {
-    "typeText": "(time: number) => string",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "time", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
-        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
-      }
-    ]
-  },
   "type:886fd30291bd6df93fa1": {
     "typeText": "{ value: string; }",
     "kind": "object",
@@ -15224,18 +15347,20 @@
     "members": ["type:16535f0fd6ab598eec83", "type:828a4a51d7936ce6bcd0"]
   },
   "type:8b08c960e87ad5652c92": { "typeText": "(() => void) | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:b71cd1b14918e6cf5a65"] },
-  "type:8b2379dca51d87e7a25d": {
-    "typeText": "MarketTrade",
+  "type:8b149d9faf592eb7dad6": {
+    "typeText": "DepthPoint",
     "kind": "object",
     "nullable": false,
     "optional": false,
-    "name": "MarketTrade",
+    "name": "DepthPoint",
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "fields": [
-      { "name": "time", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "side", "required": true, "typeText": "OrderBookSide", "typeRef": "type:ffe4bdd3d3d7a44b4914" },
       { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "size", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "side", "required": true, "typeText": "TradeSide", "typeRef": "type:417e3a3a441a05ce465d" }
+      { "name": "amount", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "total", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "average", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "distance", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
     ]
   },
   "type:8b2d710817117962537e": {
@@ -15442,6 +15567,13 @@
     ]
   },
   "type:8c2ae856ab3590440595": { "typeText": "NavTreeItem[] | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:9c936c66d3914b2f1a51"] },
+  "type:8c37e06ae4cfff2a0e56": {
+    "typeText": "Partial<DepthChartLabels> | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:5c373b975c85f4aa6a45"]
+  },
   "type:8c3beffd5a54236fd07f": {
     "typeText": "((error: unknown) => void) | undefined",
     "kind": "union",
@@ -15906,6 +16038,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:6fbcbe76ea2625e99243", "type:f5afe1732e25c850bf2a", "type:8ac8183dae054a02cdc9"]
   },
+  "type:916db2420d7dbe2fe23c": {
+    "typeText": "Partial<OrderBookLabels> | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:ce21e2bfb0022f025915"]
+  },
   "type:9171a41f23ecfac5f278": {
     "typeText": "MenuCheckboxEntry",
     "kind": "object",
@@ -16109,23 +16248,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:f29c3e690ec57a9d419c"]
   },
   "type:931171fd7f130a30f824": { "typeText": "\"right-end\"", "kind": "literal", "nullable": false, "optional": false, "value": "right-end" },
-  "type:93228135a197867736f8": {
-    "typeText": "DepthChartHoverEvent",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "DepthChartHoverEvent",
-    "source": "packages/charts/src/engine/orderbook/types.ts",
-    "fields": [
-      { "name": "mirror", "required": true, "typeText": "DepthPoint | null", "typeRef": "type:fbbbf002dfd16a307145" },
-      { "name": "side", "required": true, "typeText": "OrderBookSide", "typeRef": "type:e3cfb63144551bfdda7c" },
-      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "amount", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "total", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "average", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "distance", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-    ]
-  },
   "type:9326718e98fb0feaae8d": { "typeText": "\"optgroup\"", "kind": "literal", "nullable": false, "optional": false, "value": "optgroup" },
   "type:933375cdf214a0c3b4f8": {
     "typeText": "(items: UploadItem[]) => void",
@@ -16436,13 +16558,6 @@
   "type:960cca04df70e81cb6d0": { "typeText": "SliderMark[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:18600325a417addf89c1" },
   "type:96269ff902fd7463deb6": { "typeText": "\"tel-area-code\"", "kind": "literal", "nullable": false, "optional": false, "value": "tel-area-code" },
   "type:9631c1efb03706bdf487": { "typeText": "`section-${string} tel-local`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:963303e7973517daf101": {
-    "typeText": "((row: TimeAndSalesRowEvent) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:ef367fac945857644480"]
-  },
   "type:967fa03889e54e0d0952": { "typeText": "\"billing cc-given-name webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing cc-given-name webauthn" },
   "type:9681660344634a074ea8": {
     "typeText": "readonly (\"name\" | \"value\" | \"percent\")[] | undefined",
@@ -16518,6 +16633,13 @@
     "members": ["type:16535f0fd6ab598eec83", "type:dd9bf96e57ba5cea3e63"]
   },
   "type:970e448b35beb4e415e0": { "typeText": "readonly (number | null)[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:4ebff2838e5c7cb671be" },
+  "type:970fc86f73c2913f9cbb": {
+    "typeText": "readonly [number, number] | null",
+    "kind": "union",
+    "nullable": true,
+    "optional": false,
+    "members": ["type:c5bee59b714cbc06e946", "type:8a54529d40be07c989f7"]
+  },
   "type:971367311ab960469c5a": {
     "typeText": "\"area\" | \"line\" | \"bar\" | undefined",
     "kind": "union",
@@ -16568,6 +16690,13 @@
     "optional": false,
     "signatures": [{ "parameters": [], "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" } }]
   },
+  "type:973463342f713a3b9185": {
+    "typeText": "((range: number) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:ac0af253fdf54517a0b2"]
+  },
   "type:973efa0aae7940d84a2b": {
     "typeText": "(event: ChartPlotClickEvent) => void",
     "kind": "function",
@@ -16588,19 +16717,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:ec12748c63502ff4b576"]
   },
-  "type:97505ca44b0d105a47a2": {
-    "typeText": "OrderBookSnapshot",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "OrderBookSnapshot",
-    "source": "packages/charts/src/engine/orderbook/types.ts",
-    "fields": [
-      { "name": "bids", "required": true, "typeText": "OrderBookLevels", "typeRef": "type:f72bea99c002185f16c5" },
-      { "name": "asks", "required": true, "typeText": "OrderBookLevels", "typeRef": "type:f72bea99c002185f16c5" },
-      { "name": "time", "required": false, "typeText": "number | undefined", "typeRef": "type:8fd4405af6b6a3932806" }
-    ]
-  },
   "type:975cc0ee7a48d735b36a": {
     "typeText": "(value: unknown) => Promise<FormRuleResult>",
     "kind": "function",
@@ -16618,18 +16734,6 @@
   "type:977c66a367baae2a93fe": { "typeText": "\"billing home tel-local webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing home tel-local webauthn" },
   "type:977ecbee81bf97be0c48": { "typeText": "\"price\"", "kind": "literal", "nullable": false, "optional": false, "value": "price" },
   "type:9790ed6a7bb3755f3146": { "typeText": "\"remove\"", "kind": "literal", "nullable": false, "optional": false, "value": "remove" },
-  "type:97a943fb475bae3bffee": {
-    "typeText": "(level: OrderBookLevelEvent) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "level", "position": 0, "required": true, "rest": false, "typeText": "OrderBookLevelEvent", "typeRef": "type:b38de21ac2389b3d0297" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:97ad1d5b72e0340395e4": {
     "typeText": "\"side\" | \"tick\" | undefined",
     "kind": "union",
@@ -16659,7 +16763,6 @@
   },
   "type:97c90e090de648fac6fd": { "typeText": "\"done\"", "kind": "literal", "nullable": false, "optional": false, "value": "done" },
   "type:97cdfe89fb41a4ffb224": { "typeText": "\"embed\"", "kind": "literal", "nullable": false, "optional": false, "value": "embed" },
-  "type:97e0702d0851738ea953": { "typeText": "OrderBookLevel", "kind": "tuple", "nullable": false, "optional": false, "elements": ["type:7d1137535c313783dadd", "type:7d1137535c313783dadd"] },
   "type:97e362a96a31a8d05dd2": { "typeText": "\"unanswered\"", "kind": "literal", "nullable": false, "optional": false, "value": "unanswered" },
   "type:97ff2e6edc17a159e346": {
     "typeText": "\"desktop\" | \"mobile\" | undefined",
@@ -17051,7 +17154,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:9aa4ef90d15ed7e458de"]
   },
-  "type:9b2851062481d6e7ca2d": { "typeText": "Partial<TimeAndSalesLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:9b2e388440c9fde22b99": { "typeText": "\"text removals\"", "kind": "literal", "nullable": false, "optional": false, "value": "text removals" },
   "type:9b471725700966306ce0": { "typeText": "HTMLElement", "kind": "external", "nullable": false, "optional": false, "name": "HTMLElement", "source": "typescript/lib/lib.dom.d.ts" },
   "type:9b4fddd55fe6884c9dea": { "typeText": "`section-${string} billing postal-code`", "kind": "primitive", "nullable": false, "optional": false },
@@ -17519,13 +17621,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:7e6ee6556a0300bc58fd"]
-  },
-  "type:9ff0f5328ad6c71fd229": {
-    "typeText": "TimeAndSalesRowEvent | null",
-    "kind": "union",
-    "nullable": true,
-    "optional": false,
-    "members": ["type:c5bee59b714cbc06e946", "type:4f563b74fab898e065cd"]
   },
   "type:9ff154288dbbc457eaef": {
     "typeText": "CodeMarkColor | undefined",
@@ -18384,6 +18479,18 @@
   "type:a602c82e323b3248e0aa": { "typeText": "readonly SegmentedControlOption<NoInfer<T>>[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:56e6b278915c883e5b11" },
   "type:a61217a5e711b23e6a19": { "typeText": "`section-${string} billing home tel-extension`", "kind": "primitive", "nullable": false, "optional": false },
   "type:a616c9ef52092a51ba47": { "typeText": "\"wma\"", "kind": "literal", "nullable": false, "optional": false, "value": "wma" },
+  "type:a625d94d51a5d652aa80": {
+    "typeText": "(renderer: ChartRendererKind) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "renderer", "position": 0, "required": true, "rest": false, "typeText": "ChartRendererKind", "typeRef": "type:3439f360c8a2b0649d25" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:a64446f15c102449fe7e": { "typeText": "`section-${string} shipping work tel-country-code`", "kind": "primitive", "nullable": false, "optional": false },
   "type:a6493d29db2548fa59b5": {
     "typeText": "{ width: number | \"100%\"; height: number; }",
@@ -18497,13 +18604,6 @@
   },
   "type:a78cf24830d76053161f": { "typeText": "\"alertdialog\"", "kind": "literal", "nullable": false, "optional": false, "value": "alertdialog" },
   "type:a79036915bc105064def": { "typeText": "T", "kind": "parameter", "nullable": false, "optional": false, "name": "T" },
-  "type:a7a24c88881e7e1bdf25": {
-    "typeText": "((follow: boolean) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:a7d1e2c71883ada3488d"]
-  },
   "type:a7a7bc93c8c87a79177b": { "typeText": "\"billing cc-exp-year\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing cc-exp-year" },
   "type:a7afe083dfa05cab6939": { "typeText": "\"body\"", "kind": "literal", "nullable": false, "optional": false, "value": "body" },
   "type:a7bc616e96964723adac": {
@@ -18522,18 +18622,6 @@
     "signatures": [
       {
         "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
-  "type:a7d1e2c71883ada3488d": {
-    "typeText": "(follow: boolean) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "follow", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
     ]
@@ -18824,18 +18912,6 @@
       }
     ]
   },
-  "type:aac2052881c4f7a3ff16": {
-    "typeText": "OrderBookLevelColumns",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "OrderBookLevelColumns",
-    "source": "packages/charts/src/engine/orderbook/types.ts",
-    "fields": [
-      { "name": "price", "required": true, "typeText": "ArrayLike<number>", "typeRef": "type:44dd641637ae8002a767" },
-      { "name": "size", "required": true, "typeText": "ArrayLike<number>", "typeRef": "type:44dd641637ae8002a767" }
-    ]
-  },
   "type:aad0f898d707fb96f877": { "typeText": "\"sunburst\"", "kind": "literal", "nullable": false, "optional": false, "value": "sunburst" },
   "type:aad78061c49788cbf5eb": { "typeText": "\"bullet\"", "kind": "literal", "nullable": false, "optional": false, "value": "bullet" },
   "type:ab1516221b1d6a882dae": { "typeText": "\"work tel-extension\"", "kind": "literal", "nullable": false, "optional": false, "value": "work tel-extension" },
@@ -18957,6 +19033,18 @@
   },
   "type:abe0add65594b642820b": { "typeText": "\"mobile email\"", "kind": "literal", "nullable": false, "optional": false, "value": "mobile email" },
   "type:abe8388042cd9568c60a": { "typeText": "\"mixed\"", "kind": "literal", "nullable": false, "optional": false, "value": "mixed" },
+  "type:ac0af253fdf54517a0b2": {
+    "typeText": "(range: number) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "range", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:ac4956453cad62d16ade": {
     "typeText": "(date: Date) => void",
     "kind": "function",
@@ -19037,6 +19125,19 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:72e2d167a89514eed9cf"]
   },
+  "type:acc3b6ba9169525896c2": {
+    "typeText": "OrderBookSnapshot",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "OrderBookSnapshot",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "bids", "required": true, "typeText": "OrderBookLevels", "typeRef": "type:6311d864d2a9ae5a7726" },
+      { "name": "asks", "required": true, "typeText": "OrderBookLevels", "typeRef": "type:6311d864d2a9ae5a7726" },
+      { "name": "time", "required": false, "typeText": "number | undefined", "typeRef": "type:8fd4405af6b6a3932806" }
+    ]
+  },
   "type:acc81a7f4f790d7813c4": { "typeText": "\"feTile\"", "kind": "literal", "nullable": false, "optional": false, "value": "feTile" },
   "type:acddf629f15e5bfae91f": {
     "typeText": "(price: number) => string",
@@ -19058,6 +19159,13 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:e0ec231eb66fac035172"]
+  },
+  "type:ad7ce5364bd44ae54d21": {
+    "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:a625d94d51a5d652aa80"]
   },
   "type:ad83e5710a0ee8146a3c": {
     "typeText": "CellSize | undefined",
@@ -19187,13 +19295,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:1fe0547d3de1e8540842", "type:d40f69b84f99a49e1e12", "type:df23d4b43c2d22faaaff"]
   },
   "type:af30b050ff44424ae1db": { "typeText": "\"degree\"", "kind": "literal", "nullable": false, "optional": false, "value": "degree" },
-  "type:af3a11d16a5285f7d796": {
-    "typeText": "((price: number) => string) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:270e40160578a93bc308"]
-  },
   "type:af43ee884d90441ed7ea": {
     "typeText": "AppShellSidebarMode",
     "kind": "union",
@@ -19598,18 +19699,6 @@
       }
     ]
   },
-  "type:b3152d5f70887ccf8229": {
-    "typeText": "(paused: boolean) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "paused", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:b31dc94c8a0e0da02291": {
     "typeText": "AppShellSidebarMode",
     "kind": "union",
@@ -19659,23 +19748,6 @@
     "members": ["type:eeec539f1567c2455eb7", "type:9171a41f23ecfac5f278", "type:479454326459ff5820f2", "type:58bd47f393adf78d4094", "type:732603e17c28685b0447"]
   },
   "type:b388e54f1014225d6917": { "typeText": "readonly (\"value\" | \"percent\" | \"name\")[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:6695680fea0d1a654a08" },
-  "type:b38de21ac2389b3d0297": {
-    "typeText": "OrderBookLevelEvent",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "OrderBookLevelEvent",
-    "source": "packages/charts/src/engine/orderbook/types.ts",
-    "fields": [
-      { "name": "side", "required": true, "typeText": "OrderBookSide", "typeRef": "type:e3cfb63144551bfdda7c" },
-      { "name": "index", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "size", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "sum", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "notional", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "average", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-    ]
-  },
   "type:b3cd5c49d86fb91effb3": {
     "typeText": "boolean | ShapeLegendOptions | undefined",
     "kind": "union",
@@ -19774,19 +19846,6 @@
   "type:b48f242f9f6b48f4029b": { "typeText": "\"billing work tel-national webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing work tel-national webauthn" },
   "type:b499e28636957ca7bdd9": { "typeText": "`section-${string} shipping mobile tel-national webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:b49bf20ba38284da063d": { "typeText": "\"uploading\"", "kind": "literal", "nullable": false, "optional": false, "value": "uploading" },
-  "type:b4ab4318298d9e5cb80d": {
-    "typeText": "DepthChartPriceLine",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "DepthChartPriceLine",
-    "source": "packages/charts/src/engine/orderbook/types.ts",
-    "fields": [
-      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "label", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
-      { "name": "color", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" }
-    ]
-  },
   "type:b4ae2397aa4cdec8d329": { "typeText": "`section-${string} work tel-country-code`", "kind": "primitive", "nullable": false, "optional": false },
   "type:b4c3295230090a67b914": {
     "typeText": "(value: string) => void",
@@ -20185,18 +20244,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:e8d75db727b677b5aacf"]
   },
-  "type:b8854373d57796169a28": {
-    "typeText": "(level: OrderBookLevelEvent | null) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "level", "position": 0, "required": true, "rest": false, "typeText": "OrderBookLevelEvent | null", "typeRef": "type:00efd68f45f73b4ff027" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:b8893a0e233d9d05f93c": {
     "typeText": "TradingIndicator",
     "kind": "union",
@@ -20317,22 +20364,6 @@
     ]
   },
   "type:b93112b0249e42b86bdb": { "typeText": "\"webgl\"", "kind": "literal", "nullable": false, "optional": false, "value": "webgl" },
-  "type:b93d367ae7e143be6d1e": {
-    "typeText": "DepthPoint",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "DepthPoint",
-    "source": "packages/charts/src/engine/orderbook/types.ts",
-    "fields": [
-      { "name": "side", "required": true, "typeText": "OrderBookSide", "typeRef": "type:e3cfb63144551bfdda7c" },
-      { "name": "price", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "amount", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "total", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "average", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "distance", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-    ]
-  },
   "type:b94542f702598d575494": { "typeText": "\"billing work tel-local webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing work tel-local webauthn" },
   "type:b9474777dd95565712f3": { "typeText": "TableColumn<T>[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:22a43b18086a3d200013" },
   "type:b96d37c12ee309e4cb03": {
@@ -20555,13 +20586,6 @@
   },
   "type:ba423e95b795c37ce4d7": { "typeText": "\"side\"", "kind": "literal", "nullable": false, "optional": false, "value": "side" },
   "type:ba44904265fc3e3ff6b4": { "typeText": "\"billing street-address webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing street-address webauthn" },
-  "type:ba4e7f91f7278c3be51d": {
-    "typeText": "readonly MarketTrade[] | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:17d3a92c0729c55b1b7b"]
-  },
   "type:ba517841aa7c9076d4c2": {
     "typeText": "(point: QuadrantPoint, index: number, target: QuadrantDropTarget) => void",
     "kind": "function",
@@ -21086,13 +21110,6 @@
       }
     ]
   },
-  "type:bf35011d16c42d4ee657": {
-    "typeText": "((event: DepthChartHoverEvent | null) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:504317ad8820c741d0c7"]
-  },
   "type:bf38be9272405536861e": {
     "typeText": "((weekStart: Date) => void) | undefined",
     "kind": "union",
@@ -21143,13 +21160,6 @@
     "nullable": false,
     "optional": false,
     "elements": ["type:7d1137535c313783dadd", "type:7d1137535c313783dadd", "type:7d1137535c313783dadd"]
-  },
-  "type:bfe43b061a9bf8fc9e39": {
-    "typeText": "Partial<DepthChartLabels> | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:c0cce32dede78acfac26"]
   },
   "type:bfec2447cfb703179efe": {
     "typeText": "((share: number) => string) | undefined",
@@ -21235,8 +21245,8 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:bf7cac3a9e70a5c51091"]
   },
+  "type:c09780de1fe04bb6240e": { "typeText": "readonly MarketTrade[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:3e580426a3550f77eb36" },
   "type:c0b0762b46fe28f4edad": { "typeText": "InputEvent<HTMLInputElement>", "kind": "external", "nullable": false, "optional": false, "name": "InputEvent", "source": "@types/react" },
-  "type:c0cce32dede78acfac26": { "typeText": "Partial<DepthChartLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:c0f3214cdb3dcd494386": {
     "typeText": "SankeyLink",
     "kind": "object",
@@ -21250,13 +21260,6 @@
       { "name": "value", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
       { "name": "color", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" }
     ]
-  },
-  "type:c1003ae211555936c7f8": {
-    "typeText": "((level: OrderBookLevelEvent | null) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:b8854373d57796169a28"]
   },
   "type:c139a1aee55d570ddeda": {
     "typeText": "((mode: AppShellSidebarMode) => void) | undefined",
@@ -21479,6 +21482,18 @@
           { "name": "points", "position": 1, "required": true, "rest": false, "typeText": "readonly QuadrantPoint[]", "typeRef": "type:f804470d1c73a5c2f896" }
         ],
         "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+      }
+    ]
+  },
+  "type:c4e9587961fb0c67bd39": {
+    "typeText": "(follow: boolean) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "follow", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
     ]
   },
@@ -22172,6 +22187,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:d40f69b84f99a49e1e12", "type:1fe0547d3de1e8540842"]
   },
+  "type:cbe80fb58587953548d8": {
+    "typeText": "((paused: boolean) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:ff8a76f68d078a08c791"]
+  },
   "type:cbefcacb02dae968f48d": { "typeText": "\"honorific-suffix\"", "kind": "literal", "nullable": false, "optional": false, "value": "honorific-suffix" },
   "type:cbf891460fd1e0e9dafc": {
     "typeText": "ClipboardEventHandler<HTMLElement> | undefined",
@@ -22188,6 +22210,14 @@
     "optional": false,
     "name": "ChangeEvent",
     "source": "@types/react"
+  },
+  "type:cc0b3d692013d3226ffd": {
+    "typeText": "TradeSide",
+    "kind": "union",
+    "nullable": false,
+    "optional": false,
+    "members": ["type:335dc275144317e11062", "type:a16c084e69b0f66e2d1f"],
+    "values": ["buy", "sell"]
   },
   "type:cc0b72a0190deddc73f4": { "typeText": "\"use-credentials\"", "kind": "literal", "nullable": false, "optional": false, "value": "use-credentials" },
   "type:cc2a429f4fd03e7c47a7": { "typeText": "\"billing tel-extension\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing tel-extension" },
@@ -22255,6 +22285,13 @@
     "members": ["type:16535f0fd6ab598eec83", "type:416b5c485bd12046d00b"]
   },
   "type:ccc2990c9fbbbf67f7b4": { "typeText": "\"shipping current-password webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping current-password webauthn" },
+  "type:ccca1796ae329a55312d": {
+    "typeText": "((data: OrderBookHeatmapViewData) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:401953b75b313c960c62"]
+  },
   "type:ccd571d791bb090aea91": {
     "typeText": "((move: DashboardCardMove) => void) | undefined",
     "kind": "union",
@@ -22342,6 +22379,7 @@
   "type:ce003d213fa50ed6329d": { "typeText": "\"shipping address-level2 webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping address-level2 webauthn" },
   "type:ce0495472417cb2328ef": { "typeText": "\"mobile tel webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "mobile tel webauthn" },
   "type:ce1be1d10581ce1ca5c2": { "typeText": "\"billing cc-name\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing cc-name" },
+  "type:ce21e2bfb0022f025915": { "typeText": "Partial<OrderBookLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:ce2253bf62ef50b31a93": { "typeText": "\"both\"", "kind": "literal", "nullable": false, "optional": false, "value": "both" },
   "type:ce4fbdd0dcab8e615a8c": {
     "typeText": "(label: string) => string",
@@ -22427,13 +22465,6 @@
   "type:cf6405fd14650062ca24": { "typeText": "`section-${string} shipping one-time-code`", "kind": "primitive", "nullable": false, "optional": false },
   "type:cf7fd582f9a618d8eb26": { "typeText": "\"shipping home tel-area-code webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping home tel-area-code webauthn" },
   "type:cf8976e57475323a5669": { "typeText": "\"symbol\"", "kind": "literal", "nullable": false, "optional": false, "value": "symbol" },
-  "type:cf89bdba08071929a75d": {
-    "typeText": "((range: number) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:5de9dc9fed3a5483286a"]
-  },
   "type:cf927f12d625bb9a2516": { "typeText": "KeyboardEvent", "kind": "external", "nullable": false, "optional": false, "name": "KeyboardEvent", "source": "typescript/lib/lib.dom.d.ts" },
   "type:cfe7e0a01a6c2947f0f2": {
     "typeText": "(day: string, count: number) => string",
@@ -22825,6 +22856,18 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:ed0ab322e1d135b832f1", "type:cc99d9342a3962db258b", "type:217716ed2629da45de0e"]
   },
+  "type:d39c86a0df055e254111": {
+    "typeText": "OrderBookHeatmapViewData",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "OrderBookHeatmapViewData",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "availableTime", "required": true, "typeText": "readonly [number, number] | null", "typeRef": "type:970fc86f73c2913f9cbb" },
+      { "name": "view", "required": true, "typeText": "OrderBookHeatmapView", "typeRef": "type:800078618ef4e4b5ed79" }
+    ]
+  },
   "type:d3a9fdf8988220d5916a": {
     "typeText": "UploadItemStatus",
     "kind": "union",
@@ -23204,15 +23247,20 @@
     "optional": false,
     "signatures": [{ "parameters": [], "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" } }]
   },
-  "type:d71a5560ea630a0ade30": {
-    "typeText": "Partial<TimeAndSalesLabels> | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:9b2851062481d6e7ca2d"]
-  },
   "type:d71d1b3dec4c98eb9d0d": { "typeText": "MouseEventHandler<HTMLElement>", "kind": "external", "nullable": false, "optional": false, "name": "MouseEventHandler", "source": "@types/react" },
   "type:d71fca5b35a57aeb00c9": { "typeText": "`section-${string} family-name`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:d725f82bde73ef6245fb": {
+    "typeText": "(row: TimeAndSalesRowEvent | null) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "row", "position": 0, "required": true, "rest": false, "typeText": "TimeAndSalesRowEvent | null", "typeRef": "type:164626f00a66e9d1df9a" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:d72c67a1187199b3d620": { "typeText": "\"left\"", "kind": "literal", "nullable": false, "optional": false, "value": "left" },
   "type:d73c040d4bcf2f60de73": { "typeText": "\"idcardpad\"", "kind": "literal", "nullable": false, "optional": false, "value": "idcardpad" },
   "type:d7417877ef0069f46c16": { "typeText": "\"radial\"", "kind": "literal", "nullable": false, "optional": false, "value": "radial" },
@@ -23454,6 +23502,7 @@
       }
     ]
   },
+  "type:d914ac72f150e9b9eea9": { "typeText": "TradingBar | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:3fe814e4cf1b24cf2d32"] },
   "type:d91aaa0d486dd1092624": { "typeText": "Partial<TradingChartLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:d92c3cd66b7afc0213bc": {
     "typeText": "((share: number) => string) | undefined",
@@ -23701,18 +23750,6 @@
   },
   "type:dbca6dbacfbb25805694": { "typeText": "\"fade\"", "kind": "literal", "nullable": false, "optional": false, "value": "fade" },
   "type:dbdd2300caf2c099f097": { "typeText": "NavTreeItem[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:e0a51856731d063c2c10" },
-  "type:dbdd8f3a1a6da6c3d86c": {
-    "typeText": "(event: DepthChartHoverEvent) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "event", "position": 0, "required": true, "rest": false, "typeText": "DepthChartHoverEvent", "typeRef": "type:93228135a197867736f8" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:dbf2d1fc2e6268735e01": {
     "typeText": "((value: (string | number)[], selectedOptions: CascaderOption[]) => void) | undefined",
     "kind": "union",
@@ -24478,14 +24515,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:8b646ee93eb1cdeaaa97", "type:103352f1cef0e6cdaea9", "type:f32ffaddbcdf3bbb116c", "type:be10fe5a64a7f3b792d0", "type:f0767a60048ef2315955"]
   },
-  "type:e3cfb63144551bfdda7c": {
-    "typeText": "OrderBookSide",
-    "kind": "union",
-    "nullable": false,
-    "optional": false,
-    "members": ["type:5d9cb69812e238d18988", "type:fc313eebe3249f0a4ea5"],
-    "values": ["ask", "bid"]
-  },
   "type:e3da81543d354c5c3212": {
     "typeText": "(open: boolean, reason?: ImagePreviewCloseReason | undefined) => void",
     "kind": "function",
@@ -24792,6 +24821,18 @@
     "members": ["type:16535f0fd6ab598eec83", "type:d5f2da413917d5a8161c"]
   },
   "type:e706cd0512d2a0f6cf3e": { "typeText": "\"billing organization webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing organization webauthn" },
+  "type:e7329b6206af3d79609f": {
+    "typeText": "OrderBookLevelColumns",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "OrderBookLevelColumns",
+    "source": "packages/charts/src/engine/orderbook/types.ts",
+    "fields": [
+      { "name": "price", "required": true, "typeText": "ArrayLike<number>", "typeRef": "type:44dd641637ae8002a767" },
+      { "name": "size", "required": true, "typeText": "ArrayLike<number>", "typeRef": "type:44dd641637ae8002a767" }
+    ]
+  },
   "type:e73525296450c83eb02d": { "typeText": "\"shipping bday-month\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping bday-month" },
   "type:e73cbd717caeac4f0b16": {
     "typeText": "((key: string) => void) | undefined",
@@ -25249,6 +25290,18 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:4167e51de557aa598520", "type:adc9caa72f6f8f0dba07", "type:3f4aa3fe058ce91ae492", "type:efe281aedd186926a66d"]
   },
+  "type:e8afe0f3f1ca459e9c7e": {
+    "typeText": "(event: DepthChartHoverEvent) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "event", "position": 0, "required": true, "rest": false, "typeText": "DepthChartHoverEvent", "typeRef": "type:827840257ae9c4658b14" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:e8b60f7768b23c0e6938": {
     "typeText": "((input: string, option: AutoCompleteOption) => boolean) | undefined",
     "kind": "union",
@@ -25307,6 +25360,13 @@
     "members": ["type:16535f0fd6ab598eec83", "type:5c87329f946b55214836"]
   },
   "type:e92055faa89677691382": { "typeText": "\"shipping work tel-local webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping work tel-local webauthn" },
+  "type:e93a723fa2fc57c0b2dd": {
+    "typeText": "((level: OrderBookLevelEvent | null) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:584c640e0ad5fc1cf94f"]
+  },
   "type:e9416a8e5cee2d467523": { "typeText": "\"track\"", "kind": "literal", "nullable": false, "optional": false, "value": "track" },
   "type:e951285332632d910fc7": {
     "typeText": "MouseEventHandler<HTMLInputElement> | undefined",
@@ -25396,6 +25456,13 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:90a42a6ea76f76cf805a"]
+  },
+  "type:ea62ee9e97c8217c2c62": {
+    "typeText": "((follow: boolean) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:c4e9587961fb0c67bd39"]
   },
   "type:ea6312158c2ce8f0c4c0": {
     "typeText": "(value: string) => void",
@@ -25642,7 +25709,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:aea80c22c12cf872dbe3", "type:dad854e149410bb54cd2"]
   },
   "type:ed0ab322e1d135b832f1": { "typeText": "\"change\"", "kind": "literal", "nullable": false, "optional": false, "value": "change" },
-  "type:ed0bae1d8cd66a55ceed": { "typeText": "readonly DepthChartPriceLine[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:b4ab4318298d9e5cb80d" },
   "type:ed250d0176d688d7922a": { "typeText": "PickerOption[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:2f2b2a7cc7e8afb9a17a" },
   "type:ed2cb2e2be913bf0bba5": { "typeText": "T", "kind": "parameter", "nullable": false, "optional": false, "name": "T", "constraint": "type:e15e314d298fc0d116fc" },
   "type:ed2f18ded9f4e54967d5": { "typeText": "`section-${string} shipping home tel-country-code`", "kind": "primitive", "nullable": false, "optional": false },
@@ -25708,6 +25774,13 @@
     ]
   },
   "type:ede426162c2e4a3f56ad": { "typeText": "(() => void) | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:240404ef9a6bef724014"] },
+  "type:edf3d4fed366b73e5f82": {
+    "typeText": "readonly MarketTrade[] | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:c09780de1fe04bb6240e"]
+  },
   "type:ee073556f18eb3ee4cae": {
     "typeText": "((view: ChartView) => void) | undefined",
     "kind": "union",
@@ -25896,18 +25969,6 @@
     "signatures": [
       {
         "parameters": [{ "name": "detail", "position": 0, "required": true, "rest": false, "typeText": "MediaPlayerVolumeDetail", "typeRef": "type:abc7eb0bbcb9cf36396d" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
-  "type:ef367fac945857644480": {
-    "typeText": "(row: TimeAndSalesRowEvent) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "row", "position": 0, "required": true, "rest": false, "typeText": "TimeAndSalesRowEvent", "typeRef": "type:4f563b74fab898e065cd" }],
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
     ]
@@ -26579,18 +26640,6 @@
       "type:64648e464a2c9d9f72be"
     ]
   },
-  "type:f5bb7e04dd4d1c112279": {
-    "typeText": "(row: TimeAndSalesRowEvent | null) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "row", "position": 0, "required": true, "rest": false, "typeText": "TimeAndSalesRowEvent | null", "typeRef": "type:9ff0f5328ad6c71fd229" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:f5ebf33b3bdd583e50ec": { "typeText": "\"checkbox\"", "kind": "literal", "nullable": false, "optional": false, "value": "checkbox" },
   "type:f5f17d4e8bbb90392ce4": { "typeText": "\"always\"", "kind": "literal", "nullable": false, "optional": false, "value": "always" },
   "type:f5f7624f5f78222d9df9": {
@@ -26728,7 +26777,6 @@
   },
   "type:f713cb93838ecd5cd7d0": { "typeText": "\"perspective\"", "kind": "literal", "nullable": false, "optional": false, "value": "perspective" },
   "type:f7262d8c076408a7e7d4": { "typeText": "\"image\"", "kind": "literal", "nullable": false, "optional": false, "value": "image" },
-  "type:f72bea99c002185f16c5": { "typeText": "OrderBookLevels", "kind": "union", "nullable": false, "optional": false, "members": ["type:1a6f68b946a72af09afa", "type:aac2052881c4f7a3ff16"] },
   "type:f73721b59825e3239f83": {
     "typeText": "TradingCrosshairEvent",
     "kind": "object",
@@ -26869,13 +26917,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:48ae6c0220bcc188b68e"]
-  },
-  "type:f8989570b59b8fd034a9": {
-    "typeText": "DepthChartHoverEvent | null",
-    "kind": "union",
-    "nullable": true,
-    "optional": false,
-    "members": ["type:c5bee59b714cbc06e946", "type:93228135a197867736f8"]
   },
   "type:f8a33dcadbf98ee70db7": {
     "typeText": "readonly TradingDrawing[] | undefined",
@@ -27113,13 +27154,6 @@
   },
   "type:fa94a0a530c0443f55ca": { "typeText": "\"billing one-time-code\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing one-time-code" },
   "type:fa94ee9bf1ff03efe5a1": { "typeText": "Partial<AppShellLabels>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
-  "type:fa9e826ba79abfc25d96": {
-    "typeText": "Partial<OrderBookHeatmapLabels> | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:114a1d1a8991982858f8"]
-  },
   "type:faa2d1cac8abe6cb7ce4": { "typeText": "Locale | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:6d49daf77ede50bcc252"] },
   "type:fae1ab29c30eb2822917": { "typeText": "\"cc-given-name webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "cc-given-name webauthn" },
   "type:fafc929575e91f80b12a": {
@@ -27183,7 +27217,6 @@
       { "name": "items", "required": true, "typeText": "NavTreeItem[]", "typeRef": "type:1a21e238083f06d615ec" }
     ]
   },
-  "type:fbbbf002dfd16a307145": { "typeText": "DepthPoint | null", "kind": "union", "nullable": true, "optional": false, "members": ["type:c5bee59b714cbc06e946", "type:b93d367ae7e143be6d1e"] },
   "type:fbcc1376f784f90c364a": {
     "typeText": "{ week: Date; }",
     "kind": "object",
@@ -27214,13 +27247,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:640825e31699507a93b3"]
-  },
-  "type:fc3c43c24748a8f49f73": {
-    "typeText": "Partial<OrderBookLabels> | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:5a676cf0e1dcd7562d1e"]
   },
   "type:fc41d80c3feedbdbdf66": { "typeText": "`${number}s`", "kind": "primitive", "nullable": false, "optional": false },
   "type:fc72e01ab923d4327417": { "typeText": "\"all\"", "kind": "literal", "nullable": false, "optional": false, "value": "all" },
@@ -27432,6 +27458,13 @@
   },
   "type:ff06b1649a0799260be7": { "typeText": "\"shipping work tel-local-prefix\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping work tel-local-prefix" },
   "type:ff1f3262d462d6d70ee1": { "typeText": "\"takeProfit\"", "kind": "literal", "nullable": false, "optional": false, "value": "takeProfit" },
+  "type:ff37eb6d55e323c0b451": {
+    "typeText": "((size: number) => string) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:33102bc1068131a62890"]
+  },
   "type:ff385f35ee7339111bf8": { "typeText": "`section-${string} shipping home tel-local`", "kind": "primitive", "nullable": false, "optional": false },
   "type:ff41f7645453487efae1": {
     "typeText": "((event: ShapeDrillEvent) => void) | undefined",
@@ -27454,6 +27487,18 @@
     "optional": false,
     "name": "bivarianceHack",
     "source": "@types/react"
+  },
+  "type:ff8a76f68d078a08c791": {
+    "typeText": "(paused: boolean) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "paused", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
   },
   "type:ff8d6becdaa245df9fe5": {
     "typeText": "PrimaryColorPair",
@@ -27509,5 +27554,13 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:0e8fe50f7b94663e9c36"]
+  },
+  "type:ffe4bdd3d3d7a44b4914": {
+    "typeText": "OrderBookSide",
+    "kind": "union",
+    "nullable": false,
+    "optional": false,
+    "members": ["type:5d9cb69812e238d18988", "type:fc313eebe3249f0a4ea5"],
+    "values": ["ask", "bid"]
   }
 }

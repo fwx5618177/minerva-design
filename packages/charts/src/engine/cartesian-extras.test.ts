@@ -882,6 +882,9 @@ describe("DOM chart", () => {
     expect(legend.innerHTML).toContain("linear-gradient");
     const p = c.toPixel(0, 0)!;
     move(p.x, p.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     const tooltip = container.querySelector<HTMLElement>(
       ".minerva-chart-tooltip",
     )!;
@@ -908,6 +911,9 @@ describe("DOM chart", () => {
     );
     // moving away hides the caret
     move(1, 1);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     expect(caret.style.display).toBe("none");
   });
 
@@ -927,6 +933,9 @@ describe("DOM chart", () => {
     });
     const p = c.toPixel(0, 86_400_000)!;
     move(p.x, p.y);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
     const tooltip = container.querySelector<HTMLElement>(
       ".minerva-chart-tooltip",
     )!;

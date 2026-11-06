@@ -1,4 +1,5 @@
 import React from "react";
+import { Alert } from "minerva-design";
 import { useTranslation } from "react-i18next";
 import DocPage from "@/docs/components/DocPage";
 import styles from "@/docs/components/docs.module.scss";
@@ -23,6 +24,9 @@ const ELEMENTS = [
   "lines",
   "bubbles",
   "profile",
+  "candles",
+  "navigation",
+  "intensity",
 ] as const;
 const PATTERNS = ["hold", "pull", "sweep", "thin"] as const;
 
@@ -35,6 +39,9 @@ const OrderBookHeatmapDoc: React.FC = () => {
     <section className={styles.section} aria-labelledby="heatmap-read">
       <h2 id="heatmap-read">{t("title")}</h2>
       <p className={styles.prose}>{t("text")}</p>
+      <Alert color="info" title={t("dataTitle")}>
+        {t("dataSemantics")}
+      </Alert>
       <ul className={styles.prose}>
         {ELEMENTS.map((key) => (
           <li key={key}>{t(key)}</li>

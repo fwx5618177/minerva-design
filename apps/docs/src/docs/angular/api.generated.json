@@ -10003,6 +10003,13 @@
         "description": "Applies updates (size 0 removes a level); drawn once at the next frame"
       },
       {
+        "name": "bars",
+        "kind": "input",
+        "type": "TradingBarsInput | undefined",
+        "required": false,
+        "description": "Candle history, applied through setBars when the input changes"
+      },
+      {
         "name": "trades",
         "kind": "input",
         "type": "ChartTrades | undefined",
@@ -10031,11 +10038,53 @@
         "description": "`true` while the view follows the market, `false` after a zoom / pan"
       },
       {
+        "name": "viewChange",
+        "kind": "output",
+        "type": "OrderBookHeatmapViewData",
+        "required": false,
+        "description": "Available history or viewport changed"
+      },
+      {
         "name": "addTrades",
         "kind": "method",
         "type": "(trades: ChartTrades[number] | ChartTrades) => void",
         "required": false,
         "description": "Adds trades (bubbles)"
+      },
+      {
+        "name": "setBars",
+        "kind": "method",
+        "type": "(bars: TradingBarsInput) => void",
+        "required": false,
+        "description": "Replaces the candle history"
+      },
+      {
+        "name": "updateBar",
+        "kind": "method",
+        "type": "(bar: TradingBar) => void",
+        "required": false,
+        "description": "Updates or appends a candle"
+      },
+      {
+        "name": "setView",
+        "kind": "method",
+        "type": "(view: OrderBookHeatmapViewInput) => void",
+        "required": false,
+        "description": "Sets visible time and/or price ranges"
+      },
+      {
+        "name": "getView",
+        "kind": "method",
+        "type": "() => OrderBookHeatmapViewData | null",
+        "required": false,
+        "description": "Available history and viewport, null before mount"
+      },
+      {
+        "name": "clear",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Removes the book, history, trades and candles"
       },
       {
         "name": "resetView",

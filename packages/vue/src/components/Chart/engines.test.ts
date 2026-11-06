@@ -43,6 +43,10 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
           engine.options = next;
           engine.calls.push(["setOptions", [next]]);
         },
+        getView: () => ({
+          availableTime: [0, 10],
+          view: { time: [0, 10], price: [90, 110], follow: false },
+        }),
         getBarCount: () => 42,
         getCamera: () => ({ azimuth: 30 }),
       };
@@ -77,6 +81,7 @@ const {
   HorizontalBarChart,
   MixedChart,
   OrderBook,
+  OrderBookHeatmap,
   Scatter3DChart,
   SunburstChart,
   TimeAndSales,
@@ -266,4 +271,64 @@ describe("3D components", () => {
     await chart.setProps({ exposure: 1.4 });
     expect(engine.options.exposure).toBe(1.4);
   });
+});
+
+it("heatmap streams bars, exposes navigation and emits view data without remounting", async () => {
+  const bars = [{ time: 0, open: 100, high: 102, low: 99, close: 101 }];
+  const onViewChange = vi.fn();
+  const chart = mount(OrderBookHeatmap, {
+    props: {
+      onViewChange,
+      bars,
+      candles: false,
+      intensityRange: [0.2, 0.8],
+      maxBars: 100,
+      maxColumns: 50,
+      lastPriceLine: false,
+    },
+  });
+  const engine = last();
+  expect(engine.options).toEqual({
+    candles: false,
+    intensityRange: [0.2, 0.8],
+    maxBars: 100,
+    maxColumns: 50,
+    lastPriceLine: false,
+  });
+  expect(called(engine, "setBars")).toEqual([[bars]]);
+  const handle =
+    chart.vm as unknown as import("./types").OrderBookHeatmapHandle;
+  const view = { time: [0, 10], price: [90, 110] } as const;
+  handle.setBars([]);
+  handle.updateBar(bars[0]);
+  handle.setView(view);
+  handle.clear();
+  expect(called(engine, "setBars")).toEqual([[bars], [[]]]);
+  expect(called(engine, "updateBar")).toEqual([[bars[0]]]);
+  expect(called(engine, "setView")).toEqual([[view]]);
+  expect(called(engine, "clear")).toHaveLength(1);
+  const data = handle.getView();
+  engine.fire("view", data);
+  expect(data).toEqual({
+    availableTime: [0, 10],
+    view: { ...view, follow: false },
+  });
+  expect(chart.emitted("viewChange")).toEqual([[data]]);
+  await chart.setProps({ bars: [], candles: true });
+  expect(last()).toBe(engine);
+  expect(called(engine, "setBars").at(-1)).toEqual([[]]);
+  expect(engine.options).toMatchObject({ candles: true });
+  const columns = {
+    time: new Float64Array([0]),
+    open: new Float64Array([100]),
+    high: new Float64Array([102]),
+    low: new Float64Array([99]),
+    close: new Float64Array([101]),
+  };
+  await chart.setProps({ bars: columns });
+  expect(called(engine, "setBars").at(-1)).toEqual([columns]);
+  expect(engine.options).not.toHaveProperty("bars");
+  chart.unmount();
+  engine.fire("view", data);
+  expect(onViewChange).toHaveBeenCalledTimes(1);
 });

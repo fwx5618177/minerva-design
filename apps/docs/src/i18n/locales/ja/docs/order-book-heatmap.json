@@ -16,7 +16,12 @@
       "pull": "取り消し（見せ板）：価格が近づくと明るい線が消え、そこに約定バブルがない場合、注文は約定ではなく取り消されています。",
       "sweep": "スイープ：大きなバブルが連続して複数の価格を横切り、価格線が跳ね、通り道の流動性が暗くなります。",
       "thin": "薄い流動性：価格の近くの広い暗い領域は注文が少ないことを示し、価格はそこを素早く通過できます。"
-    }
+    },
+    "candles": "ローソク足：実際の OHLC データを、同じミリ秒時刻軸と価格軸に渡します。欠損区間は空白を保ち、注文板から架空の約定を生成しません。最新価格線は新しい約定または新しい足の終値を使います。",
+    "navigation": "履歴ナビゲーション：ズーム・パンで追従を停止します。保持された時間範囲をナビゲーターで選び、リセットで最新市場に戻ります。getView / setView と viewChange は同じビューポートを共有します。",
+    "intensity": "強度フィルター：intensityRange は色変換後の 0–1 表示区間です。元の指値量、ツールチップの値、自動色基準は変わりません。",
+    "dataTitle": "データの意味",
+    "dataSemantics": "このコンポーネントは指値流動性と提供された約定 OHLC を表示します。例は再現可能な模擬マッチングです。清算ヒートマップには独立した清算データが必要で、指値量を清算量とはみなしません。"
   },
   "demos": {
     "basic": {
@@ -62,6 +67,26 @@
     "perpetual": {
       "title": "枚数で表示する無期限先物",
       "description": "1枚 0.001 BTC の BTC 無期限先物：formatSize が数量を換算し、formatPrice がドルを表示し、sizeUnit と labels が凡例とツールチップの単位を変え、timeZone=\"utc\" が上の資金調達カウントダウンの取引所時刻に合わせます。"
+    },
+    "candles": {
+      "title": "約定ローソク足",
+      "description": "模擬約定を疎な2秒OHLC足に集計し、板の流動性履歴に重ねます。"
+    },
+    "intensity-filter": {
+      "title": "強度フィルター",
+      "description": "範囲スライダーで表示する流動性強度を絞り込み、注文板は変更しません。"
+    },
+    "history-navigation": {
+      "title": "履歴ナビゲーション",
+      "description": "範囲ナビゲーターで保持した履歴を調べ、市場への追従に戻ります。"
+    },
+    "terminal": {
+      "title": "流動性ターミナル",
+      "description": "6つの市場指標、約定足、流動性フィルター、履歴ナビゲーション、同期した注文板を備えた模擬ワークスペースです。"
+    },
+    "candles-navigation": {
+      "title": "ローソク足と履歴ナビゲーション",
+      "description": "約定をOHLC足に集計し、板の流動性に重ねます。保持した履歴を選び、市場への追従に戻せます。"
     }
   },
   "data": {
@@ -121,7 +146,32 @@
     "takerSells": "テイカー売り",
     "perpAria": "BTC-USD 無期限先物の流動性ヒートマップ",
     "perpReadout": "{{price}}：板 {{contracts}} 枚（≈ {{notional}}）",
-    "perpHint": "ヒートマップにカーソルを合わせると板の枚数と金額を表示します。"
+    "perpHint": "ヒートマップにカーソルを合わせると板の枚数と金額を表示します。",
+    "simulated": "シミュレーション市場",
+    "showCandles": "約定ローソク足",
+    "executionsOnly": "2秒足は固定シードのマッチングエンジンの約定を集計します。約定のない期間は補完せず、指値注文を足に変換しません。",
+    "intensityFilter": "表示する強度範囲",
+    "filterHint": "板の流動性の正規化された色強度を絞り込みます。表示だけが変わり、注文数量や約定量は変わりません。",
+    "historyNavigator": "保持した約定履歴",
+    "navigatorHint": "範囲ハンドルで保持した履歴を確認できます。市場に追従すると最新時刻と価格の自動中央表示に戻ります。",
+    "liquidityTerminal": "流動性ターミナル",
+    "latest": "最新約定価格",
+    "bidDepth": "買い板の厚さ",
+    "askDepth": "売り板の厚さ",
+    "imbalance": "板の偏り",
+    "bidWall": "最大買い注文",
+    "askWall": "最大売り注文",
+    "palette": "パレット",
+    "ocean": "オーシャン",
+    "ember": "エンバー",
+    "resetViewport": "表示をリセット",
+    "currentBook": "現在の注文板",
+    "terminalHint": "固定シードのシミュレーションであり、外部取引所の配信ではありません。6つの指標、約定足、板は同じマッチングエンジンを使用します。指標は毎秒更新し、板は独立して更新します。",
+    "candlesAria": "約定足付きの模擬流動性",
+    "filterAria": "強度フィルター付きの模擬流動性",
+    "navigationAria": "操作可能な模擬流動性履歴",
+    "terminalAria": "模擬 BTC USDT 流動性ターミナル",
+    "ladderAria": "現在の模擬 BTC USDT 注文板"
   },
   "api": {
     "OrderBookHeatmapProps": {
@@ -130,7 +180,9 @@
       "onHover": "ホバー中のセル（ポインターが離れると null）",
       "onRendererChange": "使用中のバックエンド（GPU 喪失後も通知）",
       "onFollowChange": "相場に追従中は true、ズームやパンの後は false",
-      "ref": "命令型ハンドル：setBook、applyDeltas、addTrades、resetView、getInstance"
+      "ref": "命令型ハンドル：setBook、applyDeltas、addTrades、resetView、getInstance",
+      "bars": "OHLC ローソク足をオブジェクト行または型付き列として入力。変更時は setBars で更新され、注文板からは推定されません。",
+      "onViewChange": "保持した時間範囲と現在の時間・価格の表示範囲、追従状態を通知します。"
     },
     "OrderBookHeatmapHandle": {
       "setBook": "板を置き換えます（その時刻までの列を確定）",
@@ -138,7 +190,11 @@
       "addTrades": "約定（バブル）を追加",
       "clear": "板・履歴・約定を消去",
       "resetView": "再び相場に追従",
-      "getInstance": "内部のエンジンインスタンス（minerva-design/charts/core）"
+      "getInstance": "内部のエンジンインスタンス（minerva-design/charts/core）",
+      "setBars": "入力 OHLC 履歴をオブジェクト行または型付き列で置き換えます。",
+      "updateBar": "最新の入力ローソク足を更新、または新しい足を追加します。",
+      "setView": "時間または価格の表示範囲を設定し、相場への追従を停止します。",
+      "getView": "保持した流動性の時間範囲と現在の表示範囲を取得。マウント前は null。"
     },
     "OrderBookHeatmapOptions": {
       "tickSize": "価格行の高さ（気配は行にまとめられます）。省略時は板の呼値の切りのよい倍数（約 0.1 ベーシスポイント）",
@@ -162,7 +218,12 @@
       "tooltip": "ホバー時の十字線とツールチップ",
       "renderer": "セルのバックエンド：利用できれば GPU",
       "timeZone": "時間軸とツールチップの時計：ローカル時刻または UTC（多くの取引所の時計）",
-      "labels": "組み込みテキストの上書き（組み込みテキストは locale に従う。英語・中国語・日本語・フランス語を内蔵）"
+      "labels": "組み込みテキストの上書き（組み込みテキストは locale に従う。英語・中国語・日本語・フランス語を内蔵）",
+      "candles": "入力された OHLC ローソク足を描画。データがある場合は既定で有効です。",
+      "lastPriceLine": "最新の入力ローソク足の終値を価格線で表示します。",
+      "intensityRange": "流動性強度の正規化された下限と上限。各値は 0 から 1 です。",
+      "maxColumns": "保持する流動性列の最大数。既定は 6000、エンジンが範囲を制限します。",
+      "maxBars": "保持する入力ローソク足の最大数。既定は 20000、エンジンが範囲を制限します。"
     },
     "OrderBookCommonOptions": {
       "upColor": "買い板と買い約定（「上昇」側）の色。既定は --success-color、colorConvention が \"red-up\" のときは --danger-color",
@@ -203,13 +264,43 @@
       "size": "セルの指値量（集約したバケット内で合計）",
       "side": "セルの側（スプレッド内は null）",
       "buyVolume": "列の期間中の買い出来高",
-      "sellVolume": "列の期間中の売り出来高"
+      "sellVolume": "列の期間中の売り出来高",
+      "bar": "ポインター時刻に対応する実際の入力 OHLC ローソク足。欠損区間では存在しません。"
     },
     "MarketTrade": {
       "time": "約定時刻（エポックからのミリ秒）",
       "price": "約定価格",
       "size": "約定数量（基軸通貨）",
       "side": "アグレッサー側：\"buy\" は売り気配を買い、\"sell\" は買い気配に売り"
+    },
+    "OrderBookHeatmapView": {
+      "time": "表示する開始・終了時刻。Unix エポックからのミリ秒。",
+      "price": "表示する価格の下限と上限。",
+      "follow": "最新の相場に表示範囲が追従しているか。"
+    },
+    "OrderBookHeatmapViewInput": {
+      "time": "表示する開始・終了時刻。Unix エポックからのミリ秒。",
+      "price": "表示する価格の下限と上限。"
+    },
+    "OrderBookHeatmapViewData": {
+      "availableTime": "保持した流動性の最古・最新時刻。空の場合は null。",
+      "view": "現在の時間・価格の表示範囲と追従状態。"
+    },
+    "TradingBar": {
+      "time": "始まりの時刻（エポックからのミリ秒）",
+      "open": "始値",
+      "high": "高値",
+      "low": "安値",
+      "close": "終値",
+      "volume": "出来高"
+    },
+    "TradingBarColumns": {
+      "time": "始まりの時刻（ミリ秒、昇順）",
+      "open": "始値",
+      "high": "高値",
+      "low": "安値",
+      "close": "終値",
+      "volume": "出来高"
     }
   },
   "wc": {
@@ -221,24 +312,35 @@
       "red-up": {
         "title": "赤が上昇の配色・平方根スケール",
         "description": "中国本土の慣習（買いが赤）、平方根のカラースケール、右側の数量プロファイルなし。"
+      },
+      "candles-navigation": {
+        "title": "入力ローソク足と履歴ナビゲーション",
+        "description": "模擬流動性を絞り込み、模擬約定から集計して入力した OHLC ローソク足 30 本とともに履歴を表示します。"
       }
     },
     "minerva-order-book-heatmap": {
       "props": {
         "options": "その他のエンジンオプション（minerva-design/charts/core の OrderBookHeatmapOptions：色、テキスト、locale、labels など）；プロパティのみ",
-        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null",
+        "bars": "OHLC ローソク足をオブジェクト行または型付き列として入力。変更時は setBars で更新され、注文板からは推定されません。"
       },
       "events": {
         "minerva-hover": "セルにカーソルが乗った；detail: { time, price, size, side, buyVolume, sellVolume }、離れると null",
         "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }",
-        "minerva-follow-change": "表示が相場に追従している（true）、またはズーム・パン後に追従していない（false）；detail: { follow }"
+        "minerva-follow-change": "表示が相場に追従している（true）、またはズーム・パン後に追従していない（false）；detail: { follow }",
+        "minerva-view-change": "保持履歴または表示範囲の変更。detail は availableTime と view を含みます。"
       },
       "methods": {
         "addTrades": "約定（バブル）を追加します",
         "resetView": "再び相場に追従します（最新時刻、仲値を中心に）",
         "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null",
         "setBook": "板を置き換えます（その時刻までの列を確定）",
-        "applyDeltas": "差分を適用します（その時刻までの列を確定）"
+        "applyDeltas": "差分を適用します（その時刻までの列を確定）",
+        "setBars": "入力 OHLC 履歴をオブジェクト行または型付き列で置き換えます。",
+        "updateBar": "最新の入力ローソク足を更新、または新しい足を追加します。",
+        "setView": "時間または価格の表示範囲を設定し、相場への追従を停止します。",
+        "getView": "保持した流動性の時間範囲と現在の表示範囲を取得。マウント前は null。",
+        "clear": "板・履歴・約定を消去"
       }
     }
   }

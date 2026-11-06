@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { useState } from "react";
-import { createSwitchMachine } from "@minerva/core";
+import { createSwitchMachine, createTabsMachine } from "@minerva/core";
 import { useMachine } from "./useMachine";
 
 function Switch(props: {
@@ -67,5 +67,74 @@ describe("useMachine", () => {
     expect(renderToString(<Switch defaultChecked />)).toContain(
       'aria-checked="true"',
     );
+  });
+});
+
+describe("useMachine selected snapshots", () => {
+  it("keeps manual-focus updates out of a selected-value subscriber", () => {
+    const machine = createTabsMachine({
+      defaultValue: "a",
+      activationMode: "manual",
+    });
+    const renderValue = vi.fn();
+    function Value() {
+      const [value] = useMachine(
+        () => machine,
+        { activationMode: "manual" as const },
+        (state) => state.value,
+      );
+      renderValue(value);
+      return <output>{String(value)}</output>;
+    }
+    const { container } = render(<Value />);
+    expect(container.textContent).toBe("a");
+    renderValue.mockClear();
+    act(() => machine.send({ type: "FOCUS", value: "b" }));
+    expect(container.textContent).toBe("a");
+    expect(renderValue).not.toHaveBeenCalled();
+    act(() => machine.send({ type: "SELECT", value: "b" }));
+    expect(container.textContent).toBe("b");
+    expect(renderValue).toHaveBeenCalledTimes(1);
+  });
+
+  it("projects current controlled props and a replaced selector in the same render", () => {
+    function Value({ value, prefix }: { value: string; prefix: string }) {
+      const [selected] = useMachine(
+        createTabsMachine,
+        { value },
+        (state) => `${prefix}:${state.value}`,
+      );
+      return <output>{String(selected)}</output>;
+    }
+    const { container, rerender } = render(<Value value="a" prefix="one" />);
+    expect(container.textContent).toBe("one:a");
+    rerender(<Value value="b" prefix="two" />);
+    expect(container.textContent).toBe("two:b");
+    expect(renderToString(<Value value="c" prefix="ssr" />)).toContain("ssr:c");
+  });
+
+  it("reuses an equal object selection when unrelated state changes", () => {
+    const machine = createTabsMachine({
+      defaultValue: "a",
+      activationMode: "manual",
+    });
+    const renderValue = vi.fn();
+    function Value() {
+      const [selected] = useMachine(
+        () => machine,
+        {},
+        (state) => ({ value: state.value }),
+        (a, b) => a.value === b.value,
+      );
+      renderValue(selected);
+      return <output>{String(selected.value)}</output>;
+    }
+    const { container } = render(<Value />);
+    renderValue.mockClear();
+    act(() => machine.send({ type: "FOCUS", value: "b" }));
+    expect(renderValue).not.toHaveBeenCalled();
+    act(() => machine.send({ type: "SELECT", value: "b" }));
+    expect(container.textContent).toBe("b");
+    expect(renderValue).toHaveBeenCalledTimes(1);
   });
 });
