@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -49,6 +49,16 @@ Pulled orders (spoofing): a bright line disappears as the price comes close with
 Sweeps: a burst of large bubbles crosses several prices, the price line jumps and the liquidity on its way goes dark.
 
 Thin liquidity: a large dark area near the price means few resting orders, the price can move through it quickly.
+
+Candles: supply actual OHLC bars on the same millisecond time and price axes. Missing periods remain empty; book snapshots are never used to invent executions. The last-price line uses the newest supplied trade or newer candle close.
+
+History navigation: zooming and panning stop following. Select a retained time range in the navigator; reset restores the current market. getView / setView and viewChange share one viewport model.
+
+Intensity filtering: intensityRange selects a 0–1 interval after color mapping. It does not change raw resting sizes, tooltip values or the automatic reference scale.
+
+Data semantics
+
+This component displays resting liquidity and supplied execution candles. Examples use reproducible simulated matching. A liquidation heatmap requires its own liquidation data; resting order size is not liquidation size.
 
 BTC/USDT liquidity heatmap
 
@@ -159,6 +169,56 @@ BTC-USD perpetual liquidity heatmap
 {{price}}: {{contracts}} contracts resting (≈ {{notional}})
 
 Hover the heatmap to read the resting contracts and their value.
+
+SIMULATED MARKET
+
+Execution candles
+
+Each 2-second candle aggregates actual executions from this seeded matching engine. Empty buckets are omitted; resting orders never become candles.
+
+Visible intensity range
+
+Filter the normalized color intensity of resting liquidity. This changes visibility, not book sizes or executed volume.
+
+Retained execution history
+
+Move the range handles to inspect retained history. Follow the market restores the latest time and automatic price centering.
+
+LIQUIDITY TERMINAL
+
+Latest execution
+
+Bid depth
+
+Ask depth
+
+Book imbalance
+
+Largest bid wall
+
+Largest ask wall
+
+Palette
+
+Ocean
+
+Ember
+
+Reset view
+
+CURRENT ORDER BOOK
+
+Seeded simulation, not an external exchange feed. All six metrics, execution candles and the ladder use the same matching engine. Summary metrics refresh once per second; book updates stream independently.
+
+Simulated liquidity with execution candles
+
+Simulated liquidity with intensity filter
+
+Navigable simulated liquidity history
+
+Simulated BTC USDT liquidity terminal
+
+Current simulated BTC USDT order book
 
 ## OrderBookHeatmap
 

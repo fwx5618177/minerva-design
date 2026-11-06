@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -277,6 +277,24 @@ setOptions を呼ぶ前に props は浅く比較されます。トップレベ�
 React Native ではチャートを View だけで描画するため、図形の数に上限があります。折れ線は全体で約 1,200 点、散布図は系列ごとに 800 点（全体で 2,000 点）、棒は系列ごとに 600 本（全体で 1,500 個の矩形。ローソク足は 1 本で 2 個、ヒートマップのセルは 1 個として数える）、面グラフは 1 つにつき 200 本の縦帯です。予算を超えると点はセルごとに、棒はピクセル列ごとに統合されます。全体像は正しく保たれますが細部は失われ、データは JavaScript で処理されるため、先に集計してください。
 
 独自のレンダラーでは、createChartController と scenePrimitives で同じ予算を使えます。scenePrimitives(scene, { maxDots, maxBars, columnWidth, dotCell }) は間引き済みの図形を返します（既定値：系列ごとに 4000 点と 2000 本、列幅 1 px）。
+
+### 高頻度ホバー：フレーム内で集約
+
+公開エンジンに同一フレームで240回の交互ポインター移動を送り、最後の位置だけを判定・描画します。押下・ドラッグ・解放は同期処理を維持します。数値は実ブラウザーの測定で、すべてのデータ量でのFPSを保証しません。
+
+240回移動を実行
+
+ポインター移動
+
+ホバー通知
+
+ツールチップ描画
+
+送信とフレーム待機（ms）
+
+最後の点
+
+ホバー集約ベンチマーク
 
 ```ts
 import { createChart } from "minerva-design/charts/core";

@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.21.1",
-    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+    "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
   },
   "content": {
     "read": {
@@ -29,7 +29,12 @@
         "pull": "撤单（虚假挂单）：价格接近时亮线突然消失，但那里没有成交气泡，说明委托是被撤掉的，而不是被成交。",
         "sweep": "扫单：一串大气泡快速穿过多个价位，价格线跳动，沿途的挂单变暗。",
         "thin": "流动性稀薄：价格附近大片暗色区域表示挂单很少，价格可以很快穿过。"
-      }
+      },
+      "candles": "K 线：由调用方提供真实 OHLC 数据，与热力格共用毫秒时间轴及价格坐标；缺失时段保持空缺，不从挂单快照编造 K 线。最新价线使用新成交或更新的蜡烛收盘价。",
+      "navigation": "历史导航：缩放和平移会停止跟随；导航条选择已保留的时间范围，恢复跟随会回到最新行情。getView / setView 与 viewChange 使用同一视图数据。",
+      "intensity": "强度筛选：intensityRange 是颜色映射之后的 0–1 显示区间；它不改变原始挂单量、提示框数值或自动颜色标尺。",
+      "dataTitle": "数据与语义",
+      "dataSemantics": "本组件展示挂单流动性及调用方提供的成交 K 线。示例数据来自可复现的模拟撮合；真实清算热力图需要独立的清算数据，不能把挂单量直接当成清算量。"
     },
     "data": {
       "aria": "BTC/USDT 流动性热力图",
@@ -88,7 +93,32 @@
       "takerSells": "主动卖出",
       "perpAria": "BTC-USD 永续合约流动性热力图",
       "perpReadout": "{{price}}：挂单 {{contracts}} 张（≈ {{notional}}）",
-      "perpHint": "悬停在热力图上查看挂单张数及其价值。"
+      "perpHint": "悬停在热力图上查看挂单张数及其价值。",
+      "simulated": "模拟市场",
+      "showCandles": "成交 K 线",
+      "executionsOnly": "每根 2 秒 K 线汇总此固定种子撮合引擎的实际成交。无成交的时间段不补线，挂单不会转换为 K 线。",
+      "intensityFilter": "可见强度范围",
+      "filterHint": "筛选挂单流动性的归一化颜色强度，只改变可见性，不改变盘口数量或成交量。",
+      "historyNavigator": "保留的成交历史",
+      "navigatorHint": "拖动范围滑块查看保留历史。跟随市场会恢复最新时间和自动价格居中。",
+      "liquidityTerminal": "流动性终端",
+      "latest": "最新成交价",
+      "bidDepth": "买盘深度",
+      "askDepth": "卖盘深度",
+      "imbalance": "盘口失衡",
+      "bidWall": "最大买单墙",
+      "askWall": "最大卖单墙",
+      "palette": "配色",
+      "ocean": "海洋",
+      "ember": "余烬",
+      "resetViewport": "重置视图",
+      "currentBook": "当前订单簿",
+      "terminalHint": "固定种子模拟，并非外部交易所行情。六项指标、成交 K 线与盘口均来自同一撮合引擎。指标每秒刷新，盘口更新独立推送。",
+      "candlesAria": "模拟流动性与成交 K 线",
+      "filterAria": "带强度筛选的模拟流动性",
+      "navigationAria": "可导航的模拟流动性历史",
+      "terminalAria": "模拟 BTC USDT 流动性终端",
+      "ladderAria": "当前模拟 BTC USDT 订单簿"
     }
   },
   "components": [
@@ -130,7 +160,12 @@
           "pull": "撤单（虚假挂单）：价格接近时亮线突然消失，但那里没有成交气泡，说明委托是被撤掉的，而不是被成交。",
           "sweep": "扫单：一串大气泡快速穿过多个价位，价格线跳动，沿途的挂单变暗。",
           "thin": "流动性稀薄：价格附近大片暗色区域表示挂单很少，价格可以很快穿过。"
-        }
+        },
+        "candles": "K 线：由调用方提供真实 OHLC 数据，与热力格共用毫秒时间轴及价格坐标；缺失时段保持空缺，不从挂单快照编造 K 线。最新价线使用新成交或更新的蜡烛收盘价。",
+        "navigation": "历史导航：缩放和平移会停止跟随；导航条选择已保留的时间范围，恢复跟随会回到最新行情。getView / setView 与 viewChange 使用同一视图数据。",
+        "intensity": "强度筛选：intensityRange 是颜色映射之后的 0–1 显示区间；它不改变原始挂单量、提示框数值或自动颜色标尺。",
+        "dataTitle": "数据与语义",
+        "dataSemantics": "本组件展示挂单流动性及调用方提供的成交 K 线。示例数据来自可复现的模拟撮合；真实清算热力图需要独立的清算数据，不能把挂单量直接当成清算量。"
       },
       "demos": {
         "basic": {
@@ -176,6 +211,26 @@
         "perpetual": {
           "title": "以合约张数显示的永续合约",
           "description": "以 0.001 BTC 一张合约报价的 BTC 永续合约：formatSize 换算数量，formatPrice 显示美元，sizeUnit 与 labels 重命名图例和提示中的单位，timeZone=\"utc\" 与上方资金费率倒计时的交易所时钟一致。"
+        },
+        "candles": {
+          "title": "成交 K 线",
+          "description": "将实际模拟成交聚合为稀疏的 2 秒 OHLC K 线，叠加在挂单流动性历史上。"
+        },
+        "intensity-filter": {
+          "title": "强度筛选",
+          "description": "使用范围滑块筛选可见流动性强度，不改变底层订单簿。"
+        },
+        "history-navigation": {
+          "title": "历史导航",
+          "description": "通过范围导航器检查保留历史，再恢复跟随市场。"
+        },
+        "terminal": {
+          "title": "流动性终端",
+          "description": "完整模拟工作台：六项市场指标、成交 K 线、流动性筛选、保留历史导航及同步订单簿。"
+        },
+        "candles-navigation": {
+          "title": "K 线与历史导航",
+          "description": "将实际成交聚合为 OHLC K 线并叠加挂单流动性。选择保留历史，再恢复跟随市场。"
         }
       },
       "data": {
@@ -235,7 +290,32 @@
         "takerSells": "主动卖出",
         "perpAria": "BTC-USD 永续合约流动性热力图",
         "perpReadout": "{{price}}：挂单 {{contracts}} 张（≈ {{notional}}）",
-        "perpHint": "悬停在热力图上查看挂单张数及其价值。"
+        "perpHint": "悬停在热力图上查看挂单张数及其价值。",
+        "simulated": "模拟市场",
+        "showCandles": "成交 K 线",
+        "executionsOnly": "每根 2 秒 K 线汇总此固定种子撮合引擎的实际成交。无成交的时间段不补线，挂单不会转换为 K 线。",
+        "intensityFilter": "可见强度范围",
+        "filterHint": "筛选挂单流动性的归一化颜色强度，只改变可见性，不改变盘口数量或成交量。",
+        "historyNavigator": "保留的成交历史",
+        "navigatorHint": "拖动范围滑块查看保留历史。跟随市场会恢复最新时间和自动价格居中。",
+        "liquidityTerminal": "流动性终端",
+        "latest": "最新成交价",
+        "bidDepth": "买盘深度",
+        "askDepth": "卖盘深度",
+        "imbalance": "盘口失衡",
+        "bidWall": "最大买单墙",
+        "askWall": "最大卖单墙",
+        "palette": "配色",
+        "ocean": "海洋",
+        "ember": "余烬",
+        "resetViewport": "重置视图",
+        "currentBook": "当前订单簿",
+        "terminalHint": "固定种子模拟，并非外部交易所行情。六项指标、成交 K 线与盘口均来自同一撮合引擎。指标每秒刷新，盘口更新独立推送。",
+        "candlesAria": "模拟流动性与成交 K 线",
+        "filterAria": "带强度筛选的模拟流动性",
+        "navigationAria": "可导航的模拟流动性历史",
+        "terminalAria": "模拟 BTC USDT 流动性终端",
+        "ladderAria": "当前模拟 BTC USDT 订单簿"
       },
       "api": {
         "OrderBookHeatmapProps": {
@@ -244,7 +324,9 @@
           "onHover": "悬停的单元格（指针离开时为 null）",
           "onRendererChange": "当前使用的后端（GPU 丢失后也会通知）",
           "onFollowChange": "视图跟随行情时为 true，缩放或平移后为 false",
-          "ref": "命令式句柄：setBook、applyDeltas、addTrades、resetView、getInstance"
+          "ref": "命令式句柄：setBook、applyDeltas、addTrades、resetView、getInstance",
+          "bars": "显式传入的 OHLC K 线，可用对象行或类型化列；变化时通过 setBars 更新。不会从挂单簿推算 K 线。",
+          "onViewChange": "返回保留的时间边界、当前时间和价格视口以及跟随状态。"
         },
         "OrderBookHeatmapHandle": {
           "setBook": "替换订单簿（关闭其时间之前的列）",
@@ -252,7 +334,11 @@
           "addTrades": "添加成交（气泡）",
           "clear": "清除订单簿、历史与成交",
           "resetView": "恢复跟随行情",
-          "getInstance": "底层引擎实例（minerva-design/charts/core）"
+          "getInstance": "底层引擎实例（minerva-design/charts/core）",
+          "setBars": "替换传入的 OHLC K 线历史，支持对象行或类型化列。",
+          "updateBar": "更新最新传入的 K 线，或追加时间更晚的 K 线。",
+          "setView": "设置可见的时间和/或价格范围，并暂停跟随行情。",
+          "getView": "读取保留的流动性时间边界和当前视口；挂载前为 null。"
         },
         "OrderBookHeatmapOptions": {
           "tickSize": "价格行的高度（档位合并到行中）；省略时为订单簿最小价位的整倍数，约 0.1 个基点",
@@ -276,7 +362,12 @@
           "tooltip": "悬停十字准线与提示框",
           "renderer": "单元格的渲染后端：可用时使用 GPU",
           "timeZone": "时间轴与提示框的时钟：本地时间或 UTC（多数交易所使用的时钟）",
-          "labels": "覆盖内置文案；内置文案随 locale 切换（内置英文、中文、日文、法文）"
+          "labels": "覆盖内置文案；内置文案随 locale 切换（内置英文、中文、日文、法文）",
+          "candles": "绘制传入的 OHLC K 线；有 K 线数据时默认开启。",
+          "lastPriceLine": "以价格线标出最新传入 K 线的收盘价。",
+          "intensityRange": "流动性强度的归一化上下限，取值均为 0 到 1。",
+          "maxColumns": "最多保留的流动性列数；默认 6000，由引擎限制范围。",
+          "maxBars": "最多保留的传入 K 线数；默认 20000，由引擎限制范围。"
         },
         "OrderBookCommonOptions": {
           "upColor": "买盘与主动买入（“涨”方）的颜色；默认为 --success-color，colorConvention 为 \"red-up\" 时为 --danger-color",
@@ -317,13 +408,43 @@
           "size": "单元格的挂单量（合并的价格档内求和）",
           "side": "单元格所在的一侧（在价差内为 null）",
           "buyVolume": "该列期间的买入量",
-          "sellVolume": "该列期间的卖出量"
+          "sellVolume": "该列期间的卖出量",
+          "bar": "指针时间所对应的实际传入 OHLC K 线；数据空档时不存在。"
         },
         "MarketTrade": {
           "time": "成交时间（毫秒时间戳）",
           "price": "成交价格",
           "size": "成交数量（基础货币）",
           "side": "主动方向：\"buy\" 吃掉卖单，\"sell\" 打掉买单"
+        },
+        "OrderBookHeatmapView": {
+          "time": "可见的起止时间，单位为 Unix 毫秒。",
+          "price": "可见的最低和最高价格。",
+          "follow": "视口是否跟随最新行情。"
+        },
+        "OrderBookHeatmapViewInput": {
+          "time": "可见的起止时间，单位为 Unix 毫秒。",
+          "price": "可见的最低和最高价格。"
+        },
+        "OrderBookHeatmapViewData": {
+          "availableTime": "保留的最早和最晚流动性时间；无数据时为 null。",
+          "view": "当前可见的时间和价格范围以及跟随状态。"
+        },
+        "TradingBar": {
+          "time": "开盘时间，自纪元起的毫秒数",
+          "open": "开盘价",
+          "high": "最高价",
+          "low": "最低价",
+          "close": "收盘价",
+          "volume": "成交量"
+        },
+        "TradingBarColumns": {
+          "time": "开盘时间（毫秒），升序",
+          "open": "开盘价",
+          "high": "最高价",
+          "low": "最低价",
+          "close": "收盘价",
+          "volume": "成交量"
         }
       },
       "wc": {
@@ -335,24 +456,35 @@
           "red-up": {
             "title": "红涨绿跌配色、平方根刻度",
             "description": "中国大陆的配色习惯（买入为红色），平方根颜色刻度，并隐藏右侧的挂单分布。"
+          },
+          "candles-navigation": {
+            "title": "传入 K 线与历史导航",
+            "description": "筛选模拟流动性并浏览历史，同时显示由模拟成交聚合、显式传入的 30 根 OHLC K 线。"
           }
         },
         "minerva-order-book-heatmap": {
           "props": {
             "options": "其他引擎选项（minerva-design/charts/core 的 OrderBookHeatmapOptions：颜色、文本、locale、labels……）；仅作为属性设置",
-            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null",
+            "bars": "显式传入的 OHLC K 线，可用对象行或类型化列；变化时通过 setBars 更新。不会从挂单簿推算 K 线。"
           },
           "events": {
             "minerva-hover": "悬停在某个单元格上；detail：{ time, price, size, side, buyVolume, sellVolume }，指针离开时为 null",
             "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }",
-            "minerva-follow-change": "视图跟随行情（true），或在缩放、平移后不再跟随（false）；detail：{ follow }"
+            "minerva-follow-change": "视图跟随行情（true），或在缩放、平移后不再跟随（false）；detail：{ follow }",
+            "minerva-view-change": "保留的历史或视口发生变化；detail 包含 availableTime 和 view。"
           },
           "methods": {
             "addTrades": "添加成交（气泡）",
             "resetView": "重新跟随行情（最新时间，以中间价为中心）",
             "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null",
             "setBook": "替换订单簿（截至其时间的列随之完成）",
-            "applyDeltas": "应用增量更新（截至其时间的列随之完成）"
+            "applyDeltas": "应用增量更新（截至其时间的列随之完成）",
+            "setBars": "替换传入的 OHLC K 线历史，支持对象行或类型化列。",
+            "updateBar": "更新最新传入的 K 线，或追加时间更晚的 K 线。",
+            "setView": "设置可见的时间和/或价格范围，并暂停跟随行情。",
+            "getView": "读取保留的流动性时间边界和当前视口；挂载前为 null。",
+            "clear": "清除订单簿、历史与成交"
           }
         }
       }

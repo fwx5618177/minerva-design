@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -49,6 +49,16 @@ Type references resolve through the [type graph](/minerva-design/reference/1.21.
 扫单：一串大气泡快速穿过多个价位，价格线跳动，沿途的挂单变暗。
 
 流动性稀薄：价格附近大片暗色区域表示挂单很少，价格可以很快穿过。
+
+K 线：由调用方提供真实 OHLC 数据，与热力格共用毫秒时间轴及价格坐标；缺失时段保持空缺，不从挂单快照编造 K 线。最新价线使用新成交或更新的蜡烛收盘价。
+
+历史导航：缩放和平移会停止跟随；导航条选择已保留的时间范围，恢复跟随会回到最新行情。getView / setView 与 viewChange 使用同一视图数据。
+
+强度筛选：intensityRange 是颜色映射之后的 0–1 显示区间；它不改变原始挂单量、提示框数值或自动颜色标尺。
+
+数据与语义
+
+本组件展示挂单流动性及调用方提供的成交 K 线。示例数据来自可复现的模拟撮合；真实清算热力图需要独立的清算数据，不能把挂单量直接当成清算量。
 
 BTC/USDT 流动性热力图
 
@@ -160,6 +170,56 @@ BTC-USD 永续合约流动性热力图
 
 悬停在热力图上查看挂单张数及其价值。
 
+模拟市场
+
+成交 K 线
+
+每根 2 秒 K 线汇总此固定种子撮合引擎的实际成交。无成交的时间段不补线，挂单不会转换为 K 线。
+
+可见强度范围
+
+筛选挂单流动性的归一化颜色强度，只改变可见性，不改变盘口数量或成交量。
+
+保留的成交历史
+
+拖动范围滑块查看保留历史。跟随市场会恢复最新时间和自动价格居中。
+
+流动性终端
+
+最新成交价
+
+买盘深度
+
+卖盘深度
+
+盘口失衡
+
+最大买单墙
+
+最大卖单墙
+
+配色
+
+海洋
+
+余烬
+
+重置视图
+
+当前订单簿
+
+固定种子模拟，并非外部交易所行情。六项指标、成交 K 线与盘口均来自同一撮合引擎。指标每秒刷新，盘口更新独立推送。
+
+模拟流动性与成交 K 线
+
+带强度筛选的模拟流动性
+
+可导航的模拟流动性历史
+
+模拟 BTC USDT 流动性终端
+
+当前模拟 BTC USDT 订单簿
+
 ## OrderBookHeatmap
 
 Support: beta
@@ -207,6 +267,20 @@ Support: beta
     "type": "boolean",
     "required": false,
     "description": "Zoom and pan (default `true`)",
+    "typeText": "boolean"
+  },
+  {
+    "name": "candles",
+    "type": "boolean",
+    "required": false,
+    "description": "Candle overlay (default true when bars are supplied)",
+    "typeText": "boolean"
+  },
+  {
+    "name": "lastPriceLine",
+    "type": "boolean",
+    "required": false,
+    "description": "Last close price line (default true)",
     "typeText": "boolean"
   },
   {
@@ -278,6 +352,13 @@ Support: beta
     "required": false,
     "description": "Scale of the sizes to the colors (default `log`)",
     "typeText": "OrderBookHeatmapScale"
+  },
+  {
+    "name": "bars",
+    "type": "TradingBarsInput",
+    "required": false,
+    "description": "Candle history; property only, applied through setBars",
+    "typeText": "TradingBarsInput"
   },
   {
     "name": "maxSize",
@@ -369,6 +450,27 @@ Support: beta
     "required": false,
     "description": "Trades; when the array grows, only the appended ones are added",
     "typeText": "readonly MarketTrade[]"
+  },
+  {
+    "name": "intensityRange",
+    "type": "readonly [number, number]",
+    "required": false,
+    "description": "Normalized liquidity intensity bounds, 0..1",
+    "typeText": "readonly [number, number]"
+  },
+  {
+    "name": "maxColumns",
+    "type": "number",
+    "required": false,
+    "description": "Maximum retained columns (default 6000)",
+    "typeText": "number"
+  },
+  {
+    "name": "maxBars",
+    "type": "number",
+    "required": false,
+    "description": "Maximum retained candles (default 20000)",
+    "typeText": "number"
   },
   {
     "name": "tickSize",
@@ -495,6 +597,20 @@ Support: beta
         "rest": false
       }
     ]
+  },
+  {
+    "name": "viewChange",
+    "type": "[data: OrderBookHeatmapViewData]",
+    "typeText": "[data: OrderBookHeatmapViewData]",
+    "parameters": [
+      {
+        "name": "data",
+        "position": 0,
+        "typeText": "OrderBookHeatmapViewData",
+        "required": true,
+        "rest": false
+      }
+    ]
   }
 ]
 ```
@@ -502,6 +618,212 @@ Support: beta
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: candles-navigation
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, vue
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/order-book-heatmap/vue/candles-navigation.vue
+
+```vue
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { Button, Slider, useI18n, type SliderValue } from "minerva-design/vue";
+import {
+  OrderBookHeatmap,
+  type OrderBookHeatmapHandle,
+  type OrderBookHeatmapViewData,
+} from "minerva-design/vue/charts";
+import {
+  createFrameworkHistory,
+  getFrameworkLabels,
+} from "../framework-history";
+
+const { language } = useI18n();
+const text = computed(() => getFrameworkLabels(language.value));
+const history = createFrameworkHistory();
+const heatmap = ref<OrderBookHeatmapHandle>();
+const minimum = ref<SliderValue>(0);
+const intensity = computed<readonly [number, number]>(() => [
+  Number(minimum.value) / 100,
+  1,
+]);
+const view = ref<OrderBookHeatmapViewData | null>(null);
+function show(seconds: number) {
+  heatmap.value?.setView({
+    time: [history.end - seconds * 1000, history.end],
+    price: [98, 102],
+  });
+}
+onMounted(() => {
+  for (const book of history.books) heatmap.value?.setBook(book);
+  heatmap.value?.addTrades(history.trades);
+  heatmap.value?.setBars(history.bars);
+  show(30);
+});
+</script>
+
+<template>
+  <div style="display: grid; gap: 12px; width: 100%">
+    <p>{{ text.source }}</p>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap">
+      <Button size="small" variant="outline" @click="show(10)">{{
+        text.latest
+      }}</Button>
+      <Button size="small" variant="outline" @click="show(30)">{{
+        text.full
+      }}</Button>
+      <Button size="small" @click="heatmap?.resetView()">{{
+        text.follow
+      }}</Button>
+    </div>
+    <Slider
+      v-model="minimum"
+      :aria-label="text.minimum"
+      :min="0"
+      :max="90"
+      :step="5"
+      show-value
+      style="max-width: 320px"
+    />
+    <OrderBookHeatmap
+      ref="heatmap"
+      :height="400"
+      :interval="250"
+      :window="30000"
+      :history="60000"
+      :intensity-range="intensity"
+      :max-bars="30"
+      :max-columns="240"
+      @view-change="view = $event"
+    />
+    <output aria-live="polite"
+      >{{ view?.view.follow ? text.following : text.manual }} ·
+      {{ text.minimum }} {{ minimum }}% ·
+      {{
+        view ? Math.round((view.view.time[1] - view.view.time[0]) / 1000) : 30
+      }}
+      {{ text.visible }}</output
+    >
+  </div>
+</template>
+
+```
+
+### apps/docs/src/docs/pages/order-book-heatmap/framework-history.ts
+
+```tsx
+import type {
+  MarketTrade,
+  OrderBookSnapshot,
+  TradingBar,
+} from "minerva-design/charts/core";
+
+/** Finite simulated books and executions; candles are explicitly supplied from executions. */
+export function createFrameworkHistory(now = Date.now()) {
+  const end = Math.floor(now / 1000) * 1000;
+  const start = end - 30_000;
+  const trades: MarketTrade[] = [];
+  const books: OrderBookSnapshot[] = [];
+  const bars: TradingBar[] = [];
+  const round = (value: number) => Math.round(value * 100) / 100;
+  for (let i = 0; i < 120; i += 1) {
+    const time = start + i * 250;
+    const price = round(
+      100 + Math.sin(i / 11) * 0.7 + Math.sin(i * 1.7) * 0.12,
+    );
+    const size = 1 + ((i * 7) % 9);
+    trades.push({ time, price, size, side: i % 3 ? "buy" : "sell" });
+    const side = (sign: number) =>
+      Array.from(
+        { length: 36 },
+        (_, level) =>
+          [
+            round(price + sign * (level + 1) * 0.05),
+            2 + ((level * 13 + i * 7) % 19) + (level % 11 === 0 ? 65 : 0),
+          ] as [number, number],
+      );
+    books.push({ time, bids: side(-1), asks: side(1) });
+    const bucket = Math.floor(i / 4);
+    if (i % 4 === 0)
+      bars.push({
+        time: start + bucket * 1000,
+        open: price,
+        high: price,
+        low: price,
+        close: price,
+        volume: size,
+      });
+    else {
+      const bar = bars[bucket];
+      bar.high = Math.max(bar.high, price);
+      bar.low = Math.min(bar.low, price);
+      bar.close = price;
+      bar.volume = (bar.volume ?? 0) + size;
+    }
+  }
+  return { start, end, trades, books, bars };
+}
+
+/** UI copy shared by the native framework examples, keyed by configured language. */
+export const frameworkHeatmapLabels = {
+  en: {
+    source:
+      "Simulated resting book · 30 supplied OHLC candles aggregated from simulated executions.",
+    latest: "Latest 10s",
+    full: "Full 30s",
+    follow: "Follow market",
+    following: "Following market",
+    manual: "Manual view",
+    minimum: "Minimum liquidity intensity (%)",
+    visible: "s visible",
+  },
+  zh: {
+    source: "模拟挂单簿 · 显式传入 30 根由模拟成交聚合的 OHLC K 线。",
+    latest: "最近 10 秒",
+    full: "完整 30 秒",
+    follow: "跟随行情",
+    following: "正在跟随行情",
+    manual: "手动视图",
+    minimum: "最低流动性强度（%）",
+    visible: "秒可见",
+  },
+  ja: {
+    source:
+      "模擬指値注文板 · 模擬約定から集計した OHLC ローソク足 30 本を明示的に入力。",
+    latest: "直近 10 秒",
+    full: "全 30 秒",
+    follow: "相場に追従",
+    following: "相場に追従中",
+    manual: "手動表示",
+    minimum: "流動性強度の下限（%）",
+    visible: "秒を表示",
+  },
+  fr: {
+    source:
+      "Carnet d’ordres simulé · 30 bougies OHLC fournies, agrégées à partir d’exécutions simulées.",
+    latest: "10 dernières s",
+    full: "30 s complètes",
+    follow: "Suivre le marché",
+    following: "Suivi du marché",
+    manual: "Vue manuelle",
+    minimum: "Intensité minimale de liquidité (%)",
+    visible: "s visibles",
+  },
+};
+
+export function getFrameworkLabels(locale: string) {
+  const language = locale
+    .toLowerCase()
+    .split(/[-_]/)[0] as keyof typeof frameworkHeatmapLabels;
+  return frameworkHeatmapLabels[language] ?? frameworkHeatmapLabels.en;
+}
+
+```
 
 ## Example: liquidity
 

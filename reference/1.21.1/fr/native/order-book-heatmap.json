@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.21.1",
-    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+    "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
   },
   "content": {
     "read": {
@@ -29,7 +29,12 @@
         "pull": "Ordres retirés (spoofing) : une ligne claire disparaît quand le prix approche sans aucune bulle de transaction, l'ordre a été annulé, pas exécuté.",
         "sweep": "Balayages : une rafale de grosses bulles traverse plusieurs prix, la ligne de prix saute et la liquidité sur son passage s'assombrit.",
         "thin": "Liquidité faible : une grande zone sombre près du prix signifie peu d'ordres en attente, le prix peut la traverser rapidement."
-      }
+      },
+      "candles": "Bougies : fournissez de vraies données OHLC sur les mêmes axes de temps en millisecondes et de prix. Les périodes absentes restent vides ; aucun cours exécuté n’est inventé à partir du carnet. La ligne du dernier prix utilise la dernière transaction fournie ou une clôture de bougie plus récente.",
+      "navigation": "Navigation historique : zoom et déplacement arrêtent le suivi. Sélectionnez une plage conservée dans le navigateur ; réinitialiser revient au marché courant. getView / setView et viewChange partagent le même modèle de vue.",
+      "intensity": "Filtre d’intensité : intensityRange sélectionne un intervalle 0–1 après la correspondance des couleurs. Les quantités brutes, les valeurs des infobulles et l’échelle automatique restent identiques.",
+      "dataTitle": "Sens des données",
+      "dataSemantics": "Ce composant affiche la liquidité en attente et les bougies exécutées fournies. Les exemples utilisent un moteur de simulation reproductible. Une carte de liquidations exige des données de liquidation distinctes ; la taille des ordres ne constitue pas une taille liquidée."
     },
     "data": {
       "aria": "Carte de liquidité BTC/USDT",
@@ -88,7 +93,32 @@
       "takerSells": "Ventes preneuses",
       "perpAria": "Carte de chaleur de liquidité du perpétuel BTC-USD",
       "perpReadout": "{{price}} : {{contracts}} contrats en carnet (≈ {{notional}})",
-      "perpHint": "Survolez la carte pour lire les contrats en carnet et leur valeur."
+      "perpHint": "Survolez la carte pour lire les contrats en carnet et leur valeur.",
+      "simulated": "MARCHÉ SIMULÉ",
+      "showCandles": "Bougies d’exécution",
+      "executionsOnly": "Chaque bougie de 2 secondes agrège les exécutions du moteur de simulation déterministe. Les périodes sans exécution restent vides ; les ordres au repos ne créent pas de bougies.",
+      "intensityFilter": "Plage d’intensité visible",
+      "filterHint": "Filtre l’intensité normalisée des couleurs de la liquidité au repos. Seule la visibilité change, pas les quantités ni le volume exécuté.",
+      "historyNavigator": "Historique des exécutions conservé",
+      "navigatorHint": "Déplacez les poignées pour consulter l’historique conservé. Suivre le marché rétablit la dernière heure et le centrage automatique du prix.",
+      "liquidityTerminal": "TERMINAL DE LIQUIDITÉ",
+      "latest": "Dernière exécution",
+      "bidDepth": "Profondeur acheteuse",
+      "askDepth": "Profondeur vendeuse",
+      "imbalance": "Déséquilibre du carnet",
+      "bidWall": "Plus grand mur acheteur",
+      "askWall": "Plus grand mur vendeur",
+      "palette": "Palette",
+      "ocean": "Océan",
+      "ember": "Braise",
+      "resetViewport": "Réinitialiser la vue",
+      "currentBook": "CARNET ACTUEL",
+      "terminalHint": "Simulation déterministe, sans flux de bourse externe. Les six indicateurs, les bougies et le carnet partagent le même moteur. Les indicateurs sont actualisés chaque seconde, indépendamment du flux du carnet.",
+      "candlesAria": "Liquidité simulée avec bougies d’exécution",
+      "filterAria": "Liquidité simulée avec filtre d’intensité",
+      "navigationAria": "Historique navigable de liquidité simulée",
+      "terminalAria": "Terminal de liquidité BTC USDT simulé",
+      "ladderAria": "Carnet BTC USDT simulé actuel"
     }
   },
   "components": [
@@ -130,7 +160,12 @@
           "pull": "Ordres retirés (spoofing) : une ligne claire disparaît quand le prix approche sans aucune bulle de transaction, l'ordre a été annulé, pas exécuté.",
           "sweep": "Balayages : une rafale de grosses bulles traverse plusieurs prix, la ligne de prix saute et la liquidité sur son passage s'assombrit.",
           "thin": "Liquidité faible : une grande zone sombre près du prix signifie peu d'ordres en attente, le prix peut la traverser rapidement."
-        }
+        },
+        "candles": "Bougies : fournissez de vraies données OHLC sur les mêmes axes de temps en millisecondes et de prix. Les périodes absentes restent vides ; aucun cours exécuté n’est inventé à partir du carnet. La ligne du dernier prix utilise la dernière transaction fournie ou une clôture de bougie plus récente.",
+        "navigation": "Navigation historique : zoom et déplacement arrêtent le suivi. Sélectionnez une plage conservée dans le navigateur ; réinitialiser revient au marché courant. getView / setView et viewChange partagent le même modèle de vue.",
+        "intensity": "Filtre d’intensité : intensityRange sélectionne un intervalle 0–1 après la correspondance des couleurs. Les quantités brutes, les valeurs des infobulles et l’échelle automatique restent identiques.",
+        "dataTitle": "Sens des données",
+        "dataSemantics": "Ce composant affiche la liquidité en attente et les bougies exécutées fournies. Les exemples utilisent un moteur de simulation reproductible. Une carte de liquidations exige des données de liquidation distinctes ; la taille des ordres ne constitue pas une taille liquidée."
       },
       "demos": {
         "basic": {
@@ -176,6 +211,26 @@
         "perpetual": {
           "title": "Contrat perpétuel en contrats",
           "description": "Un perpétuel BTC coté en contrats de 0,001 BTC : formatSize convertit les tailles, formatPrice affiche des dollars, sizeUnit et labels renomment les unités de la légende et de l'infobulle, et timeZone=\"utc\" s'accorde avec l'horloge de la plateforme du compte à rebours du financement."
+        },
+        "candles": {
+          "title": "Bougies d’exécution",
+          "description": "Les exécutions simulées forment des bougies OHLC de 2 secondes sur la liquidité historique au repos."
+        },
+        "intensity-filter": {
+          "title": "Filtre d’intensité",
+          "description": "Isolez une plage d’intensité visible sans modifier le carnet sous-jacent."
+        },
+        "history-navigation": {
+          "title": "Navigation historique",
+          "description": "Explorez l’historique conservé avec le sélecteur de plage, puis reprenez le suivi du marché."
+        },
+        "terminal": {
+          "title": "Terminal de liquidité",
+          "description": "Un espace simulé complet : six indicateurs, bougies, filtres, navigation historique et carnet synchronisé."
+        },
+        "candles-navigation": {
+          "title": "Bougies et navigation historique",
+          "description": "Les exécutions forment des bougies OHLC sur la liquidité au repos. Sélectionnez l’historique conservé, puis reprenez le suivi du marché."
         }
       },
       "data": {
@@ -235,7 +290,32 @@
         "takerSells": "Ventes preneuses",
         "perpAria": "Carte de chaleur de liquidité du perpétuel BTC-USD",
         "perpReadout": "{{price}} : {{contracts}} contrats en carnet (≈ {{notional}})",
-        "perpHint": "Survolez la carte pour lire les contrats en carnet et leur valeur."
+        "perpHint": "Survolez la carte pour lire les contrats en carnet et leur valeur.",
+        "simulated": "MARCHÉ SIMULÉ",
+        "showCandles": "Bougies d’exécution",
+        "executionsOnly": "Chaque bougie de 2 secondes agrège les exécutions du moteur de simulation déterministe. Les périodes sans exécution restent vides ; les ordres au repos ne créent pas de bougies.",
+        "intensityFilter": "Plage d’intensité visible",
+        "filterHint": "Filtre l’intensité normalisée des couleurs de la liquidité au repos. Seule la visibilité change, pas les quantités ni le volume exécuté.",
+        "historyNavigator": "Historique des exécutions conservé",
+        "navigatorHint": "Déplacez les poignées pour consulter l’historique conservé. Suivre le marché rétablit la dernière heure et le centrage automatique du prix.",
+        "liquidityTerminal": "TERMINAL DE LIQUIDITÉ",
+        "latest": "Dernière exécution",
+        "bidDepth": "Profondeur acheteuse",
+        "askDepth": "Profondeur vendeuse",
+        "imbalance": "Déséquilibre du carnet",
+        "bidWall": "Plus grand mur acheteur",
+        "askWall": "Plus grand mur vendeur",
+        "palette": "Palette",
+        "ocean": "Océan",
+        "ember": "Braise",
+        "resetViewport": "Réinitialiser la vue",
+        "currentBook": "CARNET ACTUEL",
+        "terminalHint": "Simulation déterministe, sans flux de bourse externe. Les six indicateurs, les bougies et le carnet partagent le même moteur. Les indicateurs sont actualisés chaque seconde, indépendamment du flux du carnet.",
+        "candlesAria": "Liquidité simulée avec bougies d’exécution",
+        "filterAria": "Liquidité simulée avec filtre d’intensité",
+        "navigationAria": "Historique navigable de liquidité simulée",
+        "terminalAria": "Terminal de liquidité BTC USDT simulé",
+        "ladderAria": "Carnet BTC USDT simulé actuel"
       },
       "api": {
         "OrderBookHeatmapProps": {
@@ -244,7 +324,9 @@
           "onHover": "Cellule survolée (null en sortant)",
           "onRendererChange": "Moteur utilisé (aussi après une perte du GPU)",
           "onFollowChange": "true tant que la vue suit le marché, false après un zoom ou un déplacement",
-          "ref": "Poignée impérative : setBook, applyDeltas, addTrades, resetView, getInstance"
+          "ref": "Poignée impérative : setBook, applyDeltas, addTrades, resetView, getInstance",
+          "bars": "Bougies OHLC fournies sous forme de lignes ou de colonnes typées, mises à jour via setBars. Aucune bougie n’est déduite du carnet.",
+          "onViewChange": "Émet les bornes temporelles conservées et la vue courante en temps/prix, avec l’état du suivi."
         },
         "OrderBookHeatmapHandle": {
           "setBook": "Remplace le carnet (ferme les colonnes jusqu'à son heure)",
@@ -252,7 +334,11 @@
           "addTrades": "Ajoute des transactions (bulles)",
           "clear": "Efface le carnet, l’historique et les transactions",
           "resetView": "Suit à nouveau le marché",
-          "getInstance": "L'instance du moteur sous-jacent (minerva-design/charts/core)"
+          "getInstance": "L'instance du moteur sous-jacent (minerva-design/charts/core)",
+          "setBars": "Remplace l’historique OHLC fourni, sous forme de lignes ou de colonnes typées.",
+          "updateBar": "Met à jour la dernière bougie fournie ou ajoute une bougie plus récente.",
+          "setView": "Définit les bornes visibles en temps et/ou en prix et suspend le suivi du marché.",
+          "getView": "Lit les bornes de liquidité conservées et la vue courante ; null avant le montage."
         },
         "OrderBookHeatmapOptions": {
           "tickSize": "Hauteur d'une ligne de prix (les niveaux y sont agrégés) ; un multiple rond du pas du carnet, d'environ 0,1 point de base, si omise",
@@ -276,7 +362,12 @@
           "tooltip": "Réticule et infobulle au survol",
           "renderer": "Moteur des cellules : le GPU si disponible",
           "timeZone": "Horloge de l’axe du temps et de l’infobulle : l’heure locale ou UTC (l’horloge de la plupart des places de marché)",
-          "labels": "Remplace les textes intégrés, qui suivent locale (anglais, chinois, japonais et français intégrés)"
+          "labels": "Remplace les textes intégrés, qui suivent locale (anglais, chinois, japonais et français intégrés)",
+          "candles": "Affiche les bougies OHLC fournies ; activé par défaut lorsque des bougies sont disponibles.",
+          "lastPriceLine": "Trace une ligne au cours de clôture de la dernière bougie fournie.",
+          "intensityRange": "Bornes normalisées de l’intensité de liquidité, chacune entre 0 et 1.",
+          "maxColumns": "Nombre maximal de colonnes de liquidité conservées ; 6000 par défaut, borné par le moteur.",
+          "maxBars": "Nombre maximal de bougies fournies conservées ; 20000 par défaut, borné par le moteur."
         },
         "OrderBookCommonOptions": {
           "upColor": "Couleur des achats (le côté « hausse ») ; --success-color par défaut, --danger-color avec colorConvention \"red-up\"",
@@ -317,13 +408,43 @@
           "size": "Quantité au repos de la cellule (somme des prix de la tranche)",
           "side": "Côté de la cellule (null dans l'écart)",
           "buyVolume": "Volume acheté pendant la colonne",
-          "sellVolume": "Volume vendu pendant la colonne"
+          "sellVolume": "Volume vendu pendant la colonne",
+          "bar": "Bougie OHLC réellement fournie couvrant le pointeur ; absente dans les intervalles sans données."
         },
         "MarketTrade": {
           "time": "Heure d'exécution (ms depuis l'époque)",
           "price": "Prix d'exécution",
           "size": "Quantité exécutée (devise de base)",
           "side": "Sens de l'agresseur : \"buy\" a pris une vente, \"sell\" a frappé un achat"
+        },
+        "OrderBookHeatmapView": {
+          "time": "Début et fin visibles, en millisecondes depuis l’époque Unix.",
+          "price": "Prix minimal et maximal visibles.",
+          "follow": "Indique si la vue suit les dernières données du marché."
+        },
+        "OrderBookHeatmapViewInput": {
+          "time": "Début et fin visibles, en millisecondes depuis l’époque Unix.",
+          "price": "Prix minimal et maximal visibles."
+        },
+        "OrderBookHeatmapViewData": {
+          "availableTime": "Premier et dernier instants de liquidité conservés, ou null si vide.",
+          "view": "Bornes courantes en temps/prix et état du suivi."
+        },
+        "TradingBar": {
+          "time": "Heure d'ouverture en millisecondes depuis l'epoch",
+          "open": "Premier prix échangé",
+          "high": "Prix le plus haut",
+          "low": "Prix le plus bas",
+          "close": "Dernier prix échangé",
+          "volume": "Volume échangé"
+        },
+        "TradingBarColumns": {
+          "time": "Heures d'ouverture en millisecondes, croissantes",
+          "open": "Prix d'ouverture",
+          "high": "Plus hauts",
+          "low": "Plus bas",
+          "close": "Prix de clôture",
+          "volume": "Volumes"
         }
       },
       "wc": {
@@ -335,24 +456,35 @@
           "red-up": {
             "title": "Couleurs « rouge à la hausse », échelle racine",
             "description": "La convention de Chine continentale (achats en rouge), une échelle racine carrée et sans profil de tailles."
+          },
+          "candles-navigation": {
+            "title": "Bougies fournies et navigation historique",
+            "description": "Filtrez la liquidité simulée et parcourez l’historique avec 30 bougies OHLC fournies, agrégées à partir d’exécutions simulées."
           }
         },
         "minerva-order-book-heatmap": {
           "props": {
             "options": "Autres options du moteur (OrderBookHeatmapOptions de minerva-design/charts/core : couleurs, textes, locale, labels…) ; propriété uniquement",
-            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté",
+            "bars": "Bougies OHLC fournies sous forme de lignes ou de colonnes typées, mises à jour via setBars. Aucune bougie n’est déduite du carnet."
           },
           "events": {
             "minerva-hover": "Une cellule est survolée ; detail : { time, price, size, side, buyVolume, sellVolume }, null quand le pointeur la quitte",
             "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }",
-            "minerva-follow-change": "La vue suit le marché (true) ou non après un zoom ou un déplacement (false) ; detail : { follow }"
+            "minerva-follow-change": "La vue suit le marché (true) ou non après un zoom ou un déplacement (false) ; detail : { follow }",
+            "minerva-view-change": "Historique conservé ou vue modifiés ; detail contient availableTime et view."
           },
           "methods": {
             "addTrades": "Ajoute des transactions (bulles)",
             "resetView": "Suit de nouveau le marché (dernière heure, centré sur le prix médian)",
             "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt",
             "setBook": "Remplace le carnet (ferme les colonnes jusqu’à son heure)",
-            "applyDeltas": "Applique des mises à jour (ferme les colonnes jusqu’à leur heure)"
+            "applyDeltas": "Applique des mises à jour (ferme les colonnes jusqu’à leur heure)",
+            "setBars": "Remplace l’historique OHLC fourni, sous forme de lignes ou de colonnes typées.",
+            "updateBar": "Met à jour la dernière bougie fournie ou ajoute une bougie plus récente.",
+            "setView": "Définit les bornes visibles en temps et/ou en prix et suspend le suivi du marché.",
+            "getView": "Lit les bornes de liquidité conservées et la vue courante ; null avant le montage.",
+            "clear": "Efface le carnet, l’historique et les transactions"
           }
         }
       }

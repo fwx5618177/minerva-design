@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -277,6 +277,24 @@ Mini-program charts use createCanvasChart (and createCanvasShapeChart for shape 
 On React Native the charts are drawn with Views only, so the number of shapes is capped: about 1,200 line points in total, 800 dots per series (2,000 in total) and 600 bars per series (1,500 rects in total, candlesticks counting two each, heatmap cells one), 200 strips per area. Above these budgets dots are merged per cell and bars per pixel column — the picture stays right but details are lost, and the data is still processed in JavaScript, so aggregate first.
 
 For your own renderer, createChartController and scenePrimitives give the same budgets: scenePrimitives(scene, { maxDots, maxBars, columnWidth, dotCell }) returns decimated shapes (defaults: 4000 dots and 2000 bars per series, 1 px columns).
+
+### Hover burst: one update per frame
+
+Dispatch 240 alternating pointer moves in one frame through the public engine. Only the latest position is hit-tested and rendered; press, drag and release keep their synchronous interaction path. The counters are real browser measurements, not a frame-rate guarantee.
+
+Run 240 moves
+
+Pointer moves
+
+Hover notifications
+
+Tooltip renders
+
+Dispatch + frame (ms)
+
+Final point
+
+Hover coalescing benchmark
 
 ```ts
 import { createChart } from "minerva-design/charts/core";

@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -49,6 +49,16 @@ Pulled orders (spoofing): a bright line disappears as the price comes close with
 Sweeps: a burst of large bubbles crosses several prices, the price line jumps and the liquidity on its way goes dark.
 
 Thin liquidity: a large dark area near the price means few resting orders, the price can move through it quickly.
+
+Candles: supply actual OHLC bars on the same millisecond time and price axes. Missing periods remain empty; book snapshots are never used to invent executions. The last-price line uses the newest supplied trade or newer candle close.
+
+History navigation: zooming and panning stop following. Select a retained time range in the navigator; reset restores the current market. getView / setView and viewChange share one viewport model.
+
+Intensity filtering: intensityRange selects a 0–1 interval after color mapping. It does not change raw resting sizes, tooltip values or the automatic reference scale.
+
+Data semantics
+
+This component displays resting liquidity and supplied execution candles. Examples use reproducible simulated matching. A liquidation heatmap requires its own liquidation data; resting order size is not liquidation size.
 
 BTC/USDT liquidity heatmap
 
@@ -160,6 +170,56 @@ BTC-USD perpetual liquidity heatmap
 
 Hover the heatmap to read the resting contracts and their value.
 
+SIMULATED MARKET
+
+Execution candles
+
+Each 2-second candle aggregates actual executions from this seeded matching engine. Empty buckets are omitted; resting orders never become candles.
+
+Visible intensity range
+
+Filter the normalized color intensity of resting liquidity. This changes visibility, not book sizes or executed volume.
+
+Retained execution history
+
+Move the range handles to inspect retained history. Follow the market restores the latest time and automatic price centering.
+
+LIQUIDITY TERMINAL
+
+Latest execution
+
+Bid depth
+
+Ask depth
+
+Book imbalance
+
+Largest bid wall
+
+Largest ask wall
+
+Palette
+
+Ocean
+
+Ember
+
+Reset view
+
+CURRENT ORDER BOOK
+
+Seeded simulation, not an external exchange feed. All six metrics, execution candles and the ladder use the same matching engine. Summary metrics refresh once per second; book updates stream independently.
+
+Simulated liquidity with execution candles
+
+Simulated liquidity with intensity filter
+
+Navigable simulated liquidity history
+
+Simulated BTC USDT liquidity terminal
+
+Current simulated BTC USDT order book
+
 ## OrderBookHeatmap
 
 Support: beta
@@ -182,6 +242,12 @@ Native Angular: MnOrderBookHeatmap. Native standalone component/directive; see p
 
 ```json
 [
+  {
+    "name": "bars",
+    "typeText": "TradingBarsInput | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/charts/trading.ts"
+  },
   {
     "name": "trades",
     "typeText": "readonly MarketTrade[] | undefined",
@@ -257,6 +323,21 @@ Native Angular: MnOrderBookHeatmap. Native standalone component/directive; see p
         "rest": false
       }
     ]
+  },
+  {
+    "name": "viewChange",
+    "typeText": "OrderBookHeatmapViewData",
+    "required": false,
+    "source": "packages/angular/src/components/charts/trading.ts",
+    "parameters": [
+      {
+        "name": "$event",
+        "position": 0,
+        "typeText": "OrderBookHeatmapViewData",
+        "required": true,
+        "rest": false
+      }
+    ]
   }
 ]
 ```
@@ -264,6 +345,130 @@ Native Angular: MnOrderBookHeatmap. Native standalone component/directive; see p
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Candles and history navigation
+
+Actual executions become OHLC candles over resting liquidity. Select retained history, then restore market following.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: @angular/core, minerva-design
+
+Documentation context imports: none
+
+### example.ts
+
+```tsx
+import { Component, viewChild, effect, untracked } from '@angular/core';
+import { MnOrderBookHeatmap, MnButton, MnSlider, injectMinerva } from 'minerva-design/angular';
+import { MarketTrade, OrderBookSnapshot, TradingBar } from 'minerva-design/charts/core';
+
+@Component({
+  selector: 'app-example',
+  imports: [MnOrderBookHeatmap, MnButton, MnSlider],
+  template: `
+@let t = labels[language()];
+<div style="display:grid;gap:12px;width:100%">
+<p>{{t.source}}</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button mnButton size="small" variant="outline" (click)="show(10)">{{t.latest}}</button>
+<button mnButton size="small" variant="outline" (click)="show(30)">{{t.full}}</button>
+<button mnButton size="small" (click)="heatmap.resetView()">{{t.follow}}</button>
+</div>
+<mn-slider [attr.aria-label]="t.minimum" [value]="minimum" (valueChange)="filter($event)" [min]="0" [max]="90" [step]="5" showValue style="max-width:320px"/>
+<mn-order-book-heatmap #heatmap [height]="400" [options]="{ interval:250, window:30000, history:60000, maxBars:30, maxColumns:240, intensityRange:[minimum / 100, 1] }" (viewChange)="viewState = $event"/>
+<output aria-live="polite">{{viewState?.view?.follow ? t.following : t.manual}} · {{t.minimum}} {{minimum}}% · {{viewState ? ((viewState.view.time[1] - viewState.view.time[0]) / 1000).toFixed(0) : 30}} {{t.visible}}</output>
+</div>
+  `,
+})
+export class Example {
+  readonly language = injectMinerva().language;
+  minimum = 0;
+  labels = {
+  "en": {
+    "source": "Simulated resting book · 30 supplied OHLC candles aggregated from simulated executions.",
+    "latest": "Latest 10s",
+    "full": "Full 30s",
+    "follow": "Follow market",
+    "following": "Following market",
+    "manual": "Manual view",
+    "minimum": "Minimum liquidity intensity (%)",
+    "visible": "s visible"
+  },
+  "zh": {
+    "source": "模拟挂单簿 · 显式传入 30 根由模拟成交聚合的 OHLC K 线。",
+    "latest": "最近 10 秒",
+    "full": "完整 30 秒",
+    "follow": "跟随行情",
+    "following": "正在跟随行情",
+    "manual": "手动视图",
+    "minimum": "最低流动性强度（%）",
+    "visible": "秒可见"
+  },
+  "ja": {
+    "source": "模擬指値注文板 · 模擬約定から集計した OHLC ローソク足 30 本を明示的に入力。",
+    "latest": "直近 10 秒",
+    "full": "全 30 秒",
+    "follow": "相場に追従",
+    "following": "相場に追従中",
+    "manual": "手動表示",
+    "minimum": "流動性強度の下限（%）",
+    "visible": "秒を表示"
+  },
+  "fr": {
+    "source": "Carnet d’ordres simulé · 30 bougies OHLC fournies, agrégées à partir d’exécutions simulées.",
+    "latest": "10 dernières s",
+    "full": "30 s complètes",
+    "follow": "Suivre le marché",
+    "following": "Suivi du marché",
+    "manual": "Vue manuelle",
+    "minimum": "Intensité minimale de liquidité (%)",
+    "visible": "s visibles"
+  }
+};
+  viewState = null as import("minerva-design/charts/core").OrderBookHeatmapViewData | null;
+  filter = (value: number | [number, number]) => { this.minimum = typeof value === 'number' ? value : value[0]; };
+  chart = viewChild<import('minerva-design/angular').MnOrderBookHeatmap>('heatmap');
+  history = (() => {
+  const end = Math.floor(Date.now() / 1000) * 1000;
+  const start = end - 30_000;
+  const trades: MarketTrade[] = [];
+  const books: OrderBookSnapshot[] = [];
+  const bars: TradingBar[] = [];
+  const round = (value: number) => Math.round(value * 100) / 100;
+  for (let i = 0; i < 120; i += 1) {
+    const time = start + i * 250;
+    const price = round(100 + Math.sin(i / 11) * 0.7 + Math.sin(i * 1.7) * 0.12);
+    const size = 1 + (i * 7 % 9);
+    trades.push({ time, price, size, side: i % 3 ? "buy" : "sell" });
+    const side = (sign: number) => Array.from({ length: 36 }, (_, level) =>
+      [round(price + sign * (level + 1) * 0.05), 2 + ((level * 13 + i * 7) % 19) + (level % 11 === 0 ? 65 : 0)] as [number, number]);
+    books.push({ time, bids: side(-1), asks: side(1) });
+    const bucket = Math.floor(i / 4);
+    if (i % 4 === 0) bars.push({ time: start + bucket * 1000, open: price, high: price, low: price, close: price, volume: size });
+    else {
+      const bar = bars[bucket];
+      bar.high = Math.max(bar.high, price); bar.low = Math.min(bar.low, price);
+      bar.close = price; bar.volume = (bar.volume ?? 0) + size;
+    }
+  }
+  return { start, end, trades, books, bars };
+})();
+  show = (seconds: number) => this.chart()?.setView({ time: [this.history.end - seconds * 1000, this.history.end], price: [98, 102] });
+  initialize = effect(() => {
+  const heatmap = this.chart();
+  if (!heatmap?.instance()) return;
+  // instance is a public readiness signal; the engine is created after render.
+  untracked(() => {
+    for (const book of this.history.books) heatmap.setBook(book);
+    heatmap.addTrades(this.history.trades);
+    heatmap.setBars(this.history.bars);
+    this.show(30);
+  });
+});
+}
+
+```
 
 ## Example: Live liquidity heatmap
 

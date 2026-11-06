@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -277,6 +277,24 @@ setOptions を呼ぶ前に props は浅く比較されます。トップレベ�
 React Native ではチャートを View だけで描画するため、図形の数に上限があります。折れ線は全体で約 1,200 点、散布図は系列ごとに 800 点（全体で 2,000 点）、棒は系列ごとに 600 本（全体で 1,500 個の矩形。ローソク足は 1 本で 2 個、ヒートマップのセルは 1 個として数える）、面グラフは 1 つにつき 200 本の縦帯です。予算を超えると点はセルごとに、棒はピクセル列ごとに統合されます。全体像は正しく保たれますが細部は失われ、データは JavaScript で処理されるため、先に集計してください。
 
 独自のレンダラーでは、createChartController と scenePrimitives で同じ予算を使えます。scenePrimitives(scene, { maxDots, maxBars, columnWidth, dotCell }) は間引き済みの図形を返します（既定値：系列ごとに 4000 点と 2000 本、列幅 1 px）。
+
+### 高頻度ホバー：フレーム内で集約
+
+公開エンジンに同一フレームで240回の交互ポインター移動を送り、最後の位置だけを判定・描画します。押下・ドラッグ・解放は同期処理を維持します。数値は実ブラウザーの測定で、すべてのデータ量でのFPSを保証しません。
+
+240回移動を実行
+
+ポインター移動
+
+ホバー通知
+
+ツールチップ描画
+
+送信とフレーム待機（ms）
+
+最後の点
+
+ホバー集約ベンチマーク
 
 ```ts
 import { createChart } from "minerva-design/charts/core";
@@ -5727,9 +5745,18 @@ export const docPages: DocPageMeta[] = [
       "OrderBookWidgetProps",
       "OrderBookHeatmapLabels",
       "OrderBookHeatmapHoverEvent",
+      "OrderBookHeatmapView",
+      "OrderBookHeatmapViewInput",
+      "OrderBookHeatmapViewData",
+      "TradingBar",
+      "TradingBarColumns",
       "MarketTrade",
     ],
     demos: [
+      "terminal",
+      "candles",
+      "intensity-filter",
+      "history-navigation",
       "basic",
       "live",
       "color-scale",
@@ -5745,7 +5772,7 @@ export const docPages: DocPageMeta[] = [
     wc: {
       entry: "order-book",
       tags: ["minerva-order-book-heatmap"],
-      demos: ["liquidity", "red-up"],
+      demos: ["candles-navigation", "liquidity", "red-up"],
     },
   },
   {
@@ -6145,7 +6172,15 @@ export const docPages: DocPageMeta[] = [
     category: "chartEngine",
     package: "minerva-design/charts",
     exports: ["LineChart", "ScatterChart", "CandlestickChart", "Chart"],
-    demos: ["line", "scatter", "candles", "heatmap", "streaming", "compare"],
+    demos: [
+      "hover-burst",
+      "line",
+      "scatter",
+      "candles",
+      "heatmap",
+      "streaming",
+      "compare",
+    ],
     wc: {
       entry: "chart",
       tags: [],
@@ -12097,9 +12132,18 @@ export const docPages: DocPageMeta[] = [
       "OrderBookWidgetProps",
       "OrderBookHeatmapLabels",
       "OrderBookHeatmapHoverEvent",
+      "OrderBookHeatmapView",
+      "OrderBookHeatmapViewInput",
+      "OrderBookHeatmapViewData",
+      "TradingBar",
+      "TradingBarColumns",
       "MarketTrade",
     ],
     demos: [
+      "terminal",
+      "candles",
+      "intensity-filter",
+      "history-navigation",
       "basic",
       "live",
       "color-scale",
@@ -12115,7 +12159,7 @@ export const docPages: DocPageMeta[] = [
     wc: {
       entry: "order-book",
       tags: ["minerva-order-book-heatmap"],
-      demos: ["liquidity", "red-up"],
+      demos: ["candles-navigation", "liquidity", "red-up"],
     },
   },
   {
@@ -12515,7 +12559,15 @@ export const docPages: DocPageMeta[] = [
     category: "chartEngine",
     package: "minerva-design/charts",
     exports: ["LineChart", "ScatterChart", "CandlestickChart", "Chart"],
-    demos: ["line", "scatter", "candles", "heatmap", "streaming", "compare"],
+    demos: [
+      "hover-burst",
+      "line",
+      "scatter",
+      "candles",
+      "heatmap",
+      "streaming",
+      "compare",
+    ],
     wc: {
       entry: "chart",
       tags: [],
@@ -13213,6 +13265,167 @@ export const useShowcaseFormat = () => {
   border-radius: inherit;
   background: var(--primary-color);
   transition: width 0.4s ease;
+}
+
+```
+
+## Example: 高頻度ホバー：フレーム内で集約
+
+公開エンジンに同一フレームで240回の交互ポインター移動を送り、最後の位置だけを判定・描画します。押下・ドラッグ・解放は同期処理を維持します。数値は実ブラウザーの測定で、すべてのデータ量でのFPSを保証しません。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/chart-performance/demos/hover-burst.tsx
+
+```tsx
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button } from "minerva-design";
+import { createChart, type ChartInstance } from "minerva-design/charts/core";
+
+interface Measurement {
+  moves: number;
+  hitNotifications: number;
+  tooltipRenders: number;
+  elapsed: number;
+  lastPoint: number | null;
+}
+
+export default function HoverBurstDemo() {
+  const { t } = useTranslation("common", {
+    keyPrefix: "docs.chart-performance.hoverBurst",
+  });
+  const host = useRef<HTMLDivElement>(null);
+  const chart = useRef<ChartInstance | null>(null);
+  const active = useRef<Measurement | null>(null);
+  const frame = useRef(0);
+  const [ready, setReady] = useState(false);
+  const [result, setResult] = useState<Measurement | null>(null);
+
+  useEffect(() => {
+    const instance = createChart(host.current!, {
+      renderer: "canvas2d",
+      ariaLabel: t("aria"),
+      xAxis: { min: 0, max: 10 },
+      yAxis: { min: 0, max: 10 },
+      series: [
+        {
+          type: "scatter",
+          data: [
+            { x: 2, y: 2 },
+            { x: 8, y: 8 },
+          ],
+        },
+      ],
+      tooltip: {
+        render(event) {
+          if (active.current) active.current.tooltipRenders++;
+          return String((event.items[0]?.index ?? 0) + 1);
+        },
+      },
+    });
+    chart.current = instance;
+    instance.on("hover", (event) => {
+      if (!active.current || !event) return;
+      active.current.hitNotifications++;
+      active.current.lastPoint = (event.items[0]?.index ?? 0) + 1;
+    });
+    void instance.ready.then(() => {
+      if (chart.current !== instance) return;
+      frame.current = requestAnimationFrame(() => {
+        if (chart.current === instance) setReady(true);
+      });
+    });
+    return () => {
+      cancelAnimationFrame(frame.current);
+      active.current = null;
+      chart.current = null;
+      instance.destroy();
+    };
+  }, [t]);
+
+  const run = () => {
+    const instance = chart.current;
+    const stage = host.current?.querySelector<HTMLElement>(
+      ".minerva-chart-stage",
+    );
+    if (!instance || !stage || !ready) return;
+    // Clear prior hover so repeated runs measure the same work.
+    stage.dispatchEvent(new PointerEvent("pointerleave"));
+    const rect = stage.getBoundingClientRect();
+    const points = [instance.toPixel(2, 2), instance.toPixel(8, 8)];
+    if (points.some((point) => !point)) return;
+    const measurement: Measurement = {
+      moves: 240,
+      hitNotifications: 0,
+      tooltipRenders: 0,
+      elapsed: 0,
+      lastPoint: null,
+    };
+    active.current = measurement;
+    setResult(null);
+    setReady(false);
+    const start = performance.now();
+    for (let i = 0; i < measurement.moves; i++) {
+      const point = points[i % 2]!;
+      stage.dispatchEvent(
+        new PointerEvent("pointermove", {
+          bubbles: true,
+          pointerId: 1,
+          clientX: rect.left + point.x,
+          clientY: rect.top + point.y,
+        }),
+      );
+    }
+    frame.current = requestAnimationFrame(() => {
+      measurement.elapsed = performance.now() - start;
+      active.current = null;
+      setResult({ ...measurement });
+      setReady(true);
+    });
+  };
+
+  return (
+    <div data-testid="chart-hover-burst">
+      <p>{t("description")}</p>
+      <div ref={host} style={{ width: "100%", height: 280 }} />
+      <Button
+        data-testid="chart-hover-burst-run"
+        disabled={!ready}
+        onClick={run}
+      >
+        {t("run")}
+      </Button>
+      {result && (
+        <output
+          data-testid="chart-hover-burst-result"
+          data-moves={result.moves}
+          data-hit-notifications={result.hitNotifications}
+          data-tooltip-renders={result.tooltipRenders}
+          data-elapsed={result.elapsed}
+          data-last-point={result.lastPoint ?? ""}
+          aria-live="polite"
+        >
+          <dl>
+            <dt>{t("moves")}</dt>
+            <dd>{result.moves}</dd>
+            <dt>{t("hitNotifications")}</dt>
+            <dd>{result.hitNotifications}</dd>
+            <dt>{t("tooltipRenders")}</dt>
+            <dd>{result.tooltipRenders}</dd>
+            <dt>{t("elapsed")}</dt>
+            <dd>{result.elapsed.toFixed(2)} ms</dd>
+            <dt>{t("lastPoint")}</dt>
+            <dd>{result.lastPoint}</dd>
+          </dl>
+        </output>
+      )}
+    </div>
+  );
 }
 
 ```
@@ -17121,9 +17334,18 @@ export const docPages: DocPageMeta[] = [
       "OrderBookWidgetProps",
       "OrderBookHeatmapLabels",
       "OrderBookHeatmapHoverEvent",
+      "OrderBookHeatmapView",
+      "OrderBookHeatmapViewInput",
+      "OrderBookHeatmapViewData",
+      "TradingBar",
+      "TradingBarColumns",
       "MarketTrade",
     ],
     demos: [
+      "terminal",
+      "candles",
+      "intensity-filter",
+      "history-navigation",
       "basic",
       "live",
       "color-scale",
@@ -17139,7 +17361,7 @@ export const docPages: DocPageMeta[] = [
     wc: {
       entry: "order-book",
       tags: ["minerva-order-book-heatmap"],
-      demos: ["liquidity", "red-up"],
+      demos: ["candles-navigation", "liquidity", "red-up"],
     },
   },
   {
@@ -17539,7 +17761,15 @@ export const docPages: DocPageMeta[] = [
     category: "chartEngine",
     package: "minerva-design/charts",
     exports: ["LineChart", "ScatterChart", "CandlestickChart", "Chart"],
-    demos: ["line", "scatter", "candles", "heatmap", "streaming", "compare"],
+    demos: [
+      "hover-burst",
+      "line",
+      "scatter",
+      "candles",
+      "heatmap",
+      "streaming",
+      "compare",
+    ],
     wc: {
       entry: "chart",
       tags: [],
@@ -22156,9 +22386,18 @@ export const docPages: DocPageMeta[] = [
       "OrderBookWidgetProps",
       "OrderBookHeatmapLabels",
       "OrderBookHeatmapHoverEvent",
+      "OrderBookHeatmapView",
+      "OrderBookHeatmapViewInput",
+      "OrderBookHeatmapViewData",
+      "TradingBar",
+      "TradingBarColumns",
       "MarketTrade",
     ],
     demos: [
+      "terminal",
+      "candles",
+      "intensity-filter",
+      "history-navigation",
       "basic",
       "live",
       "color-scale",
@@ -22174,7 +22413,7 @@ export const docPages: DocPageMeta[] = [
     wc: {
       entry: "order-book",
       tags: ["minerva-order-book-heatmap"],
-      demos: ["liquidity", "red-up"],
+      demos: ["candles-navigation", "liquidity", "red-up"],
     },
   },
   {
@@ -22574,7 +22813,15 @@ export const docPages: DocPageMeta[] = [
     category: "chartEngine",
     package: "minerva-design/charts",
     exports: ["LineChart", "ScatterChart", "CandlestickChart", "Chart"],
-    demos: ["line", "scatter", "candles", "heatmap", "streaming", "compare"],
+    demos: [
+      "hover-burst",
+      "line",
+      "scatter",
+      "candles",
+      "heatmap",
+      "streaming",
+      "compare",
+    ],
     wc: {
       entry: "chart",
       tags: [],
@@ -26946,9 +27193,18 @@ export const docPages: DocPageMeta[] = [
       "OrderBookWidgetProps",
       "OrderBookHeatmapLabels",
       "OrderBookHeatmapHoverEvent",
+      "OrderBookHeatmapView",
+      "OrderBookHeatmapViewInput",
+      "OrderBookHeatmapViewData",
+      "TradingBar",
+      "TradingBarColumns",
       "MarketTrade",
     ],
     demos: [
+      "terminal",
+      "candles",
+      "intensity-filter",
+      "history-navigation",
       "basic",
       "live",
       "color-scale",
@@ -26964,7 +27220,7 @@ export const docPages: DocPageMeta[] = [
     wc: {
       entry: "order-book",
       tags: ["minerva-order-book-heatmap"],
-      demos: ["liquidity", "red-up"],
+      demos: ["candles-navigation", "liquidity", "red-up"],
     },
   },
   {
@@ -27364,7 +27620,15 @@ export const docPages: DocPageMeta[] = [
     category: "chartEngine",
     package: "minerva-design/charts",
     exports: ["LineChart", "ScatterChart", "CandlestickChart", "Chart"],
-    demos: ["line", "scatter", "candles", "heatmap", "streaming", "compare"],
+    demos: [
+      "hover-burst",
+      "line",
+      "scatter",
+      "candles",
+      "heatmap",
+      "streaming",
+      "compare",
+    ],
     wc: {
       entry: "chart",
       tags: [],

@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -277,6 +277,24 @@ Les graphiques pour mini-programmes utilisent createCanvasChart (et createCanvas
 Sous React Native, les graphiques sont dessinés uniquement avec des View, le nombre de formes est donc plafonné : environ 1 200 points de courbe au total, 800 points par série de nuage (2 000 au total) et 600 barres par série (1 500 rectangles au total, un chandelier en comptant deux, une cellule de carte de chaleur un), 200 bandes par aire. Au-delà, les points sont fusionnés par cellule et les barres par colonne de pixels : l’image reste juste mais perd des détails, et les données sont toujours traitées en JavaScript ; agrégez d’abord.
 
 Pour votre propre moteur de rendu, createChartController et scenePrimitives offrent les mêmes budgets : scenePrimitives(scene, { maxDots, maxBars, columnWidth, dotCell }) renvoie des formes décimées (par défaut 4000 points et 2000 barres par série, colonnes de 1 px).
+
+### Survol intensif : une mise à jour par image
+
+Envoie 240 mouvements alternés dans une même image via le moteur public. Seule la dernière position est testée et affichée ; appui, glissement et relâchement restent synchrones. Ces compteurs mesurent le navigateur réel et ne garantissent pas un FPS pour toute taille de données.
+
+Exécuter 240 mouvements
+
+Mouvements
+
+Notifications de survol
+
+Rendus de l’infobulle
+
+Envoi et attente d’image (ms)
+
+Dernier point
+
+Mesure du regroupement du survol
 
 ```ts
 import { createChart } from "minerva-design/charts/core";

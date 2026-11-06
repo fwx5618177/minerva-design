@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.21.1",
-    "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-    "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-    "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+    "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
   },
   "content": {
     "intro": {
@@ -174,6 +174,17 @@
       "mini": "Les <mini>graphiques pour mini-programmes</mini> utilisent createCanvasChart (et createCanvasShapeChart pour les graphiques de formes) sur un canvas type=\"2d\" : toujours Canvas2D, avec des moteurs JavaScript plus lents. La décimation par pixel garde les courbes rapides, mais visez des dizaines de milliers de points plutôt que des millions, évitez de faire passer de gros tableaux par setData (ils sont sérialisés) et limitez les nuages à quelques milliers de points.",
       "native": "Sous <native>React Native</native>, les graphiques sont dessinés uniquement avec des View, le nombre de formes est donc plafonné : environ 1 200 points de courbe au total, 800 points par série de nuage (2 000 au total) et 600 barres par série (1 500 rectangles au total, un chandelier en comptant deux, une cellule de carte de chaleur un), 200 bandes par aire. Au-delà, les points sont fusionnés par cellule et les barres par colonne de pixels : l’image reste juste mais perd des détails, et les données sont toujours traitées en JavaScript ; agrégez d’abord.",
       "primitives": "Pour votre propre moteur de rendu, createChartController et scenePrimitives offrent les mêmes budgets : scenePrimitives(scene, { maxDots, maxBars, columnWidth, dotCell }) renvoie des formes décimées (par défaut 4000 points et 2000 barres par série, colonnes de 1 px)."
+    },
+    "hoverBurst": {
+      "title": "Survol intensif : une mise à jour par image",
+      "description": "Envoie 240 mouvements alternés dans une même image via le moteur public. Seule la dernière position est testée et affichée ; appui, glissement et relâchement restent synchrones. Ces compteurs mesurent le navigateur réel et ne garantissent pas un FPS pour toute taille de données.",
+      "run": "Exécuter 240 mouvements",
+      "moves": "Mouvements",
+      "hitNotifications": "Notifications de survol",
+      "tooltipRenders": "Rendus de l’infobulle",
+      "elapsed": "Envoi et attente d’image (ms)",
+      "lastPoint": "Dernier point",
+      "aria": "Mesure du regroupement du survol"
     }
   },
   "components": [
@@ -897,6 +908,10 @@
         "compare": {
           "title": "Comparaison des moteurs de rendu",
           "description": "Le même million de points sur les quatre backends. Avant le benchmark, chaque panneau affiche un aperçu léger en Canvas2D ; le benchmark monte ensuite le jeu complet sur un seul backend à la fois, suit le même parcours de zoom pendant trois secondes et compare les fréquences d’images et le temps du fil principal par image. Un backend GPU qui tournerait ici sur un GPU logiciel est ignoré (il bloquerait la page), et un backend qui ne peut pas démarrer indique celui sur lequel il s’est replié."
+        },
+        "hover-burst": {
+          "title": "Survol intensif : une mise à jour par image",
+          "description": "Envoie 240 mouvements alternés dans une même image via le moteur public. Seule la dernière position est testée et affichée ; appui, glissement et relâchement restent synchrones. Ces compteurs mesurent le navigateur réel et ne garantissent pas un FPS pour toute taille de données."
         }
       },
       "data": {
@@ -1044,6 +1059,17 @@
             "description": "200 000 points issus de deux tableaux typés, dessinés par le GPU et survolés via un index spatial ; zoom sur les deux axes."
           }
         }
+      },
+      "hoverBurst": {
+        "title": "Survol intensif : une mise à jour par image",
+        "description": "Envoie 240 mouvements alternés dans une même image via le moteur public. Seule la dernière position est testée et affichée ; appui, glissement et relâchement restent synchrones. Ces compteurs mesurent le navigateur réel et ne garantissent pas un FPS pour toute taille de données.",
+        "run": "Exécuter 240 mouvements",
+        "moves": "Mouvements",
+        "hitNotifications": "Notifications de survol",
+        "tooltipRenders": "Rendus de l’infobulle",
+        "elapsed": "Envoi et attente d’image (ms)",
+        "lastPoint": "Dernier point",
+        "aria": "Mesure du regroupement du survol"
       }
     }
   }

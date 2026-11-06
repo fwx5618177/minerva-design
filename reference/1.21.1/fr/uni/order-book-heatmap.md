@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -49,6 +49,16 @@ Ordres retirés (spoofing) : une ligne claire disparaît quand le prix approche 
 Balayages : une rafale de grosses bulles traverse plusieurs prix, la ligne de prix saute et la liquidité sur son passage s'assombrit.
 
 Liquidité faible : une grande zone sombre près du prix signifie peu d'ordres en attente, le prix peut la traverser rapidement.
+
+Bougies : fournissez de vraies données OHLC sur les mêmes axes de temps en millisecondes et de prix. Les périodes absentes restent vides ; aucun cours exécuté n’est inventé à partir du carnet. La ligne du dernier prix utilise la dernière transaction fournie ou une clôture de bougie plus récente.
+
+Navigation historique : zoom et déplacement arrêtent le suivi. Sélectionnez une plage conservée dans le navigateur ; réinitialiser revient au marché courant. getView / setView et viewChange partagent le même modèle de vue.
+
+Filtre d’intensité : intensityRange sélectionne un intervalle 0–1 après la correspondance des couleurs. Les quantités brutes, les valeurs des infobulles et l’échelle automatique restent identiques.
+
+Sens des données
+
+Ce composant affiche la liquidité en attente et les bougies exécutées fournies. Les exemples utilisent un moteur de simulation reproductible. Une carte de liquidations exige des données de liquidation distinctes ; la taille des ordres ne constitue pas une taille liquidée.
 
 Carte de liquidité BTC/USDT
 
@@ -159,6 +169,56 @@ Carte de chaleur de liquidité du perpétuel BTC-USD
 {{price}} : {{contracts}} contrats en carnet (≈ {{notional}})
 
 Survolez la carte pour lire les contrats en carnet et leur valeur.
+
+MARCHÉ SIMULÉ
+
+Bougies d’exécution
+
+Chaque bougie de 2 secondes agrège les exécutions du moteur de simulation déterministe. Les périodes sans exécution restent vides ; les ordres au repos ne créent pas de bougies.
+
+Plage d’intensité visible
+
+Filtre l’intensité normalisée des couleurs de la liquidité au repos. Seule la visibilité change, pas les quantités ni le volume exécuté.
+
+Historique des exécutions conservé
+
+Déplacez les poignées pour consulter l’historique conservé. Suivre le marché rétablit la dernière heure et le centrage automatique du prix.
+
+TERMINAL DE LIQUIDITÉ
+
+Dernière exécution
+
+Profondeur acheteuse
+
+Profondeur vendeuse
+
+Déséquilibre du carnet
+
+Plus grand mur acheteur
+
+Plus grand mur vendeur
+
+Palette
+
+Océan
+
+Braise
+
+Réinitialiser la vue
+
+CARNET ACTUEL
+
+Simulation déterministe, sans flux de bourse externe. Les six indicateurs, les bougies et le carnet partagent le même moteur. Les indicateurs sont actualisés chaque seconde, indépendamment du flux du carnet.
+
+Liquidité simulée avec bougies d’exécution
+
+Liquidité simulée avec filtre d’intensité
+
+Historique navigable de liquidité simulée
+
+Terminal de liquidité BTC USDT simulé
+
+Carnet BTC USDT simulé actuel
 
 ## OrderBookHeatmap
 

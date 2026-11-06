@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -49,6 +49,16 @@ Type references resolve through the [type graph](/minerva-design/reference/1.21.
 扫单：一串大气泡快速穿过多个价位，价格线跳动，沿途的挂单变暗。
 
 流动性稀薄：价格附近大片暗色区域表示挂单很少，价格可以很快穿过。
+
+K 线：由调用方提供真实 OHLC 数据，与热力格共用毫秒时间轴及价格坐标；缺失时段保持空缺，不从挂单快照编造 K 线。最新价线使用新成交或更新的蜡烛收盘价。
+
+历史导航：缩放和平移会停止跟随；导航条选择已保留的时间范围，恢复跟随会回到最新行情。getView / setView 与 viewChange 使用同一视图数据。
+
+强度筛选：intensityRange 是颜色映射之后的 0–1 显示区间；它不改变原始挂单量、提示框数值或自动颜色标尺。
+
+数据与语义
+
+本组件展示挂单流动性及调用方提供的成交 K 线。示例数据来自可复现的模拟撮合；真实清算热力图需要独立的清算数据，不能把挂单量直接当成清算量。
 
 BTC/USDT 流动性热力图
 
@@ -159,6 +169,56 @@ BTC-USD 永续合约流动性热力图
 {{price}}：挂单 {{contracts}} 张（≈ {{notional}}）
 
 悬停在热力图上查看挂单张数及其价值。
+
+模拟市场
+
+成交 K 线
+
+每根 2 秒 K 线汇总此固定种子撮合引擎的实际成交。无成交的时间段不补线，挂单不会转换为 K 线。
+
+可见强度范围
+
+筛选挂单流动性的归一化颜色强度，只改变可见性，不改变盘口数量或成交量。
+
+保留的成交历史
+
+拖动范围滑块查看保留历史。跟随市场会恢复最新时间和自动价格居中。
+
+流动性终端
+
+最新成交价
+
+买盘深度
+
+卖盘深度
+
+盘口失衡
+
+最大买单墙
+
+最大卖单墙
+
+配色
+
+海洋
+
+余烬
+
+重置视图
+
+当前订单簿
+
+固定种子模拟，并非外部交易所行情。六项指标、成交 K 线与盘口均来自同一撮合引擎。指标每秒刷新，盘口更新独立推送。
+
+模拟流动性与成交 K 线
+
+带强度筛选的模拟流动性
+
+可导航的模拟流动性历史
+
+模拟 BTC USDT 流动性终端
+
+当前模拟 BTC USDT 订单簿
 
 ## OrderBookHeatmap
 

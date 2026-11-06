@@ -1,0 +1,28 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<div style="display: grid; gap: 12px; width: 100%">
+  <p id="source"></p>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap">
+    <minerva-button id="latest" size="small" variant="outline"
+      >Latest 10s</minerva-button
+    >
+    <minerva-button id="full" size="small" variant="outline"
+      >Full 30s</minerva-button
+    >
+    <minerva-button id="follow" size="small"></minerva-button>
+  </div>
+  <minerva-slider
+    id="intensity"
+    aria-label=""
+    min="0"
+    max="90"
+    step="5"
+    value="0"
+    show-value
+    style="max-width: 320px"
+  ></minerva-slider>
+  <minerva-order-book-heatmap
+    id="heatmap"
+    height="400"
+  ></minerva-order-book-heatmap>
+  <output id="view" aria-live="polite"></output>
+</div>
+`})))()}n();export{t as default};

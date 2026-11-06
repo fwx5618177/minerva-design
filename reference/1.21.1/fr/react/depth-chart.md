@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -143,7 +143,7 @@ Support: stable
     "source": "packages/charts/src/react/orderbook.tsx",
     "kind": "object",
     "typeText": "OrderBookSnapshot | undefined",
-    "typeRef": "type:522974e77ad0f6e83e2b",
+    "typeRef": "type:2b8335b1888add1c7fed",
     "required": false,
     "description": "Book to draw, applied when the object changes (stream updates through the ref)"
   },
@@ -288,7 +288,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "array",
     "typeText": "readonly DepthChartPriceLine[] | undefined",
-    "typeRef": "type:2bb9fbaebc82f6bde237",
+    "typeRef": "type:043dea0277add4784b24",
     "required": false,
     "description": "Vertical markers (open orders, liquidation price…)"
   },
@@ -297,7 +297,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "object",
     "typeText": "Partial<DepthChartLabels> | undefined",
-    "typeRef": "type:bfe43b061a9bf8fc9e39",
+    "typeRef": "type:8c37e06ae4cfff2a0e56",
     "required": false,
     "description": "Overrides of the built-in texts, which follow `locale` (English, Chinese, Japanese and French built in)"
   },
@@ -365,7 +365,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "function",
     "typeText": "((price: number) => string) | undefined",
-    "typeRef": "type:af3a11d16a5285f7d796",
+    "typeRef": "type:0aed560c4bb2bc3d696e",
     "parameters": [
       {
         "name": "price",
@@ -388,7 +388,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "function",
     "typeText": "((size: number) => string) | undefined",
-    "typeRef": "type:859bd008e3fdb34377dd",
+    "typeRef": "type:ff37eb6d55e323c0b451",
     "parameters": [
       {
         "name": "size",
@@ -465,7 +465,7 @@ Support: stable
     "source": "packages/charts/src/react/orderbook.tsx",
     "kind": "function",
     "typeText": "((event: DepthChartHoverEvent | null) => void) | undefined",
-    "typeRef": "type:bf35011d16c42d4ee657",
+    "typeRef": "type:5bf8ea30bc8650f149a5",
     "parameters": [
       {
         "name": "event",
@@ -473,7 +473,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "DepthChartHoverEvent | null",
-        "typeRef": "type:f8989570b59b8fd034a9"
+        "typeRef": "type:25dc49c8f1844b62d353"
       }
     ],
     "returnType": {
@@ -488,7 +488,7 @@ Support: stable
     "source": "packages/charts/src/react/orderbook.tsx",
     "kind": "function",
     "typeText": "((event: DepthChartHoverEvent) => void) | undefined",
-    "typeRef": "type:238102e5c3a702452477",
+    "typeRef": "type:29a22e057bd3a633d012",
     "parameters": [
       {
         "name": "event",
@@ -496,7 +496,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "DepthChartHoverEvent",
-        "typeRef": "type:93228135a197867736f8"
+        "typeRef": "type:827840257ae9c4658b14"
       }
     ],
     "returnType": {
@@ -511,7 +511,7 @@ Support: stable
     "source": "packages/charts/src/react/orderbook.tsx",
     "kind": "function",
     "typeText": "((range: number) => void) | undefined",
-    "typeRef": "type:cf89bdba08071929a75d",
+    "typeRef": "type:973463342f713a3b9185",
     "parameters": [
       {
         "name": "range",

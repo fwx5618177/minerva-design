@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -153,7 +153,7 @@ Support: stable
     "source": "packages/charts/src/react/orderbook.tsx",
     "kind": "array",
     "typeText": "readonly MarketTrade[] | undefined",
-    "typeRef": "type:ba4e7f91f7278c3be51d",
+    "typeRef": "type:edf3d4fed366b73e5f82",
     "required": false,
     "description": "Trades, oldest first; when the array grows, only the appended ones are added (other changes replace the tape)"
   },
@@ -182,7 +182,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "array",
     "typeText": "readonly TimeAndSalesColumn[] | undefined",
-    "typeRef": "type:1216b90bee387538e31e",
+    "typeRef": "type:5b7fc37779cc21e3693a",
     "required": false,
     "description": "Columns, left to right"
   },
@@ -288,7 +288,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "function",
     "typeText": "((time: number) => string) | undefined",
-    "typeRef": "type:19e659cd83abf0eb4534",
+    "typeRef": "type:4c22ccd733bbe4832cfb",
     "parameters": [
       {
         "name": "time",
@@ -311,7 +311,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "object",
     "typeText": "Partial<TimeAndSalesLabels> | undefined",
-    "typeRef": "type:d71a5560ea630a0ade30",
+    "typeRef": "type:39001f3ac97ee03a62e3",
     "required": false,
     "description": "Overrides of the built-in texts, which follow `locale` (English, Chinese, Japanese and French built in)"
   },
@@ -379,7 +379,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "function",
     "typeText": "((price: number) => string) | undefined",
-    "typeRef": "type:af3a11d16a5285f7d796",
+    "typeRef": "type:0aed560c4bb2bc3d696e",
     "parameters": [
       {
         "name": "price",
@@ -402,7 +402,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "function",
     "typeText": "((size: number) => string) | undefined",
-    "typeRef": "type:859bd008e3fdb34377dd",
+    "typeRef": "type:ff37eb6d55e323c0b451",
     "parameters": [
       {
         "name": "size",
@@ -479,7 +479,7 @@ Support: stable
     "source": "packages/charts/src/react/orderbook.tsx",
     "kind": "function",
     "typeText": "((row: TimeAndSalesRowEvent | null) => void) | undefined",
-    "typeRef": "type:0680b1a5a1ca09cf9b78",
+    "typeRef": "type:0f249726aafc95343b2b",
     "parameters": [
       {
         "name": "row",
@@ -487,7 +487,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "TimeAndSalesRowEvent | null",
-        "typeRef": "type:9ff0f5328ad6c71fd229"
+        "typeRef": "type:164626f00a66e9d1df9a"
       }
     ],
     "returnType": {
@@ -502,7 +502,7 @@ Support: stable
     "source": "packages/charts/src/react/orderbook.tsx",
     "kind": "function",
     "typeText": "((row: TimeAndSalesRowEvent) => void) | undefined",
-    "typeRef": "type:963303e7973517daf101",
+    "typeRef": "type:80abb06a095c45fe86b6",
     "parameters": [
       {
         "name": "row",
@@ -510,7 +510,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "TimeAndSalesRowEvent",
-        "typeRef": "type:4f563b74fab898e065cd"
+        "typeRef": "type:60a122159f8109824ff7"
       }
     ],
     "returnType": {
@@ -525,7 +525,7 @@ Support: stable
     "source": "packages/charts/src/react/orderbook.tsx",
     "kind": "function",
     "typeText": "((paused: boolean) => void) | undefined",
-    "typeRef": "type:496d3d0551c496d87964",
+    "typeRef": "type:cbe80fb58587953548d8",
     "parameters": [
       {
         "name": "paused",

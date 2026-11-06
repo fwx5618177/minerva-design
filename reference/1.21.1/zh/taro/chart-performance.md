@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.21.1",
-  "sourceCommit": "fce5fba2180337e022f161113a8d4d5b12c50b7e",
-  "sourceDigest": "sha256:ce2a20ef1952cc69de92d0733342905020d5135facebdf802e90ddda090ce31c",
-  "referenceSourceDigest": "sha256:dd651b3ac3d2ec89388783f5919aefe9a683490b2f63c8d9a9142991a95a6b4c"
+  "sourceCommit": "8b898b8bac966669d23d1fba972e2a3289cdb5b5",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:8ed3473bb098d663e523782b06fce57a42cde419daa8bbcc5c6b1f0e37e3e50e"
 }
 ```
 
@@ -277,6 +277,24 @@ DOM 只在发生变化时更新：图例仅在条目变化时重建，指针停�
 在 React Native 上，图表只用 View 绘制，因此图形数量有上限：所有折线合计约 1,200 个点，每个系列 800 个散点（合计 2,000 个），每个系列 600 根柱（合计 1,500 个矩形，每根 K 线计为 2 个，每个热力图单元格计为 1 个），每个面积 200 个竖条。超出预算后，散点按单元格合并、柱按像素列合并——图形整体仍然正确，但细节会丢失；而且数据仍在 JavaScript 中处理，因此请先聚合。
 
 自定义渲染器可以通过 createChartController 和 scenePrimitives 使用相同的预算：scenePrimitives(scene, { maxDots, maxBars, columnWidth, dotCell }) 返回降采样后的图形（默认每个系列 4000 个点和 2000 根柱，列宽 1 px）。
+
+### 高频悬停：同帧合并
+
+通过公开引擎在同一帧发送 240 次交替移动，仅对最终位置做命中检测和提示框渲染。按下、拖动、松开仍走同步交互路径。计数来自实际浏览器，不代表所有数据规模的帧率保证。
+
+运行 240 次移动
+
+指针移动次数
+
+悬停通知次数
+
+提示框渲染次数
+
+事件派发与等待帧（毫秒）
+
+最终命中点
+
+悬停帧合并性能测试
 
 ```ts
 import { createChart } from "minerva-design/charts/core";
