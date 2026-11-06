@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "loading-state",
+  "title": "LoadingState 加载状态",
+  "description": "页面、路由与区块的加载展示：装饰性的 ProgressIndicator 旋转图标加可见文字，位于唯一的 polite 状态区域中。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "LoadingState",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "LoadingState"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "source": "packages/react/src/components/LoadingState/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Visible text, which is also what the status region announces"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/LoadingState/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "LoadingStateSize | undefined",
+            "typeRef": "type:3726d1ab9f3b6eb4edaf",
+            "default": "medium",
+            "required": false,
+            "description": "Minimum height: small for a section, medium for a page or route, large for tall content such as a calendar"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "LoadingStateProps": {
+      "source": "react/src/components/LoadingState/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLDivElement>, \"children\">"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": "\"Loading...\" (localized)",
+          "description": "Visible text, which is also what the status region announces"
+        },
+        {
+          "name": "size",
+          "type": "LoadingStateSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Minimum height: small for a section, medium for a page or route, large for tall content such as a calendar"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root <div> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:LoadingState": {
+      "kind": "cssVars",
+      "source": "react/src/components/LoadingState",
+      "vars": [
+        {
+          "name": "--loading-state-gap",
+          "description": "Space between the spinner and the label"
+        },
+        {
+          "name": "--loading-state-padding",
+          "description": "Padding"
+        },
+        {
+          "name": "--loading-state-min-height",
+          "description": "Minimum height (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--loading-state-color",
+          "description": "Color of the label and the spinner"
+        },
+        {
+          "name": "--loading-state-font-size",
+          "description": "Font size of the label"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/loading-state/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/loading-state/demos/basic.tsx": "import { LoadingState } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return <LoadingState />;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "默认文字已本地化，读屏播报的就是可见文字。"
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/loading-state/demos/sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/loading-state/demos/sizes.tsx": "import { LoadingState } from \"minerva-design\";\n\nexport default function SizesDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 16 }}>\n      <LoadingState size=\"small\" label=\"Loading records...\" />\n      <LoadingState size=\"large\" label=\"Loading calendar...\" />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "尺寸",
+      "description": "small、medium、large 分别对应 64、160、240 px 的最小高度。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "LoadingState 加载状态",
+      "description": "页面、路由与区块的加载展示：装饰性的 ProgressIndicator 旋转图标加可见文字，位于唯一的 polite 状态区域中。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "默认文字已本地化，读屏播报的就是可见文字。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "small、medium、large 分别对应 64、160、240 px 的最小高度。"
+        }
+      },
+      "api": {
+        "LoadingStateProps": {
+          "label": "可见文字，同时由状态区域播报",
+          "size": "最小高度档位",
+          "ref": "根 <div> 元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--loading-state-gap": "加载图标与标签之间的间距",
+        "--loading-state-padding": "内边距",
+        "--loading-state-min-height": "最小高度（所有尺寸；默认为对应尺寸的高度）",
+        "--loading-state-color": "标签与加载图标的颜色",
+        "--loading-state-font-size": "标签的字号"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "在礼貌型 status 区域中，旋转指示器旁显示可见标签（默认为本地化的“加载中...”）。"
+          },
+          "sizes": {
+            "title": "尺寸",
+            "description": "small、medium 和 large 设置最小高度；默认插槽可放置富文本标签。"
+          },
+          "section": {
+            "title": "加载区块",
+            "description": "该元素不会设置 aria-busy：加载期间请将容器标记为忙碌，完成后用内容替换占位。"
+          }
+        },
+        "minerva-loading-state": {
+          "slots": {
+            "default": "标签（label 属性的替代方式）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

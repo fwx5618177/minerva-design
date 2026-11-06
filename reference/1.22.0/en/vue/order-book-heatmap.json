@@ -1,0 +1,916 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "order-book-heatmap",
+  "title": "Order book heatmap",
+  "description": "Bookmap-style liquidity heatmap: resting size by time and price drawn by the GPU, best bid and ask lines, trades as bubbles sized by volume, a profile of the current book, zoom, pan and a crosshair readout. Streams append one column per interval in a sliding window.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {
+    "read": {
+      "title": "How to read it",
+      "text": "The heatmap is a recording of the order book: every column is a snapshot of the book at one moment, laid out from left to right, with now at the right edge.",
+      "axes": "The horizontal axis is time (newest on the right), the vertical axis is price. Hover anywhere: the crosshair reads the resting size at that price and time.",
+      "color": "The color of a cell is the size resting at that price at that time: dark means almost nothing, brighter colors (blue → cyan → yellow → white) mean more. The legend at the top left gives the size range and unit of the colors.",
+      "walls": "Bright horizontal lines are large orders that stay in the book (walls). Where a line ends, the order was pulled or filled: if the price line reaches the end of the wall, it was filled.",
+      "lines": "The red and green lines that follow the price are the best ask and the best bid, the gap between them is the spread. On the price axis the filled red and green tags are the current best ask and bid, the outlined tag is the last trade.",
+      "bubbles": "Dots are trades: green for aggressive buys (lifting asks), red for aggressive sells (hitting bids), their area grows with the volume traded during the column, so large bubbles are large trades. colorConvention=\"red-up\" swaps the two colors.",
+      "profile": "The bars on the right are the current book: asks in red above, bids in green below, longer bars mean more size; the scale below them is the size.",
+      "patterns": {
+        "title": "What to look for",
+        "hold": "Support and resistance: the price touches a bright line several times and turns back, the large order absorbs it.",
+        "pull": "Pulled orders (spoofing): a bright line disappears as the price comes close without any trade bubble there, the order was cancelled, not filled.",
+        "sweep": "Sweeps: a burst of large bubbles crosses several prices, the price line jumps and the liquidity on its way goes dark.",
+        "thin": "Thin liquidity: a large dark area near the price means few resting orders, the price can move through it quickly."
+      },
+      "candles": "Candles: supply actual OHLC bars on the same millisecond time and price axes. Missing periods remain empty; book snapshots are never used to invent executions. The last-price line uses the newest supplied trade or newer candle close.",
+      "navigation": "History navigation: zooming and panning stop following. Select a retained time range in the navigator; reset restores the current market. getView / setView and viewChange share one viewport model.",
+      "intensity": "Intensity filtering: intensityRange selects a 0–1 interval after color mapping. It does not change raw resting sizes, tooltip values or the automatic reference scale.",
+      "dataTitle": "Data semantics",
+      "dataSemantics": "This component displays resting liquidity and supplied execution candles. Examples use reproducible simulated matching. A liquidation heatmap requires its own liquidation data; resting order size is not liquidation size."
+    },
+    "data": {
+      "aria": "BTC/USDT liquidity heatmap",
+      "rendererIs": "Renderer: {{value}}",
+      "renderers": {
+        "webgpu": "WebGPU",
+        "webgl2": "WebGL 2",
+        "webgl": "WebGL",
+        "canvas2d": "Canvas 2D"
+      },
+      "following": "Following the market",
+      "panned": "Free view (zoomed or panned)",
+      "followMarket": "Follow the market",
+      "scale": "Color scale",
+      "scaleLog": "Logarithmic",
+      "scaleSqrt": "Square root",
+      "scaleLinear": "Linear",
+      "contrast": "Contrast",
+      "times": "×{{value}}",
+      "colors": "Color convention",
+      "redUp": "Red up, green down",
+      "greenUp": "Green up, red down",
+      "volumeAt": "Hovered column: {{buys}} BTC bought, {{sells}} BTC sold",
+      "volumeHint": "Hover a column to read its traded volume.",
+      "rowHeight": "Row height",
+      "priceSpan": "Price span",
+      "usdtValue": "{{value}} USDT",
+      "auto": "Auto",
+      "fitBook": "Fit the book",
+      "cellReadout": "{{time}} · {{price}} · {{size}} BTC {{side}} · {{buys}} BTC bought, {{sells}} BTC sold",
+      "priceRange": "{{low}} – {{high}}",
+      "sideBid": "on the bid side",
+      "sideAsk": "on the ask side",
+      "sideSpread": "inside the spread",
+      "cellHint": "Hover a cell to inspect it.",
+      "timeWindow": "Time window",
+      "liveFeed": "Live feed",
+      "clearHistory": "Clear history",
+      "pausedAt": "Paused at {{time}}.",
+      "resumedAt": "Resumed at {{time}}.",
+      "clearedAt": "History cleared at {{time}}.",
+      "windowStatus": "{{window}} on screen out of {{history}} kept.",
+      "pair": "BTC/USDT",
+      "lastPrice": "Last {{value}}",
+      "spreadIs": "Spread {{value}}",
+      "tradesOnTape": "{{value}} trades on the tape",
+      "bookAria": "BTC/USDT order book",
+      "tapeAria": "BTC/USDT trades",
+      "perpName": "BTC-USD perpetual",
+      "contractSize": "1 contract = {{value}} BTC",
+      "fundingRate": "Funding {{rate}}",
+      "funding": "Funding {{rate}} at {{time}}, in {{countdown}}",
+      "contracts": "contracts",
+      "restingContracts": "Resting",
+      "takerBuys": "Taker buys",
+      "takerSells": "Taker sells",
+      "perpAria": "BTC-USD perpetual liquidity heatmap",
+      "perpReadout": "{{price}}: {{contracts}} contracts resting (≈ {{notional}})",
+      "perpHint": "Hover the heatmap to read the resting contracts and their value.",
+      "simulated": "SIMULATED MARKET",
+      "showCandles": "Execution candles",
+      "executionsOnly": "Each 2-second candle aggregates actual executions from this seeded matching engine. Empty buckets are omitted; resting orders never become candles.",
+      "intensityFilter": "Visible intensity range",
+      "filterHint": "Filter the normalized color intensity of resting liquidity. This changes visibility, not book sizes or executed volume.",
+      "historyNavigator": "Retained execution history",
+      "navigatorHint": "Move the range handles to inspect retained history. Follow the market restores the latest time and automatic price centering.",
+      "liquidityTerminal": "LIQUIDITY TERMINAL",
+      "latest": "Latest execution",
+      "bidDepth": "Bid depth",
+      "askDepth": "Ask depth",
+      "imbalance": "Book imbalance",
+      "bidWall": "Largest bid wall",
+      "askWall": "Largest ask wall",
+      "palette": "Palette",
+      "ocean": "Ocean",
+      "ember": "Ember",
+      "resetViewport": "Reset view",
+      "currentBook": "CURRENT ORDER BOOK",
+      "terminalHint": "Seeded simulation, not an external exchange feed. All six metrics, execution candles and the ladder use the same matching engine. Summary metrics refresh once per second; book updates stream independently.",
+      "candlesAria": "Simulated liquidity with execution candles",
+      "filterAria": "Simulated liquidity with intensity filter",
+      "navigationAria": "Navigable simulated liquidity history",
+      "terminalAria": "Simulated BTC USDT liquidity terminal",
+      "ladderAria": "Current simulated BTC USDT order book"
+    }
+  },
+  "components": [
+    {
+      "name": "OrderBookHeatmap",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "OrderBookHeatmap"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean",
+            "required": false,
+            "description": "Color legend with its size range at the top left (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean",
+            "required": false,
+            "description": "Hover readout (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "interactive",
+            "type": "boolean",
+            "required": false,
+            "description": "Zoom and pan (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "candles",
+            "type": "boolean",
+            "required": false,
+            "description": "Candle overlay (default true when bars are supplied)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "lastPriceLine",
+            "type": "boolean",
+            "required": false,
+            "description": "Last close price line (default true)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "bubbles",
+            "type": "boolean",
+            "required": false,
+            "description": "Trades as bubbles (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "bestLines",
+            "type": "boolean",
+            "required": false,
+            "description": "Best bid / ask lines (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "profile",
+            "type": "boolean",
+            "required": false,
+            "description": "Size profile of the current book at the right (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "labels",
+            "type": "Partial<OrderBookHeatmapLabels>",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`",
+            "typeText": "Partial<OrderBookHeatmapLabels>"
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "Locale of the numbers and texts (`\"zh-CN\"`); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "colorScale",
+            "type": "OrderBookHeatmapScale",
+            "required": false,
+            "description": "Scale of the sizes to the colors (default `log`)",
+            "typeText": "OrderBookHeatmapScale"
+          },
+          {
+            "name": "bars",
+            "type": "TradingBarsInput",
+            "required": false,
+            "description": "Candle history; property only, applied through setBars",
+            "typeText": "TradingBarsInput"
+          },
+          {
+            "name": "maxSize",
+            "type": "number",
+            "required": false,
+            "description": "Size drawn with the last color; follows the data by default",
+            "typeText": "number"
+          },
+          {
+            "name": "colors",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Colors from no liquidity to `maxSize` (any CSS colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "book",
+            "type": "OrderBookSnapshot",
+            "required": false,
+            "description": "Book, applied when the object changes (stream updates through the handle's `applyDeltas`)",
+            "typeText": "OrderBookSnapshot"
+          },
+          {
+            "name": "upColor",
+            "type": "string",
+            "required": false,
+            "description": "Color of the bids / buys (any CSS color); from `colorConvention` by default",
+            "typeText": "string"
+          },
+          {
+            "name": "downColor",
+            "type": "string",
+            "required": false,
+            "description": "Color of the asks / sells",
+            "typeText": "string"
+          },
+          {
+            "name": "colorConvention",
+            "type": "OrderBookColorConvention",
+            "required": false,
+            "description": "`red-up` swaps the default colors (default `green-up`)",
+            "typeText": "OrderBookColorConvention"
+          },
+          {
+            "name": "pricePrecision",
+            "type": "number",
+            "required": false,
+            "description": "Decimals of the prices; detected from the data by default",
+            "typeText": "number"
+          },
+          {
+            "name": "sizePrecision",
+            "type": "number",
+            "required": false,
+            "description": "Decimals of the sizes; detected from the data by default",
+            "typeText": "number"
+          },
+          {
+            "name": "formatPrice",
+            "type": "((price: number) => string)",
+            "required": false,
+            "description": "Formats the prices; overrides `pricePrecision`",
+            "typeText": "((price: number) => string)"
+          },
+          {
+            "name": "formatSize",
+            "type": "((size: number) => string)",
+            "required": false,
+            "description": "Formats the sizes; overrides `sizePrecision`",
+            "typeText": "((size: number) => string)"
+          },
+          {
+            "name": "fontFamily",
+            "type": "string",
+            "required": false,
+            "description": "Font family of the texts (default: the theme font)",
+            "typeText": "string"
+          },
+          {
+            "name": "fontSize",
+            "type": "number",
+            "required": false,
+            "description": "Font size of the texts, in pixels (default 12)",
+            "typeText": "number"
+          },
+          {
+            "name": "trades",
+            "type": "readonly MarketTrade[]",
+            "required": false,
+            "description": "Trades; when the array grows, only the appended ones are added",
+            "typeText": "readonly MarketTrade[]"
+          },
+          {
+            "name": "intensityRange",
+            "type": "readonly [number, number]",
+            "required": false,
+            "description": "Normalized liquidity intensity bounds, 0..1",
+            "typeText": "readonly [number, number]"
+          },
+          {
+            "name": "maxColumns",
+            "type": "number",
+            "required": false,
+            "description": "Maximum retained columns (default 6000)",
+            "typeText": "number"
+          },
+          {
+            "name": "maxBars",
+            "type": "number",
+            "required": false,
+            "description": "Maximum retained candles (default 20000)",
+            "typeText": "number"
+          },
+          {
+            "name": "tickSize",
+            "type": "number",
+            "required": false,
+            "description": "Price step of the rows; detected from the book by default",
+            "typeText": "number"
+          },
+          {
+            "name": "interval",
+            "type": "number",
+            "required": false,
+            "description": "Duration of a column, in ms (default 100)",
+            "typeText": "number"
+          },
+          {
+            "name": "window",
+            "type": "number",
+            "required": false,
+            "description": "Time shown, in ms (default 60000)",
+            "typeText": "number"
+          },
+          {
+            "name": "history",
+            "type": "number",
+            "required": false,
+            "description": "Time kept for panning back, in ms (default 300000)",
+            "typeText": "number"
+          },
+          {
+            "name": "depth",
+            "type": "number",
+            "required": false,
+            "description": "Price levels kept on each side (default 160)",
+            "typeText": "number"
+          },
+          {
+            "name": "priceSpan",
+            "type": "number",
+            "required": false,
+            "description": "Price range shown around the mid; from `depth` by default",
+            "typeText": "number"
+          },
+          {
+            "name": "contrast",
+            "type": "number",
+            "required": false,
+            "description": "Contrast of the colors (default 1)",
+            "typeText": "number"
+          },
+          {
+            "name": "sizeUnit",
+            "type": "string",
+            "required": false,
+            "description": "Unit after the sizes of the legend and tooltip, e.g. \"BTC\"",
+            "typeText": "string"
+          },
+          {
+            "name": "bubbleSize",
+            "type": "number",
+            "required": false,
+            "description": "Diameter of the largest bubble, in pixels (default 28)",
+            "typeText": "number"
+          },
+          {
+            "name": "bubbleVolume",
+            "type": "number",
+            "required": false,
+            "description": "Trade volume of the largest bubble; follows the data by default",
+            "typeText": "number"
+          },
+          {
+            "name": "timeZone",
+            "type": "ChartTimeZone",
+            "required": false,
+            "description": "Clock of the time axis and the tooltip: the local time or UTC, the clock of most exchanges (default `local`)",
+            "typeText": "ChartTimeZone"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "type": "[event: OrderBookHeatmapHoverEvent | null]",
+            "typeText": "[event: OrderBookHeatmapHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "OrderBookHeatmapHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "type": "[renderer: ChartRendererKind]",
+            "typeText": "[renderer: ChartRendererKind]",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "followChange",
+            "type": "[follow: boolean]",
+            "typeText": "[follow: boolean]",
+            "parameters": [
+              {
+                "name": "follow",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "viewChange",
+            "type": "[data: OrderBookHeatmapViewData]",
+            "typeText": "[data: OrderBookHeatmapViewData]",
+            "parameters": [
+              {
+                "name": "data",
+                "position": 0,
+                "typeText": "OrderBookHeatmapViewData",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "candles-navigation",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/order-book-heatmap/vue/candles-navigation.vue",
+      "files": {
+        "apps/docs/src/docs/pages/order-book-heatmap/vue/candles-navigation.vue": "<script setup lang=\"ts\">\nimport { computed, onMounted, ref } from \"vue\";\nimport { Button, Slider, useI18n, type SliderValue } from \"minerva-design/vue\";\nimport {\n  OrderBookHeatmap,\n  type OrderBookHeatmapHandle,\n  type OrderBookHeatmapViewData,\n} from \"minerva-design/vue/charts\";\nimport {\n  createFrameworkHistory,\n  getFrameworkLabels,\n} from \"../framework-history\";\n\nconst { language } = useI18n();\nconst text = computed(() => getFrameworkLabels(language.value));\nconst history = createFrameworkHistory();\nconst heatmap = ref<OrderBookHeatmapHandle>();\nconst minimum = ref<SliderValue>(0);\nconst intensity = computed<readonly [number, number]>(() => [\n  Number(minimum.value) / 100,\n  1,\n]);\nconst view = ref<OrderBookHeatmapViewData | null>(null);\nfunction show(seconds: number) {\n  heatmap.value?.setView({\n    time: [history.end - seconds * 1000, history.end],\n    price: [98, 102],\n  });\n}\nonMounted(() => {\n  for (const book of history.books) heatmap.value?.setBook(book);\n  heatmap.value?.addTrades(history.trades);\n  heatmap.value?.setBars(history.bars);\n  show(30);\n});\n</script>\n\n<template>\n  <div style=\"display: grid; gap: 12px; width: 100%\">\n    <p>{{ text.source }}</p>\n    <div style=\"display: flex; gap: 8px; flex-wrap: wrap\">\n      <Button size=\"small\" variant=\"outline\" @click=\"show(10)\">{{\n        text.latest\n      }}</Button>\n      <Button size=\"small\" variant=\"outline\" @click=\"show(30)\">{{\n        text.full\n      }}</Button>\n      <Button size=\"small\" @click=\"heatmap?.resetView()\">{{\n        text.follow\n      }}</Button>\n    </div>\n    <Slider\n      v-model=\"minimum\"\n      :aria-label=\"text.minimum\"\n      :min=\"0\"\n      :max=\"90\"\n      :step=\"5\"\n      show-value\n      style=\"max-width: 320px\"\n    />\n    <OrderBookHeatmap\n      ref=\"heatmap\"\n      :height=\"400\"\n      :interval=\"250\"\n      :window=\"30000\"\n      :history=\"60000\"\n      :intensity-range=\"intensity\"\n      :max-bars=\"30\"\n      :max-columns=\"240\"\n      @view-change=\"view = $event\"\n    />\n    <output aria-live=\"polite\"\n      >{{ view?.view.follow ? text.following : text.manual }} ·\n      {{ text.minimum }} {{ minimum }}% ·\n      {{\n        view ? Math.round((view.view.time[1] - view.view.time[0]) / 1000) : 30\n      }}\n      {{ text.visible }}</output\n    >\n  </div>\n</template>\n",
+        "apps/docs/src/docs/pages/order-book-heatmap/framework-history.ts": "import type {\n  MarketTrade,\n  OrderBookSnapshot,\n  TradingBar,\n} from \"minerva-design/charts/core\";\n\n/** Finite simulated books and executions; candles are explicitly supplied from executions. */\nexport function createFrameworkHistory(now = Date.now()) {\n  const end = Math.floor(now / 1000) * 1000;\n  const start = end - 30_000;\n  const trades: MarketTrade[] = [];\n  const books: OrderBookSnapshot[] = [];\n  const bars: TradingBar[] = [];\n  const round = (value: number) => Math.round(value * 100) / 100;\n  for (let i = 0; i < 120; i += 1) {\n    const time = start + i * 250;\n    const price = round(\n      100 + Math.sin(i / 11) * 0.7 + Math.sin(i * 1.7) * 0.12,\n    );\n    const size = 1 + ((i * 7) % 9);\n    trades.push({ time, price, size, side: i % 3 ? \"buy\" : \"sell\" });\n    const side = (sign: number) =>\n      Array.from(\n        { length: 36 },\n        (_, level) =>\n          [\n            round(price + sign * (level + 1) * 0.05),\n            2 + ((level * 13 + i * 7) % 19) + (level % 11 === 0 ? 65 : 0),\n          ] as [number, number],\n      );\n    books.push({ time, bids: side(-1), asks: side(1) });\n    const bucket = Math.floor(i / 4);\n    if (i % 4 === 0)\n      bars.push({\n        time: start + bucket * 1000,\n        open: price,\n        high: price,\n        low: price,\n        close: price,\n        volume: size,\n      });\n    else {\n      const bar = bars[bucket];\n      bar.high = Math.max(bar.high, price);\n      bar.low = Math.min(bar.low, price);\n      bar.close = price;\n      bar.volume = (bar.volume ?? 0) + size;\n    }\n  }\n  return { start, end, trades, books, bars };\n}\n\n/** UI copy shared by the native framework examples, keyed by configured language. */\nexport const frameworkHeatmapLabels = {\n  en: {\n    source:\n      \"Simulated resting book · 30 supplied OHLC candles aggregated from simulated executions.\",\n    latest: \"Latest 10s\",\n    full: \"Full 30s\",\n    follow: \"Follow market\",\n    following: \"Following market\",\n    manual: \"Manual view\",\n    minimum: \"Minimum liquidity intensity (%)\",\n    visible: \"s visible\",\n  },\n  zh: {\n    source: \"模拟挂单簿 · 显式传入 30 根由模拟成交聚合的 OHLC K 线。\",\n    latest: \"最近 10 秒\",\n    full: \"完整 30 秒\",\n    follow: \"跟随行情\",\n    following: \"正在跟随行情\",\n    manual: \"手动视图\",\n    minimum: \"最低流动性强度（%）\",\n    visible: \"秒可见\",\n  },\n  ja: {\n    source:\n      \"模擬指値注文板 · 模擬約定から集計した OHLC ローソク足 30 本を明示的に入力。\",\n    latest: \"直近 10 秒\",\n    full: \"全 30 秒\",\n    follow: \"相場に追従\",\n    following: \"相場に追従中\",\n    manual: \"手動表示\",\n    minimum: \"流動性強度の下限（%）\",\n    visible: \"秒を表示\",\n  },\n  fr: {\n    source:\n      \"Carnet d’ordres simulé · 30 bougies OHLC fournies, agrégées à partir d’exécutions simulées.\",\n    latest: \"10 dernières s\",\n    full: \"30 s complètes\",\n    follow: \"Suivre le marché\",\n    following: \"Suivi du marché\",\n    manual: \"Vue manuelle\",\n    minimum: \"Intensité minimale de liquidité (%)\",\n    visible: \"s visibles\",\n  },\n};\n\nexport function getFrameworkLabels(locale: string) {\n  const language = locale\n    .toLowerCase()\n    .split(/[-_]/)[0] as keyof typeof frameworkHeatmapLabels;\n  return frameworkHeatmapLabels[language] ?? frameworkHeatmapLabels.en;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "candles-navigation",
+      "description": ""
+    },
+    {
+      "id": "liquidity",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/order-book-heatmap/vue/liquidity.vue",
+      "files": {
+        "apps/docs/src/docs/pages/order-book-heatmap/vue/liquidity.vue": "<script setup lang=\"ts\">\n// <OrderBookHeatmap>: resting size over time and price, drawn by the GPU;\n// the book (handle's `setBook`, with its time) closes a column, trades\n// (`addTrades`) are bubbles sized by volume. Zoom or pan to stop following.\nimport { onBeforeUnmount, onMounted, ref } from \"vue\";\nimport {\n  OrderBookHeatmap,\n  type OrderBookHeatmapHandle,\n} from \"minerva-design/vue/charts\";\n\nconst fraction = (value: number) => value - Math.floor(value);\nconst round = (value: number) => Math.round(value * 100) / 100;\n// a side of the book around a moving mid price, generated deterministically\nconst side = (mid: number, sign: number, seed: number) => ({\n  price: Array.from({ length: 60 }, (_, i) =>\n    round(mid + sign * 0.05 * (i + 1)),\n  ),\n  size: Array.from({ length: 60 }, (_, i) =>\n    Math.round(\n      2 +\n        fraction(Math.sin((i + seed) * 12.9898) * 43758.5453) * 18 +\n        (i % 13 === 12 ? 80 : 0),\n    ),\n  ),\n});\n// the book and a trade at a tick (a new tick every 200 ms)\nconst snapshot = (tick: number) => {\n  const mid = round(100 + Math.sin(tick / 40) * 0.6);\n  return {\n    book: {\n      bids: side(mid, -1, tick % 7),\n      asks: side(mid, 1, (tick + 3) % 7),\n      time: Date.now(),\n    },\n    trade: {\n      time: Date.now(),\n      price: mid,\n      size: Math.round(1 + fraction(Math.sin(tick * 9.1) * 43758.5453) * 12),\n      side: tick % 3 ? (\"buy\" as const) : (\"sell\" as const),\n    },\n  };\n};\n\nconst heatmap = ref<OrderBookHeatmapHandle>();\nlet tick = 0;\nlet timer = 0;\nonMounted(() => {\n  timer = window.setInterval(() => {\n    tick += 1;\n    const { book, trade } = snapshot(tick);\n    heatmap.value?.setBook(book);\n    heatmap.value?.addTrades(trade);\n  }, 200);\n});\nonBeforeUnmount(() => window.clearInterval(timer));\n</script>\n\n<template>\n  <OrderBookHeatmap ref=\"heatmap\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "liquidity",
+      "description": ""
+    },
+    {
+      "id": "red-up",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/order-book-heatmap/vue/red-up.vue",
+      "files": {
+        "apps/docs/src/docs/pages/order-book-heatmap/vue/red-up.vue": "<script setup lang=\"ts\">\n// `color-convention=\"red-up\"` (mainland China): buys in red, sells in\n// green; a square-root color scale shows more of the small orders, without\n// the size profile on the right.\nimport { onBeforeUnmount, onMounted, ref } from \"vue\";\nimport {\n  OrderBookHeatmap,\n  type OrderBookHeatmapHandle,\n} from \"minerva-design/vue/charts\";\n\nconst fraction = (value: number) => value - Math.floor(value);\nconst round = (value: number) => Math.round(value * 100) / 100;\n// a side of the book around a moving mid price, generated deterministically\nconst side = (mid: number, sign: number, seed: number) => ({\n  price: Array.from({ length: 60 }, (_, i) =>\n    round(mid + sign * 0.05 * (i + 1)),\n  ),\n  size: Array.from({ length: 60 }, (_, i) =>\n    Math.round(\n      2 +\n        fraction(Math.sin((i + seed) * 12.9898) * 43758.5453) * 18 +\n        (i % 13 === 12 ? 80 : 0),\n    ),\n  ),\n});\n// the book and a trade at a tick (a new tick every 200 ms)\nconst snapshot = (tick: number) => {\n  const mid = round(100 + Math.sin(tick / 40) * 0.6);\n  return {\n    book: {\n      bids: side(mid, -1, tick % 7),\n      asks: side(mid, 1, (tick + 3) % 7),\n      time: Date.now(),\n    },\n    trade: {\n      time: Date.now(),\n      price: mid,\n      size: Math.round(1 + fraction(Math.sin(tick * 9.1) * 43758.5453) * 12),\n      side: tick % 3 ? (\"buy\" as const) : (\"sell\" as const),\n    },\n  };\n};\n\nconst heatmap = ref<OrderBookHeatmapHandle>();\nlet tick = 0;\nlet timer = 0;\nonMounted(() => {\n  timer = window.setInterval(() => {\n    tick += 1;\n    const { book, trade } = snapshot(tick);\n    heatmap.value?.setBook(book);\n    heatmap.value?.addTrades(trade);\n  }, 200);\n});\nonBeforeUnmount(() => window.clearInterval(timer));\n</script>\n\n<template>\n  <OrderBookHeatmap\n    ref=\"heatmap\"\n    color-convention=\"red-up\"\n    color-scale=\"sqrt\"\n    :profile=\"false\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "red-up",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Order book heatmap",
+      "description": "Bookmap-style liquidity heatmap: resting size by time and price drawn by the GPU, best bid and ask lines, trades as bubbles sized by volume, a profile of the current book, zoom, pan and a crosshair readout. Streams append one column per interval in a sliding window.",
+      "read": {
+        "title": "How to read it",
+        "text": "The heatmap is a recording of the order book: every column is a snapshot of the book at one moment, laid out from left to right, with now at the right edge.",
+        "axes": "The horizontal axis is time (newest on the right), the vertical axis is price. Hover anywhere: the crosshair reads the resting size at that price and time.",
+        "color": "The color of a cell is the size resting at that price at that time: dark means almost nothing, brighter colors (blue → cyan → yellow → white) mean more. The legend at the top left gives the size range and unit of the colors.",
+        "walls": "Bright horizontal lines are large orders that stay in the book (walls). Where a line ends, the order was pulled or filled: if the price line reaches the end of the wall, it was filled.",
+        "lines": "The red and green lines that follow the price are the best ask and the best bid, the gap between them is the spread. On the price axis the filled red and green tags are the current best ask and bid, the outlined tag is the last trade.",
+        "bubbles": "Dots are trades: green for aggressive buys (lifting asks), red for aggressive sells (hitting bids), their area grows with the volume traded during the column, so large bubbles are large trades. colorConvention=\"red-up\" swaps the two colors.",
+        "profile": "The bars on the right are the current book: asks in red above, bids in green below, longer bars mean more size; the scale below them is the size.",
+        "patterns": {
+          "title": "What to look for",
+          "hold": "Support and resistance: the price touches a bright line several times and turns back, the large order absorbs it.",
+          "pull": "Pulled orders (spoofing): a bright line disappears as the price comes close without any trade bubble there, the order was cancelled, not filled.",
+          "sweep": "Sweeps: a burst of large bubbles crosses several prices, the price line jumps and the liquidity on its way goes dark.",
+          "thin": "Thin liquidity: a large dark area near the price means few resting orders, the price can move through it quickly."
+        },
+        "candles": "Candles: supply actual OHLC bars on the same millisecond time and price axes. Missing periods remain empty; book snapshots are never used to invent executions. The last-price line uses the newest supplied trade or newer candle close.",
+        "navigation": "History navigation: zooming and panning stop following. Select a retained time range in the navigator; reset restores the current market. getView / setView and viewChange share one viewport model.",
+        "intensity": "Intensity filtering: intensityRange selects a 0–1 interval after color mapping. It does not change raw resting sizes, tooltip values or the automatic reference scale.",
+        "dataTitle": "Data semantics",
+        "dataSemantics": "This component displays resting liquidity and supplied execution candles. Examples use reproducible simulated matching. A liquidation heatmap requires its own liquidation data; resting order size is not liquidation size."
+      },
+      "demos": {
+        "basic": {
+          "title": "Backfill and live",
+          "description": "The book at the start of the history goes to setBook, then every recorded update with its exchange time (applyDeltas, addTrades): the heatmap samples it into one column per interval. The same calls then stream live. Drag to pan, Ctrl/⌘ + wheel zooms time, Ctrl/⌘ + Shift + wheel or dragging the price axis zooms prices, a double click follows the market again."
+        },
+        "live": {
+          "title": "High-frequency stream",
+          "description": "A simulated fast market: about 100 book updates a second, one column every 50 ms, the last 15 seconds on screen. It reads like the charts above: bright lines are large orders, dots are trades, the bars on the right are the current book. Dragging or zooming stops following the market; Follow the market or a double click returns to now. The cells are drawn by the GPU (WebGPU or WebGL, Canvas2D otherwise): onRendererChange reports the backend, onFollowChange whether the view follows the market."
+        },
+        "color-scale": {
+          "title": "Color scale",
+          "description": "colorScale maps sizes to colors: sqrt keeps typical levels dim and lets significant liquidity glow, linear keeps only the walls, log reveals thin liquidity next to them. contrast multiplies the sizes first; maxSize fixes the hottest size (the 99th percentile of the visible data otherwise)."
+        },
+        "large-trades": {
+          "title": "Large trades",
+          "description": "The trades of a column are summed per side into one bubble, green for buys and red for sells (as the legend shows), whose area grows with the volume; bubbleVolume is the volume of the largest bubble (bubbleSize pixels). A lower contrast dims the book so the sweeps stand out; onHover reads the bought and sold volume of the hovered column."
+        },
+        "dark": {
+          "title": "Dark terminal",
+          "description": "Colors come from the CSS variables of the container; colors sets the ramp (coldest first, after the floor color): the classic blue to red liquidity ramp on a terminal palette, with the time axis in UTC (timeZone) like most exchanges."
+        },
+        "compact": {
+          "title": "Compact (mobile)",
+          "description": "A phone card: 30 seconds, profile={false} and smaller bubbles. Drag to pan, double tap to follow the market again."
+        },
+        "red-up": {
+          "title": "Red up, green down",
+          "description": "colorConvention=\"red-up\": red buy bubbles and best bid line, green sells and best ask line."
+        },
+        "price-resolution": {
+          "title": "Price resolution and hover inspector",
+          "description": "tickSize sets the height of a price row (a new value resamples the replayed history), priceSpan fixes the visible price range instead of fitting the best bid and ask. With tooltip={false}, onHover drives a custom readout: column time, price row, resting size and side, traded volume."
+        },
+        "time-window": {
+          "title": "Time window, pause and clear",
+          "description": "window picks how much of the five recorded minutes (history) is on screen, without resampling. The switch stops the feed loop: the market resumes where it was, without a gap. clear() drops the columns, then setBook starts again from the current book."
+        },
+        "linked": {
+          "title": "Heatmap, ladder and tape",
+          "description": "One recorded minute backfills the three widgets differently: the heatmap replays every update (applyDeltas, addTrades), the tape gets all its trades with setTrades, the ladder only the book of now. Each live message then goes to all three, like one exchange WebSocket."
+        },
+        "perpetual": {
+          "title": "Perpetual futures in contracts",
+          "description": "A BTC perpetual quoted in contracts of 0.001 BTC: formatSize converts the sizes, formatPrice shows dollars, sizeUnit and labels rename the units of the legend and tooltip, and timeZone=\"utc\" matches the exchange clock of the funding countdown above."
+        },
+        "candles": {
+          "title": "Execution candles",
+          "description": "Actual simulated executions form sparse 2-second OHLC candles over the recorded resting liquidity."
+        },
+        "intensity-filter": {
+          "title": "Intensity filter",
+          "description": "Use the range slider to isolate visible liquidity intensity without changing the underlying order book."
+        },
+        "history-navigation": {
+          "title": "History navigation",
+          "description": "Inspect retained history through the range navigator, then return to following the market."
+        },
+        "terminal": {
+          "title": "Liquidity terminal",
+          "description": "A complete simulated workspace: six market metrics, execution candles, liquidity filters, retained-history navigation and a synchronized order book."
+        },
+        "candles-navigation": {
+          "title": "Candles and history navigation",
+          "description": "Actual executions become OHLC candles over resting liquidity. Select retained history, then restore market following."
+        }
+      },
+      "data": {
+        "aria": "BTC/USDT liquidity heatmap",
+        "rendererIs": "Renderer: {{value}}",
+        "renderers": {
+          "webgpu": "WebGPU",
+          "webgl2": "WebGL 2",
+          "webgl": "WebGL",
+          "canvas2d": "Canvas 2D"
+        },
+        "following": "Following the market",
+        "panned": "Free view (zoomed or panned)",
+        "followMarket": "Follow the market",
+        "scale": "Color scale",
+        "scaleLog": "Logarithmic",
+        "scaleSqrt": "Square root",
+        "scaleLinear": "Linear",
+        "contrast": "Contrast",
+        "times": "×{{value}}",
+        "colors": "Color convention",
+        "redUp": "Red up, green down",
+        "greenUp": "Green up, red down",
+        "volumeAt": "Hovered column: {{buys}} BTC bought, {{sells}} BTC sold",
+        "volumeHint": "Hover a column to read its traded volume.",
+        "rowHeight": "Row height",
+        "priceSpan": "Price span",
+        "usdtValue": "{{value}} USDT",
+        "auto": "Auto",
+        "fitBook": "Fit the book",
+        "cellReadout": "{{time}} · {{price}} · {{size}} BTC {{side}} · {{buys}} BTC bought, {{sells}} BTC sold",
+        "priceRange": "{{low}} – {{high}}",
+        "sideBid": "on the bid side",
+        "sideAsk": "on the ask side",
+        "sideSpread": "inside the spread",
+        "cellHint": "Hover a cell to inspect it.",
+        "timeWindow": "Time window",
+        "liveFeed": "Live feed",
+        "clearHistory": "Clear history",
+        "pausedAt": "Paused at {{time}}.",
+        "resumedAt": "Resumed at {{time}}.",
+        "clearedAt": "History cleared at {{time}}.",
+        "windowStatus": "{{window}} on screen out of {{history}} kept.",
+        "pair": "BTC/USDT",
+        "lastPrice": "Last {{value}}",
+        "spreadIs": "Spread {{value}}",
+        "tradesOnTape": "{{value}} trades on the tape",
+        "bookAria": "BTC/USDT order book",
+        "tapeAria": "BTC/USDT trades",
+        "perpName": "BTC-USD perpetual",
+        "contractSize": "1 contract = {{value}} BTC",
+        "fundingRate": "Funding {{rate}}",
+        "funding": "Funding {{rate}} at {{time}}, in {{countdown}}",
+        "contracts": "contracts",
+        "restingContracts": "Resting",
+        "takerBuys": "Taker buys",
+        "takerSells": "Taker sells",
+        "perpAria": "BTC-USD perpetual liquidity heatmap",
+        "perpReadout": "{{price}}: {{contracts}} contracts resting (≈ {{notional}})",
+        "perpHint": "Hover the heatmap to read the resting contracts and their value.",
+        "simulated": "SIMULATED MARKET",
+        "showCandles": "Execution candles",
+        "executionsOnly": "Each 2-second candle aggregates actual executions from this seeded matching engine. Empty buckets are omitted; resting orders never become candles.",
+        "intensityFilter": "Visible intensity range",
+        "filterHint": "Filter the normalized color intensity of resting liquidity. This changes visibility, not book sizes or executed volume.",
+        "historyNavigator": "Retained execution history",
+        "navigatorHint": "Move the range handles to inspect retained history. Follow the market restores the latest time and automatic price centering.",
+        "liquidityTerminal": "LIQUIDITY TERMINAL",
+        "latest": "Latest execution",
+        "bidDepth": "Bid depth",
+        "askDepth": "Ask depth",
+        "imbalance": "Book imbalance",
+        "bidWall": "Largest bid wall",
+        "askWall": "Largest ask wall",
+        "palette": "Palette",
+        "ocean": "Ocean",
+        "ember": "Ember",
+        "resetViewport": "Reset view",
+        "currentBook": "CURRENT ORDER BOOK",
+        "terminalHint": "Seeded simulation, not an external exchange feed. All six metrics, execution candles and the ladder use the same matching engine. Summary metrics refresh once per second; book updates stream independently.",
+        "candlesAria": "Simulated liquidity with execution candles",
+        "filterAria": "Simulated liquidity with intensity filter",
+        "navigationAria": "Navigable simulated liquidity history",
+        "terminalAria": "Simulated BTC USDT liquidity terminal",
+        "ladderAria": "Current simulated BTC USDT order book"
+      },
+      "api": {
+        "OrderBookHeatmapProps": {
+          "book": "Book, applied when the object changes (stream updates through the ref)",
+          "trades": "Trades; when the array grows, only the appended ones are added",
+          "onHover": "Hovered cell (null when the pointer leaves)",
+          "onRendererChange": "Backend in use (also after a GPU loss)",
+          "onFollowChange": "true while the view follows the market, false after a zoom or pan",
+          "ref": "Imperative handle: setBook, applyDeltas, addTrades, resetView, getInstance",
+          "bars": "Supplied OHLC candles as object rows or typed columns; sent through setBars when the value changes. Candles are never inferred from the order book.",
+          "onViewChange": "Emits retained time bounds and the current time/price viewport, including follow mode."
+        },
+        "OrderBookHeatmapHandle": {
+          "setBook": "Replaces the book (closes the columns up to its time)",
+          "applyDeltas": "Applies updates (closes the columns up to their time)",
+          "addTrades": "Adds trades (bubbles)",
+          "clear": "Removes the book, the history and the trades",
+          "resetView": "Follows the market again",
+          "getInstance": "The underlying engine instance (minerva-design/charts/core)",
+          "setBars": "Replace supplied OHLC candle history (object rows or typed columns).",
+          "updateBar": "Update the latest supplied candle or append a newer candle.",
+          "setView": "Set visible time and/or price bounds; pauses following the market.",
+          "getView": "Read retained liquidity time bounds and the current viewport; null before mount."
+        },
+        "OrderBookHeatmapOptions": {
+          "tickSize": "Height of a price row (levels are aggregated into rows); a round multiple of the book's tick of about 0.1 basis point when omitted",
+          "interval": "Time between two columns, in ms: the book is sampled at this pace",
+          "window": "Visible time span, in ms (zoomable)",
+          "history": "History kept, in ms (older columns are dropped)",
+          "depth": "Price rows sampled on each side of the book per column",
+          "priceSpan": "Visible price span (top − bottom); fits the best bid and ask of the window when omitted",
+          "colorScale": "Scale from sizes to colors: sqrt keeps typical levels dim and lets significant liquidity glow, linear shows only the walls, log reveals thin liquidity next to them",
+          "contrast": "Multiplies the sizes before the scale: above 1 brightens thin liquidity (more of the field glows), below 1 keeps only the largest walls",
+          "maxSize": "Size drawn with the hottest color (larger sizes saturate); when omitted, the 99th percentile of the visible non-empty cells (eased), so typical levels stay dark and only the top liquidity glows",
+          "sizeUnit": "Unit of the sizes, shown after them in the legend and the tooltip (the numbers are not converted)",
+          "legend": "Legend of the color ramp (cold to hot, its size range) and of the trades, in the top-left corner of the plot",
+          "colors": "Color ramp, coldest first, interpolated in OKLab. The first color also fills the cells without liquidity (the field is opaque, no holes): a dark color in dark themes, a pale one in light themes. A perceptual heat ramp suited to the theme when omitted",
+          "bubbles": "Trades drawn as bubbles sized by volume (buy and sell colors)",
+          "bubbleSize": "Diameter of the largest bubble, in pixels (area ∝ volume, the smallest are 3 px dots)",
+          "bubbleVolume": "Trade volume of the largest bubble; when omitted, the largest visible trade (eased)",
+          "bestLines": "Best bid and ask lines",
+          "profile": "Profile of the current book at the right edge",
+          "interactive": "Zoom and pan (a double click follows the market again)",
+          "tooltip": "Hover crosshair and tooltip",
+          "renderer": "Backend of the cells: the GPU when available",
+          "timeZone": "Clock of the time axis and the tooltip: the local time or UTC (the clock of most exchanges)",
+          "labels": "Overrides of the built-in texts, which follow locale (English, Chinese, Japanese and French built in)",
+          "candles": "Draw supplied OHLC candles; enabled by default when bars are available.",
+          "lastPriceLine": "Draw the latest supplied candle close as a price line.",
+          "intensityRange": "Normalized lower and upper liquidity intensity bounds, each from 0 to 1.",
+          "maxColumns": "Maximum retained liquidity columns; default 6000, bounded by the engine.",
+          "maxBars": "Maximum retained supplied candles; default 20000, bounded by the engine."
+        },
+        "OrderBookCommonOptions": {
+          "upColor": "Color of the bids and buys (the \"up\" side); --success-color by default, --danger-color with colorConvention \"red-up\"",
+          "downColor": "Color of the asks and sells (the \"down\" side); --danger-color by default, --success-color with colorConvention \"red-up\"",
+          "colorConvention": "\"red-up\" swaps the default colors: red bids and buys, green asks and sells (mainland China, Japan, Korea)",
+          "pricePrecision": "Decimals of the prices; inferred from the data when omitted",
+          "sizePrecision": "Decimals of the sizes; inferred from the data when omitted",
+          "locale": "Locale of the numbers (Intl.NumberFormat, compact units such as k or 万) and of the built-in texts (English, Chinese, Japanese, French); the page language (lang attribute of the html element) when omitted",
+          "formatPrice": "Formats a price (replaces pricePrecision and locale)",
+          "formatSize": "Formats a size (replaces sizePrecision and locale)",
+          "fontFamily": "Font of the texts; the theme font when omitted (a monospace font aligns the digits)",
+          "fontSize": "Font size of the texts, in pixels",
+          "ariaLabel": "Accessible name of the widget; the localized labels.name when omitted"
+        },
+        "OrderBookWidgetProps": {
+          "height": "Height of the widget; numbers are pixels",
+          "width": "Width of the widget; numbers are pixels",
+          "className": "Class of the container",
+          "style": "Style of the container"
+        },
+        "OrderBookHeatmapLabels": {
+          "time": "Time row of the tooltip",
+          "price": "Price row of the tooltip",
+          "liquidity": "Resting size of the hovered cell",
+          "buys": "Bought volume of the hovered column",
+          "sells": "Sold volume of the hovered column",
+          "bid": "Best bid, in the screen reader summary",
+          "ask": "Best ask, in the screen reader summary",
+          "bidSide": "Side badge of a hovered bid row in the tooltip",
+          "askSide": "Side badge of a hovered ask row in the tooltip",
+          "bubbleHint": "Legend row of the trades (bubble area = trade size)",
+          "name": "Accessible name (when ariaLabel is not set)"
+        },
+        "OrderBookHeatmapHoverEvent": {
+          "time": "Start time of the hovered column",
+          "price": "Price of the hovered row; its lowest price when rows are aggregated into price buckets (rows thinner than 2 px)",
+          "priceHigh": "Highest price of the hovered row (equals price without aggregation)",
+          "size": "Resting size of the cell (summed over the bucket's prices)",
+          "side": "Side of the cell (null inside the spread)",
+          "buyVolume": "Volume bought during the column",
+          "sellVolume": "Volume sold during the column",
+          "bar": "Actual supplied OHLC candle covering the pointer time; absent in gaps."
+        },
+        "MarketTrade": {
+          "time": "Execution time (ms since epoch)",
+          "price": "Execution price",
+          "size": "Executed size (base currency)",
+          "side": "Aggressor side: \"buy\" lifted an ask, \"sell\" hit a bid"
+        },
+        "OrderBookHeatmapView": {
+          "time": "Visible start and end times, in epoch milliseconds.",
+          "price": "Visible lower and upper prices.",
+          "follow": "Whether the viewport follows the latest market."
+        },
+        "OrderBookHeatmapViewInput": {
+          "time": "Visible start and end times, in epoch milliseconds.",
+          "price": "Visible lower and upper prices."
+        },
+        "OrderBookHeatmapViewData": {
+          "availableTime": "Earliest and latest retained liquidity times, or null when empty.",
+          "view": "Current visible time/price bounds and follow state."
+        },
+        "TradingBar": {
+          "time": "Opening time in milliseconds since the epoch",
+          "open": "First traded price",
+          "high": "Highest traded price",
+          "low": "Lowest traded price",
+          "close": "Last traded price",
+          "volume": "Traded volume"
+        },
+        "TradingBarColumns": {
+          "time": "Opening times in milliseconds, ascending",
+          "open": "Opening prices",
+          "high": "Highest prices",
+          "low": "Lowest prices",
+          "close": "Closing prices",
+          "volume": "Volumes"
+        }
+      },
+      "wc": {
+        "demos": {
+          "liquidity": {
+            "title": "Live liquidity heatmap",
+            "description": "A new book every 200 ms closes a column of resting size; trades are bubbles sized by volume."
+          },
+          "red-up": {
+            "title": "Red-up colors, square-root scale",
+            "description": "The mainland China convention (buys in red), a square-root color scale and no size profile."
+          },
+          "candles-navigation": {
+            "title": "Supplied candles and history navigation",
+            "description": "Filter simulated liquidity and navigate history alongside 30 supplied OHLC candles aggregated from simulated executions."
+          }
+        },
+        "minerva-order-book-heatmap": {
+          "props": {
+            "options": "Other engine options (OrderBookHeatmapOptions of minerva-design/charts/core: colors, texts, locale, labels…); property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected",
+            "bars": "Supplied OHLC candles as object rows or typed columns; sent through setBars when the value changes. Candles are never inferred from the order book."
+          },
+          "events": {
+            "minerva-hover": "A cell is hovered; detail: { time, price, size, side, buyVolume, sellVolume }, null when the pointer left",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }",
+            "minerva-follow-change": "The view follows the market (true) or not after a zoom or a pan (false); detail: { follow }",
+            "minerva-view-change": "Retained history or viewport changed; detail contains availableTime and view."
+          },
+          "methods": {
+            "addTrades": "Adds trades (bubbles)",
+            "resetView": "Follows the market again (latest time, centered on the mid price)",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready",
+            "setBook": "Replaces the book (closes the columns up to its time)",
+            "applyDeltas": "Applies updates (closes the columns up to their time)",
+            "setBars": "Replace supplied OHLC candle history (object rows or typed columns).",
+            "updateBar": "Update the latest supplied candle or append a newer candle.",
+            "setView": "Set visible time and/or price bounds; pauses following the market.",
+            "getView": "Read retained liquidity time bounds and the current viewport; null before mount.",
+            "clear": "Removes the book, the history and the trades"
+          }
+        }
+      }
+    }
+  }
+}

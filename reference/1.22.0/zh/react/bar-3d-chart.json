@@ -1,0 +1,1251 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "bar-3d-chart",
+  "title": "3D 柱状图",
+  "description": "x × y 类别网格上的柱体：带光照的立方体、按系列着色、跨系列堆叠、按高度或其他值通过色阶着色，并支持图例和色条。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {
+    "data": {
+      "sales": "销售额",
+      "region": "地区",
+      "month": "月份",
+      "regions": {
+        "north": "北部",
+        "south": "南部",
+        "east": "东部",
+        "west": "西部",
+        "central": "中部"
+      },
+      "salesAria": "五个地区的月度销售额",
+      "quarter": "季度",
+      "quarters": {
+        "q1": "第一季度",
+        "q2": "第二季度",
+        "q3": "第三季度",
+        "q4": "第四季度"
+      },
+      "market": "市场",
+      "markets": {
+        "americas": "美洲",
+        "europe": "欧洲",
+        "asia": "亚洲",
+        "oceania": "大洋洲"
+      },
+      "products": {
+        "hardware": "硬件",
+        "software": "软件",
+        "services": "服务"
+      },
+      "revenue": "收入",
+      "stackedAria": "三条产品线在四个市场的季度收入（堆叠）",
+      "women": "女性",
+      "men": "男性",
+      "age": "年龄",
+      "ageGroup": "{{from}}–{{to}} 岁",
+      "ageOver": "{{from}} 岁以上",
+      "year": "普查年份",
+      "population": "人口",
+      "millions": "{{value}} 百万",
+      "pyramidAria": "四个普查年份按年龄组和性别划分的人口",
+      "visits": "访问量",
+      "hour": "小时",
+      "weekday": "星期",
+      "trafficAria": "网站每周各小时的访问量",
+      "product": "产品",
+      "productNames": {
+        "laptops": "笔记本电脑",
+        "phones": "手机",
+        "tablets": "平板电脑",
+        "watches": "手表",
+        "audio": "音频设备"
+      },
+      "margin": "利润率",
+      "marginAria": "五种产品在四个市场的收入与利润率",
+      "inStock": "库存充足",
+      "lowStock": "库存不足",
+      "unitsValue": "{{value}} 件",
+      "liveUpdates": "实时更新",
+      "aisle": "通道",
+      "aisleLabel": "{{id}} 通道",
+      "shelf": "货架层",
+      "shelfLabel": "第 {{n}} 层",
+      "units": "件数",
+      "inventoryAria": "按通道和货架层统计的仓库货位剩余件数，实时更新",
+      "inventoryStatus": "库存 {{total}} 件 · 不足货位：{{low}} / {{bins}} · 已补货货位：{{restocked}}。",
+      "retention": "留存率",
+      "monthsSinceSignup": "注册后月数",
+      "monthIndex": "第 {{n}} 月",
+      "signupCohort": "注册月份",
+      "cohortAria": "按注册后月数统计的各月注册同期群留存率",
+      "cohortReadout": "{{cohort}}同期群，第 {{n}} 个月：{{retention}} 仍活跃（{{total}} 位用户中的 {{users}} 位）。",
+      "cohortHint": "点击柱子查看同期群的留存率。",
+      "departments": {
+        "engineering": "研发",
+        "sales": "销售",
+        "marketing": "市场",
+        "operations": "运营",
+        "support": "客服",
+        "finance": "财务"
+      },
+      "actualSpend": "实际支出",
+      "fiscalYear": "财年",
+      "varianceToBudget": "预算差异",
+      "department": "部门",
+      "budgetAria": "{{year}} 年六个部门的季度支出及预算差异",
+      "varianceDetail": "{{department}}，{{quarter}}：支出 {{actual}}，预算 {{budget}}（{{variance}}）。",
+      "budgetSummary": "{{year}} 年：支出 {{actual}}，预算 {{budget}}（{{variance}}）。超支最多：{{department}}，{{quarter}}（{{worst}}）。",
+      "kw": "{{value}} kW",
+      "inletTemperature": "进风温度",
+      "darkTheme": "深色主题",
+      "perspectiveView": "3D 视图",
+      "topView": "平面图",
+      "rackPosition": "机柜",
+      "rackRow": "排",
+      "rowLabel": "{{id}} 排",
+      "powerDraw": "功耗",
+      "datacenterAria": "按排和位置排列的服务器机柜，柱高为功耗，颜色为进风温度",
+      "rackHot": "机柜 {{rack}}：{{power}}，进风 {{inlet}}，超过 {{limit}} 上限。",
+      "rackOk": "机柜 {{rack}}：{{power}}，进风 {{inlet}}，未超过 {{limit}} 上限。",
+      "datacenterSummary": "进风温度超过 {{limit}} 的机柜：{{total}} 个中有 {{hot}} 个（{{racks}}）。点击机柜查看读数。"
+    }
+  },
+  "components": [
+    {
+      "name": "Bar3DChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "Bar3DChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly Bar3DSeries[]",
+            "typeRef": "type:d3b5b1b2d9d80229448b",
+            "required": true,
+            "description": "Bars over the x × y category grid (bars of the same cell are stacked)"
+          },
+          {
+            "name": "barWidth",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.7,
+            "required": false,
+            "description": "Width of the bars of the series that do not set one, as a fraction of a cell"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 400,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "X axis (width of the box)"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "Y axis (depth of the box)"
+          },
+          {
+            "name": "zAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "Z axis (height of the box)"
+          },
+          {
+            "name": "camera",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DCameraOptions | undefined",
+            "typeRef": "type:167a8a19d9cc56b4b670",
+            "required": false,
+            "description": "Initial camera, also restored by a double click (changing it moves the camera)"
+          },
+          {
+            "name": "autoRotate",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "number | boolean | undefined",
+            "typeRef": "type:11d9d08024b0b84c460e",
+            "default": false,
+            "required": false,
+            "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second; pauses while hovered, off-screen and with reduced motion"
+          },
+          {
+            "name": "aspect",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly [number, number, number] | undefined",
+            "typeRef": "type:d7844941c1a0fb5f2288",
+            "required": false,
+            "description": "Proportions of the box (x, y, z)"
+          },
+          {
+            "name": "box",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles"
+          },
+          {
+            "name": "colorScale",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "Chart3DColorScale | undefined",
+            "typeRef": "type:a7f2e842d4114e5e2bc9",
+            "default": "viridis",
+            "required": false,
+            "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors"
+          },
+          {
+            "name": "valueRange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly [number, number] | undefined",
+            "typeRef": "type:993918f52c7908c02d32",
+            "required": false,
+            "description": "Values mapped to the ends of the color scale; the data range by default"
+          },
+          {
+            "name": "colorBar",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DColorBarOptions | undefined",
+            "typeRef": "type:9e94487b0cf0ad8a7ae5",
+            "required": false,
+            "description": "Color bar; shown by default when a visible series uses the color scale"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DLegendOptions | undefined",
+            "typeRef": "type:1be2fbbf1e8c9fbb46a8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DTooltipOptions | undefined",
+            "typeRef": "type:13329010a17ed76beece",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DInteractionOptions | undefined",
+            "typeRef": "type:a71b98bca46cdf7837aa",
+            "default": true,
+            "required": false,
+            "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom, double click resets, arrow keys rotate; `false` makes the chart static"
+          },
+          {
+            "name": "lighting",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DLightingOptions | undefined",
+            "typeRef": "type:4f031ae37c5b79a48dcc",
+            "required": false,
+            "description": "Lighting of the surfaces and bars"
+          },
+          {
+            "name": "exposure",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Language of the built-in texts (accessible summary, legend announcements, tooltip row names) and of the number formatting; built-in texts in English, Chinese, Japanese and French"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Partial<Chart3DLabels> | undefined",
+            "typeRef": "type:b9110f1352c8b648a88b",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((event: Chart3DHoverEvent | null) => void) | undefined",
+            "typeRef": "type:dfff2602865f409c9dcc",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DHoverEvent | null",
+                "typeRef": "type:774323141f428bcd99e2"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered point, cell or bar changes"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((event: Chart3DHoverEvent) => void) | undefined",
+            "typeRef": "type:9703bea4561e32de9ced",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DHoverEvent",
+                "typeRef": "type:fe5f94c04c80715011c0"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point, cell or bar is clicked"
+          },
+          {
+            "name": "onCameraChange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((camera: Chart3DCameraState) => void) | undefined",
+            "typeRef": "type:30adbc1b463ace3a9336",
+            "parameters": [
+              {
+                "name": "camera",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DCameraState",
+                "typeRef": "type:b3764b39d8f3ce70541d"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called after the user rotated, zoomed, panned or reset the camera"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:fe458bf4d221b7288026",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and after a fallback)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "camera",
+            "event": "onCameraChange",
+            "syntax": "camera={camera} onCameraChange={handler}"
+          },
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "Bar3DChartProps": {
+      "source": "charts/src/react/three-d.tsx",
+      "description": "Props of `Bar3DChart`",
+      "kind": "interface",
+      "extends": [
+        "Chart3DCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly Bar3DSeries[]",
+          "required": true,
+          "description": "Bars over the x × y category grid (bars of the same cell are stacked)"
+        },
+        {
+          "name": "barWidth",
+          "type": "number",
+          "required": false,
+          "default": "0.7",
+          "description": "Width of the bars of the series that do not set one, as a fraction of a cell"
+        }
+      ]
+    },
+    "Bar3DSeries": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Bars over an x × y category grid; bars of several series in the same cell are stacked",
+      "kind": "interface",
+      "extends": [
+        "Chart3DSeriesBase"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "\"bar\"",
+          "required": false
+        },
+        {
+          "name": "data",
+          "type": "readonly Bar3DDatum[] | readonly (readonly [string | number, string | number, number | null])[]",
+          "required": true,
+          "description": "The bars: objects or `[x, y, z]` tuples"
+        },
+        {
+          "name": "colorBy",
+          "type": "Chart3DColorBy",
+          "required": false,
+          "default": "\"series\"",
+          "description": "Source of the bar colors"
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Opacity of the bars, 0-1"
+        },
+        {
+          "name": "barWidth",
+          "type": "number",
+          "required": false,
+          "default": "0.7",
+          "description": "Width of the bars as a fraction of a cell, 0-1"
+        }
+      ]
+    },
+    "Bar3DDatum": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "One bar: a cell of the x × y category grid and its height",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "x",
+          "type": "string | number",
+          "required": true,
+          "description": "X category (a name, or its index)"
+        },
+        {
+          "name": "y",
+          "type": "string | number",
+          "required": true,
+          "description": "Y category (a name, or its index)"
+        },
+        {
+          "name": "z",
+          "type": "number | null",
+          "required": true,
+          "description": "Height; `null` leaves the cell empty"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Bar color (any CSS color); wins over the series color and the color scale"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "description": "Value mapped to the color scale (`colorBy: \"value\"`); the height by default"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Text shown in the tooltip"
+        }
+      ]
+    },
+    "Chart3DCommonProps": {
+      "source": "charts/src/react/three-d.tsx",
+      "description": "Props shared by every 3D chart component",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "height",
+          "type": "number | string",
+          "required": false,
+          "default": "400",
+          "description": "Height of the chart (the legend included); numbers are pixels"
+        },
+        {
+          "name": "width",
+          "type": "number | string",
+          "required": false,
+          "default": "\"100%\"",
+          "description": "Width of the chart; numbers are pixels"
+        },
+        {
+          "name": "xAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "X axis (width of the box)"
+        },
+        {
+          "name": "yAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "Y axis (depth of the box)"
+        },
+        {
+          "name": "zAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "Z axis (height of the box)"
+        },
+        {
+          "name": "camera",
+          "type": "Chart3DCameraOptions",
+          "required": false,
+          "description": "Initial camera, also restored by a double click (changing it moves the camera)"
+        },
+        {
+          "name": "autoRotate",
+          "type": "boolean | number",
+          "required": false,
+          "default": "false",
+          "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second; pauses while hovered, off-screen and with reduced motion"
+        },
+        {
+          "name": "aspect",
+          "type": "readonly [number, number, number]",
+          "required": false,
+          "default": "[1, 1, 0.7]",
+          "description": "Proportions of the box (x, y, z)"
+        },
+        {
+          "name": "box",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles"
+        },
+        {
+          "name": "colorScale",
+          "type": "Chart3DColorScale",
+          "required": false,
+          "default": "\"viridis\"",
+          "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors"
+        },
+        {
+          "name": "valueRange",
+          "type": "readonly [number, number]",
+          "required": false,
+          "description": "Values mapped to the ends of the color scale; the data range by default"
+        },
+        {
+          "name": "colorBar",
+          "type": "boolean | Chart3DColorBarOptions",
+          "required": false,
+          "description": "Color bar; shown by default when a visible series uses the color scale"
+        },
+        {
+          "name": "legend",
+          "type": "boolean | Chart3DLegendOptions",
+          "required": false,
+          "description": "Legend; shown by default when several series have a name"
+        },
+        {
+          "name": "tooltip",
+          "type": "boolean | Chart3DTooltipOptions",
+          "required": false,
+          "description": "Tooltip; `false` disables it"
+        },
+        {
+          "name": "interaction",
+          "type": "boolean | Chart3DInteractionOptions",
+          "required": false,
+          "default": "true",
+          "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom, double click resets, arrow keys rotate; `false` makes the chart static"
+        },
+        {
+          "name": "lighting",
+          "type": "Chart3DLightingOptions",
+          "required": false,
+          "description": "Lighting of the surfaces and bars"
+        },
+        {
+          "name": "exposure",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)"
+        },
+        {
+          "name": "renderer",
+          "type": "ChartRendererPreference",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+        },
+        {
+          "name": "palette",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name of the chart"
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "the page language (`<html lang>`), then the browser language",
+          "description": "Language of the built-in texts (accessible summary, legend announcements, tooltip row names) and of the number formatting; built-in texts in English, Chinese, Japanese and French"
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Chart3DLabels>",
+          "required": false,
+          "description": "Overrides of the built-in texts of the `locale`"
+        },
+        {
+          "name": "onHover",
+          "type": "(event: Chart3DHoverEvent | null) => void",
+          "required": false,
+          "description": "Called when the hovered point, cell or bar changes"
+        },
+        {
+          "name": "onPointClick",
+          "type": "(event: Chart3DHoverEvent) => void",
+          "required": false,
+          "description": "Called when a point, cell or bar is clicked"
+        },
+        {
+          "name": "onCameraChange",
+          "type": "(camera: Chart3DCameraState) => void",
+          "required": false,
+          "description": "Called after the user rotated, zoomed, panned or reset the camera"
+        },
+        {
+          "name": "onRendererChange",
+          "type": "(renderer: ChartRendererKind) => void",
+          "required": false,
+          "description": "Called with the backend once it is ready (and after a fallback)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Class of the outer element"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Style of the outer element"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<Chart3DHandle>",
+          "required": false,
+          "description": "Imperative handle"
+        }
+      ]
+    },
+    "Chart3DSeriesBase": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Options shared by every 3D series",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Stable identifier (defaults to the index)"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Name shown in the legend and the tooltip"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Series color (any CSS color, `var(--x)` included); the palette when omitted"
+        },
+        {
+          "name": "hidden",
+          "type": "boolean",
+          "required": false,
+          "description": "Hides the series (it stays in the legend)"
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "required": false,
+          "description": "Formats the `value` of the hovered item in the tooltip (its height when the data has no values); the axis formats by default"
+        }
+      ]
+    },
+    "Chart3DLegendOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Legend options",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "position",
+          "type": "\"top\" | \"bottom\"",
+          "required": false,
+          "default": "\"top\"",
+          "description": "Legend position"
+        },
+        {
+          "name": "toggle",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Clicking an item toggles its series"
+        }
+      ]
+    },
+    "Chart3DTooltipOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Tooltip options",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "render",
+          "type": "(event: Chart3DHoverEvent) => string | Node | null",
+          "required": false,
+          "description": "Renders the tooltip content (a string is set as text)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "budget-variance",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/budget-variance.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/budget-variance.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HStack, Select, SelectItem } from \"minerva-design\";\nimport {\n  Bar3DChart,\n  type Bar3DDatum,\n  type Bar3DSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DEPARTMENTS = [\n  \"engineering\",\n  \"sales\",\n  \"marketing\",\n  \"operations\",\n  \"support\",\n  \"finance\",\n] as const;\nconst QUARTERS = [\"q1\", \"q2\", \"q3\", \"q4\"] as const;\nconst YEARS = [\"2024\", \"2025\", \"2026\"] as const;\ntype Year = (typeof YEARS)[number];\n// quarterly budget of each department, in USD\nconst BUDGET = [820e3, 540e3, 410e3, 360e3, 220e3, 150e3];\nconst LIMIT = 0.25;\n\ninterface Cell {\n  department: number;\n  quarter: number;\n  budget: number;\n  actual: number;\n  variance: number; // (actual − budget) / budget\n}\n\n/** Budget and actual spend of a year: the budget grows, the variance is random */\nconst yearOf = (year: Year): Cell[] => {\n  const random = mulberry32(Number(year));\n  const growth = 1 + 0.06 * (Number(year) - 2024);\n  return DEPARTMENTS.flatMap((_, department) =>\n    QUARTERS.map((_, quarter) => {\n      const budget = BUDGET[department]! * growth;\n      // marketing overspends late in the year, support runs lean\n      const bias =\n        department === 2 ? quarter * 0.04 : department === 4 ? -0.06 : 0;\n      const variance = Math.max(\n        -LIMIT,\n        Math.min(LIMIT, bias + (random() - 0.5) * 0.24),\n      );\n      return {\n        department,\n        quarter,\n        budget,\n        actual: budget * (1 + variance),\n        variance,\n      };\n    }),\n  );\n};\n\nexport default function BudgetVarianceDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n  const [year, setYear] = useState<Year>(\"2025\");\n  const [picked, setPicked] = useState<Cell | null>(null);\n  const cells = useMemo(() => yearOf(year), [year]);\n  const formats = useMemo(\n    () => ({\n      usd: new Intl.NumberFormat(i18n.language, {\n        style: \"currency\",\n        currency: \"USD\",\n        notation: \"compact\",\n        maximumFractionDigits: 1,\n      }),\n      variance: new Intl.NumberFormat(i18n.language, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n        signDisplay: \"exceptZero\",\n      }),\n    }),\n    [i18n.language],\n  );\n\n  const series = useMemo((): Bar3DSeries[] => {\n    const data: Bar3DDatum[] = cells.map((cell) => ({\n      x: cell.quarter,\n      y: cell.department,\n      z: cell.actual,\n      value: cell.variance,\n    }));\n    return [\n      {\n        name: t(\"actualSpend\"),\n        data,\n        colorBy: \"value\",\n        format: (value) => formats.variance.format(value),\n      },\n    ];\n  }, [t, cells, formats]);\n\n  const name = (cell: Cell) => ({\n    department: t(`departments.${DEPARTMENTS[cell.department]}`),\n    quarter: t(`quarters.${QUARTERS[cell.quarter]}`),\n  });\n  const budget = cells.reduce((sum, cell) => sum + cell.budget, 0);\n  const actual = cells.reduce((sum, cell) => sum + cell.actual, 0);\n  const worst = cells.reduce((a, b) => (b.variance > a.variance ? b : a));\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <HStack gap={8} align=\"center\">\n        <span>{t(\"fiscalYear\")}</span>\n        <Select\n          aria-label={t(\"fiscalYear\")}\n          size=\"small\"\n          value={year}\n          onChange={(value) => {\n            setYear(value as Year);\n            setPicked(null);\n          }}\n        >\n          {YEARS.map((id) => (\n            <SelectItem key={id} value={id}>\n              {id}\n            </SelectItem>\n          ))}\n        </Select>\n      </HStack>\n      <Bar3DChart\n        series={series}\n        xAxis={{\n          title: t(\"quarter\"),\n          categories: QUARTERS.map((id) => t(`quarters.${id}`)),\n        }}\n        yAxis={{\n          title: t(\"department\"),\n          categories: DEPARTMENTS.map((id) => t(`departments.${id}`)),\n        }}\n        zAxis={{\n          title: t(\"actualSpend\"),\n          format: (value) => formats.usd.format(value),\n        }}\n        colorScale=\"coolwarm\"\n        // symmetric around zero: on budget is the neutral middle color\n        valueRange={[-LIMIT, LIMIT]}\n        colorBar={{\n          title: t(\"varianceToBudget\"),\n          format: (value) => formats.variance.format(value),\n        }}\n        camera={{ azimuth: 35, elevation: 26 }}\n        height={460}\n        ariaLabel={t(\"budgetAria\", { year })}\n        onPointClick={(event) => setPicked(cells[event.index] ?? null)}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {picked\n          ? t(\"varianceDetail\", {\n              ...name(picked),\n              actual: formats.usd.format(picked.actual),\n              budget: formats.usd.format(picked.budget),\n              variance: formats.variance.format(picked.variance),\n            })\n          : t(\"budgetSummary\", {\n              year,\n              actual: formats.usd.format(actual),\n              budget: formats.usd.format(budget),\n              variance: formats.variance.format((actual - budget) / budget),\n              ...name(worst),\n              worst: formats.variance.format(worst.variance),\n            })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "预算差异",
+      "description": "所选财年六个部门的季度支出：柱高为实际支出，颜色为与预算的差异。colorBy: \"value\" 配合发散型 coolwarm 色阶和对称的 valueRange，使符合预算的单元格保持中性色，超支偏暖色，节支偏冷色。"
+    },
+    {
+      "id": "cohort-retention",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/cohort-retention.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/cohort-retention.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  Bar3DChart,\n  type Bar3DDatum,\n  type Bar3DSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Monthly signup cohorts from November 2025 to October 2026 and the share\n// of each cohort still active n months later. Recent cohorts have fewer\n// months of history (empty cells), and retain better after an onboarding\n// redesign in May 2026.\nconst COHORTS = 12;\nconst FIRST = Date.UTC(2025, 10, 1);\nconst REDESIGN = 6;\n\ninterface Cell {\n  cohort: number;\n  month: number;\n  retention: number | null;\n}\n\nconst { CELLS, SIZES } = (() => {\n  const random = mulberry32(12);\n  const sizes = Array.from({ length: COHORTS }, () =>\n    Math.round(900 + random() * 700),\n  );\n  const cells: Cell[] = [];\n  for (let cohort = 0; cohort < COHORTS; cohort++) {\n    const floor = cohort >= REDESIGN ? 0.34 : 0.24;\n    for (let month = 0; month < COHORTS; month++) {\n      const observed = month < COHORTS - cohort;\n      const share =\n        month === 0\n          ? 1\n          : floor +\n            (1 - floor) * Math.exp(-month / 2.2) +\n            (random() - 0.5) * 0.03;\n      cells.push({ cohort, month, retention: observed ? share : null });\n    }\n  }\n  return { CELLS: cells, SIZES: sizes };\n})();\n\nconst cohortDate = (cohort: number) => {\n  const date = new Date(FIRST);\n  date.setUTCMonth(date.getUTCMonth() + cohort);\n  return date;\n};\n\nexport default function CohortRetentionDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n  const [picked, setPicked] = useState<Cell | null>(null);\n  const formats = useMemo(\n    () => ({\n      cohort: new Intl.DateTimeFormat(i18n.language, {\n        month: \"short\",\n        year: \"2-digit\",\n        timeZone: \"UTC\",\n      }),\n      longCohort: new Intl.DateTimeFormat(i18n.language, {\n        month: \"long\",\n        year: \"numeric\",\n        timeZone: \"UTC\",\n      }),\n      percent: new Intl.NumberFormat(i18n.language, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n      integer: new Intl.NumberFormat(i18n.language),\n    }),\n    [i18n.language],\n  );\n\n  const series = useMemo((): Bar3DSeries[] => {\n    const data: Bar3DDatum[] = CELLS.map((cell) => ({\n      x: cell.month,\n      y: cell.cohort,\n      z: cell.retention === null ? null : cell.retention * 100,\n    }));\n    return [\n      {\n        name: t(\"retention\"),\n        data,\n        colorBy: \"z\",\n        format: (value) => formats.percent.format(value / 100),\n      },\n    ];\n  }, [t, formats]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Bar3DChart\n        series={series}\n        xAxis={{\n          title: t(\"monthsSinceSignup\"),\n          categories: Array.from({ length: COHORTS }, (_, n) =>\n            t(\"monthIndex\", { n }),\n          ),\n        }}\n        yAxis={{\n          title: t(\"signupCohort\"),\n          categories: Array.from({ length: COHORTS }, (_, n) =>\n            formats.cohort.format(cohortDate(n)),\n          ),\n        }}\n        zAxis={{\n          title: t(\"retention\"),\n          min: 0,\n          max: 100,\n          format: (value) => formats.percent.format(value / 100),\n        }}\n        colorScale=\"viridis\"\n        colorBar={{\n          title: t(\"retention\"),\n          format: (value) => formats.percent.format(value / 100),\n        }}\n        barWidth={0.75}\n        camera={{ azimuth: 40, elevation: 30 }}\n        height={460}\n        ariaLabel={t(\"cohortAria\")}\n        onPointClick={(event) => setPicked(CELLS[event.index] ?? null)}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {picked && picked.retention !== null\n          ? t(\"cohortReadout\", {\n              cohort: formats.longCohort.format(cohortDate(picked.cohort)),\n              n: picked.month,\n              retention: formats.percent.format(picked.retention),\n              users: formats.integer.format(\n                Math.round(picked.retention * SIZES[picked.cohort]!),\n              ),\n              total: formats.integer.format(SIZES[picked.cohort]!),\n            })\n          : t(\"cohortHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "同期群留存",
+      "description": "每个月注册的同期群在 n 个月后仍活跃的比例；较新的同期群历史较短，空缺单元格使用 z: null。同期群名称来自 Intl.DateTimeFormat，柱子按高度着色（colorBy: \"z\"），点击可查看该单元格的留存率和活跃用户数。"
+    },
+    {
+      "id": "datacenter",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/datacenter.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/datacenter.tsx": "import { useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, ConfigProvider, HStack, Switch } from \"minerva-design\";\nimport {\n  Bar3DChart,\n  type Bar3DDatum,\n  type Bar3DSeries,\n  type Chart3DHandle,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// A server room of 6 rows × 10 racks: the bar height is the power draw,\n// the color the inlet temperature. The cooling units stand at rack 1, so the\n// far end of the room runs warmer, worst where dense GPU racks sit.\nconst ROWS = [\"A\", \"B\", \"C\", \"D\", \"E\", \"F\"];\nconst RACKS = 10;\nconst MAX_INLET = 27; // °C, upper end of the recommended inlet range\n\ninterface Rack {\n  name: string;\n  power: number; // kW\n  inlet: number; // °C\n}\n\nconst RACK_LIST: Rack[] = (() => {\n  const random = mulberry32(77);\n  return ROWS.flatMap((row, r) =>\n    Array.from({ length: RACKS }, (_, c) => {\n      const gpu = (r === 2 || r === 3) && c >= 6;\n      const power = gpu ? 11 + random() * 4 : 3 + random() * 5;\n      const inlet =\n        18 + c * 0.75 + (power - 3) * 0.35 + (r === 0 ? 1 : 0) + random();\n      return {\n        name: `${row}${String(c + 1).padStart(2, \"0\")}`,\n        power: Math.round(power * 10) / 10,\n        inlet: Math.round(inlet * 10) / 10,\n      };\n    }),\n  );\n})();\n\nexport default function DatacenterDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n  const ref = useRef<Chart3DHandle>(null);\n  const [dark, setDark] = useState(true);\n  const [topView, setTopView] = useState(false);\n  const [picked, setPicked] = useState<Rack | null>(null);\n  const formats = useMemo(() => {\n    const decimal = new Intl.NumberFormat(i18n.language, {\n      maximumFractionDigits: 1,\n    });\n    return {\n      // kilowatts are not an Intl unit: a translated template\n      kw: {\n        format: (value: number) => t(\"kw\", { value: decimal.format(value) }),\n      },\n      celsius: new Intl.NumberFormat(i18n.language, {\n        style: \"unit\",\n        unit: \"celsius\",\n        maximumFractionDigits: 1,\n      }),\n    };\n  }, [t, i18n.language]);\n\n  const series = useMemo((): Bar3DSeries[] => {\n    const data: Bar3DDatum[] = RACK_LIST.map((rack, i) => ({\n      x: i % RACKS,\n      y: Math.floor(i / RACKS),\n      z: rack.power,\n      value: rack.inlet,\n      label: rack.name,\n    }));\n    return [\n      {\n        name: t(\"inletTemperature\"),\n        data,\n        colorBy: \"value\",\n        format: (value) => formats.celsius.format(value),\n      },\n    ];\n  }, [t, formats]);\n  const hot = RACK_LIST.filter((rack) => rack.inlet > MAX_INLET);\n\n  const switchView = () => {\n    if (topView) ref.current?.resetCamera();\n    else\n      ref.current?.setCamera({\n        azimuth: 0,\n        elevation: 89,\n        zoom: 1,\n        pan: [0, 0],\n        projection: \"orthographic\",\n      });\n    setTopView(!topView);\n  };\n\n  return (\n    <ConfigProvider theme={dark ? \"dark\" : \"light\"}>\n      <div\n        style={{\n          display: \"grid\",\n          gap: 12,\n          width: \"100%\",\n          padding: 12,\n          borderRadius: 8,\n          border: \"1px solid var(--border-color)\",\n          background: \"var(--background-color)\",\n          color: \"var(--text-color)\",\n        }}\n      >\n        <HStack gap={16} wrap align=\"center\">\n          <Switch\n            size=\"small\"\n            checked={dark}\n            label={t(\"darkTheme\")}\n            onChange={(value) => {\n              setDark(value);\n              // the chart is created again with the camera of its props\n              setTopView(false);\n            }}\n          />\n          <Button\n            size=\"small\"\n            variant=\"outline\"\n            color=\"neutral\"\n            onClick={switchView}\n          >\n            {topView ? t(\"perspectiveView\") : t(\"topView\")}\n          </Button>\n        </HStack>\n        <Bar3DChart\n          // the chart reads the theme of its scope when it is created\n          key={dark ? \"dark\" : \"light\"}\n          ref={ref}\n          series={series}\n          xAxis={{\n            title: t(\"rackPosition\"),\n            categories: Array.from({ length: RACKS }, (_, n) => String(n + 1)),\n          }}\n          yAxis={{\n            title: t(\"rackRow\"),\n            categories: ROWS.map((id) => t(\"rowLabel\", { id })),\n          }}\n          zAxis={{\n            title: t(\"powerDraw\"),\n            format: (value) => formats.kw.format(value),\n          }}\n          colorScale=\"inferno\"\n          valueRange={[18, 32]}\n          colorBar={{\n            title: t(\"inletTemperature\"),\n            format: (value) => formats.celsius.format(value),\n          }}\n          barWidth={0.8}\n          camera={{ azimuth: 30, elevation: 32 }}\n          height={440}\n          ariaLabel={t(\"datacenterAria\")}\n          onPointClick={(event) => setPicked(RACK_LIST[event.index] ?? null)}\n          onCameraChange={(camera) =>\n            setTopView(\n              camera.projection === \"orthographic\" && camera.elevation > 80,\n            )\n          }\n        />\n        <output\n          aria-live=\"polite\"\n          style={{ color: \"var(--text-secondary-color)\" }}\n        >\n          {picked\n            ? t(picked.inlet > MAX_INLET ? \"rackHot\" : \"rackOk\", {\n                rack: picked.name,\n                power: formats.kw.format(picked.power),\n                inlet: formats.celsius.format(picked.inlet),\n                limit: formats.celsius.format(MAX_INLET),\n              })\n            : t(\"datacenterSummary\", {\n                hot: hot.length,\n                total: RACK_LIST.length,\n                limit: formats.celsius.format(MAX_INLET),\n                racks: new Intl.ListFormat(i18n.language).format(\n                  hot.map((rack) => rack.name),\n                ),\n              })}\n        </output>\n      </div>\n    </ConfigProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "机房热力图",
+      "description": "机房中的机柜，柱高为功耗，颜色为 inferno 色阶上的进风温度。开关在深色 ConfigProvider 中重新挂载图表，按钮调用 ref 上的 setCamera() 切换为正交平面图（onCameraChange 保持按钮状态同步），摘要列出进风温度超过建议值的机柜。"
+    },
+    {
+      "id": "inventory-live",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/inventory-live.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/inventory-live.tsx": "import { useEffect, useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport {\n  Bar3DChart,\n  type Bar3DDatum,\n  type Bar3DSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Units in the bins of a warehouse: 6 aisles × 5 shelf levels. Every\n// second a few orders are picked; a bin below 20% of its capacity is low,\n// and an empty bin is restocked.\nconst AISLES = [\"A\", \"B\", \"C\", \"D\", \"E\", \"F\"];\nconst SHELVES = 5;\nconst CAPACITY = 120;\nconst LOW = CAPACITY * 0.2;\n\nconst initialStock = () => {\n  const random = mulberry32(8);\n  return Array.from({ length: AISLES.length * SHELVES }, () =>\n    Math.round(CAPACITY * (0.35 + random() * 0.65)),\n  );\n};\n\nexport default function InventoryLiveDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n  const [playing, setPlaying] = useState(true);\n  const [stock, setStock] = useState(initialStock);\n  const [restocked, setRestocked] = useState(0);\n  // one generator for the whole session, so the picks follow a fixed sequence\n  const random = useRef(mulberry32(31));\n\n  useEffect(() => {\n    if (!playing) return;\n    const timer = window.setInterval(() => {\n      const next = random.current;\n      // draw the picks outside the state updater, which must stay pure\n      const picks = Array.from({ length: 6 }, () => {\n        // the lower shelves are picked more often\n        const aisle = Math.floor(next() * AISLES.length);\n        const shelf = Math.floor(next() ** 1.6 * SHELVES);\n        return [aisle * SHELVES + shelf, 1 + Math.floor(next() * 8)] as const;\n      });\n      setStock((previous) => {\n        const bins = [...previous];\n        for (const [i, units] of picks) bins[i] = Math.max(0, bins[i]! - units);\n        return bins;\n      });\n    }, 1000);\n    return () => window.clearInterval(timer);\n  }, [playing]);\n\n  // empty bins are refilled on the next update\n  useEffect(() => {\n    if (!stock.includes(0)) return;\n    const timer = window.setTimeout(() => {\n      setStock((previous) =>\n        previous.map((units) => (units === 0 ? CAPACITY : units)),\n      );\n      setRestocked((n) => n + stock.filter((units) => units === 0).length);\n    }, 1000);\n    return () => window.clearTimeout(timer);\n  }, [stock]);\n\n  const integer = useMemo(\n    () => new Intl.NumberFormat(i18n.language),\n    [i18n.language],\n  );\n  const series = useMemo((): Bar3DSeries[] => {\n    // one series per state: a bin has a bar in exactly one of them\n    const binsOf = (lowStock: boolean): Bar3DDatum[] =>\n      stock.map((units, i) => ({\n        x: Math.floor(i / SHELVES),\n        y: i % SHELVES,\n        z: units < LOW === lowStock ? units : null,\n      }));\n    const format = (value: number) =>\n      t(\"unitsValue\", { value: integer.format(value) });\n    return [\n      {\n        name: t(\"inStock\"),\n        data: binsOf(false),\n        color: \"var(--chart-series-1, #4f46e5)\",\n        format,\n      },\n      {\n        name: t(\"lowStock\"),\n        data: binsOf(true),\n        color: \"var(--danger-color, #dc2626)\",\n        format,\n      },\n    ];\n  }, [t, stock, integer]);\n  const low = stock.filter((units) => units < LOW).length;\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch\n        size=\"small\"\n        checked={playing}\n        label={t(\"liveUpdates\")}\n        onChange={setPlaying}\n      />\n      <Bar3DChart\n        series={series}\n        xAxis={{\n          title: t(\"aisle\"),\n          categories: AISLES.map((id) => t(\"aisleLabel\", { id })),\n        }}\n        yAxis={{\n          title: t(\"shelf\"),\n          categories: Array.from({ length: SHELVES }, (_, n) =>\n            t(\"shelfLabel\", { n: n + 1 }),\n          ),\n        }}\n        zAxis={{ title: t(\"units\"), min: 0, max: CAPACITY }}\n        barWidth={0.6}\n        camera={{ azimuth: 32, elevation: 26 }}\n        height={420}\n        ariaLabel={t(\"inventoryAria\")}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {t(\"inventoryStatus\", {\n          total: integer.format(stock.reduce((sum, units) => sum + units, 0)),\n          low,\n          bins: stock.length,\n          restocked,\n        })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "实时仓库库存",
+      "description": "仓库各货位（通道 × 货架层）的剩余件数，由带种子的 setInterval 每秒更新，卸载时清理。低于容量 20% 的货位移到使用危险色的第二个系列，因此每个单元格只在一个系列中有柱（另一个系列中 z: null），空货位会被补货。"
+    },
+    {
+      "id": "margin",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/margin.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/margin.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  Bar3DChart,\n  type Bar3DDatum,\n  type Bar3DSeries,\n} from \"minerva-design/charts\";\n\n// Revenue (bar height) and margin (bar color) of five products in four\n// markets: the tallest bars are not the most profitable ones\nconst PRODUCTS = [\"laptops\", \"phones\", \"tablets\", \"watches\", \"audio\"] as const;\nconst MARKETS = [\"americas\", \"europe\", \"asia\", \"oceania\"] as const;\nconst REVENUE = [\n  [42, 31, 38, 6],\n  [55, 40, 61, 8],\n  [18, 14, 22, 3],\n  [12, 11, 9, 2],\n  [16, 13, 15, 3],\n];\nconst MARGIN = [\n  [8, 11, 6, 12],\n  [21, 24, 17, 25],\n  [14, 16, 9, 18],\n  [34, 31, 28, 36],\n  [27, 29, 22, 30],\n];\n\nexport default function MarginDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n  const locale = i18n.language;\n  const usd = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"USD\",\n        notation: \"compact\",\n      }),\n    [locale],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 0,\n      }),\n    [locale],\n  );\n\n  const series = useMemo((): Bar3DSeries[] => {\n    const data: Bar3DDatum[] = PRODUCTS.flatMap((_, p) =>\n      MARKETS.map((_, m) => ({\n        x: p,\n        y: m,\n        z: REVENUE[p]![m]!,\n        value: MARGIN[p]![m]!,\n      })),\n    );\n    return [\n      {\n        name: t(\"revenue\"),\n        data,\n        colorBy: \"value\",\n        format: (value) => percent.format(value / 100),\n      },\n    ];\n  }, [t, percent]);\n\n  return (\n    <Bar3DChart\n      series={series}\n      colorScale=\"spectral\"\n      xAxis={{\n        title: t(\"product\"),\n        categories: PRODUCTS.map((key) => t(`productNames.${key}`)),\n      }}\n      yAxis={{\n        title: t(\"market\"),\n        categories: MARKETS.map((key) => t(`markets.${key}`)),\n      }}\n      zAxis={{\n        title: t(\"revenue\"),\n        format: (value) => usd.format(value * 1e6),\n      }}\n      colorBar={{\n        title: t(\"margin\"),\n        format: (value) => percent.format(value / 100),\n      }}\n      camera={{ azimuth: 38, elevation: 24 }}\n      height={440}\n      ariaLabel={t(\"marginAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "按其他值着色",
+      "description": "收入决定高度，利润率决定颜色（每个数据的 value，配合 colorBy \"value\"）：最高的柱体并不是利润最高的。"
+    },
+    {
+      "id": "pyramid",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/pyramid.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/pyramid.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Bar3DChart, type Bar3DSeries } from \"minerva-design/charts\";\n\n// Population (millions) by age group in four census years: women above the\n// floor, men below it (negative heights), like a population pyramid laid on\n// its side and repeated over time\nconst YEARS = [1960, 1980, 2000, 2020];\nconst GROUPS = [0, 10, 20, 30, 40, 50, 60, 70, 80];\nconst population = (year: number, group: number, women: boolean) => {\n  // births shrink over the decades while people live longer\n  const birth = 4.2 - (year - 1960) * 0.025;\n  const survival = Math.exp(-((group / (62 + (year - 1960) * 0.2)) ** 4));\n  const shift = 1 + Math.max(0, 0.6 - Math.abs(year - 1960 - group - 10) / 25);\n  const value = birth * survival * shift * (women ? 1 + group / 400 : 1);\n  return Math.round(value * 100) / 100;\n};\n\nexport default function PyramidDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n\n  const series = useMemo(\n    (): Bar3DSeries[] => [\n      {\n        name: t(\"women\"),\n        color: \"var(--chart-series-5, #ec4899)\",\n        data: YEARS.flatMap((year, y) =>\n          GROUPS.map(\n            (group, x) => [x, y, population(year, group, true)] as const,\n          ),\n        ),\n      },\n      {\n        name: t(\"men\"),\n        color: \"var(--chart-series-1, #3b82f6)\",\n        data: YEARS.flatMap((year, y) =>\n          GROUPS.map(\n            (group, x) => [x, y, -population(year, group, false)] as const,\n          ),\n        ),\n      },\n    ],\n    [t],\n  );\n  const ages = GROUPS.map((from, i) =>\n    i === GROUPS.length - 1\n      ? t(\"ageOver\", { from })\n      : t(\"ageGroup\", { from, to: from + 9 }),\n  );\n\n  return (\n    <Bar3DChart\n      series={series}\n      barWidth={0.8}\n      xAxis={{ title: t(\"age\"), categories: ages }}\n      yAxis={{ title: t(\"year\"), categories: YEARS.map(String) }}\n      zAxis={{\n        title: t(\"population\"),\n        format: (value) => t(\"millions\", { value: Math.abs(value) }),\n      }}\n      aspect={[1.2, 0.8, 0.8]}\n      camera={{ azimuth: 28, elevation: 14 }}\n      height={440}\n      ariaLabel={t(\"pyramidAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "人口金字塔",
+      "description": "按年龄组和普查年份，女性在 0 以上、男性在 0 以下（负高度）：随时间重复的人口金字塔。"
+    },
+    {
+      "id": "sales",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/sales.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/sales.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Bar3DChart, type Bar3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst REGIONS = [\"north\", \"south\", \"east\", \"west\", \"central\"] as const;\n// monthly sales in k$: a seasonal curve peaking in December, scaled per region\nconst SCALE = [1.3, 0.8, 1.1, 0.95, 0.6];\nconst random = mulberry32(8);\nconst sales = REGIONS.flatMap((_, r) =>\n  Array.from({ length: 12 }, (_, month) => {\n    const season = 1 + 0.35 * Math.cos(((month - 11) / 12) * Math.PI * 2);\n    return [\n      r,\n      month,\n      Math.round(120 * SCALE[r]! * season * (0.85 + random() * 0.3)),\n    ] as const;\n  }),\n);\n\nexport default function SalesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n  const locale = i18n.language;\n  // \"Jan\", \"janv.\", \"1月\", ...\n  const months = useMemo(() => {\n    const format = new Intl.DateTimeFormat(locale, {\n      month: \"short\",\n      timeZone: \"UTC\",\n    });\n    return Array.from({ length: 12 }, (_, m) =>\n      format.format(Date.UTC(2026, m, 1)),\n    );\n  }, [locale]);\n  const usd = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"USD\",\n        notation: \"compact\",\n      }),\n    [locale],\n  );\n\n  const series = useMemo(\n    (): Bar3DSeries[] => [{ name: t(\"sales\"), data: sales }],\n    [t],\n  );\n\n  return (\n    <Bar3DChart\n      series={series}\n      xAxis={{\n        title: t(\"region\"),\n        categories: REGIONS.map((key) => t(`regions.${key}`)),\n      }}\n      yAxis={{ title: t(\"month\"), categories: months }}\n      zAxis={{ title: t(\"sales\"), format: (value) => usd.format(value * 1000) }}\n      aspect={[0.75, 1.2, 0.6]}\n      camera={{ azimuth: 50, elevation: 28 }}\n      height={440}\n      ariaLabel={t(\"salesAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "各地区月度销售额",
+      "description": "五个地区的月度销售额：类别轴名称来自语言包，月份名称来自 Intl.DateTimeFormat，金额以紧凑货币格式显示。"
+    },
+    {
+      "id": "stacked",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/stacked.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/stacked.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Bar3DChart, type Bar3DSeries } from \"minerva-design/charts\";\n\n// Quarterly revenue (M$) of three product lines in four markets: the bars of\n// the same quarter and market are stacked\nconst QUARTERS = [\"q1\", \"q2\", \"q3\", \"q4\"] as const;\nconst MARKETS = [\"americas\", \"europe\", \"asia\", \"oceania\"] as const;\nconst REVENUE = {\n  hardware: [\n    [4.2, 3.1, 3.8, 0.9],\n    [4.5, 3.0, 4.1, 1.0],\n    [4.1, 2.8, 4.6, 1.1],\n    [5.6, 3.9, 5.2, 1.4],\n  ],\n  software: [\n    [2.8, 2.2, 1.6, 0.5],\n    [3.1, 2.4, 1.9, 0.6],\n    [3.4, 2.5, 2.3, 0.6],\n    [3.9, 2.9, 2.6, 0.8],\n  ],\n  services: [\n    [1.2, 1.4, 0.7, 0.3],\n    [1.3, 1.5, 0.8, 0.3],\n    [1.5, 1.6, 0.9, 0.4],\n    [1.7, 1.8, 1.1, 0.4],\n  ],\n};\ntype Product = keyof typeof REVENUE;\n\nexport default function StackedDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n  const locale = i18n.language;\n  const usd = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"USD\",\n        notation: \"compact\",\n      }),\n    [locale],\n  );\n\n  const series = useMemo(\n    (): Bar3DSeries[] =>\n      (Object.keys(REVENUE) as Product[]).map((product) => ({\n        name: t(`products.${product}`),\n        data: REVENUE[product].flatMap((row, q) =>\n          row.map((value, m) => [q, m, value] as const),\n        ),\n      })),\n    [t],\n  );\n\n  return (\n    <Bar3DChart\n      series={series}\n      barWidth={0.6}\n      xAxis={{\n        title: t(\"quarter\"),\n        categories: QUARTERS.map((q) => t(`quarters.${q}`)),\n      }}\n      yAxis={{\n        title: t(\"market\"),\n        categories: MARKETS.map((m) => t(`markets.${m}`)),\n      }}\n      zAxis={{\n        title: t(\"revenue\"),\n        format: (value) => usd.format(value * 1e6),\n      }}\n      legend={{ position: \"bottom\" }}\n      camera={{ azimuth: 40, elevation: 26 }}\n      height={440}\n      ariaLabel={t(\"stackedAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "堆叠与图例",
+      "description": "三条产品线在每个季度 × 市场单元格中堆叠；底部图例可切换系列，堆叠高度随之变化。"
+    },
+    {
+      "id": "traffic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-3d-chart/demos/traffic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-3d-chart/demos/traffic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Bar3DChart, type Bar3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Visits per hour of the week on a shop website: a morning bump, an evening\n// peak and busier weekends; heights and colors both show the visits\nconst random = mulberry32(14);\nconst visits = Array.from({ length: 7 }, (_, day) =>\n  Array.from({ length: 24 }, (_, hour) => {\n    const weekend = day >= 5 ? 1.35 : 1;\n    const morning = Math.exp(-((hour - 10) ** 2) / 8) * 0.6;\n    const evening = Math.exp(-((hour - 20) ** 2) / 6);\n    const night = hour < 6 ? 0.08 : 0.2;\n    return Math.round(\n      1000 * weekend * (night + morning + evening) * (0.9 + random() * 0.2),\n    );\n  }),\n).flatMap((hours, day) => hours.map((v, hour) => [hour, day, v] as const));\n\nexport default function TrafficDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-3d-chart.data\",\n  });\n  const locale = i18n.language;\n  // localized weekday names (Monday first) and hours\n  const { days, hours } = useMemo(() => {\n    const weekday = new Intl.DateTimeFormat(locale, {\n      weekday: \"short\",\n      timeZone: \"UTC\",\n    });\n    const hour = new Intl.DateTimeFormat(locale, {\n      hour: \"numeric\",\n      timeZone: \"UTC\",\n    });\n    return {\n      // 2026-01-05 is a Monday\n      days: Array.from({ length: 7 }, (_, d) =>\n        weekday.format(Date.UTC(2026, 0, 5 + d)),\n      ),\n      hours: Array.from({ length: 24 }, (_, h) =>\n        hour.format(Date.UTC(2026, 0, 5, h)),\n      ),\n    };\n  }, [locale]);\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n\n  const series = useMemo(\n    (): Bar3DSeries[] => [\n      { name: t(\"visits\"), data: visits, colorBy: \"z\", barWidth: 0.82 },\n    ],\n    [t],\n  );\n\n  return (\n    <Bar3DChart\n      series={series}\n      colorScale=\"plasma\"\n      xAxis={{ title: t(\"hour\"), categories: hours }}\n      yAxis={{ title: t(\"weekday\"), categories: days }}\n      zAxis={{ title: t(\"visits\"), format: (value) => number.format(value) }}\n      colorBar={{ title: t(\"visits\") }}\n      aspect={[1.6, 0.7, 0.45]}\n      camera={{ azimuth: 20, elevation: 34 }}\n      height={420}\n      ariaLabel={t(\"trafficAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "按高度着色",
+      "description": "网站每周各小时的访问量：colorBy \"z\" 使用 plasma 色带和色条按高度为 168 根柱体着色。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "3D 柱状图",
+      "description": "x × y 类别网格上的柱体：带光照的立方体、按系列着色、跨系列堆叠、按高度或其他值通过色阶着色，并支持图例和色条。",
+      "demos": {
+        "sales": {
+          "title": "各地区月度销售额",
+          "description": "五个地区的月度销售额：类别轴名称来自语言包，月份名称来自 Intl.DateTimeFormat，金额以紧凑货币格式显示。"
+        },
+        "stacked": {
+          "title": "堆叠与图例",
+          "description": "三条产品线在每个季度 × 市场单元格中堆叠；底部图例可切换系列，堆叠高度随之变化。"
+        },
+        "pyramid": {
+          "title": "人口金字塔",
+          "description": "按年龄组和普查年份，女性在 0 以上、男性在 0 以下（负高度）：随时间重复的人口金字塔。"
+        },
+        "traffic": {
+          "title": "按高度着色",
+          "description": "网站每周各小时的访问量：colorBy \"z\" 使用 plasma 色带和色条按高度为 168 根柱体着色。"
+        },
+        "margin": {
+          "title": "按其他值着色",
+          "description": "收入决定高度，利润率决定颜色（每个数据的 value，配合 colorBy \"value\"）：最高的柱体并不是利润最高的。"
+        },
+        "inventory-live": {
+          "title": "实时仓库库存",
+          "description": "仓库各货位（通道 × 货架层）的剩余件数，由带种子的 setInterval 每秒更新，卸载时清理。低于容量 20% 的货位移到使用危险色的第二个系列，因此每个单元格只在一个系列中有柱（另一个系列中 z: null），空货位会被补货。"
+        },
+        "cohort-retention": {
+          "title": "同期群留存",
+          "description": "每个月注册的同期群在 n 个月后仍活跃的比例；较新的同期群历史较短，空缺单元格使用 z: null。同期群名称来自 Intl.DateTimeFormat，柱子按高度着色（colorBy: \"z\"），点击可查看该单元格的留存率和活跃用户数。"
+        },
+        "budget-variance": {
+          "title": "预算差异",
+          "description": "所选财年六个部门的季度支出：柱高为实际支出，颜色为与预算的差异。colorBy: \"value\" 配合发散型 coolwarm 色阶和对称的 valueRange，使符合预算的单元格保持中性色，超支偏暖色，节支偏冷色。"
+        },
+        "datacenter": {
+          "title": "机房热力图",
+          "description": "机房中的机柜，柱高为功耗，颜色为 inferno 色阶上的进风温度。开关在深色 ConfigProvider 中重新挂载图表，按钮调用 ref 上的 setCamera() 切换为正交平面图（onCameraChange 保持按钮状态同步），摘要列出进风温度超过建议值的机柜。"
+        }
+      },
+      "data": {
+        "sales": "销售额",
+        "region": "地区",
+        "month": "月份",
+        "regions": {
+          "north": "北部",
+          "south": "南部",
+          "east": "东部",
+          "west": "西部",
+          "central": "中部"
+        },
+        "salesAria": "五个地区的月度销售额",
+        "quarter": "季度",
+        "quarters": {
+          "q1": "第一季度",
+          "q2": "第二季度",
+          "q3": "第三季度",
+          "q4": "第四季度"
+        },
+        "market": "市场",
+        "markets": {
+          "americas": "美洲",
+          "europe": "欧洲",
+          "asia": "亚洲",
+          "oceania": "大洋洲"
+        },
+        "products": {
+          "hardware": "硬件",
+          "software": "软件",
+          "services": "服务"
+        },
+        "revenue": "收入",
+        "stackedAria": "三条产品线在四个市场的季度收入（堆叠）",
+        "women": "女性",
+        "men": "男性",
+        "age": "年龄",
+        "ageGroup": "{{from}}–{{to}} 岁",
+        "ageOver": "{{from}} 岁以上",
+        "year": "普查年份",
+        "population": "人口",
+        "millions": "{{value}} 百万",
+        "pyramidAria": "四个普查年份按年龄组和性别划分的人口",
+        "visits": "访问量",
+        "hour": "小时",
+        "weekday": "星期",
+        "trafficAria": "网站每周各小时的访问量",
+        "product": "产品",
+        "productNames": {
+          "laptops": "笔记本电脑",
+          "phones": "手机",
+          "tablets": "平板电脑",
+          "watches": "手表",
+          "audio": "音频设备"
+        },
+        "margin": "利润率",
+        "marginAria": "五种产品在四个市场的收入与利润率",
+        "inStock": "库存充足",
+        "lowStock": "库存不足",
+        "unitsValue": "{{value}} 件",
+        "liveUpdates": "实时更新",
+        "aisle": "通道",
+        "aisleLabel": "{{id}} 通道",
+        "shelf": "货架层",
+        "shelfLabel": "第 {{n}} 层",
+        "units": "件数",
+        "inventoryAria": "按通道和货架层统计的仓库货位剩余件数，实时更新",
+        "inventoryStatus": "库存 {{total}} 件 · 不足货位：{{low}} / {{bins}} · 已补货货位：{{restocked}}。",
+        "retention": "留存率",
+        "monthsSinceSignup": "注册后月数",
+        "monthIndex": "第 {{n}} 月",
+        "signupCohort": "注册月份",
+        "cohortAria": "按注册后月数统计的各月注册同期群留存率",
+        "cohortReadout": "{{cohort}}同期群，第 {{n}} 个月：{{retention}} 仍活跃（{{total}} 位用户中的 {{users}} 位）。",
+        "cohortHint": "点击柱子查看同期群的留存率。",
+        "departments": {
+          "engineering": "研发",
+          "sales": "销售",
+          "marketing": "市场",
+          "operations": "运营",
+          "support": "客服",
+          "finance": "财务"
+        },
+        "actualSpend": "实际支出",
+        "fiscalYear": "财年",
+        "varianceToBudget": "预算差异",
+        "department": "部门",
+        "budgetAria": "{{year}} 年六个部门的季度支出及预算差异",
+        "varianceDetail": "{{department}}，{{quarter}}：支出 {{actual}}，预算 {{budget}}（{{variance}}）。",
+        "budgetSummary": "{{year}} 年：支出 {{actual}}，预算 {{budget}}（{{variance}}）。超支最多：{{department}}，{{quarter}}（{{worst}}）。",
+        "kw": "{{value}} kW",
+        "inletTemperature": "进风温度",
+        "darkTheme": "深色主题",
+        "perspectiveView": "3D 视图",
+        "topView": "平面图",
+        "rackPosition": "机柜",
+        "rackRow": "排",
+        "rowLabel": "{{id}} 排",
+        "powerDraw": "功耗",
+        "datacenterAria": "按排和位置排列的服务器机柜，柱高为功耗，颜色为进风温度",
+        "rackHot": "机柜 {{rack}}：{{power}}，进风 {{inlet}}，超过 {{limit}} 上限。",
+        "rackOk": "机柜 {{rack}}：{{power}}，进风 {{inlet}}，未超过 {{limit}} 上限。",
+        "datacenterSummary": "进风温度超过 {{limit}} 的机柜：{{total}} 个中有 {{hot}} 个（{{racks}}）。点击机柜查看读数。"
+      },
+      "api": {
+        "Bar3DChartProps": {
+          "series": "x × y 类别网格上的柱体；同一单元格中多个系列的柱体会堆叠",
+          "barWidth": "未自行设置宽度的系列的柱宽，占单元格的比例"
+        },
+        "Bar3DSeries": {
+          "type": "由 Bar3DChart 设置",
+          "data": "柱体数据：对象或 [x, y, z] 元组（x 和 y 为类别名称或索引）",
+          "colorBy": "柱体颜色的来源",
+          "opacity": "柱体不透明度，0-1",
+          "barWidth": "柱宽占单元格的比例，0-1"
+        },
+        "Bar3DDatum": {
+          "x": "X 类别（名称或索引）",
+          "y": "Y 类别（名称或索引）",
+          "z": "高度；null 表示该单元格为空，负值从 0 向下延伸",
+          "color": "柱体颜色；优先于系列颜色和色阶",
+          "value": "映射到色阶的值（colorBy \"value\"）",
+          "label": "提示框中显示的文本"
+        },
+        "Chart3DCommonProps": {
+          "height": "图表高度（含图例）；数字表示像素",
+          "width": "图表宽度；数字表示像素",
+          "xAxis": "X 轴（坐标盒宽度）：标题、范围、刻度、格式、类别",
+          "yAxis": "Y 轴（坐标盒深度）",
+          "zAxis": "Z 轴（坐标盒高度）",
+          "camera": "初始相机（方位角、仰角、缩放、投影、视野），双击时恢复；修改后相机随之移动",
+          "autoRotate": "相机绕坐标盒旋转：true 为每秒 12°，或传入每秒角度；鼠标悬停、离开屏幕或开启“减少动态效果”时暂停",
+          "aspect": "坐标盒的比例（x、y、z）",
+          "box": "绘制坐标盒：背景墙、网格线、刻度标签和轴标题",
+          "colorScale": "colorBy 为 \"z\" / \"value\" 时的颜色：内置色带（viridis、plasma、inferno、magma、cividis、turbo、spectral、coolwarm、terrain、blues）或 CSS 颜色",
+          "valueRange": "映射到色阶两端的值；默认为数据范围",
+          "colorBar": "色阶的色条（标题、格式）；当可见系列使用色阶时显示",
+          "legend": "图例；多个系列有名称时显示，点击图例项切换对应系列",
+          "tooltip": "提示框；false 禁用，render 替换其内容",
+          "interaction": "拖动旋转，右键 / Shift + 拖动平移，Ctrl / ⌘ + 滚轮与双指捏合缩放，双击复位，方向键旋转；false 使图表静止",
+          "lighting": "曲面与柱体的环境光、漫反射和高光",
+          "exposure": "叠加混合（blend \"additive\"）系列的光亮度；在 WebGPU 和 WebGL2 上经过色调映射，密集的发光区域会平滑饱和而不会发白",
+          "renderer": "数据层后端：auto 依次尝试 WebGPU、WebGL2、WebGL、Canvas2D，并跳过软件模拟的 GPU",
+          "palette": "系列颜色（默认取 CSS 变量 --chart-series-1..8，其次为主题色）",
+          "ariaLabel": "图表的无障碍名称",
+          "locale": "内置文本（无障碍摘要、图例播报、提示框行名）及数字格式的语言；内置英文、中文、日文和法文。默认使用页面语言（<html lang>），其次为浏览器语言",
+          "labels": "覆盖当前语言的内置文本（见 Chart3DLabels）",
+          "onHover": "悬停的点、网格单元或柱体变化时调用",
+          "onPointClick": "点击点、网格单元或柱体时调用",
+          "onCameraChange": "用户旋转、缩放、平移或复位相机后调用",
+          "onRendererChange": "后端就绪（以及发生回退）时调用，参数为所用后端",
+          "className": "外层元素的类名",
+          "style": "外层元素的样式",
+          "ref": "命令式句柄：resetCamera、getCamera、setCamera、getRenderer、getInstance"
+        },
+        "Chart3DSeriesBase": {
+          "id": "稳定的标识符（默认为索引）",
+          "name": "在图例和提示框中显示的名称",
+          "color": "系列颜色（任意 CSS 颜色，含 var(--x)）；省略时使用调色板",
+          "hidden": "隐藏该系列（仍保留在图例中）",
+          "format": "在提示框中格式化悬停项的值（或高度）"
+        },
+        "Chart3DLegendOptions": {
+          "position": "图例位置：\"top\" 或 \"bottom\"",
+          "toggle": "点击图例项切换其系列"
+        },
+        "Chart3DTooltipOptions": {
+          "render": "渲染提示框内容（字符串作为文本）；返回 null 时隐藏"
+        }
+      },
+      "wc": {
+        "demos": {
+          "sales": {
+            "title": "按地区和季度的销售额",
+            "description": "每个地区 × 季度单元格一根柱子，按高度着色；坐标轴显示类别名称。"
+          },
+          "stacked": {
+            "title": "堆叠的销售渠道",
+            "description": "同一单元格上的两个系列会堆叠（门店与线上）；柱子更细，可通过图例切换。"
+          }
+        },
+        "minerva-bar-3d-chart": {
+          "props": {
+            "options": "其他引擎选项（minerva-design/charts/core 的 Chart3DOptions：颜色、文本、locale、labels……）；仅作为属性设置",
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+          },
+          "events": {
+            "minerva-hover": "悬停的点、单元格或柱子发生变化；detail：{ seriesIndex, seriesName, type, index, x, y, z, value, color, label }，无悬停时为 null",
+            "minerva-point-click": "点击了某个点、单元格或柱子；detail：{ seriesIndex, seriesName, type, index, x, y, z, value, color, label }",
+            "minerva-camera-change": "用户旋转、缩放、平移或重置了相机；detail：{ azimuth, elevation, zoom, pan, projection }",
+            "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+          },
+          "methods": {
+            "resetCamera": "恢复选项中设定的相机",
+            "getCamera": "当前相机，引擎创建之前为 null",
+            "setCamera": "移动相机",
+            "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+          }
+        }
+      }
+    }
+  }
+}

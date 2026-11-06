@@ -1,0 +1,561 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "heatmap-chart",
+  "title": "Heatmap",
+  "description": "A grid of cells colored by value, over categories or numbers on both axes: activity by weekday and hour, correlation matrices, maps of a measure. Hover a cell to lift it, highlight its row and column and mark its value on the color legend.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {
+    "data": {
+      "sessions": "Sessions",
+      "sessionsAria": "Sessions by weekday and hour of the day",
+      "anomaly": "Anomaly",
+      "anomalyAria": "Monthly temperature anomaly, 1995 to 2024",
+      "signal": "Signal",
+      "wifiAria": "Wi-Fi signal strength over a 200 by 100 meter floor",
+      "largeStatus": "{{cells}} cells · drawn with {{renderer}} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset",
+      "contributions": "Contributions",
+      "activityAria": "Contributions per day over one year",
+      "activityTotal": "{{total}} contributions in the last year",
+      "metrics": {
+        "sessions": "Sessions",
+        "pageViews": "Page views",
+        "signups": "Sign-ups",
+        "revenue": "Revenue",
+        "churn": "Churn",
+        "tickets": "Support tickets"
+      },
+      "correlation": "Correlation",
+      "correlationAria": "Correlation matrix of six product metrics",
+      "monthN": "Month {{n}}",
+      "retained": "Retained",
+      "retentionAria": "Retention of monthly signup cohorts",
+      "devices": {
+        "desktop": "Desktop",
+        "mobile": "Mobile",
+        "tablet": "Tablet"
+      },
+      "sources": {
+        "organic": "Organic search",
+        "paid": "Paid search",
+        "social": "Social",
+        "email": "Email",
+        "referral": "Referral",
+        "direct": "Direct"
+      },
+      "cellStatus": "{{source}} on {{device}}: {{orders}} orders from {{sessions}} sessions, {{rate}}:",
+      "aboveAverage": "above the average of {{value}}",
+      "belowAverage": "below the average of {{value}}",
+      "clickCell": "Click a cell to see its sessions and orders.",
+      "conversionRate": "Conversion rate",
+      "conversionAria": "Conversion rate by traffic source and device",
+      "rackN": "Rack {{n}}",
+      "sensorN": "Sensor {{n}}",
+      "pause": "Pause",
+      "resume": "Resume",
+      "rackStatus": "Hottest: {{rack}}, {{sensor}} at {{value}} · {{alarms}} sensors above {{limit}}",
+      "inletTemperature": "Inlet temperature",
+      "racksAria": "Live inlet temperatures of the sensors of ten server racks",
+      "classes": {
+        "cat": "Cat",
+        "dog": "Dog",
+        "bird": "Bird",
+        "car": "Car",
+        "truck": "Truck"
+      },
+      "actualPredicted": "Actual {{actual}}, predicted {{predicted}}",
+      "imagesShare": "{{value}} images ({{share}} of the class)",
+      "recall": "Recall: {{value}}",
+      "precision": "Precision: {{value}}",
+      "misclassified": "Misclassified",
+      "accuracy": "Accuracy: {{value}} of {{images}} test images",
+      "shareOfClass": "Share of the class",
+      "predicted": "Predicted class",
+      "actual": "Actual class",
+      "confusionAria": "Confusion matrix of an image classifier over five classes",
+      "regions": {
+        "north": "North",
+        "south": "South",
+        "east": "East",
+        "west": "West",
+        "central": "Central"
+      },
+      "quarterN": "Q{{n}}",
+      "metric": "Metric",
+      "salesMetrics": {
+        "revenue": "Revenue",
+        "growth": "Growth over 2025",
+        "margin": "Gross margin"
+      },
+      "regionQuarter": "{{region}} in {{quarter}}",
+      "bestWorst": "Best: {{best}} ({{bestValue}}) · weakest: {{worst}} ({{worstValue}})",
+      "salesAria": "Sales metrics of 2026 by region and quarter"
+    }
+  },
+  "components": [
+    {
+      "name": "HeatmapChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnHeatmapChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnHeatmapChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnHeatmapChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-heatmap-chart",
+        "props": [
+          {
+            "name": "data",
+            "typeText": "readonly HeatmapCell[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "xCategories",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "yCategories",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "colorScale",
+            "typeText": "readonly string[] | ChartColorScheme | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "valueRange",
+            "typeText": "readonly [number, number] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "colorMidpoint",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "name",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "radius",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "format",
+            "typeText": "((value: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "xAxis",
+            "typeText": "ChartAxisOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "yAxis",
+            "typeText": "ChartAxisOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "ChartRendererPreference | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "legend",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "tooltip",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "crosshair",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "annotations",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "interaction",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "padding",
+            "typeText": "ChartPadding | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "palette",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "pointClick",
+            "typeText": "ChartHoverEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "plotClick",
+            "typeText": "ChartPlotClickEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartPlotClickEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "hover",
+            "typeText": "ChartHoverEvent | null",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "zoom",
+            "typeText": "ChartView",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartView",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "typeText": "ChartRendererKind",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "weekly-activity",
+      "title": "Weekly activity",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnHeatmapChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnHeatmapChart],\n  template: `\n@let t = labels[language()];\n<mn-heatmap-chart\n  [data]=\"cells[language()]\"\n  [xCategories]=\"hours\"\n  [yCategories]=\"t.rows\"\n  [name]=\"t.commits\"\n  [height]=\"300\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  hours = [\"0–4\", \"4–8\", \"8–12\", \"12–16\", \"16–20\", \"20–24\"];\n  cells = {\n  \"en\": [\n    {\n      \"x\": \"0–4\",\n      \"y\": \"Mon\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"Mon\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"Mon\",\n      \"value\": 30\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"Mon\",\n      \"value\": 22\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"Mon\",\n      \"value\": 27\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"Mon\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"Tue\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"Tue\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"Tue\",\n      \"value\": 24\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"Tue\",\n      \"value\": 29\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"Tue\",\n      \"value\": 21\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"Tue\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"Wed\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"Wed\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"Wed\",\n      \"value\": 31\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"Wed\",\n      \"value\": 23\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"Wed\",\n      \"value\": 28\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"Wed\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"Thu\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"Thu\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"Thu\",\n      \"value\": 25\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"Thu\",\n      \"value\": 30\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"Thu\",\n      \"value\": 22\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"Thu\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"Fri\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"Fri\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"Fri\",\n      \"value\": 32\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"Fri\",\n      \"value\": 24\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"Fri\",\n      \"value\": 29\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"Fri\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"Sat\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"Sat\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"Sat\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"Sat\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"Sat\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"Sat\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"Sun\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"Sun\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"Sun\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"Sun\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"Sun\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"Sun\",\n      \"value\": 4\n    }\n  ],\n  \"zh\": [\n    {\n      \"x\": \"0–4\",\n      \"y\": \"周一\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"周一\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"周一\",\n      \"value\": 30\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"周一\",\n      \"value\": 22\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"周一\",\n      \"value\": 27\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"周一\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"周二\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"周二\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"周二\",\n      \"value\": 24\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"周二\",\n      \"value\": 29\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"周二\",\n      \"value\": 21\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"周二\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"周三\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"周三\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"周三\",\n      \"value\": 31\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"周三\",\n      \"value\": 23\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"周三\",\n      \"value\": 28\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"周三\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"周四\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"周四\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"周四\",\n      \"value\": 25\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"周四\",\n      \"value\": 30\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"周四\",\n      \"value\": 22\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"周四\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"周五\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"周五\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"周五\",\n      \"value\": 32\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"周五\",\n      \"value\": 24\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"周五\",\n      \"value\": 29\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"周五\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"周六\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"周六\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"周六\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"周六\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"周六\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"周六\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"周日\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"周日\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"周日\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"周日\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"周日\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"周日\",\n      \"value\": 4\n    }\n  ],\n  \"ja\": [\n    {\n      \"x\": \"0–4\",\n      \"y\": \"月\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"月\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"月\",\n      \"value\": 30\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"月\",\n      \"value\": 22\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"月\",\n      \"value\": 27\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"月\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"火\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"火\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"火\",\n      \"value\": 24\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"火\",\n      \"value\": 29\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"火\",\n      \"value\": 21\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"火\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"水\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"水\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"水\",\n      \"value\": 31\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"水\",\n      \"value\": 23\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"水\",\n      \"value\": 28\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"水\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"木\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"木\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"木\",\n      \"value\": 25\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"木\",\n      \"value\": 30\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"木\",\n      \"value\": 22\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"木\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"金\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"金\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"金\",\n      \"value\": 32\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"金\",\n      \"value\": 24\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"金\",\n      \"value\": 29\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"金\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"土\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"土\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"土\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"土\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"土\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"土\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"日\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"日\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"日\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"日\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"日\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"日\",\n      \"value\": 4\n    }\n  ],\n  \"fr\": [\n    {\n      \"x\": \"0–4\",\n      \"y\": \"lun.\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"lun.\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"lun.\",\n      \"value\": 30\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"lun.\",\n      \"value\": 22\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"lun.\",\n      \"value\": 27\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"lun.\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"mar.\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"mar.\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"mar.\",\n      \"value\": 24\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"mar.\",\n      \"value\": 29\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"mar.\",\n      \"value\": 21\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"mar.\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"mer.\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"mer.\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"mer.\",\n      \"value\": 31\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"mer.\",\n      \"value\": 23\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"mer.\",\n      \"value\": 28\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"mer.\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"jeu.\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"jeu.\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"jeu.\",\n      \"value\": 25\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"jeu.\",\n      \"value\": 30\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"jeu.\",\n      \"value\": 22\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"jeu.\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"ven.\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"ven.\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"ven.\",\n      \"value\": 32\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"ven.\",\n      \"value\": 24\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"ven.\",\n      \"value\": 29\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"ven.\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"sam.\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"sam.\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"sam.\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"sam.\",\n      \"value\": 3\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"sam.\",\n      \"value\": 5\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"sam.\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"0–4\",\n      \"y\": \"dim.\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"4–8\",\n      \"y\": \"dim.\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"8–12\",\n      \"y\": \"dim.\",\n      \"value\": 4\n    },\n    {\n      \"x\": \"12–16\",\n      \"y\": \"dim.\",\n      \"value\": 0\n    },\n    {\n      \"x\": \"16–20\",\n      \"y\": \"dim.\",\n      \"value\": 2\n    },\n    {\n      \"x\": \"20–24\",\n      \"y\": \"dim.\",\n      \"value\": 4\n    }\n  ]\n};\n  labels = {\n  \"en\": {\n    \"commits\": \"Commits\",\n    \"rows\": [\"Sun\", \"Sat\", \"Fri\", \"Thu\", \"Wed\", \"Tue\", \"Mon\"]\n  },\n  \"zh\": {\n    \"commits\": \"提交数\",\n    \"rows\": [\"周日\", \"周六\", \"周五\", \"周四\", \"周三\", \"周二\", \"周一\"]\n  },\n  \"ja\": {\n    \"commits\": \"コミット数\",\n    \"rows\": [\"日\", \"土\", \"金\", \"木\", \"水\", \"火\", \"月\"]\n  },\n  \"fr\": {\n    \"commits\": \"Commits\",\n    \"rows\": [\"dim.\", \"sam.\", \"ven.\", \"jeu.\", \"mer.\", \"mar.\", \"lun.\"]\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "color-scale",
+      "title": "Diverging scale",
+      "description": "colorScale lists the colors from the lowest to the highest value and accepts CSS variables, so the middle stop follows the theme. A symmetric valueRange keeps 0 in the middle of the scale.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnHeatmapChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnHeatmapChart],\n  template: `\n@let t = labels[language()];\n<mn-heatmap-chart\n  [data]=\"cells[language()]\"\n  [colorScale]=\"['#2563eb', '#f8fafc', '#dc2626']\"\n  [valueRange]=\"[-1, 1]\"\n  [name]=\"t.correlation\"\n  [radius]=\"4\"\n  [height]=\"320\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  cells = {\n  \"en\": [\n    {\n      \"x\": \"Price\",\n      \"y\": \"Price\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"Rating\",\n      \"y\": \"Price\",\n      \"value\": -0.32\n    },\n    {\n      \"x\": \"Delivery\",\n      \"y\": \"Price\",\n      \"value\": 0.12\n    },\n    {\n      \"x\": \"Returns\",\n      \"y\": \"Price\",\n      \"value\": 0.41\n    },\n    {\n      \"x\": \"Sales\",\n      \"y\": \"Price\",\n      \"value\": -0.58\n    },\n    {\n      \"x\": \"Price\",\n      \"y\": \"Rating\",\n      \"value\": -0.32\n    },\n    {\n      \"x\": \"Rating\",\n      \"y\": \"Rating\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"Delivery\",\n      \"y\": \"Rating\",\n      \"value\": -0.44\n    },\n    {\n      \"x\": \"Returns\",\n      \"y\": \"Rating\",\n      \"value\": -0.61\n    },\n    {\n      \"x\": \"Sales\",\n      \"y\": \"Rating\",\n      \"value\": 0.72\n    },\n    {\n      \"x\": \"Price\",\n      \"y\": \"Delivery\",\n      \"value\": 0.12\n    },\n    {\n      \"x\": \"Rating\",\n      \"y\": \"Delivery\",\n      \"value\": -0.44\n    },\n    {\n      \"x\": \"Delivery\",\n      \"y\": \"Delivery\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"Returns\",\n      \"y\": \"Delivery\",\n      \"value\": 0.35\n    },\n    {\n      \"x\": \"Sales\",\n      \"y\": \"Delivery\",\n      \"value\": -0.27\n    },\n    {\n      \"x\": \"Price\",\n      \"y\": \"Returns\",\n      \"value\": 0.41\n    },\n    {\n      \"x\": \"Rating\",\n      \"y\": \"Returns\",\n      \"value\": -0.61\n    },\n    {\n      \"x\": \"Delivery\",\n      \"y\": \"Returns\",\n      \"value\": 0.35\n    },\n    {\n      \"x\": \"Returns\",\n      \"y\": \"Returns\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"Sales\",\n      \"y\": \"Returns\",\n      \"value\": -0.49\n    },\n    {\n      \"x\": \"Price\",\n      \"y\": \"Sales\",\n      \"value\": -0.58\n    },\n    {\n      \"x\": \"Rating\",\n      \"y\": \"Sales\",\n      \"value\": 0.72\n    },\n    {\n      \"x\": \"Delivery\",\n      \"y\": \"Sales\",\n      \"value\": -0.27\n    },\n    {\n      \"x\": \"Returns\",\n      \"y\": \"Sales\",\n      \"value\": -0.49\n    },\n    {\n      \"x\": \"Sales\",\n      \"y\": \"Sales\",\n      \"value\": 1\n    }\n  ],\n  \"zh\": [\n    {\n      \"x\": \"价格\",\n      \"y\": \"价格\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"评分\",\n      \"y\": \"价格\",\n      \"value\": -0.32\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"价格\",\n      \"value\": 0.12\n    },\n    {\n      \"x\": \"退货\",\n      \"y\": \"价格\",\n      \"value\": 0.41\n    },\n    {\n      \"x\": \"销量\",\n      \"y\": \"价格\",\n      \"value\": -0.58\n    },\n    {\n      \"x\": \"价格\",\n      \"y\": \"评分\",\n      \"value\": -0.32\n    },\n    {\n      \"x\": \"评分\",\n      \"y\": \"评分\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"评分\",\n      \"value\": -0.44\n    },\n    {\n      \"x\": \"退货\",\n      \"y\": \"评分\",\n      \"value\": -0.61\n    },\n    {\n      \"x\": \"销量\",\n      \"y\": \"评分\",\n      \"value\": 0.72\n    },\n    {\n      \"x\": \"价格\",\n      \"y\": \"配送\",\n      \"value\": 0.12\n    },\n    {\n      \"x\": \"评分\",\n      \"y\": \"配送\",\n      \"value\": -0.44\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"配送\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"退货\",\n      \"y\": \"配送\",\n      \"value\": 0.35\n    },\n    {\n      \"x\": \"销量\",\n      \"y\": \"配送\",\n      \"value\": -0.27\n    },\n    {\n      \"x\": \"价格\",\n      \"y\": \"退货\",\n      \"value\": 0.41\n    },\n    {\n      \"x\": \"评分\",\n      \"y\": \"退货\",\n      \"value\": -0.61\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"退货\",\n      \"value\": 0.35\n    },\n    {\n      \"x\": \"退货\",\n      \"y\": \"退货\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"销量\",\n      \"y\": \"退货\",\n      \"value\": -0.49\n    },\n    {\n      \"x\": \"价格\",\n      \"y\": \"销量\",\n      \"value\": -0.58\n    },\n    {\n      \"x\": \"评分\",\n      \"y\": \"销量\",\n      \"value\": 0.72\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"销量\",\n      \"value\": -0.27\n    },\n    {\n      \"x\": \"退货\",\n      \"y\": \"销量\",\n      \"value\": -0.49\n    },\n    {\n      \"x\": \"销量\",\n      \"y\": \"销量\",\n      \"value\": 1\n    }\n  ],\n  \"ja\": [\n    {\n      \"x\": \"価格\",\n      \"y\": \"価格\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"評価\",\n      \"y\": \"価格\",\n      \"value\": -0.32\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"価格\",\n      \"value\": 0.12\n    },\n    {\n      \"x\": \"返品\",\n      \"y\": \"価格\",\n      \"value\": 0.41\n    },\n    {\n      \"x\": \"売上\",\n      \"y\": \"価格\",\n      \"value\": -0.58\n    },\n    {\n      \"x\": \"価格\",\n      \"y\": \"評価\",\n      \"value\": -0.32\n    },\n    {\n      \"x\": \"評価\",\n      \"y\": \"評価\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"評価\",\n      \"value\": -0.44\n    },\n    {\n      \"x\": \"返品\",\n      \"y\": \"評価\",\n      \"value\": -0.61\n    },\n    {\n      \"x\": \"売上\",\n      \"y\": \"評価\",\n      \"value\": 0.72\n    },\n    {\n      \"x\": \"価格\",\n      \"y\": \"配送\",\n      \"value\": 0.12\n    },\n    {\n      \"x\": \"評価\",\n      \"y\": \"配送\",\n      \"value\": -0.44\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"配送\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"返品\",\n      \"y\": \"配送\",\n      \"value\": 0.35\n    },\n    {\n      \"x\": \"売上\",\n      \"y\": \"配送\",\n      \"value\": -0.27\n    },\n    {\n      \"x\": \"価格\",\n      \"y\": \"返品\",\n      \"value\": 0.41\n    },\n    {\n      \"x\": \"評価\",\n      \"y\": \"返品\",\n      \"value\": -0.61\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"返品\",\n      \"value\": 0.35\n    },\n    {\n      \"x\": \"返品\",\n      \"y\": \"返品\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"売上\",\n      \"y\": \"返品\",\n      \"value\": -0.49\n    },\n    {\n      \"x\": \"価格\",\n      \"y\": \"売上\",\n      \"value\": -0.58\n    },\n    {\n      \"x\": \"評価\",\n      \"y\": \"売上\",\n      \"value\": 0.72\n    },\n    {\n      \"x\": \"配送\",\n      \"y\": \"売上\",\n      \"value\": -0.27\n    },\n    {\n      \"x\": \"返品\",\n      \"y\": \"売上\",\n      \"value\": -0.49\n    },\n    {\n      \"x\": \"売上\",\n      \"y\": \"売上\",\n      \"value\": 1\n    }\n  ],\n  \"fr\": [\n    {\n      \"x\": \"Prix\",\n      \"y\": \"Prix\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"Note\",\n      \"y\": \"Prix\",\n      \"value\": -0.32\n    },\n    {\n      \"x\": \"Livraison\",\n      \"y\": \"Prix\",\n      \"value\": 0.12\n    },\n    {\n      \"x\": \"Retours\",\n      \"y\": \"Prix\",\n      \"value\": 0.41\n    },\n    {\n      \"x\": \"Ventes\",\n      \"y\": \"Prix\",\n      \"value\": -0.58\n    },\n    {\n      \"x\": \"Prix\",\n      \"y\": \"Note\",\n      \"value\": -0.32\n    },\n    {\n      \"x\": \"Note\",\n      \"y\": \"Note\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"Livraison\",\n      \"y\": \"Note\",\n      \"value\": -0.44\n    },\n    {\n      \"x\": \"Retours\",\n      \"y\": \"Note\",\n      \"value\": -0.61\n    },\n    {\n      \"x\": \"Ventes\",\n      \"y\": \"Note\",\n      \"value\": 0.72\n    },\n    {\n      \"x\": \"Prix\",\n      \"y\": \"Livraison\",\n      \"value\": 0.12\n    },\n    {\n      \"x\": \"Note\",\n      \"y\": \"Livraison\",\n      \"value\": -0.44\n    },\n    {\n      \"x\": \"Livraison\",\n      \"y\": \"Livraison\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"Retours\",\n      \"y\": \"Livraison\",\n      \"value\": 0.35\n    },\n    {\n      \"x\": \"Ventes\",\n      \"y\": \"Livraison\",\n      \"value\": -0.27\n    },\n    {\n      \"x\": \"Prix\",\n      \"y\": \"Retours\",\n      \"value\": 0.41\n    },\n    {\n      \"x\": \"Note\",\n      \"y\": \"Retours\",\n      \"value\": -0.61\n    },\n    {\n      \"x\": \"Livraison\",\n      \"y\": \"Retours\",\n      \"value\": 0.35\n    },\n    {\n      \"x\": \"Retours\",\n      \"y\": \"Retours\",\n      \"value\": 1\n    },\n    {\n      \"x\": \"Ventes\",\n      \"y\": \"Retours\",\n      \"value\": -0.49\n    },\n    {\n      \"x\": \"Prix\",\n      \"y\": \"Ventes\",\n      \"value\": -0.58\n    },\n    {\n      \"x\": \"Note\",\n      \"y\": \"Ventes\",\n      \"value\": 0.72\n    },\n    {\n      \"x\": \"Livraison\",\n      \"y\": \"Ventes\",\n      \"value\": -0.27\n    },\n    {\n      \"x\": \"Retours\",\n      \"y\": \"Ventes\",\n      \"value\": -0.49\n    },\n    {\n      \"x\": \"Ventes\",\n      \"y\": \"Ventes\",\n      \"value\": 1\n    }\n  ]\n};\n  labels = {\n  \"en\": {\n    \"correlation\": \"Correlation\"\n  },\n  \"zh\": {\n    \"correlation\": \"相关系数\"\n  },\n  \"ja\": {\n    \"correlation\": \"相関係数\"\n  },\n  \"fr\": {\n    \"correlation\": \"Corrélation\"\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Heatmap",
+      "description": "A grid of cells colored by value, over categories or numbers on both axes: activity by weekday and hour, correlation matrices, maps of a measure. Hover a cell to lift it, highlight its row and column and mark its value on the color legend.",
+      "demos": {
+        "basic": {
+          "title": "Weekly activity",
+          "description": "7 × 24 cells over category axes. The default ramp is perceptual (OKLab) and follows the theme: from a near-white tint to a deep primary color in light mode, from a tint of the surface to a bright one in dark mode; the color legend shows its range. yCategories lists the rows from bottom to top, hence the reversed weekdays."
+        },
+        "color-scale": {
+          "title": "Diverging scale",
+          "description": "colorScale lists the colors from the lowest to the highest value and accepts CSS variables, so the middle stop follows the theme. A symmetric valueRange keeps 0 in the middle of the scale."
+        },
+        "large-grid": {
+          "title": "20,000 cells",
+          "description": "A 200 × 100 grid with numbers on both axes. interaction={{ zoom: \"xy\" }} enables zooming (off by default for heatmaps): Ctrl / ⌘ + wheel, drag to pan, double-click to reset."
+        },
+        "activity": {
+          "title": "Contribution calendar",
+          "description": "A year of daily contributions like a GitHub profile: weeks as numeric columns, weekdays as rows, an x format that turns the week number into its month, and palette={[\"var(--success-color)\"]} for a green ramp that reads well in light and dark themes."
+        },
+        "correlation": {
+          "title": "Correlation matrix",
+          "description": "Pairwise correlations of product metrics with colorScale=\"diverging\": the danger color below colorMidpoint (0), the primary color above, a neutral middle that follows the theme; the same translated names are used for both axes."
+        },
+        "retention": {
+          "title": "Cohort retention",
+          "description": "Share of each monthly signup cohort still active after N months: null values leave the future cells empty, which draws the classic triangle."
+        },
+        "conversion": {
+          "title": "Click a cell",
+          "description": "Conversion rate by traffic source and device. onPointClick gives item.index, the index of the clicked cell in data, which leads back to its sessions and orders for the readout; onPlotClick clears it."
+        },
+        "rack-temperatures": {
+          "title": "Live sensor grid",
+          "description": "Inlet temperatures of the sensors of a server aisle, refreshed by a setInterval cleared on pause and unmount. A fixed valueRange keeps the same color for the same temperature at every refresh, and colorScale goes through theme colors from cool to hot."
+        },
+        "confusion-matrix": {
+          "title": "Confusion matrix",
+          "description": "Predictions of an image classifier, each cell colored by its share of the actual class. renderTooltip finds the hovered cell from item.index to show its count, and the recall and precision on the diagonal."
+        },
+        "sales-regions": {
+          "title": "Switching metrics",
+          "description": "Revenue, growth and margin by region and quarter: each metric brings its own colorScale (sequential, diverging around zero or a custom list), valueRange and format, switched with a RadioGroup."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Sessions by weekday and 3-hour slot, with the weekday and hour names of the app language; tap a cell to read its value."
+          }
+        }
+      },
+      "data": {
+        "sessions": "Sessions",
+        "sessionsAria": "Sessions by weekday and hour of the day",
+        "anomaly": "Anomaly",
+        "anomalyAria": "Monthly temperature anomaly, 1995 to 2024",
+        "signal": "Signal",
+        "wifiAria": "Wi-Fi signal strength over a 200 by 100 meter floor",
+        "largeStatus": "{{cells}} cells · drawn with {{renderer}} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset",
+        "contributions": "Contributions",
+        "activityAria": "Contributions per day over one year",
+        "activityTotal": "{{total}} contributions in the last year",
+        "metrics": {
+          "sessions": "Sessions",
+          "pageViews": "Page views",
+          "signups": "Sign-ups",
+          "revenue": "Revenue",
+          "churn": "Churn",
+          "tickets": "Support tickets"
+        },
+        "correlation": "Correlation",
+        "correlationAria": "Correlation matrix of six product metrics",
+        "monthN": "Month {{n}}",
+        "retained": "Retained",
+        "retentionAria": "Retention of monthly signup cohorts",
+        "devices": {
+          "desktop": "Desktop",
+          "mobile": "Mobile",
+          "tablet": "Tablet"
+        },
+        "sources": {
+          "organic": "Organic search",
+          "paid": "Paid search",
+          "social": "Social",
+          "email": "Email",
+          "referral": "Referral",
+          "direct": "Direct"
+        },
+        "cellStatus": "{{source}} on {{device}}: {{orders}} orders from {{sessions}} sessions, {{rate}}:",
+        "aboveAverage": "above the average of {{value}}",
+        "belowAverage": "below the average of {{value}}",
+        "clickCell": "Click a cell to see its sessions and orders.",
+        "conversionRate": "Conversion rate",
+        "conversionAria": "Conversion rate by traffic source and device",
+        "rackN": "Rack {{n}}",
+        "sensorN": "Sensor {{n}}",
+        "pause": "Pause",
+        "resume": "Resume",
+        "rackStatus": "Hottest: {{rack}}, {{sensor}} at {{value}} · {{alarms}} sensors above {{limit}}",
+        "inletTemperature": "Inlet temperature",
+        "racksAria": "Live inlet temperatures of the sensors of ten server racks",
+        "classes": {
+          "cat": "Cat",
+          "dog": "Dog",
+          "bird": "Bird",
+          "car": "Car",
+          "truck": "Truck"
+        },
+        "actualPredicted": "Actual {{actual}}, predicted {{predicted}}",
+        "imagesShare": "{{value}} images ({{share}} of the class)",
+        "recall": "Recall: {{value}}",
+        "precision": "Precision: {{value}}",
+        "misclassified": "Misclassified",
+        "accuracy": "Accuracy: {{value}} of {{images}} test images",
+        "shareOfClass": "Share of the class",
+        "predicted": "Predicted class",
+        "actual": "Actual class",
+        "confusionAria": "Confusion matrix of an image classifier over five classes",
+        "regions": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West",
+          "central": "Central"
+        },
+        "quarterN": "Q{{n}}",
+        "metric": "Metric",
+        "salesMetrics": {
+          "revenue": "Revenue",
+          "growth": "Growth over 2025",
+          "margin": "Gross margin"
+        },
+        "regionQuarter": "{{region}} in {{quarter}}",
+        "bestWorst": "Best: {{best}} ({{bestValue}}) · weakest: {{worst}} ({{worstValue}})",
+        "salesAria": "Sales metrics of 2026 by region and quarter"
+      },
+      "api": {
+        "HeatmapConfig": {
+          "data": "Cells: x, y and value",
+          "xCategories": "Column names in order (collected from the data when omitted)",
+          "yCategories": "Row names from bottom to top (collected from the data when omitted)",
+          "colorScale": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp: sequential (default) or diverging",
+          "valueRange": "Values at the ends of the color scale; the data range by default",
+          "name": "Name of the value in the tooltip",
+          "radius": "Corner radius of the cells, in pixels",
+          "format": "Formats the values in the tooltip",
+          "colorMidpoint": "Value at the middle of the color scale (diverging data); 0 for diverging ramps spanning it, else the middle of the range"
+        },
+        "HeatmapCell": {
+          "x": "Column: a category name or a number",
+          "y": "Row: a category name or a number",
+          "value": "Value mapped to the color scale; null leaves the cell empty"
+        }
+      },
+      "wc": {
+        "demos": {
+          "weekly-activity": {
+            "title": "Weekly activity",
+            "description": "Commits per day and time slot; the categories set the order of the columns and rows."
+          },
+          "color-scale": {
+            "title": "Diverging color scale",
+            "description": "A correlation matrix on a fixed -1 to 1 range: blue for negative values, red for positive ones, rounded cells."
+          }
+        },
+        "minerva-heatmap-chart": {
+          "props": {
+            "valueName": "Name of the value in the tooltip",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

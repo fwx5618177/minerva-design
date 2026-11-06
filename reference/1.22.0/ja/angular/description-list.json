@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "description-list",
+  "title": "DescriptionList 説明リスト",
+  "description": "ネイティブの dl で描画するラベル付きメタデータ。狭い画面では行が縦に並びます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DescriptionItem",
+      "support": {
+        "status": "n/a",
+        "notes": "Native Angular: MnDescriptionList.items entries { term, description } render semantic dt/dd pairs; there is no separate item element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native Angular: MnDescriptionList.items entries { term, description } render semantic dt/dd pairs; there is no separate item element.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnDescriptionList"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-description-list",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly DescriptionItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DescriptionList",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnDescriptionList. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnDescriptionList. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnDescriptionList"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-description-list",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly DescriptionItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:DescriptionList": {
+      "kind": "cssVars",
+      "source": "react/src/components/DescriptionList",
+      "vars": [
+        {
+          "name": "--description-list-row-padding-y",
+          "description": "Vertical padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--description-list-gap",
+          "description": "Space between the term and the description"
+        },
+        {
+          "name": "--description-list-term-color",
+          "description": "Text color of the terms"
+        },
+        {
+          "name": "--description-list-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--description-list-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--description-list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--description-list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--description-list-padding-x",
+          "description": "Horizontal padding of the rows of a bordered or striped list"
+        },
+        {
+          "name": "--description-list-stripe-background",
+          "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "record-metadata",
+      "title": "Record metadata",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnDescriptionList } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnDescriptionList],\n  template: `\n<mn-description-list [items]=\"items\"/>\n  `,\n})\nexport class Example {\n  items = [\n  {\n    \"term\": \"Owner\",\n    \"description\": \"Ada Lovelace\"\n  },\n  {\n    \"term\": \"Status\",\n    \"description\": \"Active\"\n  },\n  {\n    \"term\": \"Created\",\n    \"description\": \"October 2026\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "operational-details",
+      "title": "Operational details",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnDescriptionList } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnDescriptionList],\n  template: `\n<mn-description-list [items]=\"items\"/>\n  `,\n})\nexport class Example {\n  items = [\n  {\n    \"term\": \"Region\",\n    \"description\": \"Europe\"\n  },\n  {\n    \"term\": \"Environment\",\n    \"description\": \"Production\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DescriptionList 説明リスト",
+      "description": "ネイティブの dl で描画するラベル付きメタデータ。狭い画面では行が縦に並びます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "ラベルと値には任意の ReactNode を使え、0 も表示されます。"
+        },
+        "variants": {
+          "title": "枠付きとストライプ",
+          "description": "bordered は項目をパディング付きの行を持つカードとして囲み、striped は区切り線の代わりに 1 行おきに色付けします。"
+        }
+      },
+      "api": {
+        "DescriptionListProps": {
+          "items": "順番に描画する行",
+          "ref": "<dl> 要素への ref",
+          "bordered": "リストをパディング付きの行を持つカードとして囲みます",
+          "striped": "1 行おきに色付けします（区切り線の代わり）"
+        },
+        "DescriptionListItem": {
+          "key": "行の安定した React key",
+          "label": "用語。<dt> に描画されます",
+          "value": "説明。<dd> に描画されます"
+        }
+      },
+      "cssVars": {
+        "--description-list-row-padding-y": "行の上下パディング（密度の行パディングに追従）",
+        "--description-list-gap": "用語と説明の間隔",
+        "--description-list-term-color": "用語の文字色",
+        "--description-list-border-color": "行区切り線の色",
+        "--description-list-font-size": "フォントサイズ",
+        "--description-list-radius": "枠付きリストの角丸（既定は --radius-lg）",
+        "--description-list-background": "枠付きリストの背景（既定は --surface-color）",
+        "--description-list-padding-x": "枠付きまたはストライプのリストの行の左右パディング",
+        "--description-list-stripe-background": "ストライプリストの 1 行おきの背景（既定は --surface-subtle-color）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "宣言的な <minerva-description-item label> 行。内容（テキスト、バッジ、リンク）はネイティブ <dl> の <dd> に入ります。"
+          },
+          "items": {
+            "title": "データからの行",
+            "description": "items プロパティは JS データから行を描画し、宣言的な子要素より前に置きます。0 も値として表示されます。"
+          },
+          "styling": {
+            "title": "スタイリング",
+            "description": "CSS 変数で密度、間隔、区切り線を設定し、::part(term) と ::part(row) でネイティブのセルをスタイルします。"
+          },
+          "variants": {
+            "title": "枠付きとストライプ",
+            "description": "bordered と striped のブール属性：パディング付きの行を持つカード枠、または区切り線の代わりの交互の色付け。"
+          }
+        },
+        "minerva-description-item": {
+          "slots": {
+            "default": "説明。"
+          }
+        },
+        "minerva-description-list": {
+          "slots": {
+            "default": "<minerva-description-item> の行。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

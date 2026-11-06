@@ -1,0 +1,557 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "gauge-chart",
+  "title": "Jauge",
+  "description": "Une seule valeur sur un arc, par rapport à une plage et à des seuils colorés facultatifs : KPI, taux d’utilisation, scores. Quand value change, l’arc (et l’aiguille) s’animent depuis leur position actuelle.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {
+    "data": {
+      "metrics": {
+        "cpu": "Processeur",
+        "memory": "Mémoire",
+        "disk": "Disque"
+      },
+      "usageAria": "Utilisation : {{metric}}",
+      "nps": "Net Promoter Score",
+      "requestsPerSecond": "Requêtes / s",
+      "liveAria": "Requêtes par seconde, mises à jour en direct",
+      "pause": "Mettre en pause",
+      "resume": "Reprendre",
+      "speed": "Vitesse",
+      "speedAria": "Compteur de vitesse : {{speed}}",
+      "brake": "Freiner",
+      "accelerate": "Accélérer",
+      "quotas": {
+        "storage": "Stockage",
+        "apiCalls": "Appels d'API",
+        "seats": "Postes",
+        "minutes": "Minutes de build"
+      },
+      "quotaUsed": "{{used}} sur {{limit}}",
+      "quotaAria": "{{quota}} : {{share}} du quota utilisé",
+      "availability": "Disponibilité, 30 jours",
+      "objective": "Objectif : {{value}}",
+      "availabilityAria": "Disponibilité sur 30 jours face à l'objectif",
+      "budgetLeft": "Budget d'erreur restant",
+      "budgetDetail": "{{used}} d'indisponibilité sur {{budget}} autorisées",
+      "budgetAria": "Budget d'erreur restant ce mois-ci",
+      "thermostat": {
+        "unit": "Unité de température",
+        "units": {
+          "celsius": "°C",
+          "fahrenheit": "°F"
+        },
+        "target": "consigne",
+        "room": "Pièce : {{value}}",
+        "aria": "Température de consigne du thermostat",
+        "lower": "Baisser la consigne",
+        "raise": "Augmenter la consigne",
+        "modes": {
+          "heating": "Chauffe jusqu’à {{target}} (pièce : {{room}})",
+          "cooling": "Refroidit jusqu’à {{target}} (pièce : {{room}})",
+          "holding": "Maintient {{target}} (pièce : {{room}})"
+        }
+      },
+      "credit": {
+        "applicant": "Demandeur",
+        "score": "score de crédit",
+        "ratings": {
+          "poor": "Faible",
+          "fair": "Passable",
+          "good": "Bon",
+          "veryGood": "Très bon",
+          "exceptional": "Exceptionnel"
+        },
+        "position": "À {{share}} de l’échelle",
+        "aria": "Score de crédit de {{name}}",
+        "result": "{{name}} : {{score}}. {{advice}}",
+        "advice": {
+          "poor": "La plupart des prêteurs refuseront la demande.",
+          "fair": "Un accord est possible, à un taux plus élevé.",
+          "good": "Éligible à la plupart des prêts aux taux standards.",
+          "veryGood": "Éligible à des taux meilleurs que la moyenne.",
+          "exceptional": "Éligible aux meilleurs taux proposés."
+        }
+      },
+      "battery": {
+        "label": "chargée",
+        "range": "Autonomie : {{range}}",
+        "aria": "Charge de la batterie de la voiture",
+        "plugged": "Branchée",
+        "reset": "Réinitialiser",
+        "phases": {
+          "full": "Charge complète",
+          "unplugged": "Débranchée",
+          "charging": "Charge rapide",
+          "topping": "Charge lente au-delà de 80 %"
+        },
+        "toEighty": "80 % dans {{minutes}}"
+      },
+      "turbine": {
+        "rpm": "{{value}} tr/min",
+        "mw": "{{value}} MW",
+        "dark": "Panneau sombre",
+        "rotor": "Vitesse du rotor",
+        "power": "Puissance produite",
+        "nacelle": "Température de la nacelle",
+        "aria": "{{reading}} de l’éolienne : {{value}}"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "GaugeChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnGaugeChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnGaugeChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnGaugeChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-gauge-chart",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "number",
+            "required": true,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "min",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "max",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "sweep",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "thickness",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "bands",
+            "typeText": "readonly GaugeBand[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "color",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "needle",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "ticks",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "ChartRendererPreference | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "palette",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "legend",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "tooltip",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "format",
+            "typeText": "((value: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "percentFormat",
+            "typeText": "((share: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "hidden",
+            "typeText": "readonly number[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "animation",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "padding",
+            "typeText": "ChartPadding | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "texts",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "ShapeHoverEvent | null",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "itemClick",
+            "typeText": "ShapeHoverEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "visibilityChange",
+            "typeText": "ShapeToggleEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "bands",
+      "title": "Plages et aiguille",
+      "description": "bands colore la piste par plage (rouge, orange, vert) et l’arc de valeur prend la couleur de sa plage ; needle pointe la valeur, min peut être négatif.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnGaugeChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnGaugeChart],\n  template: `\n<mn-gauge-chart\n  [value]=\"72\"\n  [label]=\"labels[language()]\"\n  [bands]=\"[\n    { to: 60, color: 'var(--success-color, #16a34a)' },\n    { to: 85, color: 'var(--warning-color, #f59e0b)' },\n    { to: 100, color: 'var(--danger-color, #dc2626)' }\n  ]\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": \"CPU load\",\n  \"zh\": \"CPU 负载\",\n  \"ja\": \"CPU 負荷\",\n  \"fr\": \"Charge CPU\"\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "needle",
+      "title": "Needle and custom scale",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnGaugeChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnGaugeChart],\n  template: `\n<mn-gauge-chart\n  [value]=\"128\"\n  [max]=\"200\"\n  [label]=\"labels[language()]\"\n  needle\n  [sweep]=\"270\"\n  [thickness]=\"0.1\"\n  [height]=\"260\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": \"Speed (km/h)\",\n  \"zh\": \"速度（公里/小时）\",\n  \"ja\": \"速度（km/h）\",\n  \"fr\": \"Vitesse (km/h)\"\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Jauge",
+      "description": "Une seule valeur sur un arc, par rapport à une plage et à des seuils colorés facultatifs : KPI, taux d’utilisation, scores. Quand value change, l’arc (et l’aiguille) s’animent depuis leur position actuelle.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "Trois petites jauges, chacune avec sa couleur, son libellé et son format."
+        },
+        "bands": {
+          "title": "Plages et aiguille",
+          "description": "bands colore la piste par plage (rouge, orange, vert) et l’arc de valeur prend la couleur de sa plage ; needle pointe la valeur, min peut être négatif."
+        },
+        "live": {
+          "title": "Valeur en direct",
+          "description": "Un minuteur met à jour value toutes les 1,5 s et la jauge s’anime vers la nouvelle valeur ; sweep={180} trace un demi-cercle et thickness élargit l’arc. Le minuteur est arrêté en pause ou au démontage."
+        },
+        "speedometer": {
+          "title": "Compteur de vitesse",
+          "description": "Un arc fin avec une aiguille ; maintenez les boutons (ou Espace / Entrée) pour accélérer ou freiner. animation={false} laisse l'aiguille suivre directement l'état, et l'unité vient d'Intl.NumberFormat."
+        },
+        "quota": {
+          "title": "Consommation des quotas",
+          "description": "Une jauge par quota de l'offre avec des bandes à 75 % et 90 % de chaque limite, ticks={false} et une légende avec les quantités utilisées et autorisées."
+        },
+        "slo": {
+          "title": "Disponibilité et budget d'erreur",
+          "description": "Une jauge resserrée (min 99,5, max 100) montre la disponibilité face à son objectif, une seconde le budget d'erreur restant ; renderTooltip donne le détail."
+        },
+        "thermostat": {
+          "title": "Thermostat connecté",
+          "description": "Les boutons − et + déplacent la consigne d’un demi-degré ; le réglage est stocké en °C et converti à l’affichage, si bien que passer en °F change ensemble value, min, max et les bands. renderTooltip affiche la température de la pièce et la ligne en dessous indique si le système chauffe, refroidit ou maintient."
+        },
+        "credit-score": {
+          "title": "Score de crédit",
+          "description": "Une aiguille sur cinq bandes de notation de 300 à 850, min et max reprenant l’échelle du score. Un Select change de demandeur et l’aiguille balaie jusqu’au nouveau score ; renderTooltip nomme la notation et event.percent donne la position sur l’échelle."
+        },
+        "battery": {
+          "title": "Recharge d’une voiture électrique",
+          "description": "Une demi-jauge (sweep={180}) se remplit toutes les 400 ms quand la voiture est branchée, plus lentement au-delà de 80 % ; l’intervalle s’arrête une fois débranchée, pleine ou démontée. Seule la phase de charge est annoncée ; l’autonomie et le temps jusqu’à 80 % utilisent les unités d’Intl.NumberFormat."
+        },
+        "dark-panel": {
+          "title": "Tableau de bord sombre",
+          "description": "Trois jauges à aiguille sur un panneau dont les variables CSS passent à un thème sombre. Les graphiques n’observent que <html> et <body> : après avoir restylé le conteneur, la démo appelle refreshTheme() sur chaque graphique via sa ref."
+        }
+      },
+      "data": {
+        "metrics": {
+          "cpu": "Processeur",
+          "memory": "Mémoire",
+          "disk": "Disque"
+        },
+        "usageAria": "Utilisation : {{metric}}",
+        "nps": "Net Promoter Score",
+        "requestsPerSecond": "Requêtes / s",
+        "liveAria": "Requêtes par seconde, mises à jour en direct",
+        "pause": "Mettre en pause",
+        "resume": "Reprendre",
+        "speed": "Vitesse",
+        "speedAria": "Compteur de vitesse : {{speed}}",
+        "brake": "Freiner",
+        "accelerate": "Accélérer",
+        "quotas": {
+          "storage": "Stockage",
+          "apiCalls": "Appels d'API",
+          "seats": "Postes",
+          "minutes": "Minutes de build"
+        },
+        "quotaUsed": "{{used}} sur {{limit}}",
+        "quotaAria": "{{quota}} : {{share}} du quota utilisé",
+        "availability": "Disponibilité, 30 jours",
+        "objective": "Objectif : {{value}}",
+        "availabilityAria": "Disponibilité sur 30 jours face à l'objectif",
+        "budgetLeft": "Budget d'erreur restant",
+        "budgetDetail": "{{used}} d'indisponibilité sur {{budget}} autorisées",
+        "budgetAria": "Budget d'erreur restant ce mois-ci",
+        "thermostat": {
+          "unit": "Unité de température",
+          "units": {
+            "celsius": "°C",
+            "fahrenheit": "°F"
+          },
+          "target": "consigne",
+          "room": "Pièce : {{value}}",
+          "aria": "Température de consigne du thermostat",
+          "lower": "Baisser la consigne",
+          "raise": "Augmenter la consigne",
+          "modes": {
+            "heating": "Chauffe jusqu’à {{target}} (pièce : {{room}})",
+            "cooling": "Refroidit jusqu’à {{target}} (pièce : {{room}})",
+            "holding": "Maintient {{target}} (pièce : {{room}})"
+          }
+        },
+        "credit": {
+          "applicant": "Demandeur",
+          "score": "score de crédit",
+          "ratings": {
+            "poor": "Faible",
+            "fair": "Passable",
+            "good": "Bon",
+            "veryGood": "Très bon",
+            "exceptional": "Exceptionnel"
+          },
+          "position": "À {{share}} de l’échelle",
+          "aria": "Score de crédit de {{name}}",
+          "result": "{{name}} : {{score}}. {{advice}}",
+          "advice": {
+            "poor": "La plupart des prêteurs refuseront la demande.",
+            "fair": "Un accord est possible, à un taux plus élevé.",
+            "good": "Éligible à la plupart des prêts aux taux standards.",
+            "veryGood": "Éligible à des taux meilleurs que la moyenne.",
+            "exceptional": "Éligible aux meilleurs taux proposés."
+          }
+        },
+        "battery": {
+          "label": "chargée",
+          "range": "Autonomie : {{range}}",
+          "aria": "Charge de la batterie de la voiture",
+          "plugged": "Branchée",
+          "reset": "Réinitialiser",
+          "phases": {
+            "full": "Charge complète",
+            "unplugged": "Débranchée",
+            "charging": "Charge rapide",
+            "topping": "Charge lente au-delà de 80 %"
+          },
+          "toEighty": "80 % dans {{minutes}}"
+        },
+        "turbine": {
+          "rpm": "{{value}} tr/min",
+          "mw": "{{value}} MW",
+          "dark": "Panneau sombre",
+          "rotor": "Vitesse du rotor",
+          "power": "Puissance produite",
+          "nacelle": "Température de la nacelle",
+          "aria": "{{reading}} de l’éolienne : {{value}}"
+        }
+      },
+      "api": {
+        "GaugeChartProps": {
+          "value": "Valeur affichée par l’arc (limitée à min - max pour le dessin)",
+          "min": "Valeur au début de l’arc",
+          "max": "Valeur à la fin de l’arc",
+          "label": "Légende sous la valeur",
+          "sweep": "Angle total de l’arc, en degrés",
+          "thickness": "Épaisseur de l’arc en fraction du rayon",
+          "bands": "Plages colorées de la piste ; l’arc de valeur prend la couleur de sa plage",
+          "color": "Couleur de l’arc de valeur en l’absence de bands",
+          "needle": "Dessine une aiguille en plus de l’arc de valeur",
+          "ticks": "Graduations aux extrémités (et aux bornes des plages)"
+        },
+        "GaugeBand": {
+          "to": "Borne supérieure de la plage (la borne inférieure est celle de la plage précédente, ou min)",
+          "color": "Couleur de la plage"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basique",
+            "description": "Une valeur sur un arc de 240° ; format l'écrit en pourcentage."
+          },
+          "bands": {
+            "title": "Plages et aiguille",
+            "description": "bands colore la piste et l'arc de la valeur ; les boutons changent value, l'arc et l'aiguille s'animent jusqu'à elle."
+          }
+        },
+        "data": {
+          "storage": "Stockage utilisé",
+          "storageAria": "Stockage utilisé du téléphone",
+          "nps": "Net Promoter Score",
+          "lower": "Baisser de 20",
+          "raise": "Monter de 20"
+        }
+      },
+      "wc": {
+        "demos": {
+          "bands": {
+            "title": "Plages colorées",
+            "description": "Trois plages découpent la piste ; l'arc de valeur prend la couleur de la plage où il se termine."
+          },
+          "needle": {
+            "title": "Aiguille et échelle personnalisée",
+            "description": "Une aiguille sur une échelle de 0 à 200, avec un balayage plus large et un arc plus fin."
+          }
+        },
+        "minerva-gauge-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "La marque survolée (ou ciblée au clavier) a changé ; detail : { index, name, value, share }, null quand rien n'est survolé",
+            "minerva-click": "Une marque a été cliquée, touchée ou activée avec Entrée ; detail : { index, name, value, share }",
+            "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index",
+            "getRenderer": "Moteur de rendu des formes (webgpu, webgl2, webgl, canvas2d), null tant qu’il n’est pas prêt ; à choisir avec l’option renderer du moteur"
+          }
+        }
+      }
+    }
+  }
+}

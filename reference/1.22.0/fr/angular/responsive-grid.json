@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "responsive-grid",
+  "title": "ResponsiveGrid",
+  "description": "Grille à colonnes égales dont le nombre suit sa propre largeur (requêtes de conteneur), et non la fenêtre.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "GridItem",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnGridItem. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnGridItem. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnGridItem"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-grid-item, [mnGridItem]",
+        "props": [
+          {
+            "name": "span",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "fullWidth",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ResponsiveGrid",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnResponsiveGrid. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnResponsiveGrid. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnResponsiveGrid"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-responsive-grid, [mnResponsiveGrid]",
+        "props": [
+          {
+            "name": "minColumnWidth",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "gap",
+            "typeText": "string | number",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:ResponsiveGrid": {
+      "kind": "cssVars",
+      "source": "react/src/components/ResponsiveGrid",
+      "vars": [
+        {
+          "name": "--responsive-grid-align-items",
+          "description": "Vertical alignment of the items in their row (default: stretch)"
+        },
+        {
+          "name": "--responsive-grid-justify-items",
+          "description": "Horizontal alignment of the items in their column (default: stretch)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "automatic-columns",
+      "title": "Automatic columns",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnResponsiveGrid, MnCard } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnResponsiveGrid, MnCard],\n  template: `\n<mn-responsive-grid minColumnWidth=\"160px\"><mn-card>Design</mn-card><mn-card>Engineering</mn-card><mn-card>Research</mn-card></mn-responsive-grid>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "spanning-a-row",
+      "title": "Spanning a row",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnResponsiveGrid, MnGridItem, MnCard } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnResponsiveGrid, MnGridItem, MnCard],\n  template: `\n<mn-responsive-grid minColumnWidth=\"140px\"><mn-grid-item fullWidth><mn-card>Full-width summary</mn-card></mn-grid-item><mn-card>Left</mn-card><mn-card>Right</mn-card></mn-responsive-grid>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ResponsiveGrid",
+      "description": "Grille à colonnes égales dont le nombre suit sa propre largeur (requêtes de conteneur), et non la fenêtre.",
+      "demos": {
+        "basic": {
+          "title": "Colonnes adaptatives",
+          "description": "columns accepte des nombres base / sm / md / lg pour 0, 480, 768 et 1200px de largeur disponible."
+        },
+        "full-width": {
+          "title": "Éléments pleine largeur",
+          "description": "GridItem fullWidth occupe toute la ligne ; rowGap et columnGap sont indépendants."
+        }
+      },
+      "api": {
+        "ResponsiveGridProps": {
+          "ref": "Ref vers l'élément externe (conteneur de requête)",
+          "as": "Élément ou composant rendu comme conteneur externe (div, section, nav...)",
+          "columns": "Nombre de colonnes (entiers 1-12) : un nombre ou { base, sm, md, lg } pour 480 / 768 / 1200px ; sinon RangeError",
+          "gap": "Espace entre lignes et colonnes (jeton ou valeur CSS)",
+          "rowGap": "Espace entre les lignes ; gap par défaut",
+          "columnGap": "Espace entre les colonnes ; gap par défaut"
+        },
+        "GridItemProps": {
+          "ref": "Ref vers l'élément (ou l'enfant avec asChild)",
+          "fullWidth": "Occupe toute la ligne de la grille",
+          "asChild": "Fusionne props, classes et ref dans l'enfant unique au lieu d'un div englobant"
+        }
+      },
+      "cssVars": {
+        "--responsive-grid-align-items": "Alignement vertical des éléments dans leur ligne (par défaut stretch)",
+        "--responsive-grid-justify-items": "Alignement horizontal des éléments dans leur colonne (par défaut stretch)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "columns=\"1 2 3 4\" fixe le nombre de colonnes pour les largeurs de conteneur base, sm, md et lg ; la grille suit sa propre largeur, pas celle de la fenêtre."
+          },
+          "container": {
+            "title": "Points de rupture du conteneur",
+            "description": "columns accepte aussi du JSON ({\"base\": 1, \"sm\": 2, \"lg\": 4} ; un point de rupture absent reprend le précédent) et row-gap / column-gap séparent les espacements. Faites glisser le curseur pour redimensionner le conteneur."
+          },
+          "full-width": {
+            "title": "Éléments pleine largeur",
+            "description": "Enveloppez un enfant dans <minerva-grid-item full-width> pour qu'il occupe toute la ligne."
+          }
+        },
+        "minerva-responsive-grid": {
+          "slots": {
+            "default": "Éléments de la grille."
+          }
+        },
+        "minerva-grid-item": {
+          "slots": {
+            "default": "Contenu de la cellule."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

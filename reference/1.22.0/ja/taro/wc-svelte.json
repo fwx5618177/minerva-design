@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "ja",
+  "renderer": "taro",
+  "page": "wc-svelte",
+  "title": "Svelte",
+  "description": "Svelte 5 と SvelteKit で Minerva のカスタム要素を使う：プロパティと属性、onminerva-* イベント属性、bind:this、型定義、サーバーサイドレンダリング。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {
+    "setup": {
+      "title": "セットアップ",
+      "text": "Svelte ではカスタム要素のための設定は不要です。エントリーファイルで（SvelteKit ではルートレイアウトで。後述）要素を登録し、デザイントークンを一度だけ読み込みます："
+    },
+    "binding": {
+      "title": "プロパティ、イベント、bind:this",
+      "text": "マークアップにネイティブ要素と同じようにタグを記述します：",
+      "properties": "Svelte は、要素にその名前のプロパティ（value、checked、disabled、options...）がある場合は DOM プロパティとして、そうでない場合は属性としてプロパティを設定します。そのため配列、オブジェクト、関数はそのまま要素に渡ります。コンポーネントが描画される前に要素を登録してください。",
+      "events": "Svelte 5 のイベント属性は大文字と小文字を区別し、イベント名を記述どおりに使います：onminerva-change、onminerva-input、onminerva-open-change。ハンドラーは CustomEvent を受け取り、新しい状態は event.detail にあります。onclick などのネイティブイベントは通常どおり動作します。",
+      "bindThis": "bind:this で要素のインスタンスを取得し、メソッド（show()、hide()、focus()）を呼び出したり、プロパティを読み取ったりできます。型はエクスポートされている要素クラスです。",
+      "bindValue": "bind:value と bind:checked はネイティブの input 向けです。上記のように value プロパティを書き込み、イベントから状態を更新してください（キー入力ごとには minerva-input、確定した値には minerva-change）。"
+    },
+    "types": {
+      "title": "型定義",
+      "text": "パッケージには Custom Elements Manifest から生成された svelte/elements 向けの型定義が同梱されています。すべてのタグの属性・プロパティ・onminerva-* イベントが svelte-check でチェックされ、Svelte 拡張機能で補完されます。一度参照してください："
+    },
+    "kit": {
+      "title": "SvelteKit とサーバーサイドレンダリング",
+      "text": "ページはまずサーバーでレンダリングされます。サーバーで要素をインポートしても安全です（モジュールは読み込み時に DOM に触れません）が、要素はブラウザでのみ動作するため、onMount（サーバーでは実行されません）内か browser フラグの判定の内側で登録してください。サーバーは属性とスロットのコンテンツを持つタグを送信し、インポートが解決されるとブラウザがそれらをアップグレードします。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// src/main.ts (Svelte + Vite)\nimport { mount } from \"svelte\";\nimport \"minerva-design/web-components\";\nimport \"minerva-design/tokens.css\";\nimport App from \"./App.svelte\";\n\nmount(App, { target: document.getElementById(\"app\")! });",
+      "language": "ts"
+    },
+    {
+      "source": "<script lang=\"ts\">\n  import type { MinervaModal } from \"minerva-design/web-components\";\n\n  let name = $state(\"Ada\");\n  let notify = $state(true);\n  let modal: MinervaModal | undefined = $state();\n  const plans = [\n    { value: \"free\", label: \"Free\" },\n    { value: \"pro\", label: \"Pro\" },\n  ];\n</script>\n\n<!-- props that exist on the element are set as properties -->\n<minerva-input\n  aria-label=\"Name\"\n  value={name}\n  onminerva-input={(e: CustomEvent<{ value: string }>) => (name = e.detail.value)}\n></minerva-input>\n\n<minerva-select aria-label=\"Plan\" options={plans} value=\"pro\"></minerva-select>\n\n<minerva-switch\n  label=\"Email notifications\"\n  checked={notify}\n  onminerva-change={(e: CustomEvent<{ checked: boolean }>) => (notify = e.detail.checked)}\n></minerva-switch>\n\n<minerva-button disabled={!name} onclick={() => modal?.show()}>Preview</minerva-button>\n\n<!-- bind:this gives the element instance: properties and methods -->\n<minerva-modal bind:this={modal} label=\"Preview\">\n  <p>{name} · {notify ? \"emails on\" : \"emails off\"}</p>\n</minerva-modal>",
+      "language": "html"
+    },
+    {
+      "source": "// src/app.d.ts (SvelteKit) or src/vite-env.d.ts\n/// <reference types=\"minerva-design/web-components/svelte\" />",
+      "language": "ts"
+    },
+    {
+      "source": "<!-- src/routes/+layout.svelte -->\n<script lang=\"ts\">\n  import { onMount } from \"svelte\";\n  import \"minerva-design/tokens.css\";\n\n  let { children } = $props();\n\n  // onMount only runs in the browser\n  onMount(async () => {\n    await import(\"minerva-design/web-components\");\n  });\n</script>\n\n{@render children()}",
+      "language": "html"
+    },
+    {
+      "source": "// or anywhere, guarded by $app/environment\nimport { browser } from \"$app/environment\";\n\nif (browser) await import(\"minerva-design/web-components/select\");",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Svelte",
+      "description": "Svelte 5 と SvelteKit で Minerva のカスタム要素を使う：プロパティと属性、onminerva-* イベント属性、bind:this、型定義、サーバーサイドレンダリング。",
+      "setup": {
+        "title": "セットアップ",
+        "text": "Svelte ではカスタム要素のための設定は不要です。エントリーファイルで（SvelteKit ではルートレイアウトで。後述）要素を登録し、デザイントークンを一度だけ読み込みます："
+      },
+      "binding": {
+        "title": "プロパティ、イベント、bind:this",
+        "text": "マークアップにネイティブ要素と同じようにタグを記述します：",
+        "properties": "Svelte は、要素にその名前のプロパティ（value、checked、disabled、options...）がある場合は DOM プロパティとして、そうでない場合は属性としてプロパティを設定します。そのため配列、オブジェクト、関数はそのまま要素に渡ります。コンポーネントが描画される前に要素を登録してください。",
+        "events": "Svelte 5 のイベント属性は大文字と小文字を区別し、イベント名を記述どおりに使います：onminerva-change、onminerva-input、onminerva-open-change。ハンドラーは CustomEvent を受け取り、新しい状態は event.detail にあります。onclick などのネイティブイベントは通常どおり動作します。",
+        "bindThis": "bind:this で要素のインスタンスを取得し、メソッド（show()、hide()、focus()）を呼び出したり、プロパティを読み取ったりできます。型はエクスポートされている要素クラスです。",
+        "bindValue": "bind:value と bind:checked はネイティブの input 向けです。上記のように value プロパティを書き込み、イベントから状態を更新してください（キー入力ごとには minerva-input、確定した値には minerva-change）。"
+      },
+      "types": {
+        "title": "型定義",
+        "text": "パッケージには Custom Elements Manifest から生成された svelte/elements 向けの型定義が同梱されています。すべてのタグの属性・プロパティ・onminerva-* イベントが svelte-check でチェックされ、Svelte 拡張機能で補完されます。一度参照してください："
+      },
+      "kit": {
+        "title": "SvelteKit とサーバーサイドレンダリング",
+        "text": "ページはまずサーバーでレンダリングされます。サーバーで要素をインポートしても安全です（モジュールは読み込み時に DOM に触れません）が、要素はブラウザでのみ動作するため、onMount（サーバーでは実行されません）内か browser フラグの判定の内側で登録してください。サーバーは属性とスロットのコンテンツを持つタグを送信し、インポートが解決されるとブラウザがそれらをアップグレードします。"
+      }
+    }
+  }
+}

@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "scatter-chart",
+  "title": "Nuage de points",
+  "description": "Points placés selon deux valeurs, avec taille, couleur et libellé par point. Zoom sur les deux axes.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {
+    "data": {
+      "starter": "Essentiel",
+      "business": "Entreprise",
+      "seats": "Postes",
+      "monthlyBill": "Facture mensuelle",
+      "billAria": "Facture mensuelle selon le nombre de postes, par offre",
+      "countries": "Pays",
+      "gdp": "PIB par habitant",
+      "lifeExpectancy": "Espérance de vie",
+      "countriesAria": "Espérance de vie selon le PIB par habitant ; la taille du point est la population",
+      "cluster": "Groupe {{name}}",
+      "clustersAria": "Deux groupes de 100 000 points chacun",
+      "largeStatus": "{{points}} points · dessinés avec {{renderer}}",
+      "sessionAria": "Durée de session selon le nombre de pages vues",
+      "minutes": "Minutes",
+      "pages": "Pages",
+      "free": "Gratuit",
+      "pro": "Pro",
+      "sessionStatus": "{{plan}} : {{minutes}} min, {{pages}} pages",
+      "tapDot": "Touchez un point",
+      "campaigns": "Campagnes",
+      "trend": "Tendance",
+      "adSpend": "Dépense publicitaire par semaine",
+      "revenue": "Chiffre d'affaires par semaine",
+      "fit": "R² = {{r2}} · +{{slope}} de chiffre d'affaires par dollar dépensé",
+      "trendAria": "Chiffre d'affaires selon la dépense publicitaire de 60 campagnes, avec une droite de tendance",
+      "penguins": {
+        "adelie": "Manchot Adélie",
+        "chinstrap": "Manchot à jugulaire",
+        "gentoo": "Manchot papou"
+      },
+      "flipper": "Longueur de nageoire",
+      "mass": "Masse corporelle",
+      "penguinsAria": "Longueur de nageoire et masse corporelle de trois espèces de manchots",
+      "requests": "Requêtes",
+      "outlier": "Valeur aberrante",
+      "expected": "Attendu",
+      "payload": "Taille de la charge",
+      "responseTime": "Temps de réponse",
+      "outliersAria": "Temps de réponse selon la taille de la charge, valeurs aberrantes en rouge",
+      "outliersSummary": "{{slow}} requêtes sur {{total}} ont pris plus de deux fois le temps attendu.",
+      "readings": "Mesures",
+      "zoomPresets": {
+        "night": "Nuits fraîches",
+        "comfort": "Plage de culture",
+        "heat": "Après-midi chauds"
+      },
+      "showAll": "Tout afficher",
+      "temperature": "Température",
+      "humidity": "Humidité relative",
+      "growingRange": "Plage de culture",
+      "greenhouseAria": "Mesures de température et d'humidité des capteurs de la serre",
+      "greenhouseView": "Visible : {{t0}} – {{t1}}, humidité {{h0}} – {{h1}} · mesures affichées : {{points}}",
+      "greenhouseHint": "Choisissez une région, ou zoomez avec Ctrl / ⌘ + molette",
+      "departments": {
+        "engineering": "Ingénierie",
+        "sales": "Ventes",
+        "support": "Support"
+      },
+      "tenure": "Ancienneté",
+      "reviewScore": "Note d'évaluation (1–5)",
+      "companyAverage": "Moyenne de l'entreprise",
+      "staffAria": "Ancienneté et note d'évaluation de 90 employés, par service",
+      "employeeStatus": "{{id}} · {{department}} · {{tenure}} · note {{score}} · {{salary}} par an",
+      "employeeHint": "Cliquez sur un point pour sélectionner un employé, sur la zone vide pour effacer la sélection",
+      "players": "Joueurs",
+      "leagueAverage": "Moyenne de la ligue",
+      "efficientScorers": "Marqueurs efficaces",
+      "volumeShooters": "Gros volumes de tirs",
+      "pointsPerGame": "{{value}} points par match",
+      "usageRow": "Taux d'utilisation : {{value}}",
+      "trueShootingRow": "True shooting : {{value}}",
+      "usageRate": "Taux d'utilisation",
+      "trueShooting": "True shooting (adresse réelle)",
+      "playersAria": "Taux d'utilisation et adresse au tir de 16 joueurs ; la taille du point est le nombre de points par match",
+      "normal": "Normal",
+      "alarm": "Alarme",
+      "latest": "Dernier",
+      "mmPerSecond": "{{value}} mm/s",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "vibrationStatus": "Dernier échantillon : {{rpm}} tr/min, {{value}} · alarmes à l'écran : {{alarms}}",
+      "speed": "Vitesse (tr/min)",
+      "vibration": "Vibration",
+      "alarmLimit": "Seuil d'alarme",
+      "vibrationAria": "Vibration en direct d'un moteur selon sa vitesse",
+      "mammals": "Mammifères",
+      "animals": {
+        "shrew": "Musaraigne",
+        "mouse": "Souris",
+        "rat": "Rat",
+        "rabbit": "Lapin",
+        "cat": "Chat",
+        "dog": "Chien",
+        "human": "Humain",
+        "pig": "Porc",
+        "horse": "Cheval",
+        "cow": "Vache",
+        "giraffe": "Girafe",
+        "elephant": "Éléphant"
+      },
+      "powerLaw": "Loi de puissance ajustée",
+      "kg": "{{value}} kg",
+      "watts": "{{value}} W",
+      "bodyMass": "Masse corporelle",
+      "metabolicRate": "Métabolisme de base",
+      "kleiber": "Métabolisme ∝ masse^{{exponent}} (loi de Kleiber)",
+      "kleiberAria": "Métabolisme de base selon la masse corporelle de 12 mammifères, sur axes log-log"
+    }
+  },
+  "components": [
+    {
+      "name": "ScatterChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ScatterChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ChartLegendOptions",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name",
+            "typeText": "boolean | ChartLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ChartTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it",
+            "typeText": "boolean | ChartTooltipOptions"
+          },
+          {
+            "name": "crosshair",
+            "type": "boolean",
+            "required": false,
+            "description": "Vertical guide line following the pointer",
+            "typeText": "boolean"
+          },
+          {
+            "name": "interaction",
+            "type": "boolean | ChartInteractionOptions",
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)",
+            "typeText": "boolean | ChartInteractionOptions"
+          },
+          {
+            "name": "labels",
+            "type": "Partial<ChartLabels>",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`",
+            "typeText": "Partial<ChartLabels>"
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "series",
+            "type": "readonly ChartSeries[]",
+            "required": true,
+            "description": "Data series (replace the array or a `data` array to update the chart)",
+            "typeText": "readonly ChartSeries[]"
+          },
+          {
+            "name": "xAxis",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "X axis",
+            "typeText": "ChartAxisOptions"
+          },
+          {
+            "name": "yAxis",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "Y axis",
+            "typeText": "ChartAxisOptions"
+          },
+          {
+            "name": "annotations",
+            "type": "readonly ChartAnnotation[]",
+            "required": false,
+            "description": "Background areas and reference lines",
+            "typeText": "readonly ChartAnnotation[]"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the plot area, in pixels",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "zoom",
+            "type": "[view: ChartView]",
+            "typeText": "[view: ChartView]",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "typeText": "ChartView",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "hover",
+            "type": "[event: ChartHoverEvent | null]",
+            "typeText": "[event: ChartHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "plotClick",
+            "type": "[event: ChartPlotClickEvent]",
+            "typeText": "[event: ChartPlotClickEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartPlotClickEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointClick",
+            "type": "[event: ChartHoverEvent]",
+            "typeText": "[event: ChartHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "type": "[renderer: ChartRendererKind]",
+            "typeText": "[renderer: ChartRendererKind]",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "clusters",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/vue/clusters.vue",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/vue/clusters.vue": "<script setup lang=\"ts\">\n// Points are [x, y] pairs; Ctrl / ⌘ + wheel zooms on both axes.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { ScatterChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: { teamA: \"Team A\", teamB: \"Team B\", hours: \"Hours\", score: \"Score\" },\n  zh: { teamA: \"A 组\", teamB: \"B 组\", hours: \"小时\", score: \"得分\" },\n  ja: { teamA: \"チームA\", teamB: \"チームB\", hours: \"時間\", score: \"スコア\" },\n  fr: { teamA: \"Équipe A\", teamB: \"Équipe B\", hours: \"Heures\", score: \"Score\" },\n};\n\n// deterministic pseudo-random clusters\nconst cluster = (cx: number, cy: number, seed: number) =>\n  Array.from({ length: 40 }, (_, i): [number, number] => [\n    Math.round((cx + 6 * Math.sin(seed + i * 2.3)) * 10) / 10,\n    Math.round((cy + 9 * Math.cos(seed + i * 1.7)) * 10) / 10,\n  ]);\nconst teamA = cluster(12, 62, 1);\nconst teamB = cluster(26, 80, 4);\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\nconst series = computed(() => [\n  { name: text.value.teamA, data: teamA },\n  { name: text.value.teamB, data: teamB },\n]);\n</script>\n\n<template>\n  <ScatterChart\n    :series=\"series\"\n    :x-axis=\"{ title: text.hours }\"\n    :y-axis=\"{ title: text.score }\"\n    :height=\"300\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "clusters",
+      "description": ""
+    },
+    {
+      "id": "point-click",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/vue/point-click.vue",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/vue/point-click.vue": "<script setup lang=\"ts\">\n// @point-click reports the clicked point (series, index, x, y, label).\nimport { computed, ref } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { ScatterChart, type ChartHoverEvent } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: {\n    cities: \"Cities\",\n    density: \"Density (k/km²)\",\n    rent: \"Rent (€/m²)\",\n    hint: \"Click a city\",\n    names: [\"Paris\", \"Lyon\", \"Lille\", \"Nantes\", \"Nice\", \"Bordeaux\"],\n  },\n  zh: {\n    cities: \"城市\",\n    density: \"人口密度（千人/km²）\",\n    rent: \"租金（欧元/m²）\",\n    hint: \"点击一个城市\",\n    names: [\"巴黎\", \"里昂\", \"里尔\", \"南特\", \"尼斯\", \"波尔多\"],\n  },\n  ja: {\n    cities: \"都市\",\n    density: \"人口密度（千人/km²）\",\n    rent: \"家賃（€/m²）\",\n    hint: \"都市をクリックします\",\n    names: [\"パリ\", \"リヨン\", \"リール\", \"ナント\", \"ニース\", \"ボルドー\"],\n  },\n  fr: {\n    cities: \"Villes\",\n    density: \"Densité (k/km²)\",\n    rent: \"Loyer (€/m²)\",\n    hint: \"Cliquez sur une ville\",\n    names: [\"Paris\", \"Lyon\", \"Lille\", \"Nantes\", \"Nice\", \"Bordeaux\"],\n  },\n};\n\nconst POINTS: [number, number][] = [\n  [20.5, 31],\n  [10.9, 17],\n  [6.8, 15],\n  [4.9, 15],\n  [4.8, 21],\n  [5.2, 16],\n];\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\nconst series = computed(() => [\n  {\n    name: text.value.cities,\n    pointSize: 12,\n    data: POINTS.map(([x, y], i) => ({ x, y, label: text.value.names[i] })),\n  },\n]);\nconst selection = ref(\"\");\nconst onPointClick = (event: ChartHoverEvent) => {\n  const [item] = event.items;\n  if (item) selection.value = `${item.label}: ${item.x} · ${item.y} €/m²`;\n};\n</script>\n\n<template>\n  <div style=\"display: grid; gap: 8px\">\n    <ScatterChart\n      :series=\"series\"\n      :x-axis=\"{ title: text.density }\"\n      :y-axis=\"{ title: text.rent }\"\n      :height=\"280\"\n      @point-click=\"onPointClick\"\n    />\n    <output aria-live=\"polite\">{{ selection || text.hint }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "point-click",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Nuage de points",
+      "description": "Points placés selon deux valeurs, avec taille, couleur et libellé par point. Zoom sur les deux axes.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "Deux séries de tuples [x, y] avec des titres d’axes ; l’infobulle montre le point le plus proche."
+        },
+        "labels": {
+          "title": "Libellés et tailles",
+          "description": "Les objets point portent un label et une size ; showLabels dessine les libellés en évitant les chevauchements."
+        },
+        "large-data": {
+          "title": "200 000 points",
+          "description": "Deux groupes gaussiens en colonnes de tableaux typés ; la détection du survol utilise un index spatial."
+        },
+        "trend": {
+          "title": "Corrélation et tendance",
+          "description": "Une droite de tendance des moindres carrés (une série line calculée dans la démo) sur les campagnes, avec une annotation texte donnant le R² et la pente."
+        },
+        "categories": {
+          "title": "Catégories",
+          "description": "Une série par catégorie donne à chaque groupe sa couleur et une entrée de légende qui l'affiche ou le masque ; ici trois espèces de manchots selon la longueur de nageoire et la masse."
+        },
+        "outliers": {
+          "title": "Valeurs aberrantes",
+          "description": "La couleur, la taille et le libellé de chaque point signalent les requêtes bien plus lentes que prévu pour leur taille ; le temps attendu est une série line."
+        },
+        "zoom-controls": {
+          "title": "Commandes de zoom",
+          "description": "Des boutons zooment sur des régions par la ref : setView fixe la plage visible (sans appeler onZoom, la démo relit donc la vue avec getView) et resetZoom affiche à nouveau tout. onZoom signale les zooms à la molette et au glisser ; une annotation rect colore la plage de culture."
+        },
+        "selection": {
+          "title": "Sélection au clic",
+          "description": "onPointClick donne la série et l'index du point cliqué : l'employé sélectionné reçoit un point plus gros et une étiquette, et ses informations s'affichent dessous. onPlotClick, appelé sur la zone vide, efface la sélection."
+        },
+        "players": {
+          "title": "Infobulle et zones personnalisées",
+          "description": "renderTooltip remplace l'infobulle par un contenu React construit à partir des données de la démo. Les moyennes de la ligue sont des lignes de référence en pointillés, et des annotations rect aux bornes ouvertes colorent deux coins jusqu'aux bords du graphique."
+        },
+        "live-stream": {
+          "title": "Flux de capteur en direct",
+          "description": "Un nouvel échantillon de vibration toutes les 400 ms (un setInterval arrêté à la pause et au démontage), réparti entre une série normale et une série d'alarme autour d'une ligne de référence ; des min et max fixes gardent les axes immobiles pendant l'arrivée des données."
+        },
+        "log-log": {
+          "title": "Axes log-log",
+          "description": "xAxis et yAxis avec type: \"log\" transforment la loi de puissance des métabolismes (loi de Kleiber) en droite sur six ordres de grandeur ; l'ajustement est une série line de deux points avec tooltip: false."
+        }
+      },
+      "data": {
+        "starter": "Essentiel",
+        "business": "Entreprise",
+        "seats": "Postes",
+        "monthlyBill": "Facture mensuelle",
+        "billAria": "Facture mensuelle selon le nombre de postes, par offre",
+        "countries": "Pays",
+        "gdp": "PIB par habitant",
+        "lifeExpectancy": "Espérance de vie",
+        "countriesAria": "Espérance de vie selon le PIB par habitant ; la taille du point est la population",
+        "cluster": "Groupe {{name}}",
+        "clustersAria": "Deux groupes de 100 000 points chacun",
+        "largeStatus": "{{points}} points · dessinés avec {{renderer}}",
+        "sessionAria": "Durée de session selon le nombre de pages vues",
+        "minutes": "Minutes",
+        "pages": "Pages",
+        "free": "Gratuit",
+        "pro": "Pro",
+        "sessionStatus": "{{plan}} : {{minutes}} min, {{pages}} pages",
+        "tapDot": "Touchez un point",
+        "campaigns": "Campagnes",
+        "trend": "Tendance",
+        "adSpend": "Dépense publicitaire par semaine",
+        "revenue": "Chiffre d'affaires par semaine",
+        "fit": "R² = {{r2}} · +{{slope}} de chiffre d'affaires par dollar dépensé",
+        "trendAria": "Chiffre d'affaires selon la dépense publicitaire de 60 campagnes, avec une droite de tendance",
+        "penguins": {
+          "adelie": "Manchot Adélie",
+          "chinstrap": "Manchot à jugulaire",
+          "gentoo": "Manchot papou"
+        },
+        "flipper": "Longueur de nageoire",
+        "mass": "Masse corporelle",
+        "penguinsAria": "Longueur de nageoire et masse corporelle de trois espèces de manchots",
+        "requests": "Requêtes",
+        "outlier": "Valeur aberrante",
+        "expected": "Attendu",
+        "payload": "Taille de la charge",
+        "responseTime": "Temps de réponse",
+        "outliersAria": "Temps de réponse selon la taille de la charge, valeurs aberrantes en rouge",
+        "outliersSummary": "{{slow}} requêtes sur {{total}} ont pris plus de deux fois le temps attendu.",
+        "readings": "Mesures",
+        "zoomPresets": {
+          "night": "Nuits fraîches",
+          "comfort": "Plage de culture",
+          "heat": "Après-midi chauds"
+        },
+        "showAll": "Tout afficher",
+        "temperature": "Température",
+        "humidity": "Humidité relative",
+        "growingRange": "Plage de culture",
+        "greenhouseAria": "Mesures de température et d'humidité des capteurs de la serre",
+        "greenhouseView": "Visible : {{t0}} – {{t1}}, humidité {{h0}} – {{h1}} · mesures affichées : {{points}}",
+        "greenhouseHint": "Choisissez une région, ou zoomez avec Ctrl / ⌘ + molette",
+        "departments": {
+          "engineering": "Ingénierie",
+          "sales": "Ventes",
+          "support": "Support"
+        },
+        "tenure": "Ancienneté",
+        "reviewScore": "Note d'évaluation (1–5)",
+        "companyAverage": "Moyenne de l'entreprise",
+        "staffAria": "Ancienneté et note d'évaluation de 90 employés, par service",
+        "employeeStatus": "{{id}} · {{department}} · {{tenure}} · note {{score}} · {{salary}} par an",
+        "employeeHint": "Cliquez sur un point pour sélectionner un employé, sur la zone vide pour effacer la sélection",
+        "players": "Joueurs",
+        "leagueAverage": "Moyenne de la ligue",
+        "efficientScorers": "Marqueurs efficaces",
+        "volumeShooters": "Gros volumes de tirs",
+        "pointsPerGame": "{{value}} points par match",
+        "usageRow": "Taux d'utilisation : {{value}}",
+        "trueShootingRow": "True shooting : {{value}}",
+        "usageRate": "Taux d'utilisation",
+        "trueShooting": "True shooting (adresse réelle)",
+        "playersAria": "Taux d'utilisation et adresse au tir de 16 joueurs ; la taille du point est le nombre de points par match",
+        "normal": "Normal",
+        "alarm": "Alarme",
+        "latest": "Dernier",
+        "mmPerSecond": "{{value}} mm/s",
+        "pause": "Pause",
+        "resume": "Reprendre",
+        "vibrationStatus": "Dernier échantillon : {{rpm}} tr/min, {{value}} · alarmes à l'écran : {{alarms}}",
+        "speed": "Vitesse (tr/min)",
+        "vibration": "Vibration",
+        "alarmLimit": "Seuil d'alarme",
+        "vibrationAria": "Vibration en direct d'un moteur selon sa vitesse",
+        "mammals": "Mammifères",
+        "animals": {
+          "shrew": "Musaraigne",
+          "mouse": "Souris",
+          "rat": "Rat",
+          "rabbit": "Lapin",
+          "cat": "Chat",
+          "dog": "Chien",
+          "human": "Humain",
+          "pig": "Porc",
+          "horse": "Cheval",
+          "cow": "Vache",
+          "giraffe": "Girafe",
+          "elephant": "Éléphant"
+        },
+        "powerLaw": "Loi de puissance ajustée",
+        "kg": "{{value}} kg",
+        "watts": "{{value}} W",
+        "bodyMass": "Masse corporelle",
+        "metabolicRate": "Métabolisme de base",
+        "kleiber": "Métabolisme ∝ masse^{{exponent}} (loi de Kleiber)",
+        "kleiberAria": "Métabolisme de base selon la masse corporelle de 12 mammifères, sur axes log-log"
+      },
+      "api": {
+        "ScatterChartProps": {
+          "series": "Séries tracées en points sauf si elles définissent un type"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Base",
+            "description": "Deux groupes de points avec titres d’axes ; touchez un point pour lire sa série et ses valeurs."
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "clusters": {
+            "title": "Deux groupes",
+            "description": "Des paires [x, y] de deux séries avec titres d'axes ; zoom sur les deux axes avec Ctrl / ⌘ + molette."
+          },
+          "point-click": {
+            "title": "Point cliqué",
+            "description": "Des points étiquetés ; un clic affiche l'étiquette et les valeurs du point (événement de clic sur un point)."
+          }
+        },
+        "minerva-scatter-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}

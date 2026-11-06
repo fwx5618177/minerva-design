@@ -1,0 +1,527 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "input",
+  "title": "Input 输入框",
+  "description": "单行文本输入框，支持尺寸、变体、前后缀内容、清除按钮、字数统计和密码显隐切换。放在 FormField 中即可获得标签、帮助文本和错误信息。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Input",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Input"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "string | number",
+            "required": false,
+            "description": "Current text (controlled, `v-model`). Omit for an uncontrolled field",
+            "typeText": "string | number"
+          },
+          {
+            "name": "defaultValue",
+            "type": "string | number",
+            "required": false,
+            "description": "Initial text of an uncontrolled field",
+            "typeText": "string | number"
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "default": "\"text\"",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "variant",
+            "type": "InputVariant",
+            "default": "\"outline\"",
+            "required": false,
+            "description": "Visual style",
+            "typeText": "InputVariant"
+          },
+          {
+            "name": "size",
+            "type": "InputSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Height and font size",
+            "typeText": "InputSize"
+          },
+          {
+            "name": "invalid",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Error state (also set by an invalid FormControl); sets aria-invalid",
+            "typeText": "boolean"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the field (also set by FormControl).",
+            "typeText": "boolean"
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Read-only field (also set by FormControl).",
+            "typeText": "boolean"
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Marks the field as required.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "description": "id of the input (defaults to the enclosing FormControl's id)",
+            "typeText": "string"
+          },
+          {
+            "name": "maxLength",
+            "type": "number",
+            "required": false,
+            "description": "Maximum length (also shown by the character count)",
+            "typeText": "number"
+          },
+          {
+            "name": "prefix",
+            "type": "string",
+            "required": false,
+            "description": "Content before the text, e.g. \"@\" (or the `prefix` slot)",
+            "typeText": "string"
+          },
+          {
+            "name": "suffix",
+            "type": "string",
+            "required": false,
+            "description": "Content after the text, e.g. a unit (or the `suffix` slot)",
+            "typeText": "string"
+          },
+          {
+            "name": "clearable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a clear button while the field has a value (not when disabled or\nread-only). Clearing emits an empty value and keeps focus in the field",
+            "typeText": "boolean"
+          },
+          {
+            "name": "clearLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the clear button",
+            "typeText": "string"
+          },
+          {
+            "name": "showCharCount",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows the number of characters (and maxLength, when set) after the text;\nthe count is linked to the input with aria-describedby",
+            "typeText": "boolean"
+          },
+          {
+            "name": "showPasswordLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the password visibility toggle (shown for\ntype=\"password\") while the password is hidden",
+            "typeText": "string"
+          },
+          {
+            "name": "hidePasswordLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the password visibility toggle while the password\nis visible",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "clear",
+            "type": "[]",
+            "typeText": "[]",
+            "parameters": []
+          }
+        ],
+        "slots": [
+          {
+            "name": "prefix",
+            "type": "any",
+            "description": "Content before the text (the `prefix` prop)",
+            "typeText": "any"
+          },
+          {
+            "name": "suffix",
+            "type": "any",
+            "description": "Content after the text (the `suffix` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Input": {
+      "kind": "cssVars",
+      "source": "react/src/components/Input",
+      "vars": [
+        {
+          "name": "--input-height",
+          "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--input-padding-x",
+          "description": "Horizontal padding of the text (every size)"
+        },
+        {
+          "name": "--input-radius",
+          "description": "Corner radius (defaults to --radius-lg)"
+        },
+        {
+          "name": "--input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--input-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--input-focus-color",
+          "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "addons",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/vue/addons.vue",
+      "files": {
+        "apps/docs/src/docs/pages/input/vue/addons.vue": "<script setup lang=\"ts\">\nimport { Input, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Input aria-label=\"Website\" placeholder=\"example.com\"\n      ><template #addon-before>https://</template\n      ><template #addon-after>.com</template></Input\n    ><Input aria-label=\"Search\" placeholder=\"Search projects\"\n      ><template #prefix>⌕</template><template #suffix>⌘K</template></Input\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "addons",
+      "description": ""
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/input/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Input, VStack } from \"minerva-design/vue\";\nconst value = ref(\"\");\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Input aria-label=\"Name\" placeholder=\"Uncontrolled\" /><Input\n      aria-label=\"Controlled\"\n      placeholder=\"Controlled\"\n      v-model=\"value\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "clearable-and-count",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/vue/clearable-and-count.vue",
+      "files": {
+        "apps/docs/src/docs/pages/input/vue/clearable-and-count.vue": "<script setup lang=\"ts\">\nimport { Input, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Input aria-label=\"Search\" placeholder=\"Search\" clearable /><Input\n      aria-label=\"Short bio\"\n      default-value=\"Frontend developer\"\n      clearable\n      show-char-count\n      :max-length=\"40\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "clearable-and-count",
+      "description": ""
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/vue/form.vue",
+      "files": {
+        "apps/docs/src/docs/pages/input/vue/form.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Input, FormField, Button, VStack } from \"minerva-design/vue\";\nconst email = ref(\"\");\nconst saved = ref(false);\n</script>\n<template>\n  <form @submit.prevent=\"saved = true\">\n    <VStack :gap=\"3\"\n      ><FormField label=\"Email\" required\n        ><Input v-model=\"email\" type=\"email\" required /></FormField\n      ><Button type=\"submit\">Subscribe</Button\n      ><output v-if=\"saved\">Subscribed: {{ email }}</output></VStack\n    >\n  </form>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "form",
+      "description": ""
+    },
+    {
+      "id": "sizes-variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/vue/sizes-variants.vue",
+      "files": {
+        "apps/docs/src/docs/pages/input/vue/sizes-variants.vue": "<script setup lang=\"ts\">\nimport { Input, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Input aria-label=\"Small\" size=\"small\" placeholder=\"small\" /><Input\n      aria-label=\"Medium\"\n      placeholder=\"medium (outline)\" /><Input\n      aria-label=\"Large\"\n      size=\"large\"\n      placeholder=\"large\" /><Input\n      aria-label=\"Filled\"\n      variant=\"filled\"\n      placeholder=\"filled\" /><Input\n      aria-label=\"Unstyled\"\n      variant=\"unstyled\"\n      placeholder=\"unstyled\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes-variants",
+      "description": ""
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/vue/states.vue",
+      "files": {
+        "apps/docs/src/docs/pages/input/vue/states.vue": "<script setup lang=\"ts\">\nimport { FormField, Input, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Input aria-label=\"Invalid\" invalid default-value=\"Invalid\" /><Input\n      aria-label=\"Disabled\"\n      disabled\n      default-value=\"Disabled\" /><Input\n      aria-label=\"Read-only\"\n      read-only\n      default-value=\"Project Atlas\" /><FormField\n      label=\"Inside a FormField\"\n      error-message=\"Inherits the error\"\n      ><Input /></FormField\n  ></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "states",
+      "description": ""
+    }
+  ],
+  "recipes": [
+    {
+      "id": "vue-form",
+      "title": "Vue controlled project form",
+      "renderer": "vue",
+      "pages": [
+        "input",
+        "switch",
+        "form-control",
+        "form-layout",
+        "button"
+      ],
+      "kind": "standalone-recipe",
+      "packageVersion": "1.22.0",
+      "files": {
+        "README.md": "# vue-form\n\nStandalone Vue 3 recipe, using only public Minerva entries.\n\nRequires Node >=22.13 and pnpm 11. Copy the complete directory, then run:\n\n```sh\npnpm install\npnpm build\npnpm dev\n```\n\nThe package manifest pins the tested Minerva/framework/tool versions. The entry imports the global stylesheet once. App owns the provider and controlled state. No documentation translation setup or workspace aliases are required.\n",
+        "index.html": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n    <title>Minerva standalone recipe</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script type=\"module\" src=\"/src/main.ts\"></script>\n  </body>\n</html>\n",
+        "package.json": "{\n  \"name\": \"minerva-recipe-vue-form\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"packageManager\": \"pnpm@11.23.0\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"vue-tsc --noEmit && vite build\"\n  },\n  \"dependencies\": {\n    \"minerva-design\": \"1.22.0\",\n    \"vue\": \"3.5.43\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\",\n    \"vite\": \"8.3.3\",\n    \"@vitejs/plugin-vue\": \"6.0.9\",\n    \"vue-tsc\": \"3.3.12\"\n  }\n}\n",
+        "src/App.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  Button,\n  ConfigProvider,\n  FormField,\n  Input,\n  Switch,\n  VStack,\n} from \"minerva-design/vue\";\nconst name = ref(\"\");\nconst subscribed = ref(false);\nconst saved = ref(\"\");\n</script>\n<template>\n  <ConfigProvider theme=\"light\"\n    ><VStack :gap=\"4\" align=\"start\">\n      <FormField label=\"Project name\" required\n        ><Input name=\"project\" v-model=\"name\" clearable\n      /></FormField>\n      <Switch label=\"Newsletter\" v-model=\"subscribed\" />\n      <Button\n        :disabled=\"!name.trim()\"\n        @click=\"saved = `${name}${subscribed ? ' · subscribed' : ''}`\"\n        >Save project</Button\n      >\n      <output aria-live=\"polite\">{{ saved || \"No project saved\" }}</output>\n    </VStack></ConfigProvider\n  >\n</template>\n",
+        "src/main.ts": "import { createApp } from \"vue\";\nimport App from \"./App.vue\";\nimport \"minerva-design/style.css\";\ncreateApp(App).mount(\"#app\");\n",
+        "src/vite-env.d.ts": "/// <reference types=\"vite/client\" />\n",
+        "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"Bundler\",\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"jsx\": \"react-jsx\",\n    \"noEmit\": true,\n    \"esModuleInterop\": true\n  },\n  \"include\": [\"src\"]\n}\n",
+        "vite.config.ts": "import { defineConfig } from \"vite\";\nimport vue from \"@vitejs/plugin-vue\";\nexport default defineConfig({ plugins: [vue()] });\n"
+      },
+      "dependencies": {
+        "minerva-design": "1.22.0",
+        "vue": "3.5.43",
+        "typescript": "6.0.3",
+        "vite": "8.3.3",
+        "@vitejs/plugin-vue": "6.0.9",
+        "vue-tsc": "3.3.12"
+      },
+      "url": "/minerva-design/reference/1.22.0/recipes/vue-form/README.md"
+    }
+  ],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Input 输入框",
+      "description": "单行文本输入框，支持尺寸、变体、前后缀内容、清除按钮、字数统计和密码显隐切换。放在 FormField 中即可获得标签、帮助文本和错误信息。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "原生 input 属性与事件直接透传；className 作用于外层容器，ref 指向 <input>。"
+        },
+        "sizes-variants": {
+          "title": "尺寸与变体",
+          "description": "三种尺寸以及 outline、filled、unstyled 变体。"
+        },
+        "addons": {
+          "title": "前缀与后缀",
+          "description": "图标、符号或单位等装饰内容。"
+        },
+        "clearable-and-count": {
+          "title": "清除按钮与字数统计",
+          "description": "clearable 会在有值时显示带标签的清除按钮；清除时以空值触发 onChange，并保持焦点在输入框中。showCharCount 显示字数（以及 maxLength），并与输入框关联。"
+        },
+        "password": {
+          "title": "密码",
+          "description": "type=\"password\" 会添加一个带本地化标签的显示 / 隐藏切换按钮。"
+        },
+        "states": {
+          "title": "状态",
+          "description": "invalid、disabled 和 readOnly；在 FormField 内会继承状态。 只读字段统一使用 --readonly-surface-color，保持正常文字对比度，并可聚焦、选择和复制内容；隐藏编辑入口，错误边界仍然保留。"
+        },
+        "validation": {
+          "title": "校验",
+          "description": "提交时校验，并通过 FormField 的 errorMessage 显示错误信息：输入框进入无效状态，并由该信息描述。"
+        }
+      },
+      "api": {
+        "InputProps": {
+          "variant": "视觉样式",
+          "size": "高度与字号",
+          "invalid": "错误状态（无效的 FormControl 也会设置）；设置 aria-invalid",
+          "prefix": "文本前的内容，例如图标或 \"@\"",
+          "suffix": "文本后的内容，例如单位、图标或按钮",
+          "className": "外层容器（而非 <input>）的类名",
+          "ref": "<input> 元素的 ref",
+          "clearable": "有值时显示清除按钮（禁用或只读时不显示）；清除时以空值触发 onChange",
+          "onClear": "清除按钮清空输入框后调用",
+          "clearLabel": "清除按钮的无障碍标签（默认为本地化的 \"清除\"）",
+          "showCharCount": "显示字符数（设置 maxLength 时一并显示），并通过 aria-describedby 与输入框关联",
+          "showPasswordLabel": "密码隐藏时切换按钮的无障碍标签",
+          "hidePasswordLabel": "密码可见时切换按钮的无障碍标签"
+        }
+      },
+      "cssVars": {
+        "--input-height": "字段最小高度（所有尺寸；默认取当前密度下对应尺寸的控件高度）",
+        "--input-padding-x": "文字的水平内边距（所有尺寸）",
+        "--input-radius": "圆角（默认 --radius-lg）",
+        "--input-font-size": "字号（所有尺寸）",
+        "--input-background": "outline 变体的背景色",
+        "--input-border-color": "静止时的边框颜色",
+        "--input-focus-color": "悬停 / 聚焦时的边框颜色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "两个输入框分别演示非受控输入与通过 minerva-input 事件同步 value 属性的输入；都可以编辑和清空。"
+          },
+          "sizes-variants": {
+            "title": "尺寸、变体与状态",
+            "description": "三种尺寸，outline、filled、unstyled 三种变体，以及只读、禁用和无效状态。"
+          },
+          "addons": {
+            "title": "附加内容、清除、计数与密码",
+            "description": "prefix 与 suffix 插槽、清除按钮（clearable）、与 maxlength 关联的字符计数，以及密码可见性切换。"
+          },
+          "form": {
+            "title": "在表单中",
+            "description": "required、type=\"email\"、minlength 与 pattern 在提交时使用浏览器校验；未通过的字段会被设为 invalid 直到修正，reset 将其恢复。"
+          }
+        },
+        "minerva-input": {
+          "props": {
+            "defaultValue": "初始值（value 属性），由 form.reset() 恢复。与 <input> 相同，在用户编辑之前修改它也会修改 value。",
+            "type": "内部 <input> 的类型（text、email、password、search、url、number、date 等）。",
+            "placeholder": "字段为空时显示的占位文本。",
+            "readOnly": "只读：可聚焦并会提交，但不可编辑。",
+            "minLength": "值的最小长度（由浏览器校验）。",
+            "maxLength": "值的最大长度；同时作为字符计数的上限。",
+            "pattern": "值必须匹配的正则表达式。",
+            "min": "最小值（number 与日期类型）。",
+            "max": "最大值（number 与日期类型）。",
+            "step": "步长（number 与日期类型）。",
+            "autocomplete": "内部 <input> 的自动填充提示。",
+            "inputmode": "虚拟键盘提示（numeric、email、tel 等）。",
+            "name": "随表单提交时使用的字段名。",
+            "disabled": "禁用控件：不可聚焦、不提交、不参与校验。",
+            "required": "必须有值，表单才能提交。",
+            "value": "当前值（属性；value 特性设置的是 defaultValue）。",
+            "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与元素关联的 <label> 元素（只读）。",
+            "validity": "有效性状态，同 <input>.validity（只读）。",
+            "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+            "willValidate": "元素是否参与约束校验（只读）。"
+          },
+          "events": {
+            "change": "值已提交（失焦或回车），由内部 input 重新派发。",
+            "input": "值已改变（每次按键；原生事件，可穿透 shadow DOM）。",
+            "minerva-input": "同 input，附带 detail: { value }。",
+            "minerva-change": "同 change，附带 detail: { value }。",
+            "minerva-clear": "清除按钮清空了字段。"
+          },
+          "slots": {
+            "prefix": "文本之前的内容（图标、“@”、协议等）。",
+            "suffix": "文本之后的内容（单位、图标、按钮）。"
+          },
+          "methods": {
+            "focus": "聚焦内部控件。",
+            "blur": "使内部控件失去焦点。",
+            "select": "选中全部文本。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+            "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+            "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+            "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "states": {
+            "title": "状态",
+            "description": "invalid、disabled 和 readOnly；在 FormField 内会继承状态。"
+          },
+          "sizes-variants": {
+            "title": "尺寸与变体",
+            "description": "三种尺寸以及 outline、filled、unstyled 变体。"
+          },
+          "basic": {
+            "title": "基础用法",
+            "description": "分别演示非受控输入与受控 TextInput。onChange 直接接收新的字符串值；通过 accessibilityLabel 提供无障碍名称，通过原生样式属性调整外观。"
+          },
+          "clearable-and-count": {
+            "title": "清除按钮与字数统计",
+            "description": "clearable 会在有值时显示带标签的清除按钮；清除时以空值触发 onChange，并保持焦点在输入框中。showCharCount 显示字数（以及 maxLength），并与输入框关联。"
+          }
+        }
+      }
+    }
+  }
+}

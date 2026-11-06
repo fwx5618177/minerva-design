@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "split-layout",
+  "title": "SplitLayout",
+  "description": "Contenu principal avec un panneau latéral facultatif placé à côté dès que la largeur de la mise en page atteint un seuil.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SplitLayout",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/split-layout",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-split-layout",
+        "props": [
+          {
+            "name": "asideWidth",
+            "typeText": "number",
+            "attribute": "aside-width",
+            "required": false
+          },
+          {
+            "name": "collapseBelow",
+            "typeText": "\"md\" | \"lg\"",
+            "attribute": "collapse-below",
+            "required": false
+          },
+          {
+            "name": "gap",
+            "typeText": "string | number",
+            "attribute": "gap",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Main content"
+          },
+          {
+            "name": "aside",
+            "description": "Secondary content, after main"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-split-layout": {
+      "kind": "element",
+      "source": "web-components/src/components/split-layout/split-layout.ts",
+      "className": "MinervaSplitLayout",
+      "summary": "Main + aside layout splitting at a container breakpoint.",
+      "description": "Main content with an optional aside column that splits beside it once the layout's own width (container query) reaches a breakpoint (`<SplitLayout>` of React). Main always precedes the aside in reading order; without `aside` slot content the main column is full width.",
+      "properties": [
+        {
+          "name": "asideWidth",
+          "attribute": "aside-width",
+          "type": "number",
+          "default": "320",
+          "description": "Requested aside width in pixels in split mode (the track is `min(asideWidth, 50%)`); must be finite and positive"
+        },
+        {
+          "name": "collapseBelow",
+          "attribute": "collapse-below",
+          "type": "\"md\" | \"lg\"",
+          "default": "\"md\"",
+          "description": "Splits at container widths of at least 768px (`md`) or 1200px (`lg`) and stacks below"
+        },
+        {
+          "name": "gap",
+          "attribute": "gap",
+          "type": "string | number",
+          "default": "6",
+          "description": "Gap between the slots (spacing token number or CSS value)"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Main content"
+        },
+        {
+          "name": "aside",
+          "description": "Secondary content, after main"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The query container"
+        },
+        {
+          "name": "main",
+          "description": "The main column"
+        },
+        {
+          "name": "aside",
+          "description": "The aside column (when there is aside content)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--split-layout-align-items",
+          "description": "Vertical alignment of the main and aside columns (default: start)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:SplitLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/SplitLayout",
+      "vars": [
+        {
+          "name": "--split-layout-align-items",
+          "description": "Vertical alignment of the main and aside columns (default: start)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/wc/basic.html": "<minerva-split-layout>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">\n    <strong>Main</strong>\n    <p>\n      Primary content comes first in reading order and takes the remaining\n      width.\n    </p>\n  </minerva-box>\n  <minerva-box\n    slot=\"aside\"\n    p=\"4\"\n    border=\"1px solid var(--border-color)\"\n    rounded=\"md\"\n  >\n    <strong>Aside</strong>\n    <p>Splits beside main once the layout is at least 768px wide.</p>\n  </minerva-box>\n</minerva-split-layout>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Le contenu principal dans le slot par défaut, le contenu secondaire dans le slot aside. L'aside se place à côté dès que la mise en page atteint 768px de large, et s'empile après en dessous."
+    },
+    {
+      "id": "options",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/wc/options.html",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/wc/options.html": "<label style=\"display: flex; gap: 8px; align-items: center\">\n  Container width\n  <input id=\"width\" type=\"range\" min=\"400\" max=\"1300\" step=\"10\" value=\"1300\" />\n  <output id=\"value\">1300px</output>\n</label>\n<div\n  id=\"frame\"\n  style=\"\n    max-width: 100%;\n    width: 1300px;\n    margin-top: 12px;\n    padding: 8px;\n    border: 1px dashed var(--border-color);\n  \"\n>\n  <minerva-split-layout aside-width=\"240\" collapse-below=\"lg\" gap=\"3\">\n    <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">\n      Main: splits only from 1200px (collapse-below=\"lg\").\n    </minerva-box>\n    <minerva-box slot=\"aside\" p=\"4\" bg=\"bg.subtle\" rounded=\"md\">\n      Aside: 240px wide, gap=\"3\".\n    </minerva-box>\n  </minerva-split-layout>\n</div>\n",
+        "apps/docs/src/docs/pages/split-layout/wc/options.ts": "// The split follows the layout's own width (container query).\nexport function setup(root: HTMLElement) {\n  const input = root.querySelector<HTMLInputElement>(\"#width\")!;\n  const value = root.querySelector<HTMLOutputElement>(\"#value\")!;\n  const frame = root.querySelector<HTMLElement>(\"#frame\")!;\n  const onInput = () => {\n    frame.style.width = `${input.value}px`;\n    value.value = `${input.value}px`;\n  };\n  input.addEventListener(\"input\", onInput);\n  return () => input.removeEventListener(\"input\", onInput);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Largeur, point de rupture et espacement",
+      "description": "aside-width fixe la colonne secondaire (50 % au maximum), collapse-below=\"lg\" attend 1200px pour séparer, gap utilise les jetons d'espacement. Faites glisser le curseur pour redimensionner le conteneur."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SplitLayout",
+      "description": "Contenu principal avec un panneau latéral facultatif placé à côté dès que la largeur de la mise en page atteint un seuil.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Un panneau de 320px se place à côté à partir de 768px de conteneur et s'empile en dessous ; le contenu principal reste premier dans le DOM."
+        },
+        "options": {
+          "title": "Largeur, seuil et espace",
+          "description": "asideWidth, collapseBelow=\"lg\" (1200px) et gap personnalisent la division."
+        }
+      },
+      "api": {
+        "SplitLayoutProps": {
+          "ref": "Ref vers le div externe",
+          "aside": "Contenu secondaire après la zone principale ; null, undefined et false l'omettent (0 est un contenu valide)",
+          "asideWidth": "Largeur du panneau en pixels en mode divisé (piste min(asideWidth, 50%)) ; doit être finie et positive",
+          "collapseBelow": "Divise à partir de 768px (md) ou 1200px (lg) de conteneur et empile en dessous",
+          "gap": "Espace entre les zones (jeton ou valeur CSS)"
+        }
+      },
+      "cssVars": {
+        "--split-layout-align-items": "Alignement vertical des colonnes principale et latérale (par défaut start)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Le contenu principal dans le slot par défaut, le contenu secondaire dans le slot aside. L'aside se place à côté dès que la mise en page atteint 768px de large, et s'empile après en dessous."
+          },
+          "options": {
+            "title": "Largeur, point de rupture et espacement",
+            "description": "aside-width fixe la colonne secondaire (50 % au maximum), collapse-below=\"lg\" attend 1200px pour séparer, gap utilise les jetons d'espacement. Faites glisser le curseur pour redimensionner le conteneur."
+          }
+        },
+        "minerva-split-layout": {
+          "slots": {
+            "default": "Contenu principal.",
+            "aside": "Contenu secondaire, après le principal dans l'ordre de lecture."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

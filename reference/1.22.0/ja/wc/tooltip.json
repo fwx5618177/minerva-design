@@ -1,0 +1,685 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "tooltip",
+  "title": "Tooltip ツールチップ",
+  "description": "要素にホバーまたはフォーカスしたときに表示される短いテキストラベルです。ビューポートの端では反転・シフトして表示を保ちます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Tooltip",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/tooltip",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-tooltip",
+        "props": [
+          {
+            "name": "content",
+            "typeText": "string",
+            "attribute": "content",
+            "required": false
+          },
+          {
+            "name": "open",
+            "typeText": "boolean",
+            "attribute": "open",
+            "required": false
+          },
+          {
+            "name": "placement",
+            "typeText": "\"top\" | \"top-start\" | \"top-end\" | \"bottom\" | \"bottom-start\" | \"bottom-end\" | \"left\" | \"left-start\" | \"left-end\" | \"right\" | \"right-start\" | \"right-end\"",
+            "attribute": "placement",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "TooltipColor",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"solid\" | \"subtle\" | \"glass\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "typeText": "\"default\" | \"rounded\" | \"thought\" | \"square\"",
+            "attribute": "shape",
+            "required": false
+          },
+          {
+            "name": "animation",
+            "typeText": "\"fade\" | \"scale\" | \"shift-away\" | \"shift-toward\" | \"perspective\"",
+            "attribute": "animation",
+            "required": false
+          },
+          {
+            "name": "arrow",
+            "typeText": "boolean",
+            "attribute": "arrow",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "enterDelay",
+            "typeText": "number | undefined",
+            "attribute": "enter-delay",
+            "required": false
+          },
+          {
+            "name": "leaveDelay",
+            "typeText": "number | undefined",
+            "attribute": "leave-delay",
+            "required": false
+          },
+          {
+            "name": "offset",
+            "typeText": "[number, number] | undefined",
+            "attribute": "offset",
+            "required": false
+          },
+          {
+            "name": "followCursor",
+            "typeText": "boolean",
+            "attribute": "follow-cursor",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-open-change",
+            "typeText": "CustomEvent<{ open: boolean; }>",
+            "detailType": {
+              "typeText": "{ open: boolean; }",
+              "typeRef": "type:6f996af871815000d153"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "Hover, focus, blur, pointer leave or Escape asked to open / close (`detail: { open }`); cancelable: `preventDefault()` keeps the current state"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "The trigger; prefer a single focusable element (button, link...)"
+          },
+          {
+            "name": "content",
+            "description": "Rich tooltip content (alternative to the `content` attribute)"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TooltipProvider",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/tooltip-provider",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-tooltip-provider",
+        "props": [
+          {
+            "name": "enterDelay",
+            "typeText": "number | undefined",
+            "attribute": "enter-delay",
+            "required": false
+          },
+          {
+            "name": "leaveDelay",
+            "typeText": "number | undefined",
+            "attribute": "leave-delay",
+            "required": false
+          },
+          {
+            "name": "skipDelay",
+            "typeText": "number",
+            "attribute": "skip-delay",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Content containing tooltips"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-tooltip-provider": {
+      "kind": "element",
+      "source": "web-components/src/components/tooltip/tooltip.ts",
+      "className": "MinervaTooltipProvider",
+      "summary": "Shared default delays for the tooltips inside.",
+      "description": "Optional provider (`<TooltipProvider>` of React) giving every `<minerva-tooltip>` inside default delays. Moving from one tooltip to the next within `skip-delay` ms opens it immediately. Tooltips work without it.",
+      "properties": [
+        {
+          "name": "enterDelay",
+          "attribute": "enter-delay",
+          "type": "number | undefined",
+          "description": "Default delay before showing on hover (ms) for tooltips without `enter-delay`"
+        },
+        {
+          "name": "leaveDelay",
+          "attribute": "leave-delay",
+          "type": "number | undefined",
+          "description": "Default delay before hiding on pointer leave (ms) for tooltips without `leave-delay`"
+        },
+        {
+          "name": "skipDelay",
+          "attribute": "skip-delay",
+          "type": "number",
+          "default": "300",
+          "description": "A tooltip closed less than this many ms ago makes the next one open without its enter delay"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Content containing tooltips"
+        }
+      ],
+      "parts": [],
+      "cssProperties": [
+        {
+          "name": "--tooltip-max-width",
+          "description": "Maximum width (capped by the viewport)"
+        },
+        {
+          "name": "--tooltip-padding",
+          "description": "Padding (every shape)"
+        },
+        {
+          "name": "--tooltip-radius",
+          "description": "Corner radius (defaults to the radius of the shape)"
+        },
+        {
+          "name": "--tooltip-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--tooltip-bg",
+          "description": "Background (gradients allowed; every variant)"
+        },
+        {
+          "name": "--tooltip-color",
+          "description": "Text color (every variant)"
+        },
+        {
+          "name": "--tooltip-shadow",
+          "description": "Shadow (defaults to --shadow-md, --shadow-lg for the glass variant)"
+        },
+        {
+          "name": "--tooltip-z-index",
+          "description": "Stacking order (defaults to --z-popover)"
+        }
+      ]
+    },
+    "wc:minerva-tooltip": {
+      "kind": "element",
+      "source": "web-components/src/components/tooltip/tooltip.ts",
+      "className": "MinervaTooltip",
+      "summary": "Hover / focus tooltip, dismissable with Escape and hoverable.",
+      "description": "Tooltip (`<Tooltip>` of React): shows informative content when the wrapped element (default slot) is hovered (after `enter-delay`) or focused. Flips / shifts to stay inside the viewport. WCAG 1.4.13: dismissable with Escape (a non-modal core dismissable layer: only when it is the topmost one, so inside an open `<minerva-modal>` the first Escape closes the tooltip only), hoverable (the pointer can move from the trigger onto the tooltip through the gap between them — core pointer grace) and persistent. Enter / Space are never intercepted, so the wrapped control still activates. The panel (`role=\"tooltip\"`) lives in the shadow root and is shown in the top layer (Popover API). ID references cannot cross shadow roots, so instead of `aria-describedby` the tooltip sets `aria-description` (its text: `aria-label`, else the `content` attribute, else the text of the `content` slot) on the trigger — the first element of the default slot — while it is shown, appended to any `aria-description` the trigger already had; the previous value is restored when it hides, the trigger changes or the tooltip is removed. Plain-text triggers are described through the internal wrapper instead. Inside a `<minerva-tooltip-provider>`, the provider's delays apply when `enter-delay` / `leave-delay` are not set.",
+      "properties": [
+        {
+          "name": "content",
+          "attribute": "content",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Text of the tooltip (or use the `content` slot for rich content)"
+        },
+        {
+          "name": "open",
+          "attribute": "open",
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the tooltip is shown"
+        },
+        {
+          "name": "placement",
+          "attribute": "placement",
+          "type": "\"top\" | \"top-start\" | \"top-end\" | \"bottom\" | \"bottom-start\" | \"bottom-end\" | \"left\" | \"left-start\" | \"left-end\" | \"right\" | \"right-start\" | \"right-end\"",
+          "default": "\"top\"",
+          "description": "Placement relative to the trigger (flips when it overflows)"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "TooltipColor",
+          "default": "\"neutral\"",
+          "description": "Semantic color"
+        },
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"solid\" | \"subtle\" | \"glass\"",
+          "default": "\"solid\"",
+          "description": "Visual style"
+        },
+        {
+          "name": "shape",
+          "attribute": "shape",
+          "type": "\"default\" | \"rounded\" | \"thought\" | \"square\"",
+          "default": "\"default\"",
+          "description": "Shape of the tooltip"
+        },
+        {
+          "name": "animation",
+          "attribute": "animation",
+          "type": "\"fade\" | \"scale\" | \"shift-away\" | \"shift-toward\" | \"perspective\"",
+          "default": "\"fade\"",
+          "description": "Show / hide animation"
+        },
+        {
+          "name": "arrow",
+          "attribute": "arrow",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows an arrow pointing at the trigger"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the tooltip (never opens)"
+        },
+        {
+          "name": "enterDelay",
+          "attribute": "enter-delay",
+          "type": "number | undefined",
+          "description": "Delay before showing on hover, in ms (default: the provider's, else 200)"
+        },
+        {
+          "name": "leaveDelay",
+          "attribute": "leave-delay",
+          "type": "number | undefined",
+          "description": "Delay before hiding on pointer leave, in ms (default: the provider's, else 0)"
+        },
+        {
+          "name": "offset",
+          "attribute": "offset",
+          "type": "[number, number] | undefined",
+          "description": "Offset `[x, y]` in px (attribute: `\"x y\"`). For top / bottom placements `y` is the gap to the trigger and `x` shifts along it; for left / right `x` is the gap and `y` the shift. Without it the tooltip sits 8px away."
+        },
+        {
+          "name": "followCursor",
+          "attribute": "follow-cursor",
+          "type": "boolean",
+          "default": "false",
+          "description": "Makes the tooltip follow the mouse cursor"
+        }
+      ],
+      "methods": [
+        {
+          "name": "show",
+          "signature": "() => void",
+          "description": "Shows the tooltip (does not fire `minerva-open-change`)"
+        },
+        {
+          "name": "hide",
+          "signature": "() => void",
+          "description": "Hides the tooltip (does not fire `minerva-open-change`)"
+        },
+        {
+          "name": "toggle",
+          "signature": "() => void",
+          "description": "Toggles the tooltip (does not fire `minerva-open-change`)"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-open-change",
+          "description": "Hover, focus, blur, pointer leave or Escape asked to open / close (`detail: { open }`); cancelable: `preventDefault()` keeps the current state"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The trigger; prefer a single focusable element (button, link...)"
+        },
+        {
+          "name": "content",
+          "description": "Rich tooltip content (alternative to the `content` attribute)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "trigger",
+          "description": "The wrapper around the trigger (the slotted element)"
+        },
+        {
+          "name": "content",
+          "description": "The positioned tooltip (`role=\"tooltip\"`, while shown)"
+        },
+        {
+          "name": "arrow",
+          "description": "The arrow pointing at the trigger (with `arrow`)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--tooltip-max-width",
+          "description": "Maximum width (capped by the viewport)"
+        },
+        {
+          "name": "--tooltip-padding",
+          "description": "Padding (every shape)"
+        },
+        {
+          "name": "--tooltip-radius",
+          "description": "Corner radius (defaults to the radius of the shape)"
+        },
+        {
+          "name": "--tooltip-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--tooltip-bg",
+          "description": "Background (gradients allowed; every variant)"
+        },
+        {
+          "name": "--tooltip-color",
+          "description": "Text color (every variant)"
+        },
+        {
+          "name": "--tooltip-shadow",
+          "description": "Shadow (defaults to --shadow-md, --shadow-lg for the glass variant)"
+        },
+        {
+          "name": "--tooltip-z-index",
+          "description": "Stacking order (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Tooltip": {
+      "kind": "cssVars",
+      "source": "react/src/components/Tooltip",
+      "vars": [
+        {
+          "name": "--tooltip-max-width",
+          "description": "Maximum width (capped by the viewport)"
+        },
+        {
+          "name": "--tooltip-padding",
+          "description": "Padding (every shape)"
+        },
+        {
+          "name": "--tooltip-radius",
+          "description": "Corner radius (defaults to the radius of the shape)"
+        },
+        {
+          "name": "--tooltip-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--tooltip-bg",
+          "description": "Background (gradients allowed; every variant)"
+        },
+        {
+          "name": "--tooltip-color",
+          "description": "Text color (every variant)"
+        },
+        {
+          "name": "--tooltip-shadow",
+          "description": "Shadow (defaults to --shadow-md, --shadow-lg for the glass variant)"
+        },
+        {
+          "name": "--tooltip-z-index",
+          "description": "Stacking order (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tooltip/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/tooltip/wc/basic.html": "<div style=\"display: flex; flex-wrap: wrap; gap: 8px; padding: 32px 0\">\n  <minerva-tooltip content=\"Shown on top (default)\">\n    <minerva-button variant=\"outline\">Top</minerva-button>\n  </minerva-tooltip>\n  <minerva-tooltip content=\"Right side\" placement=\"right\" arrow>\n    <minerva-button variant=\"outline\">Right</minerva-button>\n  </minerva-tooltip>\n  <minerva-tooltip\n    content=\"Bottom, start aligned\"\n    placement=\"bottom-start\"\n    arrow\n  >\n    <minerva-button variant=\"outline\">Bottom start</minerva-button>\n  </minerva-tooltip>\n  <minerva-tooltip content=\"Left side\" placement=\"left\" arrow>\n    <minerva-button variant=\"outline\">Left</minerva-button>\n  </minerva-tooltip>\n  <minerva-tooltip content=\"Disabled tooltips never open\" disabled>\n    <minerva-button variant=\"outline\">Disabled tooltip</minerva-button>\n  </minerva-tooltip>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "フォーカス可能なトリガーを囲みます。ホバーやフォーカスで content 属性が表示されます。placement は 12 の位置を受け付け、arrow で矢印を付け、disabled でツールチップを無効にします。"
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tooltip/wc/controlled.html",
+      "files": {
+        "apps/docs/src/docs/pages/tooltip/wc/controlled.html": "<div style=\"display: grid; gap: 12px; justify-items: start\">\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button id=\"tip-show\" size=\"small\" variant=\"outline\"\n      >show()</minerva-button\n    >\n    <minerva-button id=\"tip-hide\" size=\"small\" variant=\"outline\"\n      >hide()</minerva-button\n    >\n    <minerva-button id=\"tip-toggle\" size=\"small\" variant=\"outline\"\n      >toggle()</minerva-button\n    >\n  </div>\n  <minerva-tooltip\n    id=\"tip\"\n    content=\"Controlled tooltip\"\n    placement=\"right\"\n    arrow\n  >\n    <minerva-button>Target</minerva-button>\n  </minerva-tooltip>\n  <minerva-tooltip content=\"I follow the pointer\" follow-cursor offset=\"12 12\">\n    <div\n      style=\"\n        display: grid;\n        place-items: center;\n        width: 260px;\n        height: 80px;\n        border: 1px dashed currentColor;\n        border-radius: 8px;\n      \"\n    >\n      Move the pointer here\n    </div>\n  </minerva-tooltip>\n  <p id=\"tip-log\" style=\"margin: 0\"></p>\n</div>\n",
+        "apps/docs/src/docs/pages/tooltip/wc/controlled.ts": "// show() / hide() / toggle() drive the tooltip directly; hover / focus\n// fire the cancelable minerva-open-change (methods do not).\ntype Tooltip = HTMLElement & { show(): void; hide(): void; toggle(): void };\ntype OpenChange = CustomEvent<{ open: boolean }>;\n\nexport function setup(root: HTMLElement) {\n  const tip = root.querySelector<Tooltip>(\"#tip\")!;\n  const showButton = root.querySelector<HTMLElement>(\"#tip-show\")!;\n  const hideButton = root.querySelector<HTMLElement>(\"#tip-hide\")!;\n  const toggleButton = root.querySelector<HTMLElement>(\"#tip-toggle\")!;\n  const log = root.querySelector<HTMLElement>(\"#tip-log\")!;\n  const onShow = () => tip.show();\n  const onHide = () => tip.hide();\n  const onToggle = () => tip.toggle();\n  const onChange = (event: Event) =>\n    (log.textContent = `minerva-open-change: open=${\n      (event as OpenChange).detail.open\n    }`);\n  showButton.addEventListener(\"click\", onShow);\n  hideButton.addEventListener(\"click\", onHide);\n  toggleButton.addEventListener(\"click\", onToggle);\n  tip.addEventListener(\"minerva-open-change\", onChange);\n  return () => {\n    showButton.removeEventListener(\"click\", onShow);\n    hideButton.removeEventListener(\"click\", onHide);\n    toggleButton.removeEventListener(\"click\", onToggle);\n    tip.removeEventListener(\"minerva-open-change\", onChange);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "メソッド・イベント・カーソル追従",
+      "description": "show()、hide()、toggle() でツールチップを直接制御します（イベントは発火しません）。ホバーやフォーカスはキャンセル可能な minerva-open-change を発火します。follow-cursor はポインターに追従し、offset で間隔を指定します。"
+    },
+    {
+      "id": "provider",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tooltip/wc/provider.html",
+      "files": {
+        "apps/docs/src/docs/pages/tooltip/wc/provider.html": "<minerva-tooltip-provider enter-delay=\"600\" skip-delay=\"500\">\n  <div\n    role=\"toolbar\"\n    aria-label=\"Formatting\"\n    style=\"display: flex; gap: 4px; padding: 32px 0\"\n  >\n    <minerva-tooltip content=\"Bold (Ctrl+B)\">\n      <minerva-button variant=\"ghost\" aria-label=\"Bold\"\n        ><b>B</b></minerva-button\n      >\n    </minerva-tooltip>\n    <minerva-tooltip content=\"Italic (Ctrl+I)\">\n      <minerva-button variant=\"ghost\" aria-label=\"Italic\"\n        ><i>I</i></minerva-button\n      >\n    </minerva-tooltip>\n    <minerva-tooltip content=\"Underline (Ctrl+U)\">\n      <minerva-button variant=\"ghost\" aria-label=\"Underline\"\n        ><u>U</u></minerva-button\n      >\n    </minerva-tooltip>\n    <minerva-tooltip placement=\"bottom\" arrow leave-delay=\"200\">\n      <minerva-button variant=\"ghost\">Rich</minerva-button>\n      <span slot=\"content\"\n        ><strong>Rich content</strong><br />Use the <code>content</code> slot\n        for markup.</span\n      >\n    </minerva-tooltip>\n  </div>\n</minerva-tooltip-provider>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "プロバイダーとリッチコンテンツ",
+      "description": "<minerva-tooltip-provider> は内部のツールチップに共通の遅延を与えます。skip-delay 以内に次のツールチップへ移るとすぐに開きます。content スロットにはマークアップを入れられます。"
+    },
+    {
+      "id": "styles",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tooltip/wc/styles.html",
+      "files": {
+        "apps/docs/src/docs/pages/tooltip/wc/styles.html": "<div style=\"display: grid; gap: 12px; padding: 24px 0\">\n  <div style=\"display: flex; flex-wrap: wrap; gap: 8px\">\n    <minerva-tooltip content=\"Neutral\" arrow>\n      <minerva-button color=\"neutral\" variant=\"outline\">neutral</minerva-button>\n    </minerva-tooltip>\n    <minerva-tooltip content=\"Info\" color=\"info\" arrow>\n      <minerva-button color=\"info\" variant=\"outline\">info</minerva-button>\n    </minerva-tooltip>\n    <minerva-tooltip content=\"Success\" color=\"success\" arrow>\n      <minerva-button color=\"success\" variant=\"outline\">success</minerva-button>\n    </minerva-tooltip>\n    <minerva-tooltip content=\"Warning\" color=\"warning\" arrow>\n      <minerva-button color=\"warning\" variant=\"outline\">warning</minerva-button>\n    </minerva-tooltip>\n    <minerva-tooltip content=\"Danger\" color=\"danger\" arrow>\n      <minerva-button color=\"danger\" variant=\"outline\">danger</minerva-button>\n    </minerva-tooltip>\n  </div>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 8px\">\n    <minerva-tooltip content=\"Subtle variant\" variant=\"subtle\" color=\"info\">\n      <minerva-button variant=\"ghost\">subtle</minerva-button>\n    </minerva-tooltip>\n    <minerva-tooltip content=\"Glass variant\" variant=\"glass\">\n      <minerva-button variant=\"ghost\">glass</minerva-button>\n    </minerva-tooltip>\n    <minerva-tooltip content=\"Rounded shape\" shape=\"rounded\" animation=\"scale\">\n      <minerva-button variant=\"ghost\">rounded + scale</minerva-button>\n    </minerva-tooltip>\n    <minerva-tooltip\n      content=\"Thought bubble\"\n      shape=\"thought\"\n      animation=\"shift-away\"\n    >\n      <minerva-button variant=\"ghost\">thought + shift-away</minerva-button>\n    </minerva-tooltip>\n    <minerva-tooltip\n      content=\"Square shape\"\n      shape=\"square\"\n      animation=\"perspective\"\n    >\n      <minerva-button variant=\"ghost\">square + perspective</minerva-button>\n    </minerva-tooltip>\n  </div>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "色・バリアント・形状・アニメーション",
+      "description": "color で意味的な色調を、variant で表面（solid、subtle、glass）を、shape で形を、animation で表示 / 非表示のトランジションを指定します。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tooltip ツールチップ",
+      "description": "要素にホバーまたはフォーカスしたときに表示される短いテキストラベルです。ビューポートの端では反転・シフトして表示を保ちます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "フォーカス可能な要素をラップします。ツールチップはホバー時とキーボードフォーカス時に表示され、ホバーで開いた場合でも Escape で閉じます。"
+        },
+        "placements": {
+          "title": "配置",
+          "description": "トリガーの周囲 12 か所の配置。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でセマンティックカラーを選びます：neutral（デフォルト）、info、success、warning、danger。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを選びます：solid（デフォルト。塗りつぶし。neutral はテーマと対照的な反転色の面）、subtle（枠線付きの淡い色合いの面）、glass（テーマに追従するすりガラス風の面。色は枠線にのみ付きます）。"
+        },
+        "shapes": {
+          "title": "形状",
+          "description": "デフォルト、角丸、四角形、吹き出しの形状。"
+        },
+        "animations": {
+          "title": "アニメーション",
+          "description": "ツールチップの表示・非表示のアニメーションを選択します。"
+        },
+        "custom-colors": {
+          "title": "カスタムカラー、矢印、オフセット",
+          "description": "contentClassName を使ってツールチップに --tooltip-bg（単色と CSS グラデーションに対応）と --tooltip-color のカスタムプロパティを設定します。arrow はトリガーを指す矢印を追加し、offset はトリガーとの間隔（既定 8px）を設定します。"
+        },
+        "delays": {
+          "title": "遅延と無効化",
+          "description": "enterDelay と leaveDelay でホバーのタイミングを制御し、disabled でツールチップを無効にします。"
+        },
+        "follow-cursor": {
+          "title": "カーソル追従",
+          "description": "followCursor を有効にすると、ツールチップがマウスポインターに追従します。"
+        },
+        "controlled": {
+          "title": "制御モードと命令的操作",
+          "description": "open と onOpenChange で表示を制御するか（ホバー・フォーカス・Escape は引き続き変更を要求します）、TooltipRef の open / close / toggle を呼び出します。"
+        },
+        "events": {
+          "title": "イベント",
+          "description": "onOpen と onClose はホバー、フォーカス、ブラー、Escape で発火します。"
+        },
+        "as-child": {
+          "title": "asChild",
+          "description": "asChild はラッパー要素を追加せず子要素自体にツールチップを付けるため、flex や grid のレイアウトが崩れません。contentClassName でツールチップにスタイルを当てられます。"
+        },
+        "provider": {
+          "title": "TooltipProvider",
+          "description": "TooltipProvider は内側のツールチップの既定の遅延を設定します。ツールチップ間を素早く移動すると次のものはすぐに開きます。"
+        }
+      },
+      "api": {
+        "TooltipProps": {
+          "content": "ツールチップ内に表示するコンテンツ",
+          "children": "ツールチップのトリガーとなる要素。フォーカス可能な要素を推奨します",
+          "open": "ツールチップを表示するかどうか（制御モード。onOpenChange と組み合わせて使用）",
+          "defaultOpen": "初期の表示状態（非制御モード）",
+          "placement": "トリガーに対する配置",
+          "color": "ツールチップのセマンティックカラー。glass バリアントでは色は枠線にのみ付きます（neutral は通常のすりガラス風の面のまま）",
+          "variant": "見た目のスタイル：solid（塗りつぶし。neutral は反転したコントラストの面）、subtle（枠線付きの淡い色合いの面）、glass（すりガラス風の浮き上がった面）",
+          "shape": "ツールチップの形状",
+          "animation": "表示・非表示のアニメーション",
+          "enterDelay": "ホバー後に表示するまでの遅延（ミリ秒）",
+          "leaveDelay": "マウスが離れてから非表示にするまでの遅延（ミリ秒）",
+          "offset": "[x, y] 形式のオフセット（ピクセル）。top/bottom 配置では y がトリガーとの間隔、x がそれに沿ったずれ。left/right 配置では x が間隔、y がずれです。未指定時はトリガーから 8px 離れます",
+          "followCursor": "ツールチップをマウスカーソルに追従させる",
+          "zIndex": "ツールチップの z-index",
+          "arrow": "トリガーを指す矢印を表示する",
+          "disabled": "ツールチップを無効にする",
+          "className": "トリガーのラッパーに追加するクラス名",
+          "onOpen": "ホバーまたはフォーカスでツールチップが開いたときに呼び出されます",
+          "onClose": "マウスアウト、ブラー、Escape でツールチップが閉じたときに呼び出されます",
+          "aria-label": "ツールチップ要素のアクセシブルなラベル",
+          "ref": "open / close / toggle を持つ命令的ハンドル",
+          "onOpenChange": "要求された開閉状態で呼ばれます（ホバー、フォーカス、Escape、ref メソッド）",
+          "asChild": "ホバー / フォーカスのハンドラー、ref、className を <div> で包む代わりに単一の子要素へ直接付けます（flex や grid のレイアウトを維持）。子要素は ref を受け取れる必要があります",
+          "contentClassName": "ツールチップ（フローティング）要素の追加クラス名。色を変更するには、この要素に --tooltip-bg（背景。グラデーション可）と --tooltip-color（文字）のカスタムプロパティを設定します",
+          "contentRef": "ツールチップ（フローティング）要素への ref。表示中に設定されます"
+        },
+        "TooltipRef": {
+          "open": "ツールチップを開く",
+          "close": "ツールチップを閉じる",
+          "toggle": "ツールチップの表示を切り替える"
+        },
+        "TooltipProviderProps": {
+          "enterDelay": "enterDelay を指定していない内側のツールチップが、ホバー後に表示されるまでの既定の遅延（ミリ秒）",
+          "leaveDelay": "leaveDelay を指定していない内側のツールチップが、マウスが離れてから非表示になるまでの既定の遅延（ミリ秒）",
+          "skipDelay": "同じプロバイダーの別のツールチップがこのミリ秒数以内に閉じた場合、次のツールチップは遅延を待たずに開きます",
+          "children": "プロバイダーの内容"
+        }
+      },
+      "cssVars": {
+        "--tooltip-max-width": "最大幅（ビューポートで制限）",
+        "--tooltip-padding": "内側の余白（全形状共通）",
+        "--tooltip-radius": "角丸（既定値は各形状の角丸）",
+        "--tooltip-font-size": "フォントサイズ",
+        "--tooltip-bg": "背景（グラデーション可。全バリアント共通）",
+        "--tooltip-color": "文字色（全バリアント共通）",
+        "--tooltip-shadow": "影（既定値は --shadow-md、glass バリアントは --shadow-lg）",
+        "--tooltip-z-index": "重なり順（既定値は --z-popover）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "フォーカス可能なトリガーを囲みます。ホバーやフォーカスで content 属性が表示されます。placement は 12 の位置を受け付け、arrow で矢印を付け、disabled でツールチップを無効にします。"
+          },
+          "styles": {
+            "title": "色・バリアント・形状・アニメーション",
+            "description": "color で意味的な色調を、variant で表面（solid、subtle、glass）を、shape で形を、animation で表示 / 非表示のトランジションを指定します。"
+          },
+          "provider": {
+            "title": "プロバイダーとリッチコンテンツ",
+            "description": "<minerva-tooltip-provider> は内部のツールチップに共通の遅延を与えます。skip-delay 以内に次のツールチップへ移るとすぐに開きます。content スロットにはマークアップを入れられます。"
+          },
+          "controlled": {
+            "title": "メソッド・イベント・カーソル追従",
+            "description": "show()、hide()、toggle() でツールチップを直接制御します（イベントは発火しません）。ホバーやフォーカスはキャンセル可能な minerva-open-change を発火します。follow-cursor はポインターに追従し、offset で間隔を指定します。"
+          }
+        },
+        "minerva-tooltip-provider": {
+          "slots": {
+            "default": "ツールチップを含むコンテンツ。"
+          }
+        },
+        "minerva-tooltip": {
+          "events": {
+            "minerva-open-change": "ホバー、フォーカス、ブラー、ポインターの離脱、Escape が開閉を要求しました（detail: { open }）。キャンセル可能：preventDefault() で現在の状態を維持します。"
+          },
+          "slots": {
+            "default": "トリガー。フォーカス可能な要素 1 つ（ボタン、リンクなど）を推奨します。",
+            "content": "リッチなツールチップの内容（content 属性の代わり）。"
+          },
+          "methods": {
+            "show": "ツールチップを表示します（minerva-open-change は発火しません）。",
+            "hide": "ツールチップを隠します（minerva-open-change は発火しません）。",
+            "toggle": "ツールチップを切り替えます（minerva-open-change は発火しません）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,432 @@
+# Select セレクト
+
+完全なキーボード操作・グループ・フォーム連携に対応した単一選択ドロップダウン。
+
+Package: minerva-design@1.22.0
+
+Renderer: angular
+
+Locale: ja
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.22.0",
+  "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+  "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.22.0/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+### 動作とアクセシビリティ
+
+トリガーは combobox ロールを持つボタンです（aria-haspopup="listbox"）。クリック、Enter、Space、↓ / ↑、Home、End でリストを開き、選択中の候補（なければ最初の有効な候補）にフォーカスします。矢印キーは端で折り返さず、無効な候補を飛ばします。Home / End と Page Up / Page Down でジャンプできます。Enter または Space で選択して閉じ、フォーカスはトリガーに戻ります。Escape は選択せずに閉じ、Tab は閉じて次のフィールドへ進みます。
+
+閉じたトリガー上で文字を入力すると、ネイティブの select と同様に選択が直接変わります。開いているときはハイライトが移動します。内容がプレーンテキストでない候補には textValue を指定してください。
+
+リストはトリガーの下に配置され、幅はトリガー以上です。下に十分な余白がないときは上に反転し、候補がビューポートに収まらないときはスクロールします。ライブラリの他のオーバーレイと同じ popper 配置で、タッチ端末や小さな画面でも予測しやすく、トリガーを隠しません。選択中の候補をトリガーに重ねて揃える配置（"item-aligned"）は macOS 特有の慣習のため、意図的に採用していません。
+
+非表示のネイティブ select が name・required・disabled を持ちます。値は FormData に含まれ、required はネイティブの制約検証に参加し、フォームのリセットで defaultValue に戻ります。値が undefined または空文字列のときはプレースホルダーを表示します。
+
+リストは最も近い ConfigProvider のテーマコンテナへポータルされます。Modal や Drawer の中では、Escape はリストだけを閉じます。
+
+## Select
+
+Support: beta
+
+Native Angular: MnSelect. Native standalone component/directive; see platform tests for validated scope.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/angular",
+  "exports": [
+    "MnSelect"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "value",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "defaultValue",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "open",
+    "typeText": "boolean | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "defaultOpen",
+    "typeText": "boolean",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "placeholder",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "size",
+    "typeText": "SelectSize",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "invalid",
+    "typeText": "boolean",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "disabled",
+    "typeText": "boolean | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "required",
+    "typeText": "boolean | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "name",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "id",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "aria-label",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "aria-labelledby",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "aria-describedby",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "className",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  },
+  {
+    "name": "contentClassName",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select.ts"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "valueChange",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "openChange",
+    "typeText": "boolean | undefined",
+    "required": false
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "default"
+  }
+]
+```
+
+### bindings
+
+```json
+[
+  {
+    "prop": "value",
+    "event": "valueChange",
+    "syntax": "[(value)]"
+  },
+  {
+    "prop": "open",
+    "event": "openChange",
+    "syntax": "[(open)]"
+  }
+]
+```
+
+## SelectGroup
+
+Support: beta
+
+Native Angular: MnSelectGroup. Native standalone component/directive; see platform tests for validated scope.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/angular",
+  "exports": [
+    "MnSelectGroup"
+  ],
+  "kind": "named"
+}
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "default"
+  }
+]
+```
+
+## SelectItem
+
+Support: beta
+
+Native Angular: MnSelectItem. Native standalone component/directive; see platform tests for validated scope.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/angular",
+  "exports": [
+    "MnSelectItem"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "value",
+    "typeText": "string",
+    "required": true,
+    "source": "packages/angular/src/components/select/select-item.ts"
+  },
+  {
+    "name": "disabled",
+    "typeText": "boolean",
+    "required": false,
+    "source": "packages/angular/src/components/select/select-item.ts"
+  },
+  {
+    "name": "textValue",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/select/select-item.ts"
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "default"
+  }
+]
+```
+
+## SelectLabel
+
+Support: beta
+
+Native Angular: MnSelectLabel. Native standalone component/directive; see platform tests for validated scope.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/angular",
+  "exports": [
+    "MnSelectLabel"
+  ],
+  "kind": "named"
+}
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "default"
+  }
+]
+```
+
+## SelectSeparator
+
+Support: beta
+
+Native Angular: MnSelectSeparator. Native standalone component/directive; see platform tests for validated scope.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/angular",
+  "exports": [
+    "MnSelectSeparator"
+  ],
+  "kind": "named"
+}
+```
+
+## CSS variables
+
+```json
+{
+  "css:Select": {
+    "kind": "cssVars",
+    "source": "react/src/components/Select",
+    "vars": [
+      {
+        "name": "--select-height",
+        "description": "Height of the trigger (every size; defaults to the density's control height of the size)"
+      },
+      {
+        "name": "--select-padding-x",
+        "description": "Horizontal padding of the trigger (every size)"
+      },
+      {
+        "name": "--select-radius",
+        "description": "Corner radius of the trigger and of the listbox (defaults to --radius-lg)"
+      },
+      {
+        "name": "--select-font-size",
+        "description": "Font size of the trigger (every size)"
+      },
+      {
+        "name": "--select-border-color",
+        "description": "Border color of the trigger at rest"
+      },
+      {
+        "name": "--select-dropdown-max-height",
+        "description": "Maximum height of the listbox before it scrolls"
+      },
+      {
+        "name": "--select-option-padding-y",
+        "description": "Vertical padding of an option (follows the density's row padding)"
+      },
+      {
+        "name": "--select-option-padding-x",
+        "description": "Horizontal padding of an option and of a group label (follows the density's row padding)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Choose a role
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: @angular/core, minerva-design
+
+Documentation context imports: none
+
+### example.ts
+
+```tsx
+import { Component } from '@angular/core';
+import { MnSelect, MnSelectItem } from 'minerva-design/angular';
+
+@Component({
+  selector: 'app-example',
+  imports: [MnSelect, MnSelectItem],
+  template: `
+<mn-select aria-label="Role" [(value)]="value"><mn-select-item value="designer">Designer</mn-select-item><mn-select-item value="engineer">Engineer</mn-select-item><mn-select-item value="admin" disabled>Administrator</mn-select-item></mn-select><output>Role: {{value}}</output>
+  `,
+})
+export class Example {
+  value = "designer";
+}
+
+```
+
+## Example: Grouped options
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: @angular/core, minerva-design
+
+Documentation context imports: none
+
+### example.ts
+
+```tsx
+import { Component } from '@angular/core';
+import { MnSelect, MnSelectItem, MnSelectGroup, MnSelectLabel, MnSelectSeparator } from 'minerva-design/angular';
+
+@Component({
+  selector: 'app-example',
+  imports: [MnSelect, MnSelectItem, MnSelectGroup, MnSelectLabel, MnSelectSeparator],
+  template: `
+<mn-select aria-label="Location"><mn-select-group><mn-select-label>Europe</mn-select-label><mn-select-item value="london">London</mn-select-item><mn-select-item value="paris">Paris</mn-select-item></mn-select-group><mn-select-separator/><mn-select-item value="tokyo">Tokyo</mn-select-item></mn-select>
+  `,
+})
+export class Example {
+
+}
+
+```

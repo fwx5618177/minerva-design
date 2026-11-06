@@ -1,0 +1,686 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "tag",
+  "title": "Tag タグ",
+  "description": "コンテンツのマーキングや分類に使う小さなラベル。閉じたりクリックしたりできます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {
+    "accessibility": {
+      "title": "アクセシビリティ",
+      "clickable": "clickable を指定するとタグに role=\"button\" と tabIndex=0 が付き、Enter または Space でマウスクリックと同様に onClick が呼ばれます。操作や切り替えに使い、ページ遷移にはリンクを使ってください。",
+      "closable": "閉じるボタンはネイティブの <button> で、独立したタブ位置を持ちます。アクセシブルな名前は既定で「Close」です。どのタグを削除するか分かるよう closeLabel（例：「Remove React」）を設定してください。",
+      "disabled": "無効なクリック可能タグは role=\"button\" と aria-disabled=\"true\" を保持し、Tab ではスキップされます。選択状態が重要な場合は、色だけでなくテキストや aria 属性でも伝えてください。"
+    }
+  },
+  "components": [
+    {
+      "name": "Tag",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Tag"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "NativeColor | undefined",
+            "typeRef": "type:c1c4fb1afcf9f8ec5869",
+            "default": "neutral",
+            "required": false,
+            "description": "Semantic color of the tag"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "enum",
+            "values": [
+              "outline",
+              "solid",
+              "subtle"
+            ],
+            "typeText": "TagVariant | undefined",
+            "typeRef": "type:91c0584f07cc01312f89",
+            "default": "subtle",
+            "required": false,
+            "description": "Visual style: `subtle` (tinted background), `outline` (tinted background with a border) or `solid` (filled)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "TagSize | undefined",
+            "typeRef": "type:1b50c44a085ea5bc5559",
+            "default": "medium",
+            "required": false,
+            "description": "Tag size"
+          },
+          {
+            "name": "shape",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "rounded",
+              "square"
+            ],
+            "typeText": "TagShape | undefined",
+            "typeRef": "type:af174b62ef533e028049",
+            "default": "rounded",
+            "required": false,
+            "description": "Tag shape"
+          },
+          {
+            "name": "closable",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a close button"
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "union",
+            "typeText": "string | ((label: string) => string) | undefined",
+            "typeRef": "type:6adc4ca38cf3ef1601c9",
+            "parameters": [
+              {
+                "name": "label",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Accessible label of the close button, or a function of the tag's text"
+          },
+          {
+            "name": "closeIcon",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Custom close icon"
+          },
+          {
+            "name": "clickable",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Makes the tag pressable (`accessibilityRole=\"button\"`); implied by `onPress`, `pressed` and `defaultPressed`"
+          },
+          {
+            "name": "pressed",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Pressed (selected) state of a toggle tag, e.g. a selectable filter (controlled; pair with onPressedChange)"
+          },
+          {
+            "name": "defaultPressed",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Initial pressed state of an uncontrolled toggle tag"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the tag and its close button"
+          },
+          {
+            "name": "loading",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a spinner instead of the icon, marks the tag busy and blocks its action; the close button is hidden"
+          },
+          {
+            "name": "icon",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Icon displayed before the content"
+          },
+          {
+            "name": "avatar",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Avatar (e.g. a small Avatar) displayed before the content"
+          },
+          {
+            "name": "elevation",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a shadow"
+          },
+          {
+            "name": "textStyle",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the label text"
+          }
+        ],
+        "events": [
+          {
+            "name": "onClose",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "function",
+            "typeText": "((event: GestureResponderEvent) => void) | undefined",
+            "typeRef": "type:ab764edb31ce54e27294",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GestureResponderEvent",
+                "typeRef": "type:2a25eb9466bc75075bdf"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the close button is pressed"
+          },
+          {
+            "name": "onPress",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "function",
+            "typeText": "((event: GestureResponderEvent) => void) | undefined",
+            "typeRef": "type:b87e0778f6c67dfacb7b",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GestureResponderEvent",
+                "typeRef": "type:2a25eb9466bc75075bdf"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the tag is pressed"
+          },
+          {
+            "name": "onPressedChange",
+            "source": "packages/native/src/components/Tag/Tag.tsx",
+            "kind": "function",
+            "typeText": "((pressed: boolean) => void) | undefined",
+            "typeRef": "type:9d9bb7fa4d4bc0d36453",
+            "parameters": [
+              {
+                "name": "pressed",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the requested pressed state of a toggle tag"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "pressed",
+            "event": "onPressedChange",
+            "syntax": "pressed={pressed} onPressedChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:TagProps": {
+      "source": "native/src/components/Tag/Tag.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label: a string (rendered as Text) or any element"
+        },
+        {
+          "name": "color",
+          "type": "NativeColor",
+          "required": false,
+          "default": "\"neutral\"",
+          "description": "Semantic color of the tag"
+        },
+        {
+          "name": "variant",
+          "type": "TagVariant",
+          "required": false,
+          "default": "\"subtle\"",
+          "description": "Visual style: `subtle` (tinted background), `outline` (tinted background with a border) or `solid` (filled)"
+        },
+        {
+          "name": "size",
+          "type": "TagSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Tag size"
+        },
+        {
+          "name": "shape",
+          "type": "TagShape",
+          "required": false,
+          "default": "\"rounded\"",
+          "description": "Tag shape"
+        },
+        {
+          "name": "closable",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a close button"
+        },
+        {
+          "name": "onClose",
+          "type": "(event: GestureResponderEvent) => void",
+          "required": false,
+          "description": "Called when the close button is pressed"
+        },
+        {
+          "name": "closeLabel",
+          "type": "string | ((label: string) => string)",
+          "required": false,
+          "description": "Accessible label of the close button, or a function of the tag's text"
+        },
+        {
+          "name": "closeIcon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Custom close icon"
+        },
+        {
+          "name": "clickable",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Makes the tag pressable (`accessibilityRole=\"button\"`); implied by `onPress`, `pressed` and `defaultPressed`"
+        },
+        {
+          "name": "onPress",
+          "type": "(event: GestureResponderEvent) => void",
+          "required": false,
+          "description": "Called when the tag is pressed"
+        },
+        {
+          "name": "pressed",
+          "type": "boolean",
+          "required": false,
+          "description": "Pressed (selected) state of a toggle tag, e.g. a selectable filter (controlled; pair with onPressedChange)"
+        },
+        {
+          "name": "defaultPressed",
+          "type": "boolean",
+          "required": false,
+          "description": "Initial pressed state of an uncontrolled toggle tag"
+        },
+        {
+          "name": "onPressedChange",
+          "type": "(pressed: boolean) => void",
+          "required": false,
+          "description": "Called with the requested pressed state of a toggle tag"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the tag and its close button"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a spinner instead of the icon, marks the tag busy and blocks its action; the close button is hidden"
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Icon displayed before the content"
+        },
+        {
+          "name": "avatar",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Avatar (e.g. a small Avatar) displayed before the content"
+        },
+        {
+          "name": "elevation",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a shadow"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the tag"
+        },
+        {
+          "name": "textStyle",
+          "type": "StyleProp<TextStyle>",
+          "required": false,
+          "description": "Style of the label text"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Tag": {
+      "kind": "cssVars",
+      "source": "react/src/components/Tag",
+      "vars": [
+        {
+          "name": "--tag-height",
+          "description": "Minimum height (every size; default: the content height)"
+        },
+        {
+          "name": "--tag-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--tag-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--tag-radius",
+          "description": "Corner radius of the rounded shape (defaults to --radius-sm)"
+        },
+        {
+          "name": "--tag-gap",
+          "description": "Space between the icon, the label and the close button"
+        },
+        {
+          "name": "--tag-ring-color",
+          "description": "Color of the hairline ring of the tinted (default) variant (defaults to the text color at 16%)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "closable",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/native/closable.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tag/native/closable.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Tag, Button, useTheme } from \"minerva-design/native\";\nconst initialTags = [\"Tag 1\", \"Tag 2\", \"Tag 3\"];\nexport default function Closable() {\n  const [tags, setTags] = useState(initialTags);\n  const [opened, setOpened] = useState<string>();\n  const { colors } = useTheme();\n  return (\n    <View\n      style={{\n        flexDirection: \"row\",\n        flexWrap: \"wrap\",\n        alignItems: \"center\",\n        gap: 8,\n      }}\n    >\n      {tags.map((tag, index) => (\n        <Tag\n          key={tag}\n          closable\n          closeLabel={(label) => `Remove ${label}`}\n          closeIcon={index === 2 ? <Text>⊗</Text> : undefined}\n          onClose={() => setTags((prev) => prev.filter((t) => t !== tag))}\n          clickable={index === 0}\n          onPress={() => setOpened(tag)}\n        >\n          {tag}\n        </Tag>\n      ))}\n      {opened && (\n        <Text style={{ color: colors[\"text-color\"] }}>Opened: {opened}</Text>\n      )}\n      {tags.length === 0 && (\n        <Button onPress={() => setTags(initialTags)}>Reset</Button>\n      )}\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "閉じられるタグ",
+      "description": "Tag 1、Tag 2、Tag 3 を削除します。すべて削除すると Reset で復元できます。"
+    },
+    {
+      "id": "colors-variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/native/colors-variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tag/native/colors-variants.tsx": "import { Text, View } from \"react-native\";\nimport { Tag } from \"minerva-design/native\";\n\nconst COLORS = [\n  \"neutral\",\n  \"primary\",\n  \"success\",\n  \"warning\",\n  \"danger\",\n  \"info\",\n] as const;\nconst VARIANTS = [\"subtle\", \"outline\", \"solid\"] as const;\n\nexport default function ColorsVariants() {\n  return (\n    <View style={{ gap: 12 }}>\n      {VARIANTS.map((variant) => (\n        <View\n          key={variant}\n          style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}\n        >\n          {COLORS.map((color) => (\n            <Tag key={color} color={color} variant={variant}>\n              {color}\n            </Tag>\n          ))}\n        </View>\n      ))}\n      <View style={{ flexDirection: \"row\", gap: 8, alignItems: \"center\" }}>\n        <Tag size=\"small\" shape=\"square\" color=\"danger\" variant=\"solid\">\n          -30%\n        </Tag>\n        <Tag shape=\"circle\" color=\"success\" icon={<Text>🚚</Text>}>\n          Free delivery\n        </Tag>\n        <Tag size=\"large\" color=\"primary\" elevation>\n          Bestseller\n        </Tag>\n      </View>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "colors-variants",
+      "description": ""
+    },
+    {
+      "id": "selectable",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/native/selectable.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tag/native/selectable.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Tag, useTheme } from \"minerva-design/native\";\n\nconst FILTERS = [\"Vegan\", \"Spicy\", \"Under $10\", \"Free delivery\", \"Top rated\"];\n\nexport default function Selectable() {\n  const { colors } = useTheme();\n  const [selected, setSelected] = useState<string[]>([\"Spicy\"]);\n  const toggle = (name: string, on: boolean) =>\n    setSelected((s) => (on ? [...s, name] : s.filter((x) => x !== name)));\n  return (\n    <View style={{ gap: 12 }}>\n      <View style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}>\n        {FILTERS.map((name) => (\n          <Tag\n            key={name}\n            shape=\"circle\"\n            variant=\"outline\"\n            pressed={selected.includes(name)}\n            onPressedChange={(on) => toggle(name, on)}\n          >\n            {name}\n          </Tag>\n        ))}\n        <Tag shape=\"circle\" variant=\"outline\" clickable disabled>\n          Open now\n        </Tag>\n      </View>\n      <Text style={{ color: colors[\"text-secondary-color\"] }}>\n        Filters: {selected.length ? selected.join(\", \") : \"none\"}\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "selectable",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tag タグ",
+      "description": "コンテンツのマーキングや分類に使う小さなラベル。閉じたりクリックしたりできます。",
+      "demos": {
+        "colors": {
+          "title": "カラー",
+          "description": "color で意味を表します：neutral（既定）、primary、success、warning、danger、info。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを指定します：subtle（既定・淡い背景）、outline（枠線を追加）、solid（色で塗りつぶし）。elevation はどのバリアントにも影を付けます。"
+        },
+        "sizes-shapes": {
+          "title": "サイズと形状",
+          "description": "3 つのサイズと 3 つの形状：square、rounded（既定）、circle。"
+        },
+        "with-icon": {
+          "title": "アイコン付き",
+          "description": "icon は内容の前に表示されます。"
+        },
+        "closable": {
+          "title": "閉じられるタグ",
+          "description": "Tag 1、Tag 2、Tag 3 を削除します。すべて削除すると Reset で復元できます。"
+        },
+        "clickable": {
+          "title": "クリック可能（選択式）",
+          "description": "clickable は内容をネイティブのボタンとして描画します。Tab でフォーカスし、クリック・Enter・Space で実行します。ここではタグで選択を切り替え、pressed で支援技術に状態を伝えます。"
+        },
+        "avatar-loading": {
+          "title": "アバターと読み込み中",
+          "description": "avatar は内容の前にアバターを表示します。loading はアイコン / アバターをスピナーに置き換え、タグをビジー状態にして操作を無効にし、閉じるボタンを隠します。"
+        },
+        "custom-colors": {
+          "title": "カスタムカラー",
+          "description": "CSS カスタムプロパティ --tag-<color>-bg と --tag-<color>-text で各カラーの配色を上書きします（インライン、クラス、テーマで指定可能）。ripple={false} でクリック時のリップルを無効にします。"
+        },
+        "disabled": {
+          "title": "無効状態",
+          "description": "無効なタグはクリックを無視し、タブ順から外れ、閉じるボタンも無効になります。"
+        }
+      },
+      "accessibility": {
+        "title": "アクセシビリティ",
+        "clickable": "clickable を指定するとタグに role=\"button\" と tabIndex=0 が付き、Enter または Space でマウスクリックと同様に onClick が呼ばれます。操作や切り替えに使い、ページ遷移にはリンクを使ってください。",
+        "closable": "閉じるボタンはネイティブの <button> で、独立したタブ位置を持ちます。アクセシブルな名前は既定で「Close」です。どのタグを削除するか分かるよう closeLabel（例：「Remove React」）を設定してください。",
+        "disabled": "無効なクリック可能タグは role=\"button\" と aria-disabled=\"true\" を保持し、Tab ではスキップされます。選択状態が重要な場合は、色だけでなくテキストや aria 属性でも伝えてください。"
+      },
+      "api": {
+        "TagProps": {
+          "children": "タグの内容",
+          "color": "タグのセマンティックカラー",
+          "variant": "見た目のスタイル：subtle（淡い背景）、outline（淡い背景＋枠線）、solid（色で塗りつぶし、反転した文字色）",
+          "size": "タグのサイズ",
+          "shape": "タグの形状",
+          "closable": "閉じるボタンを表示します",
+          "onClose": "閉じるボタンのクリック時に呼び出されます",
+          "clickable": "タグの内容をネイティブのボタンとして描画します（フォーカス可能、Enter / Space で実行）。closable と併用すると、閉じるボタンは兄弟要素の別ボタンになります",
+          "onClick": "タグが実行されたときに呼び出されます（clickable が必要）",
+          "pressed": "トグル型タグの押下（選択）状態。選択式フィルターなどに使います（clickable が必要）。aria-pressed と選択スタイルを設定します",
+          "icon": "内容の前に表示するアイコン",
+          "avatar": "内容の前に表示するアバター（小さな Avatar や画像など）",
+          "loading": "アイコン / アバターの代わりにスピナーを表示し、ビジー状態にして操作を無効にします。閉じるボタンは非表示になります",
+          "elevation": "影を表示します",
+          "className": "追加のクラス名",
+          "style": "インラインスタイル",
+          "disabled": "タグと閉じるボタンを無効にします",
+          "closeIcon": "カスタムの閉じるアイコン",
+          "closeLabel": "閉じるボタンのアクセシブルなラベル：文字列、またはタグのテキストを受け取る関数。既定は「{label} を削除」（ローカライズ済み）、テキストがない場合は「閉じる」",
+          "ripple": "クリック時にリップル効果を表示します",
+          "ref": "ルート要素への ref"
+        }
+      },
+      "cssVars": {
+        "--tag-height": "最小高さ（全サイズ。既定値は内容の高さ）",
+        "--tag-padding-x": "左右のパディング（全サイズ）",
+        "--tag-font-size": "フォントサイズ（全サイズ）",
+        "--tag-radius": "rounded 形状の角丸（既定値は --radius-sm）",
+        "--tag-gap": "アイコン・ラベル・閉じるボタンの間隔",
+        "--tag-ring-color": "既定（淡色塗り）バリアントの細いリングの色（既定は文字色の 16%）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "小さなラベル。color で意味的な色調を設定します。"
+          },
+          "variants-sizes": {
+            "title": "バリアント・サイズ・内容",
+            "description": "3 種類のバリアント、サイズ、形状、elevation、icon と avatar スロット、loading と disabled。"
+          },
+          "closable": {
+            "title": "閉じられるタグ",
+            "description": "closable は minerva-close を発火する閉じるボタンを追加します。リスナーでタグを削除し、フォーカスを隣の要素に移してください。close-label と close-icon スロットでカスタマイズできます。"
+          },
+          "toggle": {
+            "title": "トグルフィルター",
+            "description": "clickable toggle のタグはトグルボタン（aria-pressed）です。クリックで pressed が反転し minerva-change が発火します。通常のクリック可能なタグは click を発火します。"
+          }
+        },
+        "minerva-tag": {
+          "props": {
+            "toggle": "クリック可能なタグをトグルにします。クリックで pressed が反転し minerva-change が発火します。",
+            "noRipple": "クリック可能なタグのリップル効果を無効にします。"
+          },
+          "events": {
+            "minerva-close": "閉じるボタンが実行されました。",
+            "minerva-change": "トグルタグが切り替えられました（detail: { pressed }）。"
+          },
+          "slots": {
+            "default": "タグのラベル。",
+            "icon": "ラベルの前に表示するアイコン。",
+            "avatar": "ラベルの前のアバター（小さな <minerva-avatar> または画像）。",
+            "close-icon": "カスタムの閉じるアイコン。"
+          },
+          "methods": {
+            "focus": "タグのボタン（クリック可能なタグならアクションボタン、それ以外は閉じるボタン）にフォーカスします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "closable": {
+            "title": "閉じられるタグ",
+            "description": "Tag 1、Tag 2、Tag 3 を削除します。すべて削除すると Reset で復元できます。"
+          },
+          "colors-variants": {
+            "title": "色とバリエーション",
+            "description": "Tag の「色とバリエーション」の例。プレビューはサイトのテーマとパレットに追従します。"
+          },
+          "selectable": {
+            "title": "選択できるタグ",
+            "description": "Tag の「選択できるタグ」の例。プレビューはサイトのテーマとパレットに追従します。"
+          }
+        }
+      }
+    }
+  }
+}

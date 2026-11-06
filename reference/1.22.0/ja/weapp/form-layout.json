@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "ja",
+  "renderer": "weapp",
+  "page": "form-layout",
+  "title": "FormLayout フォームレイアウト",
+  "description": "フィールドをレスポンシブグリッドに配置するネイティブ form。送信・リセット・検証はネイティブの挙動のままです。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "FormLayout",
+      "support": {
+        "status": "beta",
+        "notes": "Native submit/reset once, responsive measured column maps, spacing token/CSS gap and row/column overrides. No browser form element ref; non-window host size changes call measure(width). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native submit/reset once, responsive measured column maps, spacing token/CSS gap and row/column overrides. No browser form element ref; non-window host size changes call measure(width). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/form-layout/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "form-layout",
+        "props": [
+          {
+            "name": "columns",
+            "typeText": "unknown",
+            "required": false,
+            "default": 1
+          },
+          {
+            "name": "gap",
+            "typeText": "unknown",
+            "required": false,
+            "default": 4
+          },
+          {
+            "name": "rowGap",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "columnGap",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [
+          {
+            "name": "submit",
+            "typeText": "{ value: Record<string, unknown>; formId?: string }",
+            "description": "Native form values, forwarded once."
+          },
+          {
+            "name": "reset",
+            "typeText": "{}",
+            "description": "Native form reset, forwarded once."
+          }
+        ],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-form-layout\": \"minerva-design/dist/weapp/form-layout/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:FormLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/FormLayout",
+      "vars": [
+        {
+          "name": "--form-layout-max-width",
+          "description": "Maximum width of the form (none by default)"
+        },
+        {
+          "name": "--form-layout-margin-inline",
+          "description": "Inline margin of the form (set auto with a max width to center it)"
+        },
+        {
+          "name": "--form-layout-padding",
+          "description": "Inner padding of the form"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "FormLayout フォームレイアウト",
+      "description": "フィールドをレスポンシブグリッドに配置するネイティブ form。送信・リセット・検証はネイティブの挙動のままです。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "columns はフォーム自身の幅に従い、GridItem fullWidth asChild はラッパーなしで FormField を行全体に広げます。"
+        },
+        "gaps": {
+          "title": "間隔",
+          "description": "gap・rowGap・columnGap はスペーシングトークンまたは CSS 値を受け付けます。"
+        }
+      },
+      "api": {
+        "FormLayoutProps": {
+          "columns": "内部 ResponsiveGrid の列数：数値または `{ base, sm, md, lg }`（コンテナ幅 480 / 768 / 1200px）。1〜12 の整数",
+          "gap": "フィールド間の間隔：数値と数値文字列はスペーシングトークン、その他の文字列は CSS 値",
+          "rowGap": "行間隔。既定は `gap`",
+          "columnGap": "列間隔。既定は `gap`",
+          "ref": "<form> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--form-layout-max-width": "フォームの最大幅（既定は制限なし）",
+        "--form-layout-margin-inline": "フォームのインライン方向のマージン（最大幅と組み合わせて auto にすると中央寄せ）",
+        "--form-layout-padding": "フォームの内側の余白"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "レイアウトはネイティブの <form> の中に置きます。送信・リセット・検証はネイティブのままです。columns=\"1 2\" は狭いコンテナーで 1 列、480px 以上で 2 列。minerva-grid-item full-width は 1 行全体を占めます。"
+          },
+          "gaps": {
+            "title": "列と間隔",
+            "description": "gap は両方向の間隔を設定し、row-gap と column-gap で個別に上書きできます（スペーシングトークンの数値または CSS の長さ）。ネイティブのフィールドでも使えます。"
+          }
+        },
+        "minerva-form-layout": {
+          "slots": {
+            "default": "フィールド。"
+          },
+          "cssVars": {
+            "--responsive-grid-align-items": "行内でのフィールドの垂直方向の配置（既定値: stretch）。",
+            "--responsive-grid-justify-items": "列内でのフィールドの水平方向の配置（既定値: stretch）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,846 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.0",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "radio",
+  "title": "Radio ラジオボタン",
+  "description": "複数の選択肢から 1 つだけを選択します。RadioGroup で複数のラジオボタンの選択状態をまとめて管理します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.0",
+    "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
+    "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
+    "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Radio",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/radio",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-radio",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "checked",
+            "typeText": "boolean",
+            "attribute": "checked",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "RadioColor",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "error",
+            "typeText": "boolean",
+            "attribute": "error",
+            "required": false
+          },
+          {
+            "name": "helperText",
+            "typeText": "string",
+            "attribute": "helper-text",
+            "required": false
+          },
+          {
+            "name": "errorMessage",
+            "typeText": "string",
+            "attribute": "error-message",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ checked: true; value: string; }>",
+            "detailType": {
+              "typeText": "{ checked: true; value: string; }",
+              "typeRef": "type:f97e56eeb0e601839cf4"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "A standalone radio was checked by the user; `detail: { checked: true, value }` (inside a group, the group fires it)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Label content (alternative to the `label` attribute)"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "RadioGroup",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/radio-group",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-radio-group",
+        "props": [
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "helperText",
+            "typeText": "string",
+            "attribute": "helper-text",
+            "required": false
+          },
+          {
+            "name": "error",
+            "typeText": "boolean",
+            "attribute": "error",
+            "required": false
+          },
+          {
+            "name": "direction",
+            "typeText": "\"horizontal\" | \"vertical\"",
+            "attribute": "direction",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "RadioColor | undefined",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "Event",
+            "description": "The user selected another radio (like native radios)"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:4cdb8fc9d05a20b7419c"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The user selected another radio; `detail: { value }`"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "The `<minerva-radio>` options"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-radio": {
+      "kind": "element",
+      "source": "web-components/src/components/radio/radio.ts",
+      "className": "MinervaRadio",
+      "summary": "Radio option of a radio group.",
+      "description": "One option of a `<minerva-radio-group>` (`<Radio>` of React). The element itself is the radio (`role=\"radio\"`, `aria-checked`): the group drives its checked state, size, color, disabled state and roving focus (one Tab stop, arrow keys move and select). Space checks the focused radio. A radio outside a group is focusable and checks itself on click, but only the group takes part in forms.",
+      "properties": [
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Value of the radio; identifies it within its group"
+        },
+        {
+          "name": "checked",
+          "attribute": "checked",
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the radio is checked (set by the group)"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the radio (the group skips it)"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Label text (alternative to the default slot)"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Radio size (the group's `size` wins when set)"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "RadioColor",
+          "default": "\"primary\"",
+          "description": "Semantic color of the checked radio (the group's `color` wins when set)"
+        },
+        {
+          "name": "error",
+          "attribute": "error",
+          "type": "boolean",
+          "default": "false",
+          "description": "Error state (`error-message` replaces `helper-text`)"
+        },
+        {
+          "name": "helperText",
+          "attribute": "helper-text",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Helper text shown below the radio (describes it)"
+        },
+        {
+          "name": "errorMessage",
+          "attribute": "error-message",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Message shown below the radio while `error` is set"
+        },
+        {
+          "name": "group",
+          "type": "MinervaRadioGroup | null",
+          "readonly": true,
+          "description": "The group the radio belongs to"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the radio cannot be checked (itself or by its group)"
+        }
+      ],
+      "methods": [],
+      "events": [
+        {
+          "name": "minerva-change",
+          "description": "A standalone radio was checked by the user; `detail: { checked: true, value }` (inside a group, the group fires it)"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "Label content (alternative to the `label` attribute)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The wrapper (the clickable row and the helper text)"
+        },
+        {
+          "name": "control",
+          "description": "The visual radio mark"
+        },
+        {
+          "name": "label",
+          "description": "The label text"
+        },
+        {
+          "name": "helper-text",
+          "description": "The helper / error text"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--radio-checked-color",
+          "description": "Color of the checked mark (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--radio-dot-color",
+          "description": "Color of the inner dot of the checked mark"
+        },
+        {
+          "name": "--radio-border-color",
+          "description": "Border of the unchecked mark"
+        },
+        {
+          "name": "--radio-background",
+          "description": "Background of the unchecked mark"
+        },
+        {
+          "name": "--radio-size",
+          "description": "Width and height of the mark (every size)"
+        },
+        {
+          "name": "--radio-gap",
+          "description": "Space between the mark and the label"
+        },
+        {
+          "name": "--radio-label-font-size",
+          "description": "Font size of the label (every size)"
+        },
+        {
+          "name": "--radio-group-gap",
+          "description": "Space between the radios of a RadioGroup"
+        }
+      ]
+    },
+    "wc:minerva-radio-group": {
+      "kind": "element",
+      "source": "web-components/src/components/radio/radio.ts",
+      "className": "MinervaRadioGroup",
+      "summary": "Group of radios with roving focus, submitted as one form value.",
+      "description": "A set of `<minerva-radio>` children of which one can be selected (`<RadioGroup>` of React), with an optional visible label and helper text. Keyboard: one Tab stop (the checked radio, else the first enabled one); arrow keys move and select, skipping disabled radios and wrapping (core's roving focus; RTL-aware); Space checks the focused radio. The GROUP is the form-associated element: it submits the selected radio's `value` under `name`, `required` makes it invalid while nothing is selected (`valueMissing`, localized \"select one of these options\"), and it supports `form.reset()` (restores the `value` attribute), `<fieldset disabled>` and state restoration. Name it with `label`, `<label for>`, `aria-label` or `aria-labelledby`.",
+      "properties": [
+        {
+          "name": "defaultValue",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Initially selected value, restored by `form.reset()` (the `value` attribute)"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Visible label of the group (also its accessible name)"
+        },
+        {
+          "name": "helperText",
+          "attribute": "helper-text",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Helper text shown below the group (describes it)"
+        },
+        {
+          "name": "error",
+          "attribute": "error",
+          "type": "boolean",
+          "default": "false",
+          "description": "Error state (aria-invalid)"
+        },
+        {
+          "name": "direction",
+          "attribute": "direction",
+          "type": "\"horizontal\" | \"vertical\"",
+          "default": "\"vertical\"",
+          "description": "Layout direction of the radios"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\" | undefined",
+          "description": "Size applied to every radio (each radio's own size when unset)"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "RadioColor | undefined",
+          "description": "Color applied to every radio (each radio's own color when unset)"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Value of the selected radio (property; the `value` attribute sets `defaultValue`)"
+        },
+        {
+          "name": "radios",
+          "type": "MinervaRadio[]",
+          "readonly": true,
+          "description": "The radios of the group"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void",
+          "description": "Focuses the checked radio (else the first enabled one)"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "description": "The user selected another radio (like native radios)"
+        },
+        {
+          "name": "minerva-change",
+          "description": "The user selected another radio; `detail: { value }`"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The `<minerva-radio>` options"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The wrapper"
+        },
+        {
+          "name": "label",
+          "description": "The visible group label"
+        },
+        {
+          "name": "list",
+          "description": "The element with role=\"radiogroup\" (the radios)"
+        },
+        {
+          "name": "helper-text",
+          "description": "The helper text"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--radio-checked-color",
+          "description": "Color of the checked mark (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--radio-dot-color",
+          "description": "Color of the inner dot of the checked mark"
+        },
+        {
+          "name": "--radio-border-color",
+          "description": "Border of the unchecked mark"
+        },
+        {
+          "name": "--radio-background",
+          "description": "Background of the unchecked mark"
+        },
+        {
+          "name": "--radio-size",
+          "description": "Width and height of the mark (every size)"
+        },
+        {
+          "name": "--radio-gap",
+          "description": "Space between the mark and the label"
+        },
+        {
+          "name": "--radio-label-font-size",
+          "description": "Font size of the label (every size)"
+        },
+        {
+          "name": "--radio-group-gap",
+          "description": "Space between the radios of a RadioGroup"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Radio": {
+      "kind": "cssVars",
+      "source": "react/src/components/Radio",
+      "vars": [
+        {
+          "name": "--radio-checked-color",
+          "description": "Color of the checked mark (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--radio-dot-color",
+          "description": "Color of the inner dot of the checked mark"
+        },
+        {
+          "name": "--radio-border-color",
+          "description": "Border of the unchecked mark"
+        },
+        {
+          "name": "--radio-background",
+          "description": "Background of the unchecked mark"
+        },
+        {
+          "name": "--radio-size",
+          "description": "Width and height of the mark (every size)"
+        },
+        {
+          "name": "--radio-gap",
+          "description": "Space between the mark and the label"
+        },
+        {
+          "name": "--radio-label-font-size",
+          "description": "Font size of the label (every size)"
+        },
+        {
+          "name": "--radio-group-gap",
+          "description": "Space between the radios of a RadioGroup"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radio/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/radio/wc/basic.html": "<div style=\"display: grid; gap: 12px\">\n  <minerva-radio-group\n    id=\"rd-plan\"\n    label=\"Plan\"\n    value=\"pro\"\n    helper-text=\"Arrow keys move the selection; Tab leaves the group.\"\n  >\n    <minerva-radio value=\"free\" label=\"Free\"></minerva-radio>\n    <minerva-radio value=\"pro\" label=\"Pro\"></minerva-radio>\n    <minerva-radio value=\"team\" label=\"Team\"></minerva-radio>\n    <minerva-radio\n      value=\"enterprise\"\n      disabled\n      label=\"Enterprise\"\n    ></minerva-radio>\n  </minerva-radio-group>\n  <output id=\"rd-plan-value\">Selected: pro</output>\n</div>\n",
+        "apps/docs/src/docs/pages/radio/wc/basic.ts": "// The group fires `minerva-change` (detail.value) when the user selects\n// another radio, by click or with the arrow keys.\nexport function setup(root: HTMLElement) {\n  const group = root.querySelector<HTMLElement>(\"#rd-plan\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#rd-plan-value\")!;\n  const onChange = (event: Event) => {\n    const { value } = (event as CustomEvent<{ value: string }>).detail;\n    output.value = `Selected: ${value}`;\n  };\n  group.addEventListener(\"minerva-change\", onChange);\n  return () => group.removeEventListener(\"minerva-change\", onChange);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "ラベル付きのグループで、初期値と無効な選択肢を含みます。グループは Tab で 1 回だけ止まり、矢印キーで移動・選択します。minerva-change が新しい値を通知します。"
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radio/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/radio/wc/form.html": "<form id=\"rd-form\" style=\"display: grid; gap: 12px; justify-items: start\">\n  <minerva-radio-group\n    name=\"size\"\n    label=\"T-shirt size\"\n    required\n    direction=\"horizontal\"\n  >\n    <minerva-radio value=\"s\" label=\"S\"></minerva-radio>\n    <minerva-radio value=\"m\" label=\"M\"></minerva-radio>\n    <minerva-radio value=\"l\" label=\"L\"></minerva-radio>\n  </minerva-radio-group>\n  <minerva-radio-group\n    name=\"color\"\n    label=\"Color\"\n    value=\"blue\"\n    direction=\"horizontal\"\n  >\n    <minerva-radio value=\"blue\" label=\"Blue\"></minerva-radio>\n    <minerva-radio value=\"green\" label=\"Green\"></minerva-radio>\n  </minerva-radio-group>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button type=\"submit\">Submit</minerva-button>\n    <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n      >Reset</minerva-button\n    >\n  </div>\n  <output id=\"rd-form-result\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/radio/wc/form.ts": "// The group is the form control: it submits the selected radio's value\n// under its name; `required` blocks submission while nothing is selected.\n// Reset restores the `value` attribute.\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#rd-form\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#rd-form-result\")!;\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    const entries = [...new FormData(form)].map(\n      ([key, value]) => `${key}=${value}`,\n    );\n    result.value = `FormData: ${entries.join(\", \") || \"(empty)\"}`;\n  };\n  const onReset = () => (result.value = \"\");\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "フォーム内での利用",
+      "description": "グループがフォームコントロールです。選択した値を name で送信し、required は未選択の間は送信を止め、リセットで value 属性の値に戻ります。"
+    },
+    {
+      "id": "styles-states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radio/wc/styles-states.html",
+      "files": {
+        "apps/docs/src/docs/pages/radio/wc/styles-states.html": "<div style=\"display: grid; gap: 20px\">\n  <minerva-radio-group\n    label=\"Small, horizontal\"\n    direction=\"horizontal\"\n    size=\"small\"\n    value=\"a\"\n  >\n    <minerva-radio value=\"a\" label=\"Option A\"></minerva-radio>\n    <minerva-radio value=\"b\" label=\"Option B\"></minerva-radio>\n    <minerva-radio value=\"c\" label=\"Option C\"></minerva-radio>\n  </minerva-radio-group>\n  <minerva-radio-group\n    label=\"Large, success\"\n    direction=\"horizontal\"\n    size=\"large\"\n    color=\"success\"\n    value=\"b\"\n  >\n    <minerva-radio value=\"a\" label=\"Option A\"></minerva-radio>\n    <minerva-radio value=\"b\" label=\"Option B\"></minerva-radio>\n    <minerva-radio value=\"c\" label=\"Option C\"></minerva-radio>\n  </minerva-radio-group>\n  <minerva-radio-group\n    label=\"Delivery\"\n    value=\"standard\"\n    error\n    helper-text=\"Express delivery is not available for your address.\"\n  >\n    <minerva-radio\n      value=\"standard\"\n      label=\"Standard\"\n      helper-text=\"3 to 5 business days\"\n    ></minerva-radio>\n    <minerva-radio\n      value=\"express\"\n      label=\"Express\"\n      error\n      error-message=\"Not available\"\n    ></minerva-radio>\n  </minerva-radio-group>\n  <minerva-radio-group label=\"Disabled group\" disabled value=\"a\">\n    <minerva-radio value=\"a\" label=\"Option A\"></minerva-radio>\n    <minerva-radio value=\"b\" label=\"Option B\"></minerva-radio>\n  </minerva-radio-group>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "スタイルと状態",
+      "description": "横並び、グループのサイズと色、ラジオごとの補助・エラーメッセージ、無効なグループ。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Radio ラジオボタン",
+      "description": "複数の選択肢から 1 つだけを選択します。RadioGroup で複数のラジオボタンの選択状態をまとめて管理します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "最初は Apple が選択され、Banana または Cherry を選ぶと切り替わります。"
+        },
+        "controlled": {
+          "title": "制御モード",
+          "description": "最初は Pro が選択され、プランの変更は下の結果にも反映されます。"
+        },
+        "horizontal": {
+          "title": "横並び",
+          "description": "既定では縦に並びます。direction=\"horizontal\" で横一列に並べます。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "small、medium（既定）、large の 3 サイズ。グループの size はすべての子に適用されます。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でラジオボタンのセマンティックカラーを指定します：primary（既定）、success、warning、danger。RadioGroup の color はグループ内のすべてのラジオボタンに適用され、各ボタンの色を上書きします。"
+        },
+        "disabled": {
+          "title": "無効状態",
+          "description": "Sold out は無効で Available の選択を変えません。無効なグループは Option A を保持します。"
+        },
+        "validation": {
+          "title": "バリデーションと補助テキスト",
+          "description": "RadioGroup は required・error・helperText に対応します。単独の Radio は errorMessage（errorIcon 付き）または helperText を表示できます。"
+        }
+      },
+      "api": {
+        "RadioProps": {
+          "checked": "選択状態（制御）。RadioGroup 内では無視されます",
+          "defaultChecked": "初期の選択状態（非制御）。RadioGroup 内では無視されます",
+          "disabled": "ラジオボタンを無効にします",
+          "name": "ネイティブの name 属性。RadioGroup 内ではグループの name が使われます",
+          "value": "ラジオボタンの値。RadioGroup 内での識別に使われます",
+          "onChange": "選択状態が変わったときのコールバック（単独使用時のみ。グループ内では RadioGroup の onChange を使用）",
+          "size": "サイズ。RadioGroup の size で上書きされます",
+          "label": "ラジオボタンの横に表示するラベル",
+          "aria-label": "アクセシブルなラベル。表示ラベルがない場合は必須",
+          "className": "追加のクラス名",
+          "color": "選択時のラジオボタンのセマンティックカラー。RadioGroup が color を指定している場合はそちらで上書きされます",
+          "required": "入力を必須にします",
+          "error": "エラー状態を表示します（helperText の代わりに errorMessage を表示）",
+          "errorIcon": "エラーメッセージの前に表示するアイコン",
+          "errorMessage": "error が true のときラジオボタンの下に表示するメッセージ（aria-describedby で関連付け）",
+          "helperText": "ラジオボタンの下に表示するヘルプテキスト（aria-describedby で関連付け）",
+          "ref": "ネイティブの <input type=\"radio\"> 要素への ref",
+          "children": "ラベルの内容（label の代替。label 未指定時に使用）",
+          "aria-labelledby": "ラジオボタンのラベルとなる要素の id（複数可）",
+          "aria-describedby": "ラジオボタンを説明する追加の要素 id（ヘルプ / エラーテキストと結合）",
+          "id": "ラジオボタンの id",
+          "style": "ルートラッパーのインラインスタイル"
+        },
+        "RadioGroupProps": {
+          "value": "選択中のラジオボタンの値（制御）",
+          "defaultValue": "初期選択値（非制御）",
+          "name": "グループ内のすべてのラジオボタンで共有する name（省略時は一意の name が生成されるため、矢印キーでの移動が常に機能します）",
+          "label": "グループの表示ラベル。アクセシブルな名前にもなります",
+          "aria-label": "表示ラベルがない場合のグループのアクセシブルなラベル",
+          "onChange": "新しく選択された値で呼び出されます",
+          "disabled": "グループ内のすべてのラジオボタンを無効にします",
+          "children": "Radio 要素",
+          "className": "追加のクラス名",
+          "direction": "並べる方向",
+          "size": "グループ内のすべてのラジオボタンに適用されるサイズ",
+          "error": "エラー状態を表示します",
+          "helperText": "グループの下に表示するヘルプテキスト（aria-describedby で関連付け）",
+          "required": "グループを必須にします（aria-required）",
+          "color": "グループ内のすべてのラジオボタンに適用されるセマンティックカラー（各ボタンの色を上書き）。未指定の場合は各ボタンが自身の色を使います",
+          "ref": "ルートのラッパー要素への ref",
+          "aria-labelledby": "グループ（label より優先）のラベルとなる要素の id（複数可）",
+          "aria-describedby": "グループを説明する追加の要素 id（ヘルプ / エラーテキストと結合）",
+          "id": "role=\"radiogroup\" の要素の id",
+          "style": "ルートラッパーのインラインスタイル"
+        }
+      },
+      "cssVars": {
+        "--radio-checked-color": "選択されたマークの色（既定は color プロパティのアクセント）",
+        "--radio-dot-color": "選択されたマーク内側のドットの色",
+        "--radio-border-color": "未選択のマークの枠線色",
+        "--radio-background": "未選択のマークの背景色",
+        "--radio-size": "マークの幅と高さ（全サイズ）",
+        "--radio-gap": "マークとラベルの間隔",
+        "--radio-label-font-size": "ラベルのフォントサイズ（全サイズ）",
+        "--radio-group-gap": "RadioGroup 内のラジオ同士の間隔"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ラベル付きのグループで、初期値と無効な選択肢を含みます。グループは Tab で 1 回だけ止まり、矢印キーで移動・選択します。minerva-change が新しい値を通知します。"
+          },
+          "styles-states": {
+            "title": "スタイルと状態",
+            "description": "横並び、グループのサイズと色、ラジオごとの補助・エラーメッセージ、無効なグループ。"
+          },
+          "form": {
+            "title": "フォーム内での利用",
+            "description": "グループがフォームコントロールです。選択した値を name で送信し、required は未選択の間は送信を止め、リセットで value 属性の値に戻ります。"
+          }
+        },
+        "minerva-radio": {
+          "props": {
+            "group": "ラジオが属する <minerva-radio-group>（読み取り専用）。",
+            "isDisabled": "ラジオを選択できないかどうか（自身またはグループによる。読み取り専用）。"
+          },
+          "events": {
+            "minerva-change": "グループ外のラジオをユーザーが選択した。detail: { checked: true, value }。グループ内ではグループが発火します。"
+          },
+          "slots": {
+            "default": "ラベルの内容（label 属性の代わり）。"
+          }
+        },
+        "minerva-radio-group": {
+          "props": {
+            "radios": "グループ内の <minerva-radio> 子要素（読み取り専用）。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "change": "ユーザーが別のラジオを選択した（ネイティブのラジオと同様）。",
+            "minerva-change": "ユーザーが別のラジオを選択した。detail: { value }。"
+          },
+          "slots": {
+            "default": "<minerva-radio> の選択肢。"
+          },
+          "methods": {
+            "focus": "選択中のラジオに、なければ最初の有効なラジオにフォーカスします。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "最初は Apple が選択され、Banana または Cherry を選ぶと切り替わります。"
+          },
+          "controlled": {
+            "title": "制御モード",
+            "description": "最初は Pro が選択され、プランの変更は下の結果にも反映されます。"
+          },
+          "disabled": {
+            "title": "無効状態",
+            "description": "Sold out は無効で Available の選択を変えません。無効なグループは Option A を保持します。"
+          }
+        }
+      }
+    }
+  }
+}
