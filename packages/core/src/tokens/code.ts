@@ -1,6 +1,7 @@
 // Syntax highlighting colors of the code blocks: `--code-token-<type>-color`
 // for every token type of `highlightCode` (../highlight). GitHub-like
-// palettes: the light values are declared with the default theme (every
+// palettes (functions in orange rather than GitHub's purple, which the brand
+// does not use): the light values are declared with the default theme (every
 // palette's light mode), the dark values for `[data-theme=dark]` (every
 // palette's dark mode; `resolveTokens({ mode: "dark" })` for React Native and
 // the mini-programs). Both keep a contrast of at least 4.5:1 on the code
@@ -21,7 +22,7 @@ export const codeTokensLight = {
   "code-token-boolean-color": "#0550ae",
   "code-token-null-color": "#0550ae",
   "code-token-property-color": "#0550ae",
-  "code-token-function-color": "#6639ba",
+  "code-token-function-color": "#953800",
   "code-token-tag-color": "#116329",
   "code-token-attr-name-color": "#0550ae",
   "code-token-attr-value-color": "#0a3069",
@@ -44,7 +45,7 @@ export const codeTokensDark = {
   "code-token-boolean-color": "#79c0ff",
   "code-token-null-color": "#79c0ff",
   "code-token-property-color": "#79c0ff",
-  "code-token-function-color": "#d2a8ff",
+  "code-token-function-color": "#ffa657",
   "code-token-tag-color": "#7ee787",
   "code-token-attr-name-color": "#79c0ff",
   "code-token-attr-value-color": "#a5d6ff",

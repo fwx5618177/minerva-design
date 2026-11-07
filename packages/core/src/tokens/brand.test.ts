@@ -31,8 +31,15 @@ describe("derivePrimaryDark", () => {
     const derived = derivePrimaryDark("#4f46e5")!;
     expect(derived).toBe("#7b85f2");
     expect(contrastRatio(derived, DARK_SURFACE)).toBeGreaterThanOrEqual(4.5);
-    // close to the hand-picked indigo-400 of the built-in dark theme
-    expect(contrastRatio(derived, dark["primary-color"])).toBeLessThan(1.15);
+  });
+
+  it("keeps the built-in dark primary (blue-400) readable like a derived one", () => {
+    const primary = dark["primary-color"]!;
+    expect(primary).toBe("#60a5fa");
+    expect(contrastRatio(primary, DARK_SURFACE)).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrastRatio(primary, dark["text-inverse-color"]!),
+    ).toBeGreaterThanOrEqual(4.5);
   });
 
   it("is deterministic and only lightens as much as needed", () => {

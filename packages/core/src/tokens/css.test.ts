@@ -20,6 +20,10 @@ describe("generateTokensCss", () => {
   //    dark-without-palette block: +41 lines, nothing else changed.
   // 3. Necessary control-border-color and readable readonly-surface-color
   //    semantics, kept separate from decorative divider and disabled colors.
+  // 4. Violet and indigo removed from the default themes: blue
+  //    `--primary-gradient-start/end` (light and dark blocks), dark
+  //    `--primary-color` and `--focus-ring-color`, and an orange
+  //    `--code-token-function-color`.
   it("tokens.golden.css: equals the published stylesheet", () => {
     expect(generateTokensCss()).toBe(read("__fixtures__", "tokens.golden.css"));
   });

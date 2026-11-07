@@ -29,7 +29,7 @@ export const light: ComponentTheme = /* @__PURE__ */ mergeBlocks<
 export const dark: ComponentTheme = /* @__PURE__ */ mergeBlocks<
   Partial<ComponentTheme>
 >(derivedSemantic, {
-  "primary-color": "#818cf8",
+  "primary-color": "#60a5fa",
   "secondary-color": "#94a3b8",
   "success-color": "#4ade80",
   "danger-color": "#f87171",
@@ -41,8 +41,8 @@ export const dark: ComponentTheme = /* @__PURE__ */ mergeBlocks<
   "foreground-color": "#f1f5f9",
   "border-color": "#3a4556",
   "text-gray": "#a0aec0",
-  "primary-gradient-start": "#6a11cb",
-  "primary-gradient-end": "#2575fc",
+  "primary-gradient-start": "#60a5fa",
+  "primary-gradient-end": "#2563eb",
   "secondary-gradient-start": "#42e695",
   "secondary-gradient-end": "#3bb2b8",
   "highlight-color": "#ffeb3b",
@@ -61,7 +61,7 @@ export const dark: ComponentTheme = /* @__PURE__ */ mergeBlocks<
   "text-secondary-color": "#cbd5e0",
   "text-disabled-color": "#718096",
   "text-inverse-color": "#111827",
-  "focus-ring-color": "rgba(129, 140, 248, 0.55)",
+  "focus-ring-color": "rgba(96, 165, 250, 0.55)",
 }) as ComponentTheme;
 
 export const githubDark: ComponentTheme = /* @__PURE__ */ mergeBlocks<

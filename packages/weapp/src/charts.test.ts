@@ -479,7 +479,7 @@ it("builds the chart theme from the Minerva tokens of the nearest provider", asy
       design: {},
     });
   expect(light.variables?.["--primary-color"]).toBe("#2563eb");
-  expect(dark.variables?.["--primary-color"]).toBe("#818cf8");
+  expect(dark.variables?.["--primary-color"]).toBe("#60a5fa");
   expect(dark.variables?.["--surface-color"]).not.toBe(
     light.variables?.["--surface-color"],
   );
@@ -506,7 +506,7 @@ it("builds the chart theme from the Minerva tokens of the nearest provider", asy
       palette: null,
       design: {},
     }).variables?.["--primary-color"],
-  ).not.toBe("#818cf8");
+  ).not.toBe("#60a5fa");
 
   const provider = simulate.load({
     tagName: "chart-provider",
@@ -537,7 +537,7 @@ it("builds the chart theme from the Minerva tokens of the nearest provider", asy
   w.setData({ mode: "dark" });
   await tick();
   fake.flush();
-  expect(fake.colors().some((c) => c.includes("129,140,248"))).toBe(true);
+  expect(fake.colors().some((c) => c.includes("96,165,250"))).toBe(true);
   expect(fake.colors().some((c) => c.includes("37,99,235"))).toBe(false);
 });
 

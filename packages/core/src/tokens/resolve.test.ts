@@ -89,12 +89,12 @@ describe("resolveTokens", () => {
 
   it("applies Minerva's dark mode (derived tokens follow the dark base)", () => {
     const t = resolveTokens({ mode: "dark" });
-    expect(t.colors["primary-color"]).toBe("#818cf8");
+    expect(t.colors["primary-color"]).toBe("#60a5fa");
     expect(t.colors["surface-color"]).toBe("#212937");
     expect(t.colors["surface-subtle-color"]).toBe(
       colorMix("#f1f5f9", "#1a202c", 3),
     );
-    expect(t.colors["focus-ring-color"]).toBe("rgba(129, 140, 248, 0.55)");
+    expect(t.colors["focus-ring-color"]).toBe("rgba(96, 165, 250, 0.55)");
     expect(t.unresolved).toEqual([]);
   });
 
@@ -219,7 +219,7 @@ describe("resolveTokens", () => {
 describe("tokenCascade / tokenKind", () => {
   it("returns the CSS text of the cascade", () => {
     const { values, palette, design } = tokenCascade({ mode: "dark" });
-    expect(values.get("primary-color")).toBe("#818cf8");
+    expect(values.get("primary-color")).toBe("#60a5fa");
     expect(values.get("surface-subtle-color")).toBe(
       "color-mix(in srgb, var(--foreground-color) 3%, var(--background-color))",
     );
