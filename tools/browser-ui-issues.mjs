@@ -11,6 +11,7 @@ import { checkHeatmapTerminal } from "./browser-heatmap-terminal.mjs";
 import { checkChartHoverPerformance } from "./browser-chart-performance.mjs";
 import { checkQuadrantCard } from "./browser-quadrant-card-checks.mjs";
 import { checkCdnFiles } from "./browser-cdn-checks.mjs";
+import { checkModalIframeFocus } from "./browser-modal-focus.mjs";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const connect = async (url) => {
   const socket = new WebSocket(url);
@@ -186,6 +187,7 @@ try {
     await sleep(300);
   };
   const results = [];
+  await checkModalIframeFocus({ call, evaluate, wait, page, results });
   await checkCdnFiles({ call, evaluate, wait, results });
   for (const width of [320, 390, 1280]) {
     await page("table", width);

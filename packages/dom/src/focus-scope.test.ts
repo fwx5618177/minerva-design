@@ -36,6 +36,60 @@ afterEach(() => {
 });
 
 describe("createFocusScope", () => {
+  it("recovers a null-relatedTarget focus loss while the document still owns focus", async () => {
+    const { $, container } = setup();
+    const hasFocus = vi.spyOn(document, "hasFocus").mockReturnValue(true);
+    try {
+      const s = scope(container, { trapped: true, restoreFocus: false });
+      s.activate();
+      $("first").blur();
+      expect(document.activeElement).toBe(document.body);
+      await Promise.resolve();
+      expect(document.activeElement).toBe($("first"));
+    } finally {
+      hasFocus.mockRestore();
+    }
+  });
+
+  it("does not reclaim focus from another application or a deactivated scope", async () => {
+    const { $, container } = setup();
+    const hasFocus = vi.spyOn(document, "hasFocus").mockReturnValue(false);
+    try {
+      const s = scope(container, { trapped: true, restoreFocus: false });
+      s.activate();
+      $("first").blur();
+      await Promise.resolve();
+      expect(document.activeElement).toBe(document.body);
+      hasFocus.mockReturnValue(true);
+      $("first").focus();
+      $("first").blur();
+      s.deactivate();
+      await Promise.resolve();
+      expect(document.activeElement).toBe(document.body);
+    } finally {
+      hasFocus.mockRestore();
+    }
+  });
+
+  it("leaves a newly opened nested scope in control of queued focus recovery", async () => {
+    const { $, container } = setup();
+    const hasFocus = vi.spyOn(document, "hasFocus").mockReturnValue(true);
+    try {
+      const outer = scope(container, { trapped: true, restoreFocus: false });
+      outer.activate();
+      $("first").blur();
+      const nested = document.createElement("div");
+      nested.innerHTML = "<button>Nested action</button>";
+      document.body.append(nested);
+      const inner = scope(nested, { trapped: true, restoreFocus: false });
+      inner.activate();
+      await Promise.resolve();
+      expect(document.activeElement).toBe(nested.querySelector("button"));
+    } finally {
+      hasFocus.mockRestore();
+    }
+  });
+
   it("auto-focuses the first tabbable and restores focus on deactivate", async () => {
     const { $, container } = setup();
     $("trigger").focus();

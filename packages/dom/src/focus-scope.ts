@@ -185,9 +185,19 @@ export function createFocusScope(
   const onFocusOut = (event: FocusEvent) => {
     if (!trapped || isPaused()) return;
     const next = event.relatedTarget;
-    // `null`: the window lost focus or the focused element was removed;
-    // the latter is handled by the MutationObserver below.
-    if (next === null) return;
+    // Crossing into an iframe also reports null, without a matching focusin
+    // in this document. Check after the browser updates activeElement; never
+    // reclaim focus when the user switched to another window/application.
+    if (next === null) {
+      queueMicrotask(() => {
+        if (!active || isPaused() || !doc.hasFocus()) return;
+        const focused = getActiveElement(doc);
+        if (!(focused instanceof Node) || !contains(container, focused)) {
+          focusInside();
+        }
+      });
+      return;
+    }
     // `relatedTarget` is retargeted to the listener's tree: focus moving
     // into a shadow root reports the shadow host. When that host contains
     // the container, the real target is unknown here; the following
