@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.22.0",
-  "sourceCommit": "e2a31507ecfcdb5ffcd33b05b47404c7625bb883",
-  "sourceDigest": "sha256:a33fb5e0b8f01ae452ce95d2b723ab0cd9905636d574c72fd12c1459f4c09d3a",
-  "referenceSourceDigest": "sha256:2459da5f08881aec3d2ac2d940ce35e7a61d0e0e679c0c167d8b5fdf8330a456"
+  "sourceCommit": "330c90a7382a7141543dcdad732a4da31d58a37e",
+  "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+  "referenceSourceDigest": "sha256:e3be8c06635194769da4944bbccaf8bcffec3fe4bddbd369b74caf5e4553345b"
 }
 ```
 
@@ -263,7 +263,7 @@ Section and item data, active ancestor expansion, controlled/default expandedIds
       },
       {
         "name": "--nav-tree-guide-color",
-        "description": "Color of the indent guide of an expanded branch (defaults to --border-color)"
+        "description": "Color of the optional indent guide of an expanded branch (defaults to transparent)"
       },
       {
         "name": "--nav-tree-guide-active-color",
