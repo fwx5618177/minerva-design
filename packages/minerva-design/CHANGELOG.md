@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.22.2
+
+### Patch Changes
+
+- b19e53f: Restore modal focus after iframe focus transfers with a null relatedTarget. Deferred recovery respects paused or deactivated scopes and leaves focus alone when the document no longer owns it.
+
 ## 1.22.1
 
 ### Patch Changes
