@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.22.1
+
+### Patch Changes
+
+- a07dc9a: Improve shared administrative surfaces across web renderers: use rounded, theme-aware PageSection cards and centered readable page widths; soften table headers and row separators; keep Badge text readable on small screens; make navigation hierarchy guides opt-in. Existing color, spacing and guide overrides remain supported.
+
 ## 1.22.0
 
 ### Minor Changes
