@@ -1,0 +1,857 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "ja",
+  "renderer": "react",
+  "page": "scatter-chart",
+  "title": "散布図",
+  "description": "2 つの値で配置する点。ポイントごとにサイズ、色、ラベルを指定でき、両軸でズームできます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "starter": "スターター",
+      "business": "ビジネス",
+      "seats": "シート数",
+      "monthlyBill": "月額料金",
+      "billAria": "プラン別のシート数と月額料金",
+      "countries": "国",
+      "gdp": "1 人あたり GDP",
+      "lifeExpectancy": "平均寿命",
+      "countriesAria": "1 人あたり GDP と平均寿命。点の大きさは人口",
+      "cluster": "クラスター {{name}}",
+      "clustersAria": "それぞれ 100,000 点からなる 2 つのクラスター",
+      "largeStatus": "{{points}} ポイント · {{renderer}} で描画",
+      "sessionAria": "セッション時間と閲覧ページ数",
+      "minutes": "分",
+      "pages": "ページ",
+      "free": "無料",
+      "pro": "プロ",
+      "sessionStatus": "{{plan}}：{{minutes}} 分、{{pages}} ページ",
+      "tapDot": "点をタップしてください",
+      "campaigns": "キャンペーン",
+      "trend": "傾向線",
+      "adSpend": "週間広告費",
+      "revenue": "週間売上",
+      "fit": "R² = {{r2}} · 広告費 1 ドルあたり売上 +{{slope}}",
+      "trendAria": "60 件のキャンペーンの広告費と売上、傾向線付き",
+      "penguins": {
+        "adelie": "アデリーペンギン",
+        "chinstrap": "ヒゲペンギン",
+        "gentoo": "ジェンツーペンギン"
+      },
+      "flipper": "フリッパー長",
+      "mass": "体重",
+      "penguinsAria": "3 種のペンギンのフリッパー長と体重",
+      "requests": "リクエスト",
+      "outlier": "外れ値",
+      "expected": "想定",
+      "payload": "ペイロードサイズ",
+      "responseTime": "応答時間",
+      "outliersAria": "ペイロードサイズと応答時間。外れ値は赤",
+      "outliersSummary": "{{total}} 件中 {{slow}} 件のリクエストが想定の 2 倍以上かかりました。",
+      "readings": "測定値",
+      "zoomPresets": {
+        "night": "涼しい夜間",
+        "comfort": "生育適温域",
+        "heat": "暑い午後"
+      },
+      "showAll": "すべて表示",
+      "temperature": "温度",
+      "humidity": "相対湿度",
+      "growingRange": "生育適温域",
+      "greenhouseAria": "温室センサーの温度と湿度の測定値",
+      "greenhouseView": "表示範囲：{{t0}} – {{t1}}、湿度 {{h0}} – {{h1}} · 表示中の測定値：{{points}}",
+      "greenhouseHint": "領域を選ぶか、Ctrl / ⌘ + ホイールでズームしてください",
+      "departments": {
+        "engineering": "エンジニアリング",
+        "sales": "営業",
+        "support": "サポート"
+      },
+      "tenure": "勤続年数",
+      "reviewScore": "評価スコア（1–5）",
+      "companyAverage": "全社平均",
+      "staffAria": "部署別の社員 90 名の勤続年数と評価スコア",
+      "employeeStatus": "{{id}} · {{department}} · {{tenure}} · スコア {{score}} · 年収 {{salary}}",
+      "employeeHint": "点をクリックすると社員を選択し、空いたプロット領域をクリックすると選択を解除します",
+      "players": "選手",
+      "leagueAverage": "リーグ平均",
+      "efficientScorers": "効率の良いスコアラー",
+      "volumeShooters": "試投数の多いシューター",
+      "pointsPerGame": "1 試合平均 {{value}} 得点",
+      "usageRow": "使用率：{{value}}",
+      "trueShootingRow": "TS%：{{value}}",
+      "usageRate": "使用率",
+      "trueShooting": "TS%（真のシュート成功率）",
+      "playersAria": "選手 16 人の使用率とシュート効率。点の大きさは 1 試合平均得点",
+      "normal": "正常",
+      "alarm": "アラーム",
+      "latest": "最新",
+      "mmPerSecond": "{{value}} mm/s",
+      "pause": "一時停止",
+      "resume": "再開",
+      "vibrationStatus": "最新サンプル：{{rpm}} rpm、{{value}} · 画面上のアラーム：{{alarms}}",
+      "speed": "回転数（rpm）",
+      "vibration": "振動",
+      "alarmLimit": "アラーム閾値",
+      "vibrationAria": "モーターの回転数に対する振動のライブデータ",
+      "mammals": "哺乳類",
+      "animals": {
+        "shrew": "トガリネズミ",
+        "mouse": "マウス",
+        "rat": "ラット",
+        "rabbit": "ウサギ",
+        "cat": "ネコ",
+        "dog": "イヌ",
+        "human": "ヒト",
+        "pig": "ブタ",
+        "horse": "ウマ",
+        "cow": "ウシ",
+        "giraffe": "キリン",
+        "elephant": "ゾウ"
+      },
+      "powerLaw": "べき乗則の近似",
+      "kg": "{{value}} kg",
+      "watts": "{{value}} W",
+      "bodyMass": "体重",
+      "metabolicRate": "基礎代謝率",
+      "kleiber": "代謝率 ∝ 体重^{{exponent}}（クライバーの法則）",
+      "kleiberAria": "哺乳類 12 種の基礎代謝率と体重（両対数軸）"
+    }
+  },
+  "components": [
+    {
+      "name": "ScatterChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "ScatterChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as dots unless they set a `type`"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the pointer"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:018692c396245c230316",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:7f639ac6d9481ff0bde9",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:677083ee0328d7ee4253",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is clicked"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:0256cf20d9a3f1b1c88a",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is clicked where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:ee073556f18eb3ee4cae",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:167734f7bd5dd7f686a6",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and when it falls back after a GPU loss)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "ScatterChartProps": {
+      "source": "charts/src/react/types.ts",
+      "description": "Props of ScatterChart",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Series drawn as dots unless they set a `type`"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/basic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { ScatterChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Customers of two plans: seats against monthly bill (USD)\nconst random = mulberry32(9);\nconst plan = (price: number, slope: number) =>\n  Array.from({ length: 40 }, () => {\n    const seats = 1 + Math.round(random() * 49);\n    return [\n      seats,\n      Math.round(price + seats * slope * (0.8 + random() * 0.4)),\n    ] as const;\n  });\nconst starter = plan(20, 9);\nconst business = plan(60, 14);\n\nexport default function BasicDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      { name: t(\"starter\"), data: starter },\n      { name: t(\"business\"), data: business },\n    ],\n    [t],\n  );\n  const usd = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"USD\",\n        maximumFractionDigits: 0,\n      }),\n    [locale],\n  );\n\n  return (\n    <ScatterChart\n      series={series}\n      xAxis={{ title: t(\"seats\") }}\n      yAxis={{ title: t(\"monthlyBill\"), format: (value) => usd.format(value) }}\n      height={300}\n      ariaLabel={t(\"billAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "基本",
+      "description": "軸タイトル付きの [x, y] タプルの 2 系列。ツールチップは最も近い点を表示します。"
+    },
+    {
+      "id": "categories",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/categories.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/categories.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { ScatterChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst random = mulberry32(3);\nconst gaussian = () =>\n  Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n\n// Flipper length (mm) and body mass (g) of three penguin species\nconst species = (flipper: number, mass: number, count: number) =>\n  Array.from({ length: count }, () => {\n    const size = gaussian();\n    return [\n      Math.round(flipper + size * 6 + gaussian() * 2),\n      Math.round(mass + size * 380 + gaussian() * 160),\n    ] as const;\n  });\nconst adelie = species(190, 3700, 70);\nconst chinstrap = species(196, 3730, 45);\nconst gentoo = species(217, 5080, 60);\n\nexport default function CategoriesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n\n  // one series per category: its own color, legend entry and toggle\n  const series = useMemo(\n    (): ChartSeries[] => [\n      { name: t(\"penguins.adelie\"), data: adelie, opacity: 0.8 },\n      { name: t(\"penguins.chinstrap\"), data: chinstrap, opacity: 0.8 },\n      { name: t(\"penguins.gentoo\"), data: gentoo, opacity: 0.8 },\n    ],\n    [t],\n  );\n  const mm = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"unit\", unit: \"millimeter\" }),\n    [locale],\n  );\n  const kg = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"unit\",\n        unit: \"kilogram\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n\n  return (\n    <ScatterChart\n      series={series}\n      xAxis={{ title: t(\"flipper\"), format: (value) => mm.format(value) }}\n      yAxis={{ title: t(\"mass\"), format: (value) => kg.format(value / 1000) }}\n      height={320}\n      ariaLabel={t(\"penguinsAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "カテゴリ",
+      "description": "カテゴリごとに 1 系列にすると、各グループが独自の色と切り替え可能な凡例を持ちます。ここでは 3 種のペンギンのフリッパー長と体重です。"
+    },
+    {
+      "id": "labels",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/labels.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/labels.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { ScatterChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Country code, GDP per capita (k$), life expectancy (years), population (millions)\nconst countries: [string, number, number, number][] = [\n  [\"JP\", 34, 84.5, 124],\n  [\"DE\", 52, 81.2, 84],\n  [\"FR\", 44, 82.5, 68],\n  [\"US\", 80, 78.4, 335],\n  [\"BR\", 10, 75.9, 216],\n  [\"IN\", 2.5, 70.8, 1430],\n  [\"CN\", 12.6, 78.6, 1410],\n  [\"NG\", 1.6, 54.5, 224],\n  [\"MX\", 13.9, 75.1, 128],\n  [\"ID\", 4.9, 71.9, 278],\n];\n\nexport default function LabelsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo((): ChartSeries[] => {\n    // country names in the reader's language\n    const names = new Intl.DisplayNames([locale], { type: \"region\" });\n    return [\n      {\n        name: t(\"countries\"),\n        showLabels: true,\n        opacity: 0.7,\n        data: countries.map(([code, x, y, population]) => ({\n          x,\n          y,\n          label: names.of(code) ?? code,\n          size: 6 + Math.sqrt(population) * 0.6,\n        })),\n      },\n    ];\n  }, [t, locale]);\n  const usd = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"USD\",\n        notation: \"compact\",\n      }),\n    [locale],\n  );\n  const years = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"unit\",\n        unit: \"year\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n\n  return (\n    <ScatterChart\n      series={series}\n      xAxis={{\n        title: t(\"gdp\"),\n        format: (value) => usd.format(value * 1000),\n      }}\n      yAxis={{\n        title: t(\"lifeExpectancy\"),\n        format: (value) => years.format(value),\n      }}\n      height={320}\n      ariaLabel={t(\"countriesAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "ラベルとサイズ",
+      "description": "ポイントオブジェクトに label と size を持たせます。showLabels は重なりを避けてラベルを描画します。"
+    },
+    {
+      "id": "large-data",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/large-data.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/large-data.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  ScatterChart,\n  type ChartRendererKind,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst PER_CLUSTER = 100_000;\n\nexport default function LargeDataDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const [renderer, setRenderer] = useState<ChartRendererKind | null>(null);\n\n  const series = useMemo((): ChartSeries[] => {\n    const random = mulberry32(1);\n    // Box-Muller: normally distributed values\n    const gaussian = () =>\n      Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n    const cluster = (name: string, cx: number, cy: number, spread: number) => {\n      const x = new Float64Array(PER_CLUSTER);\n      const y = new Float64Array(PER_CLUSTER);\n      for (let i = 0; i < PER_CLUSTER; i++) {\n        x[i] = cx + gaussian() * spread;\n        y[i] = cy + gaussian() * spread;\n      }\n      return { name, data: { x, y }, pointSize: 3, opacity: 0.5 };\n    };\n    return [\n      cluster(t(\"cluster\", { name: \"A\" }), -2, -1, 1.2),\n      cluster(t(\"cluster\", { name: \"B\" }), 2.5, 1.5, 0.9),\n    ];\n  }, [t]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <ScatterChart\n        series={series}\n        onRendererChange={setRenderer}\n        height={320}\n        ariaLabel={t(\"clustersAria\")}\n      />\n      <p role=\"status\">\n        {t(\"largeStatus\", {\n          points: new Intl.NumberFormat(i18n.language).format(PER_CLUSTER * 2),\n          renderer: renderer ?? \"…\",\n        })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "20 万ポイント",
+      "description": "型付き配列の列による 2 つのガウス分布クラスター。ヒットテストには空間インデックスを使います。"
+    },
+    {
+      "id": "live-stream",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/live-stream.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/live-stream.tsx": "import { useEffect, useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport { ScatterChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst WINDOW = 160; // samples kept on screen\nconst LIMIT = 7.1; // mm/s, the alarm limit of the vibration velocity\n\n/**\n * Sample number `tick` of a motor's sensor: speed (rpm) and vibration (mm/s).\n * Derived from the tick alone, so the stream is deterministic.\n */\nconst sampleAt = (tick: number) => {\n  const random = mulberry32(tick * 7919);\n  const rpm = 2100 + 800 * Math.sin(tick / 23) + (random() - 0.5) * 300;\n  // a worn bearing: bursts of strong vibration every 90 samples\n  const fault = tick % 90 > 80 ? 4 + random() * 3 : 0;\n  const vibration = 0.8 + (rpm / 1000) * 1.4 + (random() - 0.5) * 1.6 + fault;\n  return { rpm: Math.round(rpm), vibration: Math.round(vibration * 100) / 100 };\n};\n\nexport default function LiveStreamDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n  const [tick, setTick] = useState(WINDOW);\n  const [running, setRunning] = useState(true);\n\n  // a new sample every 400 ms, the oldest one drops out\n  useEffect(() => {\n    if (!running) return;\n    const timer = setInterval(() => setTick((value) => value + 1), 400);\n    return () => clearInterval(timer);\n  }, [running]);\n\n  const samples = useMemo(\n    () => Array.from({ length: WINDOW }, (_, i) => sampleAt(tick - WINDOW + i)),\n    [tick],\n  );\n  const latest = samples[samples.length - 1];\n  const alarms = samples.filter((s) => s.vibration > LIMIT).length;\n\n  const series = useMemo((): ChartSeries[] => {\n    const point = (s: { rpm: number; vibration: number }) =>\n      [s.rpm, s.vibration] as const;\n    return [\n      {\n        name: t(\"normal\"),\n        data: samples.filter((s) => s.vibration <= LIMIT).map(point),\n        pointSize: 6,\n        opacity: 0.55,\n      },\n      {\n        name: t(\"alarm\"),\n        data: samples.filter((s) => s.vibration > LIMIT).map(point),\n        color: \"var(--danger-color)\",\n        pointSize: 8,\n      },\n      {\n        // the newest sample, ringed by a bigger dot\n        name: t(\"latest\"),\n        data: latest ? [point(latest)] : [],\n        color: \"var(--text-color)\",\n        pointSize: 12,\n        opacity: 0.35,\n      },\n    ];\n  }, [t, samples, latest]);\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n  const velocity = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });\n    return (value: number) => t(\"mmPerSecond\", { value: format.format(value) });\n  }, [locale, t]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <div style={{ display: \"flex\", alignItems: \"center\", gap: 12 }}>\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          onClick={() => setRunning((value) => !value)}\n        >\n          {running ? t(\"pause\") : t(\"resume\")}\n        </Button>\n        <output\n          aria-live=\"polite\"\n          style={{ color: \"var(--text-secondary-color)\" }}\n        >\n          {latest &&\n            t(\"vibrationStatus\", {\n              rpm: number.format(latest.rpm),\n              value: velocity(latest.vibration),\n              alarms: number.format(alarms),\n            })}\n        </output>\n      </div>\n      <ScatterChart\n        series={series}\n        // fixed ranges: the axes do not jump while the data streams in\n        xAxis={{\n          title: t(\"speed\"),\n          min: 1000,\n          max: 3200,\n          format: (value) => number.format(value),\n        }}\n        yAxis={{ title: t(\"vibration\"), min: 0, max: 14, format: velocity }}\n        annotations={[\n          {\n            type: \"line\",\n            axis: \"y\",\n            value: LIMIT,\n            color: \"var(--danger-color)\",\n            dash: [4, 4],\n            label: t(\"alarmLimit\"),\n          },\n        ]}\n        height={320}\n        ariaLabel={t(\"vibrationAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "センサーのライブストリーム",
+      "description": "400 ms ごとに振動のサンプルを追加し（setInterval は一時停止とアンマウントで解除）、参照線を境に正常系列とアラーム系列に分けます。min と max を固定して、データが流れ込んでも軸が動かないようにしています。"
+    },
+    {
+      "id": "log-log",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/log-log.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/log-log.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { ScatterChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Body mass (kg) and basal metabolic rate (W) of mammals: six orders of\n// magnitude of mass, only log axes show them all\nconst animals: [string, number, number][] = [\n  [\"shrew\", 0.004, 0.06],\n  [\"mouse\", 0.025, 0.21],\n  [\"rat\", 0.3, 1.45],\n  [\"rabbit\", 2.5, 6.7],\n  [\"cat\", 4, 9.8],\n  [\"dog\", 20, 35],\n  [\"human\", 70, 83],\n  [\"pig\", 150, 138],\n  [\"horse\", 500, 380],\n  [\"cow\", 600, 420],\n  [\"giraffe\", 1_200, 640],\n  [\"elephant\", 4_000, 1_700],\n];\n\n// Least-squares fit of log B = log a + b · log M: Kleiber's law, b ≈ 3/4\nconst logs = animals.map(([, m, b]) => [Math.log10(m), Math.log10(b)]);\nconst n = logs.length;\nconst mx = logs.reduce((s, [x]) => s + x, 0) / n;\nconst my = logs.reduce((s, [, y]) => s + y, 0) / n;\nconst exponent =\n  logs.reduce((s, [x, y]) => s + (x - mx) * (y - my), 0) /\n  logs.reduce((s, [x]) => s + (x - mx) ** 2, 0);\nconst coefficient = 10 ** (my - exponent * mx);\nconst fit = (mass: number) => coefficient * mass ** exponent;\n\nexport default function LogLogDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"mammals\"),\n        showLabels: true,\n        pointSize: 9,\n        data: animals.map(([key, mass, rate]) => ({\n          x: mass,\n          y: rate,\n          label: t(`animals.${key}`),\n        })),\n      },\n      {\n        // a power law is a straight line on log-log axes: two points draw it\n        name: t(\"powerLaw\"),\n        type: \"line\",\n        lineWidth: 1.5,\n        color: \"var(--text-secondary-color)\",\n        tooltip: false,\n        data: [\n          [0.002, fit(0.002)],\n          [8_000, fit(8_000)],\n        ],\n      },\n    ],\n    [t],\n  );\n  const compact = useMemo(\n    () => new Intl.NumberFormat(locale, { maximumSignificantDigits: 3 }),\n    [locale],\n  );\n  const kg = (value: number) => t(\"kg\", { value: compact.format(value) });\n  const watts = (value: number) => t(\"watts\", { value: compact.format(value) });\n\n  return (\n    <ScatterChart\n      series={series}\n      xAxis={{ type: \"log\", title: t(\"bodyMass\"), format: kg, grid: true }}\n      yAxis={{ type: \"log\", title: t(\"metabolicRate\"), format: watts }}\n      annotations={[\n        {\n          type: \"text\",\n          x: 0.004,\n          y: 1_000,\n          anchor: \"left\",\n          text: t(\"kleiber\", {\n            exponent: new Intl.NumberFormat(locale, {\n              maximumFractionDigits: 2,\n            }).format(exponent),\n          }),\n        },\n      ]}\n      height={360}\n      ariaLabel={t(\"kleiberAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "両対数軸",
+      "description": "xAxis と yAxis に type: \"log\" を指定すると、代謝率のべき乗則（クライバーの法則）が 6 桁にわたって直線になります。近似線は tooltip: false を指定した 2 点の line 系列です。"
+    },
+    {
+      "id": "outliers",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/outliers.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/outliers.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { ScatterChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Expected response time (ms) for a payload size (KB)\nconst expected = (size: number) => 40 + size * 0.6;\nconst TOLERANCE = 2; // slower than 2× the expected time = outlier\n\nconst random = mulberry32(17);\nconst requests = Array.from({ length: 300 }, (_, i) => {\n  const size = Math.round(5 + random() * 495);\n  const slow = i % 37 === 0 ? 2.4 + random() * 2 : 1;\n  const time = expected(size) * (0.75 + random() * 0.5) * slow;\n  return { size, time: Math.round(time) };\n});\nconst isOutlier = ({ size, time }: { size: number; time: number }) =>\n  time > expected(size) * TOLERANCE;\nconst outlierCount = requests.filter(isOutlier).length;\n\nexport default function OutliersDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"requests\"),\n        // outliers are bigger and red\n        data: requests.map((request) =>\n          isOutlier(request)\n            ? {\n                x: request.size,\n                y: request.time,\n                color: \"var(--danger-color)\",\n                size: 11,\n                label: t(\"outlier\"),\n              }\n            : { x: request.size, y: request.time },\n        ),\n        opacity: 0.6,\n        pointSize: 6,\n      },\n      {\n        name: t(\"expected\"),\n        type: \"line\",\n        lineWidth: 1.5,\n        color: \"var(--text-secondary-color)\",\n        data: [\n          [0, expected(0)],\n          [500, expected(500)],\n        ],\n      },\n    ],\n    [t],\n  );\n  const kb = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"unit\", unit: \"kilobyte\" }),\n    [locale],\n  );\n  const ms = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"unit\", unit: \"millisecond\" }),\n    [locale],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <ScatterChart\n        series={series}\n        xAxis={{ title: t(\"payload\"), format: (value) => kb.format(value) }}\n        yAxis={{\n          title: t(\"responseTime\"),\n          format: (value) => ms.format(value),\n        }}\n        height={320}\n        ariaLabel={t(\"outliersAria\")}\n      />\n      <p>\n        {t(\"outliersSummary\", { slow: outlierCount, total: requests.length })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "外れ値",
+      "description": "点ごとの色・サイズ・ラベルで、ペイロードに対して想定よりずっと遅いリクエストを示します。想定時間は折れ線系列です。"
+    },
+    {
+      "id": "players",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/players.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/players.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  ScatterChart,\n  type ChartAnnotation,\n  type ChartHoverEvent,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\n// Basketball league: usage rate (% of the team's plays a player finishes),\n// true shooting (%) and points per game of 16 (fictional) players\nconst players: [string, number, number, number][] = [\n  [\"A. Okafor\", 31.5, 61.2, 29.8],\n  [\"L. Moreau\", 29.8, 55.1, 27.1],\n  [\"K. Tanaka\", 27.2, 63.4, 24.6],\n  [\"D. Silva\", 33.1, 53.2, 28.4],\n  [\"M. Novak\", 18.4, 66.8, 14.2],\n  [\"J. Reyes\", 21.6, 59.7, 17.9],\n  [\"T. Brooks\", 24.9, 52.4, 19.6],\n  [\"S. Ivanov\", 16.2, 62.1, 10.4],\n  [\"R. Chen\", 22.8, 57.3, 18.1],\n  [\"P. Mensah\", 14.9, 54.8, 8.7],\n  [\"E. Larsen\", 26.4, 58.9, 22.3],\n  [\"H. Kim\", 19.7, 51.6, 12.9],\n  [\"F. Rossi\", 28.6, 60.4, 25.7],\n  [\"O. Haddad\", 17.3, 57.8, 11.6],\n  [\"N. Dubois\", 23.5, 64.2, 20.2],\n  [\"C. Walker\", 30.2, 57.9, 26.8],\n];\nconst LEAGUE_USAGE = 20;\nconst LEAGUE_TS = 57.5;\n\nexport default function PlayersDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n  const decimal = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        minimumFractionDigits: 1,\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const percent = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"percent\",\n      minimumFractionDigits: 1,\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value / 100);\n  }, [locale]);\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"players\"),\n        showLabels: true,\n        // the dot grows with the points per game\n        data: players.map(([name, usage, ts, points]) => ({\n          x: usage,\n          y: ts,\n          label: name,\n          size: 4 + points / 2.5,\n        })),\n        opacity: 0.8,\n      },\n    ],\n    [t],\n  );\n  // league averages split the plot; a caption names each corner\n  const annotations = useMemo(\n    (): ChartAnnotation[] => [\n      { type: \"line\", axis: \"x\", value: LEAGUE_USAGE, dash: [4, 4] },\n      {\n        type: \"line\",\n        axis: \"y\",\n        value: LEAGUE_TS,\n        dash: [4, 4],\n        label: t(\"leagueAverage\"),\n      },\n      {\n        type: \"rect\",\n        x0: LEAGUE_USAGE,\n        y0: LEAGUE_TS,\n        color: \"var(--success-color)\",\n        opacity: 0.08,\n        label: t(\"efficientScorers\"),\n        labelPosition: \"top-right\",\n      },\n      {\n        type: \"rect\",\n        x0: LEAGUE_USAGE,\n        y1: LEAGUE_TS,\n        color: \"var(--warning-color)\",\n        opacity: 0.08,\n        label: t(\"volumeShooters\"),\n        labelPosition: \"bottom-right\",\n      },\n    ],\n    [t],\n  );\n\n  // a rich tooltip from the demo data (the hovered index is the player's)\n  const tooltip = (event: ChartHoverEvent) => {\n    const player = players[event.items[0]?.index ?? -1];\n    if (!player) return null;\n    const [name, usage, ts, points] = player;\n    return (\n      <div style={{ display: \"grid\", gap: 2 }}>\n        <strong>{name}</strong>\n        <span>{t(\"pointsPerGame\", { value: decimal.format(points) })}</span>\n        <span>{t(\"usageRow\", { value: percent(usage) })}</span>\n        <span>{t(\"trueShootingRow\", { value: percent(ts) })}</span>\n      </div>\n    );\n  };\n\n  return (\n    <ScatterChart\n      series={series}\n      annotations={annotations}\n      xAxis={{ title: t(\"usageRate\"), format: percent, min: 12, max: 36 }}\n      yAxis={{ title: t(\"trueShooting\"), format: percent, min: 50, max: 68 }}\n      renderTooltip={tooltip}\n      legend={false}\n      height={360}\n      ariaLabel={t(\"playersAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "カスタムツールチップと領域",
+      "description": "renderTooltip はデモのデータから作った React コンテンツでツールチップを置き換えます。リーグ平均は破線の参照線で、境界を一部省いた rect アノテーションが 2 つの隅をプロットの端まで塗ります。"
+    },
+    {
+      "id": "selection",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/selection.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/selection.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { ScatterChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst departments = [\"engineering\", \"sales\", \"support\"] as const;\n\ninterface Employee {\n  id: string;\n  /** Years in the company */\n  tenure: number;\n  /** Last review, 1-5 */\n  score: number;\n  /** Yearly salary, USD */\n  salary: number;\n}\n\n// 30 employees per department: tenure against the last performance review\nconst staff: Employee[][] = departments.map((_, d) => {\n  const random = mulberry32(300 + d);\n  return Array.from({ length: 30 }, (_, i) => {\n    const tenure = Math.round(random() ** 1.4 * 14 * 10) / 10;\n    const score = Math.min(\n      5,\n      Math.max(1, 2.6 + tenure * 0.08 + (random() - 0.4) * 2),\n    );\n    return {\n      id: `E-${1000 + d * 100 + i}`,\n      tenure,\n      score: Math.round(score * 10) / 10,\n      salary: Math.round((52 + d * 6 + tenure * 3.2 + random() * 18) * 1000),\n    };\n  });\n});\nconst all = staff.flat();\nconst averageScore = all.reduce((sum, e) => sum + e.score, 0) / all.length;\n\ninterface Selection {\n  department: number;\n  index: number;\n}\n\nexport default function SelectionDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n  const [selected, setSelected] = useState<Selection | null>(null);\n\n  // the selected dot is bigger and labelled (showLabels draws the points\n  // that have a label)\n  const series = useMemo(\n    (): ChartSeries[] =>\n      departments.map((key, d) => ({\n        name: t(`departments.${key}`),\n        showLabels: true,\n        opacity: 0.75,\n        data: (staff[d] ?? []).map((e, i) =>\n          selected?.department === d && selected.index === i\n            ? { x: e.tenure, y: e.score, size: 16, label: e.id }\n            : { x: e.tenure, y: e.score },\n        ),\n      })),\n    [t, selected],\n  );\n  const years = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"unit\",\n        unit: \"year\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const decimal = useMemo(\n    () => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }),\n    [locale],\n  );\n  const usd = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"USD\",\n        maximumFractionDigits: 0,\n      }),\n    [locale],\n  );\n\n  const employee = selected\n    ? staff[selected.department]?.[selected.index]\n    : undefined;\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <ScatterChart\n        series={series}\n        xAxis={{ title: t(\"tenure\"), format: (value) => years.format(value) }}\n        yAxis={{ title: t(\"reviewScore\"), min: 1, max: 5 }}\n        annotations={[\n          {\n            type: \"line\",\n            axis: \"y\",\n            value: averageScore,\n            dash: [4, 4],\n            label: t(\"companyAverage\"),\n          },\n        ]}\n        onPointClick={(event) => {\n          const item = event.items[0];\n          if (item)\n            setSelected({ department: item.seriesIndex, index: item.index });\n        }}\n        // a click on the empty plot clears the selection\n        onPlotClick={() => setSelected(null)}\n        height={320}\n        ariaLabel={t(\"staffAria\")}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {employee && selected\n          ? t(\"employeeStatus\", {\n              id: employee.id,\n              department: t(`departments.${departments[selected.department]}`),\n              tenure: years.format(employee.tenure),\n              score: decimal.format(employee.score),\n              salary: usd.format(employee.salary),\n            })\n          : t(\"employeeHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "クリックで選択",
+      "description": "onPointClick はクリックした点の系列とインデックスを返します。選択した社員の点は大きくなりラベルが付き、詳細が下に表示されます。空いたプロット領域をクリックすると onPlotClick が呼ばれ、選択を解除します。"
+    },
+    {
+      "id": "trend",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/trend.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/trend.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { ScatterChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Weekly ad spend against revenue (thousand USD) for 60 campaigns\nconst random = mulberry32(42);\nconst campaigns = Array.from({ length: 60 }, () => {\n  const spend = 2 + random() * 28;\n  return [spend, 15 + spend * 3.1 + (random() - 0.5) * 30] as const;\n});\n\n// Least-squares fit y = a + b·x and the coefficient of determination\nconst n = campaigns.length;\nconst meanX = campaigns.reduce((sum, [x]) => sum + x, 0) / n;\nconst meanY = campaigns.reduce((sum, [, y]) => sum + y, 0) / n;\nconst sxy = campaigns.reduce((s, [x, y]) => s + (x - meanX) * (y - meanY), 0);\nconst sxx = campaigns.reduce((s, [x]) => s + (x - meanX) ** 2, 0);\nconst syy = campaigns.reduce((s, [, y]) => s + (y - meanY) ** 2, 0);\nconst slope = sxy / sxx;\nconst intercept = meanY - slope * meanX;\nconst r2 = (sxy * sxy) / (sxx * syy);\nconst top = Math.max(...campaigns.map(([, y]) => y));\n\nexport default function TrendDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      { name: t(\"campaigns\"), data: campaigns, opacity: 0.75 },\n      {\n        name: t(\"trend\"),\n        type: \"line\",\n        lineWidth: 2,\n        color: \"var(--danger-color)\",\n        data: [\n          [0, intercept],\n          [32, intercept + slope * 32],\n        ],\n      },\n    ],\n    [t],\n  );\n  const usd = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"USD\",\n      notation: \"compact\",\n    });\n    return (value: number) => format.format(value * 1000);\n  }, [locale]);\n  const decimal = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });\n\n  return (\n    <ScatterChart\n      series={series}\n      xAxis={{ title: t(\"adSpend\"), min: 0, max: 32, format: usd }}\n      yAxis={{ title: t(\"revenue\"), format: usd }}\n      annotations={[\n        {\n          type: \"text\",\n          x: 1,\n          y: top,\n          anchor: \"left\",\n          text: t(\"fit\", {\n            r2: decimal.format(r2),\n            slope: decimal.format(slope),\n          }),\n        },\n      ]}\n      height={320}\n      ariaLabel={t(\"trendAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "相関と傾向線",
+      "description": "キャンペーンの点に最小二乗法の傾向線（デモ内で計算した折れ線系列）を重ね、テキスト注釈で R² と傾きを示します。"
+    },
+    {
+      "id": "zoom-controls",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/demos/zoom-controls.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/demos/zoom-controls.tsx": "import { useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport {\n  ScatterChart,\n  type ChartHandle,\n  type ChartSeries,\n  type ChartView,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// 900 readings of greenhouse sensors: temperature (°C) and relative humidity\n// (%), in three regimes: cool humid nights, mild days, hot dry afternoons\nconst random = mulberry32(64);\nconst gaussian = () =>\n  Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\nconst readings = Array.from({ length: 900 }, (_, i) => {\n  const [temp, humidity] =\n    i % 9 === 0 ? [33, 38] : i % 3 === 0 ? [15, 84] : [23, 63];\n  const t = temp + gaussian() * 2.2;\n  const h = humidity - (t - temp) * 2 + gaussian() * 5;\n  return [\n    Math.round(t * 10) / 10,\n    Math.round(Math.min(100, Math.max(5, h)) * 10) / 10,\n  ] as const;\n});\n\n// the growing range of the crop\nconst COMFORT = { x0: 18, x1: 28, y0: 50, y1: 75 };\n\nconst PRESETS = {\n  night: { x: [8, 22], y: [65, 100] },\n  comfort: { x: [16, 30], y: [45, 80] },\n  heat: { x: [26, 42], y: [15, 60] },\n} satisfies Record<string, ChartView>;\ntype Preset = keyof typeof PRESETS;\n\nexport default function ZoomControlsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const locale = i18n.language;\n  const chart = useRef<ChartHandle>(null);\n  const [view, setView] = useState<ChartView | null>(null);\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      { name: t(\"readings\"), data: readings, pointSize: 5, opacity: 0.55 },\n    ],\n    [t],\n  );\n  const celsius = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"unit\",\n        unit: \"celsius\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 0,\n      }),\n    [locale],\n  );\n\n  // setView does not call onZoom: read the view back from the handle\n  const zoomTo = (preset: Preset) => {\n    chart.current?.setView(PRESETS[preset]);\n    setView(chart.current?.getView() ?? PRESETS[preset]);\n  };\n  const inView = view\n    ? readings.filter(\n        ([x, y]) =>\n          x >= view.x[0] && x <= view.x[1] && y >= view.y[0] && y <= view.y[1],\n      ).length\n    : readings.length;\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 8 }}>\n        {(Object.keys(PRESETS) as Preset[]).map((preset) => (\n          <Button\n            key={preset}\n            size=\"small\"\n            variant=\"outline\"\n            onClick={() => zoomTo(preset)}\n          >\n            {t(`zoomPresets.${preset}`)}\n          </Button>\n        ))}\n        <Button\n          size=\"small\"\n          variant=\"ghost\"\n          onClick={() => chart.current?.resetZoom()}\n        >\n          {t(\"showAll\")}\n        </Button>\n      </div>\n      <ScatterChart\n        ref={chart}\n        series={series}\n        xAxis={{\n          title: t(\"temperature\"),\n          format: (value) => celsius.format(value),\n        }}\n        yAxis={{\n          title: t(\"humidity\"),\n          format: (value) => percent.format(value / 100),\n        }}\n        annotations={[\n          {\n            type: \"rect\",\n            ...COMFORT,\n            color: \"var(--success-color)\",\n            opacity: 0.1,\n            label: t(\"growingRange\"),\n          },\n        ]}\n        onZoom={setView}\n        height={320}\n        ariaLabel={t(\"greenhouseAria\")}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {view\n          ? t(\"greenhouseView\", {\n              t0: celsius.format(view.x[0]),\n              t1: celsius.format(view.x[1]),\n              h0: percent.format(view.y[0] / 100),\n              h1: percent.format(view.y[1] / 100),\n              points: new Intl.NumberFormat(locale).format(inView),\n            })\n          : t(\"greenhouseHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "ズーム操作",
+      "description": "ボタンは ref を通じて領域にズームします。setView は表示範囲を設定し（onZoom は呼ばれないため、デモでは getView で表示範囲を読み戻します）、resetZoom で全体表示に戻ります。onZoom はホイールやドラッグによるズームを通知し、rect アノテーションで生育適温域を塗ります。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "散布図",
+      "description": "2 つの値で配置する点。ポイントごとにサイズ、色、ラベルを指定でき、両軸でズームできます。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "軸タイトル付きの [x, y] タプルの 2 系列。ツールチップは最も近い点を表示します。"
+        },
+        "labels": {
+          "title": "ラベルとサイズ",
+          "description": "ポイントオブジェクトに label と size を持たせます。showLabels は重なりを避けてラベルを描画します。"
+        },
+        "large-data": {
+          "title": "20 万ポイント",
+          "description": "型付き配列の列による 2 つのガウス分布クラスター。ヒットテストには空間インデックスを使います。"
+        },
+        "trend": {
+          "title": "相関と傾向線",
+          "description": "キャンペーンの点に最小二乗法の傾向線（デモ内で計算した折れ線系列）を重ね、テキスト注釈で R² と傾きを示します。"
+        },
+        "categories": {
+          "title": "カテゴリ",
+          "description": "カテゴリごとに 1 系列にすると、各グループが独自の色と切り替え可能な凡例を持ちます。ここでは 3 種のペンギンのフリッパー長と体重です。"
+        },
+        "outliers": {
+          "title": "外れ値",
+          "description": "点ごとの色・サイズ・ラベルで、ペイロードに対して想定よりずっと遅いリクエストを示します。想定時間は折れ線系列です。"
+        },
+        "zoom-controls": {
+          "title": "ズーム操作",
+          "description": "ボタンは ref を通じて領域にズームします。setView は表示範囲を設定し（onZoom は呼ばれないため、デモでは getView で表示範囲を読み戻します）、resetZoom で全体表示に戻ります。onZoom はホイールやドラッグによるズームを通知し、rect アノテーションで生育適温域を塗ります。"
+        },
+        "selection": {
+          "title": "クリックで選択",
+          "description": "onPointClick はクリックした点の系列とインデックスを返します。選択した社員の点は大きくなりラベルが付き、詳細が下に表示されます。空いたプロット領域をクリックすると onPlotClick が呼ばれ、選択を解除します。"
+        },
+        "players": {
+          "title": "カスタムツールチップと領域",
+          "description": "renderTooltip はデモのデータから作った React コンテンツでツールチップを置き換えます。リーグ平均は破線の参照線で、境界を一部省いた rect アノテーションが 2 つの隅をプロットの端まで塗ります。"
+        },
+        "live-stream": {
+          "title": "センサーのライブストリーム",
+          "description": "400 ms ごとに振動のサンプルを追加し（setInterval は一時停止とアンマウントで解除）、参照線を境に正常系列とアラーム系列に分けます。min と max を固定して、データが流れ込んでも軸が動かないようにしています。"
+        },
+        "log-log": {
+          "title": "両対数軸",
+          "description": "xAxis と yAxis に type: \"log\" を指定すると、代謝率のべき乗則（クライバーの法則）が 6 桁にわたって直線になります。近似線は tooltip: false を指定した 2 点の line 系列です。"
+        }
+      },
+      "data": {
+        "starter": "スターター",
+        "business": "ビジネス",
+        "seats": "シート数",
+        "monthlyBill": "月額料金",
+        "billAria": "プラン別のシート数と月額料金",
+        "countries": "国",
+        "gdp": "1 人あたり GDP",
+        "lifeExpectancy": "平均寿命",
+        "countriesAria": "1 人あたり GDP と平均寿命。点の大きさは人口",
+        "cluster": "クラスター {{name}}",
+        "clustersAria": "それぞれ 100,000 点からなる 2 つのクラスター",
+        "largeStatus": "{{points}} ポイント · {{renderer}} で描画",
+        "sessionAria": "セッション時間と閲覧ページ数",
+        "minutes": "分",
+        "pages": "ページ",
+        "free": "無料",
+        "pro": "プロ",
+        "sessionStatus": "{{plan}}：{{minutes}} 分、{{pages}} ページ",
+        "tapDot": "点をタップしてください",
+        "campaigns": "キャンペーン",
+        "trend": "傾向線",
+        "adSpend": "週間広告費",
+        "revenue": "週間売上",
+        "fit": "R² = {{r2}} · 広告費 1 ドルあたり売上 +{{slope}}",
+        "trendAria": "60 件のキャンペーンの広告費と売上、傾向線付き",
+        "penguins": {
+          "adelie": "アデリーペンギン",
+          "chinstrap": "ヒゲペンギン",
+          "gentoo": "ジェンツーペンギン"
+        },
+        "flipper": "フリッパー長",
+        "mass": "体重",
+        "penguinsAria": "3 種のペンギンのフリッパー長と体重",
+        "requests": "リクエスト",
+        "outlier": "外れ値",
+        "expected": "想定",
+        "payload": "ペイロードサイズ",
+        "responseTime": "応答時間",
+        "outliersAria": "ペイロードサイズと応答時間。外れ値は赤",
+        "outliersSummary": "{{total}} 件中 {{slow}} 件のリクエストが想定の 2 倍以上かかりました。",
+        "readings": "測定値",
+        "zoomPresets": {
+          "night": "涼しい夜間",
+          "comfort": "生育適温域",
+          "heat": "暑い午後"
+        },
+        "showAll": "すべて表示",
+        "temperature": "温度",
+        "humidity": "相対湿度",
+        "growingRange": "生育適温域",
+        "greenhouseAria": "温室センサーの温度と湿度の測定値",
+        "greenhouseView": "表示範囲：{{t0}} – {{t1}}、湿度 {{h0}} – {{h1}} · 表示中の測定値：{{points}}",
+        "greenhouseHint": "領域を選ぶか、Ctrl / ⌘ + ホイールでズームしてください",
+        "departments": {
+          "engineering": "エンジニアリング",
+          "sales": "営業",
+          "support": "サポート"
+        },
+        "tenure": "勤続年数",
+        "reviewScore": "評価スコア（1–5）",
+        "companyAverage": "全社平均",
+        "staffAria": "部署別の社員 90 名の勤続年数と評価スコア",
+        "employeeStatus": "{{id}} · {{department}} · {{tenure}} · スコア {{score}} · 年収 {{salary}}",
+        "employeeHint": "点をクリックすると社員を選択し、空いたプロット領域をクリックすると選択を解除します",
+        "players": "選手",
+        "leagueAverage": "リーグ平均",
+        "efficientScorers": "効率の良いスコアラー",
+        "volumeShooters": "試投数の多いシューター",
+        "pointsPerGame": "1 試合平均 {{value}} 得点",
+        "usageRow": "使用率：{{value}}",
+        "trueShootingRow": "TS%：{{value}}",
+        "usageRate": "使用率",
+        "trueShooting": "TS%（真のシュート成功率）",
+        "playersAria": "選手 16 人の使用率とシュート効率。点の大きさは 1 試合平均得点",
+        "normal": "正常",
+        "alarm": "アラーム",
+        "latest": "最新",
+        "mmPerSecond": "{{value}} mm/s",
+        "pause": "一時停止",
+        "resume": "再開",
+        "vibrationStatus": "最新サンプル：{{rpm}} rpm、{{value}} · 画面上のアラーム：{{alarms}}",
+        "speed": "回転数（rpm）",
+        "vibration": "振動",
+        "alarmLimit": "アラーム閾値",
+        "vibrationAria": "モーターの回転数に対する振動のライブデータ",
+        "mammals": "哺乳類",
+        "animals": {
+          "shrew": "トガリネズミ",
+          "mouse": "マウス",
+          "rat": "ラット",
+          "rabbit": "ウサギ",
+          "cat": "ネコ",
+          "dog": "イヌ",
+          "human": "ヒト",
+          "pig": "ブタ",
+          "horse": "ウマ",
+          "cow": "ウシ",
+          "giraffe": "キリン",
+          "elephant": "ゾウ"
+        },
+        "powerLaw": "べき乗則の近似",
+        "kg": "{{value}} kg",
+        "watts": "{{value}} W",
+        "bodyMass": "体重",
+        "metabolicRate": "基礎代謝率",
+        "kleiber": "代謝率 ∝ 体重^{{exponent}}（クライバーの法則）",
+        "kleiberAria": "哺乳類 12 種の基礎代謝率と体重（両対数軸）"
+      },
+      "api": {
+        "ScatterChartProps": {
+          "series": "type を指定しない限り点として描画する系列"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "軸タイトル付きの 2 つの点の集まり。点をタップするとシリーズと値が表示されます。"
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "clusters": {
+            "title": "2 つのクラスター",
+            "description": "2 つの系列の [x, y] の組と軸タイトル。Ctrl / ⌘ + ホイールで両方の軸をズームします。"
+          },
+          "point-click": {
+            "title": "クリックしたポイント",
+            "description": "ラベル付きのポイント。クリックするとラベルと値を表示します（ポイントのクリックイベント）。"
+          }
+        },
+        "minerva-scatter-chart": {
+          "props": {
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+            "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+            "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "データ範囲全体を表示します",
+            "getView": "表示範囲。エンジンが作成されるまでは null",
+            "setView": "表示範囲を設定します",
+            "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+          }
+        }
+      }
+    }
+  }
+}

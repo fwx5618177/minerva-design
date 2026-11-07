@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "en",
+  "renderer": "native",
+  "page": "icon",
+  "title": "Icon",
+  "description": "One icon of the set: inline SVG by default, or a canvas drawn with WebGPU, WebGL2, WebGL or Canvas2D. Named components (SearchIcon…), the generic Icon, custom icons and icons chosen by name.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "intro": {
+      "title": "SVG or canvas",
+      "svg": "By default an icon is an inline <svg>: it renders on the server, follows the text color through currentColor and the font size with size=\"1em\", and is hidden from assistive technologies unless it has a title or an aria-label.",
+      "canvas": "With renderer set to \"auto\", \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\", the same icon is drawn on a canvas. Browsers cap live WebGL contexts at about 16, so canvas icons share one backend per page: the icons that changed are packed into an atlas, drawn in one pass and copied to their canvases. \"auto\" follows the global default (setDefaultIconRenderer), here the renderer bar.",
+      "bundle": "Only what you import is bundled: SearchIcon brings its own path data, the canvas renderers load with the first canvas icon, and DynamicIcon (names chosen at runtime) is the only component that bundles the whole set."
+    },
+    "platforms": {
+      "title": "React Native and mini programs",
+      "native": "minerva-design/native/icons has the same components for React Native (Icon, createIcon, DynamicIcon, SearchIcon…), drawn with react-native-svg from the same 24×24 path data. react-native-svg is an optional peer dependency needed by this entry only (minerva-design/native never imports it): install it with npx expo install react-native-svg, or npm install react-native-svg outside Expo. Icons stroke with the theme's text color unless color is set, size is in dp, and a title makes the icon an accessible image.",
+      "taro": "minerva-design/taro/icons has them for Taro. Mini programs cannot render inline SVG and the WeChat <image> rejects percent-encoded SVG, so each icon is an Image of a base64 SVG data URI (toSvgBase64DataUri, which needs no btoa). An image has no currentColor: the color is written into the SVG, by default the theme's text color of the active light or dark mode, and the image is rebuilt when the color or the mode changes. size is in px, or any CSS length such as \"48rpx\".",
+      "tabBar": "The tabBar of a mini program only takes PNG or JPG files: generate them at build time from toSvg (one file per icon, color and state) with the SVG rasterizer of your choice. Minerva ships no rasterizer."
+    },
+    "data": {
+      "starting": "starting…"
+    }
+  },
+  "components": [
+    {
+      "name": "Icon",
+      "support": {
+        "status": "beta",
+        "notes": "Icon, DynamicIcon, createIcon and the named icons (SearchIcon…) of minerva-design/native/icons, a separate entry drawn with react-native-svg (optional peer dependency); no canvas renderer."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Icon, DynamicIcon, createIcon and the named icons (SearchIcon…) of minerva-design/native/icons, a separate entry drawn with react-native-svg (optional peer dependency); no canvas renderer.",
+        "import": {
+          "specifier": "minerva-design/native/icons",
+          "exports": [
+            "Icon"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "icon",
+            "source": "packages/native/src/icon/types.ts",
+            "kind": "object",
+            "typeText": "IconDefinition",
+            "typeRef": "type:2663909377d12299fe71",
+            "required": true,
+            "description": "The icon to draw: a built-in one (e.g. `searchIcon`) or a `defineIcon` result"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/icon/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 24,
+            "required": false,
+            "description": "Width and height in dp"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/icon/types.ts",
+            "kind": "union",
+            "typeText": "ColorValue | undefined",
+            "typeRef": "type:602aadca1cc5b15e53f9",
+            "required": false,
+            "description": "Stroke color (any React Native `ColorValue`, e.g. the `color` of a navigation `tabBarIcon`); per-path `colors` of the icon win"
+          },
+          {
+            "name": "strokeWidth",
+            "source": "packages/native/src/icon/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 2,
+            "required": false,
+            "description": "Stroke width on the 24×24 grid (scales with the size)"
+          },
+          {
+            "name": "absoluteStrokeWidth",
+            "source": "packages/native/src/icon/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Keeps `strokeWidth` in dp whatever the size"
+          },
+          {
+            "name": "title",
+            "source": "packages/native/src/icon/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name: the icon becomes an `image` with this label; without it (or an `accessibilityLabel`) the icon is hidden from assistive technologies"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:IconProps": {
+      "source": "native/src/icon/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<SvgProps, | \"color\" | \"stroke\" | \"strokeWidth\" | \"fill\" | \"width\" | \"height\" | \"viewBox\" | \"title\" | \"children\" | \"name\">"
+      ],
+      "props": [
+        {
+          "name": "icon",
+          "type": "IconDefinition",
+          "required": true,
+          "description": "The icon to draw: a built-in one (e.g. `searchIcon`) or a `defineIcon` result"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "required": false,
+          "default": "24",
+          "description": "Width and height in dp"
+        },
+        {
+          "name": "color",
+          "type": "ColorValue",
+          "required": false,
+          "default": "the theme's text color (`text-color` token)",
+          "description": "Stroke color (any React Native `ColorValue`, e.g. the `color` of a navigation `tabBarIcon`); per-path `colors` of the icon win"
+        },
+        {
+          "name": "strokeWidth",
+          "type": "number",
+          "required": false,
+          "default": "2",
+          "description": "Stroke width on the 24×24 grid (scales with the size)"
+        },
+        {
+          "name": "absoluteStrokeWidth",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Keeps `strokeWidth` in dp whatever the size"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name: the icon becomes an `image` with this label; without it (or an `accessibilityLabel`) the icon is hidden from assistive technologies"
+        }
+      ]
+    },
+    "native:DynamicIconProps": {
+      "source": "native/src/icon/types.ts",
+      "kind": "interface",
+      "extends": [
+        "NamedIconProps"
+      ],
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Name of a built-in icon (e.g. `\"arrow-up\"`); unknown names render nothing"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon/native/basic.tsx": "import { Text, View } from \"react-native\";\nimport {\n  BellRingIcon,\n  CalendarCheckIcon,\n  DynamicIcon,\n  Icon,\n  ListTodoIcon,\n  NotebookPenIcon,\n  SearchIcon,\n  paletteIcon,\n} from \"minerva-design/native/icons\";\n\nconst tabs = [\"home\", \"repeat\", \"notebook-pen\", \"library\", \"user-round\"];\n\nexport default function Basic() {\n  return (\n    <View style={{ gap: 20 }}>\n      {/* 24dp, stroked with the theme's text color */}\n      <View style={{ flexDirection: \"row\", gap: 16 }}>\n        <SearchIcon />\n        <CalendarCheckIcon />\n        <ListTodoIcon />\n        <NotebookPenIcon />\n        <BellRingIcon />\n      </View>\n      {/* size, color, stroke width and an accessible name */}\n      <View style={{ flexDirection: \"row\", alignItems: \"center\", gap: 16 }}>\n        <SearchIcon size={16} />\n        <SearchIcon size={32} color=\"#2563eb\" title=\"Search\" />\n        <Icon icon={paletteIcon} size={40} strokeWidth={1.5} color=\"#db2777\" />\n      </View>\n      {/* icons chosen by name (bundles the whole set) */}\n      <View style={{ flexDirection: \"row\", justifyContent: \"space-between\" }}>\n        {tabs.map((name, i) => {\n          const color = i === 0 ? \"#4f46e5\" : \"#737373\";\n          return (\n            <View key={name} style={{ alignItems: \"center\", gap: 4 }}>\n              <DynamicIcon name={name} size={22} color={color} />\n              <Text style={{ fontSize: 11, color }}>{name}</Text>\n            </View>\n          );\n        })}\n      </View>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Basic",
+      "description": "Every icon is a component named after it; icons sit inline with text and inside buttons."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// npx expo install react-native-svg (optional peer dependency of this entry)\nimport { DynamicIcon, Icon, SearchIcon, searchIcon } from \"minerva-design/native/icons\";\n\n<SearchIcon />                                          // 24dp, theme text color\n<SearchIcon size={20} color=\"#2563eb\" title=\"Search\" /> // accessible image\n<Icon icon={searchIcon} strokeWidth={1.5} absoluteStrokeWidth />\n<DynamicIcon name={item.icon} />                        // bundles the whole set",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Icon, SearchIcon, settingsIcon } from \"minerva-design/taro/icons\";\n\n<SearchIcon />                                          // 24px base64 SVG image\n<SearchIcon size=\"48rpx\" color=\"#2563eb\" title=\"Search\" />\n<Icon icon={settingsIcon} strokeWidth={1.5} />          // theme text color, per mode",
+      "language": "tsx"
+    },
+    {
+      "source": "// build-time Node script: the tabBar only takes PNG / JPG files\nimport { writeFileSync } from \"node:fs\";\nimport { homeIcon, toSvg } from \"minerva-design/icons/core\";\n\nfor (const [state, color] of [[\"normal\", \"#6b7280\"], [\"active\", \"#2563eb\"]]) {\n  const svg = toSvg(homeIcon, { size: 81, color });\n  // rasterize: the SVG -> PNG converter of your choice\n  writeFileSync(`src/assets/tab-home-${state}.png`, await rasterize(svg));\n}",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Icon",
+      "description": "One icon of the set: inline SVG by default, or a canvas drawn with WebGPU, WebGL2, WebGL or Canvas2D. Named components (SearchIcon…), the generic Icon, custom icons and icons chosen by name.",
+      "intro": {
+        "title": "SVG or canvas",
+        "svg": "By default an icon is an inline <svg>: it renders on the server, follows the text color through currentColor and the font size with size=\"1em\", and is hidden from assistive technologies unless it has a title or an aria-label.",
+        "canvas": "With renderer set to \"auto\", \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\", the same icon is drawn on a canvas. Browsers cap live WebGL contexts at about 16, so canvas icons share one backend per page: the icons that changed are packed into an atlas, drawn in one pass and copied to their canvases. \"auto\" follows the global default (setDefaultIconRenderer), here the renderer bar.",
+        "bundle": "Only what you import is bundled: SearchIcon brings its own path data, the canvas renderers load with the first canvas icon, and DynamicIcon (names chosen at runtime) is the only component that bundles the whole set."
+      },
+      "platforms": {
+        "title": "React Native and mini programs",
+        "native": "minerva-design/native/icons has the same components for React Native (Icon, createIcon, DynamicIcon, SearchIcon…), drawn with react-native-svg from the same 24×24 path data. react-native-svg is an optional peer dependency needed by this entry only (minerva-design/native never imports it): install it with npx expo install react-native-svg, or npm install react-native-svg outside Expo. Icons stroke with the theme's text color unless color is set, size is in dp, and a title makes the icon an accessible image.",
+        "taro": "minerva-design/taro/icons has them for Taro. Mini programs cannot render inline SVG and the WeChat <image> rejects percent-encoded SVG, so each icon is an Image of a base64 SVG data URI (toSvgBase64DataUri, which needs no btoa). An image has no currentColor: the color is written into the SVG, by default the theme's text color of the active light or dark mode, and the image is rebuilt when the color or the mode changes. size is in px, or any CSS length such as \"48rpx\".",
+        "tabBar": "The tabBar of a mini program only takes PNG or JPG files: generate them at build time from toSvg (one file per icon, color and state) with the SVG rasterizer of your choice. Minerva ships no rasterizer."
+      },
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "Every icon is a component named after it; icons sit inline with text and inside buttons."
+        },
+        "size-color": {
+          "title": "Size and color",
+          "description": "size takes pixels or any CSS length (1em follows the font size); color takes any CSS color, theme variables included, and defaults to the text color."
+        },
+        "stroke": {
+          "title": "Stroke width",
+          "description": "strokeWidth is on the 24×24 grid, so it scales with the icon. absoluteStrokeWidth keeps it in pixels whatever the size (second half of the bottom row)."
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "description": "Decorative icons are aria-hidden; give an icon that stands alone a title (role=\"img\"); inside a control, label the control instead."
+        },
+        "custom": {
+          "title": "Custom icons",
+          "description": "defineIcon validates your own path data once; createIcon turns it into a component like the built-in ones, and Icon draws it on every renderer."
+        },
+        "dynamic": {
+          "title": "Icons by name",
+          "description": "DynamicIcon picks a built-in icon from a name known only at runtime; unknown names render nothing. It bundles the whole set."
+        },
+        "canvas": {
+          "title": "Renderers",
+          "description": "The same icon as SVG and on each canvas backend; under each one, the backend that actually drew it. \"auto\" follows the renderer bar; a forced backend this browser lacks falls back to the next one."
+        }
+      },
+      "data": {
+        "starting": "starting…"
+      },
+      "api": {
+        "IconProps": {
+          "icon": "The icon to draw: a built-in one (e.g. searchIcon) or a defineIcon result",
+          "size": "Width and height; a number is in pixels, canvas renderers also follow CSS sizes such as \"1em\"",
+          "color": "Stroke color, any CSS color",
+          "strokeWidth": "Stroke width on the 24×24 grid (scales with the size)",
+          "absoluteStrokeWidth": "Keeps strokeWidth in pixels whatever the size",
+          "title": "Accessible name: the icon becomes role=\"img\"; without it (or an aria-label) the icon is hidden from assistive technologies",
+          "renderer": "Inline SVG, or a canvas drawn by a backend shared by every canvas icon of the page (\"auto\" follows the global default)",
+          "onRendererChange": "Canvas renderers: called with the backend that drew the icon",
+          "ref": "The <svg> element, or the <canvas> with a canvas renderer"
+        },
+        "DynamicIconProps": {
+          "name": "Name of a built-in icon (e.g. \"arrow-up\"); unknown names render nothing"
+        }
+      },
+      "wc": {
+        "minerva-icon": {
+          "props": {
+            "label": "Accessible name: the icon becomes role=\"img\" with this name; without it, the icon is hidden from assistive technologies"
+          },
+          "events": {
+            "minerva-renderer-change": "Canvas mode: the backend drew the icon, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "getRenderer": "Backend drawing the canvas (webgpu, webgl2, webgl, canvas2d), null in SVG mode or until it started"
+          }
+        },
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "<minerva-icon> draws a built-in icon by name, inline with text and in the slots of other elements; with a label it becomes an image for assistive technologies."
+          },
+          "canvas": {
+            "title": "Renderers",
+            "description": "The renderer attribute draws the icon on a canvas; each icon fires minerva-renderer-change with the backend that drew it, shown under it. \"auto\" follows the renderer bar; a forced backend this browser lacks falls back to the next one."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Icons in React Native",
+            "description": "The same icons drawn with react-native-svg: named components stroked with the theme's text color, size in dp, a custom color and stroke width, an accessible name with title, and DynamicIcon for icons chosen by name (a tab bar here)."
+          }
+        }
+      }
+    }
+  }
+}

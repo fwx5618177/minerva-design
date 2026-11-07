@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "slider",
+  "title": "Slider スライダー",
+  "description": "トラックに沿ってドラッグして数値を、または 2 つのつまみで範囲を選択します。ステップや目盛り、値ラベルとツールチップに対応し、ユーザーが指を離したときに別のイベントを発火します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Slider",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Slider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "SliderValue",
+            "required": false,
+            "description": "Value (controlled, `v-model`): a number, or `[start, end]` with `range`",
+            "typeText": "SliderValue"
+          },
+          {
+            "name": "defaultValue",
+            "type": "SliderValue",
+            "required": false,
+            "description": "Initial value (uncontrolled); defaults to min, or [min, max] with range",
+            "typeText": "SliderValue"
+          },
+          {
+            "name": "range",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross",
+            "typeText": "boolean"
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "default": "0",
+            "required": false,
+            "description": "Smallest value",
+            "typeText": "number"
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "default": "100",
+            "required": false,
+            "description": "Largest value",
+            "typeText": "number"
+          },
+          {
+            "name": "step",
+            "type": "number | null",
+            "default": "1",
+            "required": false,
+            "description": "Step between two values; `null` snaps to the marks only",
+            "typeText": "number | null"
+          },
+          {
+            "name": "marks",
+            "type": "boolean | SliderMark[]",
+            "required": false,
+            "description": "Ticks of the scale: `{ value, label? }[]`, or `true` for one tick per step",
+            "typeText": "boolean | SliderMark[]"
+          },
+          {
+            "name": "snapToMarks",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Snaps the value to the closest mark (instead of the step)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": "Disables the slider. Inherited from an enclosing FormControl when not set",
+            "typeText": "boolean"
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "required": false,
+            "description": "The user cannot change the value. Inherited from an enclosing FormControl\nwhen not set",
+            "typeText": "boolean"
+          },
+          {
+            "name": "size",
+            "type": "SliderSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Thumb and track size",
+            "typeText": "SliderSize"
+          },
+          {
+            "name": "color",
+            "type": "SliderColor",
+            "default": "\"primary\"",
+            "required": false,
+            "description": "Semantic color of the filled track and the thumbs",
+            "typeText": "SliderColor"
+          },
+          {
+            "name": "showValue",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows the value after the track",
+            "typeText": "boolean"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows the value in a bubble above a thumb while it is dragged, hovered\nor focused",
+            "typeText": "boolean"
+          },
+          {
+            "name": "formatValue",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats a value for the value label, the tooltip and aria-valuetext",
+            "typeText": "((value: number) => string)"
+          },
+          {
+            "name": "orientation",
+            "type": "SliderOrientation",
+            "default": "\"horizontal\"",
+            "required": false,
+            "description": "Direction of the track",
+            "typeText": "SliderOrientation"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": false,
+            "description": "Name of the hidden form input(s); a range submits two entries",
+            "typeText": "string"
+          },
+          {
+            "name": "getAriaValueText",
+            "type": "((value: number, index: number) => string)",
+            "required": false,
+            "description": "aria-valuetext of a thumb (index 0, or 1 for the end thumb of a range)",
+            "typeText": "((value: number, index: number) => string)"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: SliderValue]",
+            "typeText": "[value: SliderValue]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "SliderValue",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[value: SliderValue]",
+            "typeText": "[value: SliderValue]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "SliderValue",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "changeEnd",
+            "type": "[value: SliderValue]",
+            "typeText": "[value: SliderValue]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "SliderValue",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Slider": {
+      "kind": "cssVars",
+      "source": "react/src/components/Slider",
+      "vars": [
+        {
+          "name": "--slider-accent",
+          "description": "Color of the filled track and of the thumb border (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--slider-rail-color",
+          "description": "Background of the empty track"
+        },
+        {
+          "name": "--slider-thumb-color",
+          "description": "Background of the thumbs"
+        },
+        {
+          "name": "--slider-track-height",
+          "description": "Thickness of the track (every size)"
+        },
+        {
+          "name": "--slider-thumb-size",
+          "description": "Width and height of the thumbs (every size)"
+        },
+        {
+          "name": "--slider-length",
+          "description": "Length of a vertical slider"
+        },
+        {
+          "name": "--slider-min-length",
+          "description": "Smallest length of a horizontal track, like the intrinsic size of a native range input (defaults to 10rem)"
+        },
+        {
+          "name": "--slider-gap",
+          "description": "Space between the track and the value label"
+        },
+        {
+          "name": "--slider-value-font-size",
+          "description": "Font size of the value label and of the mark labels"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/slider/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/slider/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Slider, VStack, type SliderValue } from \"minerva-design/vue\";\nconst volume = ref<SliderValue>(40);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\" style=\"width: 100%; max-width: 420px\"\n    ><Slider v-model=\"volume\" aria-label=\"Volume\" show-value tooltip /><Slider\n      aria-label=\"Opacity\"\n      :default-value=\"0.6\"\n      :min=\"0\"\n      :max=\"1\"\n      :step=\"0.05\"\n      show-value\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "committed",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/slider/vue/committed.vue",
+      "files": {
+        "apps/docs/src/docs/pages/slider/vue/committed.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Slider, VStack, type SliderValue } from \"minerva-design/vue\";\nconst live = ref<SliderValue>(50);\nconst saved = ref<SliderValue>(50);\nconst saves = ref(0);\nfunction save(value: SliderValue) {\n  saved.value = value;\n  saves.value += 1;\n}\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\" style=\"width: 100%; max-width: 420px\"\n    ><Slider v-model=\"live\" aria-label=\"Brightness\" @change-end=\"save\" /><output\n      >While dragging: {{ live }} · Saved on release: {{ saved }} ({{\n        saves\n      }}\n      saves)</output\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "committed",
+      "description": ""
+    },
+    {
+      "id": "disabled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/slider/vue/disabled.vue",
+      "files": {
+        "apps/docs/src/docs/pages/slider/vue/disabled.vue": "<script setup lang=\"ts\">\nimport {\n  FormControl,\n  FormHelperText,\n  FormLabel,\n  Slider,\n  VStack,\n} from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"4\" align=\"stretch\" style=\"width: 100%; max-width: 420px\"\n    ><Slider aria-label=\"Disabled\" :default-value=\"40\" disabled /><Slider\n      aria-label=\"Read only\"\n      :default-value=\"60\"\n      read-only\n      show-value\n    /><FormControl invalid\n      ><FormLabel>Daily goal (minutes)</FormLabel\n      ><Slider\n        :default-value=\"5\"\n        :max=\"120\"\n        :step=\"5\"\n        show-value\n      /><FormHelperText>Pick at least 10 minutes.</FormHelperText></FormControl\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "disabled",
+      "description": ""
+    },
+    {
+      "id": "marks",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/slider/vue/marks.vue",
+      "files": {
+        "apps/docs/src/docs/pages/slider/vue/marks.vue": "<script setup lang=\"ts\">\nimport { Slider, VStack } from \"minerva-design/vue\";\nconst levels = [\n  { value: 0, label: \"Off\" },\n  { value: 25, label: \"Low\" },\n  { value: 50, label: \"Medium\" },\n  { value: 75, label: \"High\" },\n  { value: 100, label: \"Max\" },\n];\nconst levelText = (v: number) =>\n  levels.find((level) => level.value === v)?.label ?? String(v);\n</script>\n<template>\n  <VStack :gap=\"8\" align=\"stretch\" style=\"width: 100%; max-width: 420px\"\n    ><Slider\n      aria-label=\"Rating\"\n      :default-value=\"6\"\n      :max=\"10\"\n      marks\n      show-value /><Slider\n      aria-label=\"Fan speed\"\n      :default-value=\"50\"\n      :step=\"null\"\n      :marks=\"levels\"\n      :get-aria-value-text=\"levelText\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "marks",
+      "description": ""
+    },
+    {
+      "id": "range",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/slider/vue/range.vue",
+      "files": {
+        "apps/docs/src/docs/pages/slider/vue/range.vue": "<script setup lang=\"ts\">\nimport { computed, ref } from \"vue\";\nimport { Slider, VStack, type SliderValue } from \"minerva-design/vue\";\nconst price = ref<SliderValue>([20, 80]);\nconst label = computed(() => {\n  const [low, high] = price.value as [number, number];\n  return `From $${low} to $${high}`;\n});\nconst money = (v: number) => `$${v}`;\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\" style=\"width: 100%; max-width: 420px\"\n    ><Slider\n      v-model=\"price\"\n      aria-label=\"Price\"\n      range\n      :step=\"5\"\n      :format-value=\"money\"\n      tooltip\n      name=\"price\"\n    /><output>{{ label }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "range",
+      "description": ""
+    },
+    {
+      "id": "sizes-colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/slider/vue/sizes-colors.vue",
+      "files": {
+        "apps/docs/src/docs/pages/slider/vue/sizes-colors.vue": "<script setup lang=\"ts\">\nimport { Slider, VStack } from \"minerva-design/vue\";\nconst colors = [\"primary\", \"success\", \"info\", \"warning\", \"danger\"] as const;\n</script>\n<template>\n  <VStack :gap=\"4\" align=\"stretch\" style=\"width: 100%; max-width: 420px\"\n    ><Slider aria-label=\"Small\" size=\"small\" :default-value=\"30\" /><Slider\n      aria-label=\"Medium\"\n      :default-value=\"50\" /><Slider\n      aria-label=\"Large\"\n      size=\"large\"\n      :default-value=\"70\" /><Slider\n      v-for=\"(color, index) in colors\"\n      :key=\"color\"\n      :aria-label=\"color\"\n      :color=\"color\"\n      :default-value=\"20 + index * 15\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes-colors",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Slider スライダー",
+      "description": "トラックに沿ってドラッグして数値を、または 2 つのつまみで範囲を選択します。ステップや目盛り、値ラベルとツールチップに対応し、ユーザーが指を離したときに別のイベントを発火します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "showValue と、ドラッグ中またはフォーカス時のツールチップを使った制御された値。各つまみは role=\"slider\" で、矢印キーで 1 ステップ、PageUp / PageDown で 10%、Home / End で最小 / 最大に移動します。トラックをクリックするとその位置にジャンプします。"
+        },
+        "range": {
+          "title": "範囲",
+          "description": "range は交差しない 2 つのつまみで [start, end] を選択します（トラックのクリックには最も近いつまみが追従）。formatValue はツールチップと aria-valuetext を整形し、name は 2 つの隠し入力を送信します。"
+        },
+        "marks": {
+          "title": "目盛り",
+          "description": "marks={true} はステップごとに目盛りを描き、{ value, label } の配列はラベル付きの目盛りを描きます。step={null}（または snapToMarks）は目盛りにのみ吸着し、getAriaValueText はスクリーンリーダー向けに値を読み上げます。"
+        },
+        "sizes-colors": {
+          "title": "サイズと色",
+          "description": "3 つのサイズと、塗りつぶしトラックとつまみの 5 つのセマンティックカラー。テーマ変数はライト / ダークモードに追従します。"
+        },
+        "committed": {
+          "title": "離したときに保存",
+          "description": "onChange はすべての移動に追従し、onChangeEnd はポインターを離したとき（またはキー操作の後）に 1 回だけ呼ばれます。変更のたびではなく、ここで保存してください。"
+        },
+        "disabled": {
+          "title": "無効、読み取り専用とフォーム",
+          "description": "disabled はスライダーを無効にし、readOnly はフォーカス可能なまま値を固定します。FormControl 内ではラベル、説明、無効 / 非活性 / 読み取り専用の状態を引き継ぎます。"
+        }
+      },
+      "api": {
+        "SliderProps": {
+          "value": "値（制御）：数値、または range のとき [start, end]。min..max に制限され、ステップに吸着します",
+          "defaultValue": "初期値（非制御）。既定は min、range のときは [min, max]",
+          "range": "2 つのつまみで [start, end] を選択します。つまみは交差しません",
+          "min": "最小値",
+          "max": "最大値",
+          "step": "値の間隔。null のときは目盛りにのみ吸着します",
+          "marks": "目盛り：{ value, label? } の配列、またはステップごとに目盛りを描く true（最大 101 個）",
+          "snapToMarks": "ステップではなく最も近い目盛りに吸着します",
+          "onChange": "ドラッグ中とキー操作のたびに新しい値で呼ばれます",
+          "onChangeEnd": "操作の終了時（ポインターを離す、キー操作）に最終値で呼ばれます：ここで保存してください",
+          "disabled": "スライダーを無効にします（未指定のときは外側の FormControl を継承）",
+          "readOnly": "フォーカスは可能ですが値は変更できません（外側の FormControl を継承）",
+          "size": "つまみとトラックのサイズ",
+          "color": "塗りつぶしトラックとつまみのセマンティックカラー",
+          "showValue": "トラックの後に（整形した）値を表示します",
+          "tooltip": "ドラッグ中、ホバー時、フォーカス時につまみの上の吹き出しに値を表示します",
+          "formatValue": "値ラベル、ツールチップ、aria-valuetext の値を整形します",
+          "orientation": "トラックの向き",
+          "name": "隠しフォーム入力の名前。range のときは 2 件送信します",
+          "aria-label": "つまみのアクセシブルなラベル（range のときは「最小値 / 最大値」を付加）。既定は FormControl のラベル",
+          "aria-labelledby": "つまみのラベルとなる要素の id",
+          "aria-describedby": "スライダーを説明する追加の要素 id。FormControl のヘルプ / エラーテキストと結合されます",
+          "getAriaValueText": "つまみの aria-valuetext（インデックス 0、range の終了つまみは 1）。既定は formatValue",
+          "className": "追加のクラス名",
+          "style": "ルート要素のインラインスタイル",
+          "ref": "ルート要素への ref"
+        }
+      },
+      "cssVars": {
+        "--slider-accent": "塗りつぶしトラックとつまみの枠線の色（既定は color プロパティのアクセント）",
+        "--slider-rail-color": "空のトラックの背景",
+        "--slider-thumb-color": "つまみの背景",
+        "--slider-track-height": "トラックの太さ（全サイズ）",
+        "--slider-thumb-size": "つまみの幅と高さ（全サイズ）",
+        "--slider-length": "縦向きスライダーの長さ",
+        "--slider-min-length": "横向きトラックの最小長さ。ネイティブの range 入力の固有サイズに相当（既定は 10rem）",
+        "--slider-gap": "トラックと値ラベルの間隔",
+        "--slider-value-font-size": "値ラベルと目盛りラベルのフォントサイズ"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "value は属性です（初期値になり、form.reset() で復元されます）。minerva-change はドラッグとキー操作に追従します。show-value と tooltip で値を表示します。"
+          },
+          "range": {
+            "title": "範囲",
+            "description": "range と value=\"20,80\" で 2 つの値を選択し、フォームは name で 2 件送信します。formatValue はプロパティです。"
+          },
+          "marks": {
+            "title": "目盛り",
+            "description": "空の marks 属性はステップごとに目盛りを描き、JSON 配列はラベル付きの目盛りを描きます。step=\"null\" は目盛りにのみ吸着し、getAriaValueText プロパティで値に名前を付けます。"
+          },
+          "sizes-colors": {
+            "title": "サイズと色",
+            "description": "size と color は反映される属性です（:state(size-small)、:state(color-success) などのカスタムステートもあります）。"
+          },
+          "committed": {
+            "title": "離したときに保存",
+            "description": "minerva-change はすべての移動に追従し、minerva-change-end は離したとき（またはキー操作の後）に 1 回発火します：ここで保存してください。"
+          },
+          "disabled": {
+            "title": "無効、読み取り専用、不正",
+            "description": "disabled（無効な fieldset でも）はスライダーを無効にし、readonly はフォーカス可能で送信も行い、invalid は aria-invalid を設定します。"
+          }
+        },
+        "minerva-slider": {
+          "events": {
+            "input": "ドラッグ中またはキー操作で値が変わりました（ネイティブ同様）。",
+            "change": "操作が終了しました（ネイティブ同様）。",
+            "minerva-change": "ドラッグ中またはキー操作で値が変わりました（detail: { value }）。",
+            "minerva-change-end": "離したとき、またはキー操作の後に操作が終了しました（detail: { value }）：ここで保存してください。"
+          },
+          "props": {
+            "invalid": "エラー状態（aria-invalid を設定）。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。",
+            "required": "フォーム関連のフラグ。スライダーは常に値を持つため、欠落することはありません。"
+          },
+          "methods": {
+            "focus": "最初のつまみにフォーカスします。",
+            "blur": "スライダーからフォーカスを外します。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "このスマートフォンのプレビューでつまみをドラッグしてください：onChange はドラッグに追従し、onChangeEnd は離したときに呼ばれます。スクリーンリーダーは増やす / 減らす操作で各つまみを調整できます。"
+          },
+          "vertical": {
+            "title": "縦方向",
+            "description": "orientation=\"vertical\" ではトラックが下（最小値）から上（最大値）に伸びます。上にドラッグすると値が増え、トラックをタップするとその位置に移動します。既定の長さは 160 dp で、style の height で変更できます。範囲、目盛り、ツールチップ、値ラベルは同じように使えます。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,441 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "heatmap-chart",
+  "title": "Heatmap",
+  "description": "A grid of cells colored by value, over categories or numbers on both axes: activity by weekday and hour, correlation matrices, maps of a measure. Hover a cell to lift it, highlight its row and column and mark its value on the color legend.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "sessions": "Sessions",
+      "sessionsAria": "Sessions by weekday and hour of the day",
+      "anomaly": "Anomaly",
+      "anomalyAria": "Monthly temperature anomaly, 1995 to 2024",
+      "signal": "Signal",
+      "wifiAria": "Wi-Fi signal strength over a 200 by 100 meter floor",
+      "largeStatus": "{{cells}} cells · drawn with {{renderer}} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset",
+      "contributions": "Contributions",
+      "activityAria": "Contributions per day over one year",
+      "activityTotal": "{{total}} contributions in the last year",
+      "metrics": {
+        "sessions": "Sessions",
+        "pageViews": "Page views",
+        "signups": "Sign-ups",
+        "revenue": "Revenue",
+        "churn": "Churn",
+        "tickets": "Support tickets"
+      },
+      "correlation": "Correlation",
+      "correlationAria": "Correlation matrix of six product metrics",
+      "monthN": "Month {{n}}",
+      "retained": "Retained",
+      "retentionAria": "Retention of monthly signup cohorts",
+      "devices": {
+        "desktop": "Desktop",
+        "mobile": "Mobile",
+        "tablet": "Tablet"
+      },
+      "sources": {
+        "organic": "Organic search",
+        "paid": "Paid search",
+        "social": "Social",
+        "email": "Email",
+        "referral": "Referral",
+        "direct": "Direct"
+      },
+      "cellStatus": "{{source}} on {{device}}: {{orders}} orders from {{sessions}} sessions, {{rate}}:",
+      "aboveAverage": "above the average of {{value}}",
+      "belowAverage": "below the average of {{value}}",
+      "clickCell": "Click a cell to see its sessions and orders.",
+      "conversionRate": "Conversion rate",
+      "conversionAria": "Conversion rate by traffic source and device",
+      "rackN": "Rack {{n}}",
+      "sensorN": "Sensor {{n}}",
+      "pause": "Pause",
+      "resume": "Resume",
+      "rackStatus": "Hottest: {{rack}}, {{sensor}} at {{value}} · {{alarms}} sensors above {{limit}}",
+      "inletTemperature": "Inlet temperature",
+      "racksAria": "Live inlet temperatures of the sensors of ten server racks",
+      "classes": {
+        "cat": "Cat",
+        "dog": "Dog",
+        "bird": "Bird",
+        "car": "Car",
+        "truck": "Truck"
+      },
+      "actualPredicted": "Actual {{actual}}, predicted {{predicted}}",
+      "imagesShare": "{{value}} images ({{share}} of the class)",
+      "recall": "Recall: {{value}}",
+      "precision": "Precision: {{value}}",
+      "misclassified": "Misclassified",
+      "accuracy": "Accuracy: {{value}} of {{images}} test images",
+      "shareOfClass": "Share of the class",
+      "predicted": "Predicted class",
+      "actual": "Actual class",
+      "confusionAria": "Confusion matrix of an image classifier over five classes",
+      "regions": {
+        "north": "North",
+        "south": "South",
+        "east": "East",
+        "west": "West",
+        "central": "Central"
+      },
+      "quarterN": "Q{{n}}",
+      "metric": "Metric",
+      "salesMetrics": {
+        "revenue": "Revenue",
+        "growth": "Growth over 2025",
+        "margin": "Gross margin"
+      },
+      "regionQuarter": "{{region}} in {{quarter}}",
+      "bestWorst": "Best: {{best}} ({{bestValue}}) · weakest: {{worst}} ({{worstValue}})",
+      "salesAria": "Sales metrics of 2026 by region and quarter"
+    }
+  },
+  "components": [
+    {
+      "name": "HeatmapChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/heatmap-chart",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-heatmap-chart",
+        "props": [
+          {
+            "name": "colorScale",
+            "typeText": "readonly string[] | \"sequential\" | \"diverging\"",
+            "attribute": "color-scale",
+            "required": false
+          },
+          {
+            "name": "colorMidpoint",
+            "typeText": "number | undefined",
+            "attribute": "color-midpoint",
+            "required": false
+          },
+          {
+            "name": "valueName",
+            "typeText": "string | undefined",
+            "attribute": "value-name",
+            "required": false
+          },
+          {
+            "name": "radius",
+            "typeText": "number | undefined",
+            "attribute": "radius",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | number | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "data",
+            "typeText": "readonly HeatmapCell[] | undefined",
+            "required": false
+          },
+          {
+            "name": "xCategories",
+            "typeText": "readonly string[] | undefined",
+            "required": false
+          },
+          {
+            "name": "yCategories",
+            "typeText": "readonly string[] | undefined",
+            "required": false
+          },
+          {
+            "name": "valueRange",
+            "typeText": "readonly [number, number] | undefined",
+            "required": false
+          },
+          {
+            "name": "format",
+            "typeText": "(value: number) => string | undefined",
+            "required": false
+          },
+          {
+            "name": "options",
+            "typeText": "ChartBaseOptions | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-hover",
+            "typeText": "CustomEvent",
+            "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+          },
+          {
+            "name": "minerva-point-click",
+            "typeText": "CustomEvent",
+            "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+          },
+          {
+            "name": "minerva-plot-click",
+            "typeText": "CustomEvent",
+            "description": "The plot area was clicked where there is no point; detail: { x, y }"
+          },
+          {
+            "name": "minerva-zoom",
+            "typeText": "CustomEvent",
+            "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+          },
+          {
+            "name": "minerva-renderer-change",
+            "typeText": "CustomEvent",
+            "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "color-scale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/wc/color-scale.html",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/wc/color-scale.html": "<minerva-heatmap-chart\n  id=\"correlation\"\n  radius=\"4\"\n  height=\"320\"\n></minerva-heatmap-chart>\n",
+        "apps/docs/src/docs/pages/heatmap-chart/wc/color-scale.ts": "// A diverging color scale over a fixed value range (-1 to 1): negative\n// correlations in blue, positive ones in red.\nimport type { MinervaHeatmapChart } from \"minerva-design/web-components/chart\";\n\nconst TEXT = {\n  en: {\n    correlation: \"Correlation\",\n    metrics: [\"Price\", \"Rating\", \"Delivery\", \"Returns\", \"Sales\"],\n  },\n  zh: {\n    correlation: \"相关系数\",\n    metrics: [\"价格\", \"评分\", \"配送\", \"退货\", \"销量\"],\n  },\n  ja: {\n    correlation: \"相関係数\",\n    metrics: [\"価格\", \"評価\", \"配送\", \"返品\", \"売上\"],\n  },\n  fr: {\n    correlation: \"Corrélation\",\n    metrics: [\"Prix\", \"Note\", \"Livraison\", \"Retours\", \"Ventes\"],\n  },\n};\n\nconst MATRIX = [\n  [1, -0.32, 0.12, 0.41, -0.58],\n  [-0.32, 1, -0.44, -0.61, 0.72],\n  [0.12, -0.44, 1, 0.35, -0.27],\n  [0.41, -0.61, 0.35, 1, -0.49],\n  [-0.58, 0.72, -0.27, -0.49, 1],\n];\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const chart = root.querySelector<MinervaHeatmapChart>(\"#correlation\")!;\n  chart.data = MATRIX.flatMap((row, r) =>\n    row.map((value, c) => ({\n      x: text.metrics[c],\n      y: text.metrics[r],\n      value,\n    })),\n  );\n  chart.colorScale = [\"#2563eb\", \"#f8fafc\", \"#dc2626\"];\n  chart.valueRange = [-1, 1];\n  chart.valueName = text.correlation;\n  chart.format = (value) => value.toFixed(2);\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Diverging color scale",
+      "description": "A correlation matrix on a fixed -1 to 1 range: blue for negative values, red for positive ones, rounded cells."
+    },
+    {
+      "id": "weekly-activity",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/wc/weekly-activity.html",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/wc/weekly-activity.html": "<minerva-heatmap-chart id=\"activity\" height=\"300\"></minerva-heatmap-chart>\n",
+        "apps/docs/src/docs/pages/heatmap-chart/wc/weekly-activity.ts": "// `data` holds { x, y, value } cells; categories set the order of the\n// columns and rows (rows from bottom to top).\nimport type { MinervaHeatmapChart } from \"minerva-design/web-components/chart\";\n\nconst TEXT = {\n  en: {\n    commits: \"Commits\",\n    days: [\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"],\n  },\n  zh: {\n    commits: \"提交数\",\n    days: [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\", \"周六\", \"周日\"],\n  },\n  ja: {\n    commits: \"コミット数\",\n    days: [\"月\", \"火\", \"水\", \"木\", \"金\", \"土\", \"日\"],\n  },\n  fr: {\n    commits: \"Commits\",\n    days: [\"lun.\", \"mar.\", \"mer.\", \"jeu.\", \"ven.\", \"sam.\", \"dim.\"],\n  },\n};\n\nconst HOURS = [\"0–4\", \"4–8\", \"8–12\", \"12–16\", \"16–20\", \"20–24\"];\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const chart = root.querySelector<MinervaHeatmapChart>(\"#activity\")!;\n  chart.data = text.days.flatMap((day, d) =>\n    HOURS.map((hour, h) => ({\n      x: hour,\n      y: day,\n      value:\n        d < 5 && h > 1 && h < 5\n          ? 20 + ((d * 7 + h * 5) % 13)\n          : (d * 3 + h * 2) % 6,\n    })),\n  );\n  chart.xCategories = HOURS;\n  chart.yCategories = [...text.days].reverse();\n  chart.valueName = text.commits;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Weekly activity",
+      "description": "Commits per day and time slot; the categories set the order of the columns and rows."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Heatmap",
+      "description": "A grid of cells colored by value, over categories or numbers on both axes: activity by weekday and hour, correlation matrices, maps of a measure. Hover a cell to lift it, highlight its row and column and mark its value on the color legend.",
+      "demos": {
+        "basic": {
+          "title": "Weekly activity",
+          "description": "7 × 24 cells over category axes. The default ramp is perceptual (OKLab) and follows the theme: from a near-white tint to a deep primary color in light mode, from a tint of the surface to a bright one in dark mode; the color legend shows its range. yCategories lists the rows from bottom to top, hence the reversed weekdays."
+        },
+        "color-scale": {
+          "title": "Diverging scale",
+          "description": "colorScale lists the colors from the lowest to the highest value and accepts CSS variables, so the middle stop follows the theme. A symmetric valueRange keeps 0 in the middle of the scale."
+        },
+        "large-grid": {
+          "title": "20,000 cells",
+          "description": "A 200 × 100 grid with numbers on both axes. interaction={{ zoom: \"xy\" }} enables zooming (off by default for heatmaps): Ctrl / ⌘ + wheel, drag to pan, double-click to reset."
+        },
+        "activity": {
+          "title": "Contribution calendar",
+          "description": "A year of daily contributions like a GitHub profile: weeks as numeric columns, weekdays as rows, an x format that turns the week number into its month, and palette={[\"var(--success-color)\"]} for a green ramp that reads well in light and dark themes."
+        },
+        "correlation": {
+          "title": "Correlation matrix",
+          "description": "Pairwise correlations of product metrics with colorScale=\"diverging\": the danger color below colorMidpoint (0), the primary color above, a neutral middle that follows the theme; the same translated names are used for both axes."
+        },
+        "retention": {
+          "title": "Cohort retention",
+          "description": "Share of each monthly signup cohort still active after N months: null values leave the future cells empty, which draws the classic triangle."
+        },
+        "conversion": {
+          "title": "Click a cell",
+          "description": "Conversion rate by traffic source and device. onPointClick gives item.index, the index of the clicked cell in data, which leads back to its sessions and orders for the readout; onPlotClick clears it."
+        },
+        "rack-temperatures": {
+          "title": "Live sensor grid",
+          "description": "Inlet temperatures of the sensors of a server aisle, refreshed by a setInterval cleared on pause and unmount. A fixed valueRange keeps the same color for the same temperature at every refresh, and colorScale goes through theme colors from cool to hot."
+        },
+        "confusion-matrix": {
+          "title": "Confusion matrix",
+          "description": "Predictions of an image classifier, each cell colored by its share of the actual class. renderTooltip finds the hovered cell from item.index to show its count, and the recall and precision on the diagonal."
+        },
+        "sales-regions": {
+          "title": "Switching metrics",
+          "description": "Revenue, growth and margin by region and quarter: each metric brings its own colorScale (sequential, diverging around zero or a custom list), valueRange and format, switched with a RadioGroup."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Sessions by weekday and 3-hour slot, with the weekday and hour names of the app language; tap a cell to read its value."
+          }
+        }
+      },
+      "data": {
+        "sessions": "Sessions",
+        "sessionsAria": "Sessions by weekday and hour of the day",
+        "anomaly": "Anomaly",
+        "anomalyAria": "Monthly temperature anomaly, 1995 to 2024",
+        "signal": "Signal",
+        "wifiAria": "Wi-Fi signal strength over a 200 by 100 meter floor",
+        "largeStatus": "{{cells}} cells · drawn with {{renderer}} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset",
+        "contributions": "Contributions",
+        "activityAria": "Contributions per day over one year",
+        "activityTotal": "{{total}} contributions in the last year",
+        "metrics": {
+          "sessions": "Sessions",
+          "pageViews": "Page views",
+          "signups": "Sign-ups",
+          "revenue": "Revenue",
+          "churn": "Churn",
+          "tickets": "Support tickets"
+        },
+        "correlation": "Correlation",
+        "correlationAria": "Correlation matrix of six product metrics",
+        "monthN": "Month {{n}}",
+        "retained": "Retained",
+        "retentionAria": "Retention of monthly signup cohorts",
+        "devices": {
+          "desktop": "Desktop",
+          "mobile": "Mobile",
+          "tablet": "Tablet"
+        },
+        "sources": {
+          "organic": "Organic search",
+          "paid": "Paid search",
+          "social": "Social",
+          "email": "Email",
+          "referral": "Referral",
+          "direct": "Direct"
+        },
+        "cellStatus": "{{source}} on {{device}}: {{orders}} orders from {{sessions}} sessions, {{rate}}:",
+        "aboveAverage": "above the average of {{value}}",
+        "belowAverage": "below the average of {{value}}",
+        "clickCell": "Click a cell to see its sessions and orders.",
+        "conversionRate": "Conversion rate",
+        "conversionAria": "Conversion rate by traffic source and device",
+        "rackN": "Rack {{n}}",
+        "sensorN": "Sensor {{n}}",
+        "pause": "Pause",
+        "resume": "Resume",
+        "rackStatus": "Hottest: {{rack}}, {{sensor}} at {{value}} · {{alarms}} sensors above {{limit}}",
+        "inletTemperature": "Inlet temperature",
+        "racksAria": "Live inlet temperatures of the sensors of ten server racks",
+        "classes": {
+          "cat": "Cat",
+          "dog": "Dog",
+          "bird": "Bird",
+          "car": "Car",
+          "truck": "Truck"
+        },
+        "actualPredicted": "Actual {{actual}}, predicted {{predicted}}",
+        "imagesShare": "{{value}} images ({{share}} of the class)",
+        "recall": "Recall: {{value}}",
+        "precision": "Precision: {{value}}",
+        "misclassified": "Misclassified",
+        "accuracy": "Accuracy: {{value}} of {{images}} test images",
+        "shareOfClass": "Share of the class",
+        "predicted": "Predicted class",
+        "actual": "Actual class",
+        "confusionAria": "Confusion matrix of an image classifier over five classes",
+        "regions": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West",
+          "central": "Central"
+        },
+        "quarterN": "Q{{n}}",
+        "metric": "Metric",
+        "salesMetrics": {
+          "revenue": "Revenue",
+          "growth": "Growth over 2025",
+          "margin": "Gross margin"
+        },
+        "regionQuarter": "{{region}} in {{quarter}}",
+        "bestWorst": "Best: {{best}} ({{bestValue}}) · weakest: {{worst}} ({{worstValue}})",
+        "salesAria": "Sales metrics of 2026 by region and quarter"
+      },
+      "api": {
+        "HeatmapConfig": {
+          "data": "Cells: x, y and value",
+          "xCategories": "Column names in order (collected from the data when omitted)",
+          "yCategories": "Row names from bottom to top (collected from the data when omitted)",
+          "colorScale": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp: sequential (default) or diverging",
+          "valueRange": "Values at the ends of the color scale; the data range by default",
+          "name": "Name of the value in the tooltip",
+          "radius": "Corner radius of the cells, in pixels",
+          "format": "Formats the values in the tooltip",
+          "colorMidpoint": "Value at the middle of the color scale (diverging data); 0 for diverging ramps spanning it, else the middle of the range"
+        },
+        "HeatmapCell": {
+          "x": "Column: a category name or a number",
+          "y": "Row: a category name or a number",
+          "value": "Value mapped to the color scale; null leaves the cell empty"
+        }
+      },
+      "wc": {
+        "demos": {
+          "weekly-activity": {
+            "title": "Weekly activity",
+            "description": "Commits per day and time slot; the categories set the order of the columns and rows."
+          },
+          "color-scale": {
+            "title": "Diverging color scale",
+            "description": "A correlation matrix on a fixed -1 to 1 range: blue for negative values, red for positive ones, rounded cells."
+          }
+        },
+        "minerva-heatmap-chart": {
+          "props": {
+            "valueName": "Name of the value in the tooltip",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

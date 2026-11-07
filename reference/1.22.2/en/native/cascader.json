@@ -1,0 +1,666 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "en",
+  "renderer": "native",
+  "page": "cascader",
+  "title": "Cascader",
+  "description": "Selects a value from a hierarchy of options, one level at a time (e.g. country / region / city).",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "keyboard": {
+      "title": "Keyboard and accessibility",
+      "open": "Enter, Space or Arrow Down on the input opens the panel and moves focus into it; focusing the input alone does not open it.",
+      "navigate": "Arrow Up / Arrow Down, Home and End move within a column.",
+      "expand": "Arrow Right or Enter expands the next column (also after lazy loading) and Enter selects a leaf; Arrow Left goes back to the previous column.",
+      "close": "Escape closes the panel and returns focus to the input; Tab closes it.",
+      "aria": "The input has the combobox role. Its default placeholder and the \"Clear selection\" button label follow the React library's locale."
+    }
+  },
+  "components": [
+    {
+      "name": "Cascader",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Cascader"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "options",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "array",
+            "typeText": "CascaderOption[]",
+            "typeRef": "type:5479f79bddc002f83c85",
+            "required": true
+          },
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "array",
+            "typeText": "(string | number)[] | undefined",
+            "typeRef": "type:3c201ca43fb6fb3589ff",
+            "required": false
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "array",
+            "typeText": "(string | number)[] | undefined",
+            "typeRef": "type:3c201ca43fb6fb3589ff",
+            "required": false
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "open",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "changeOnSelect",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "showSearch",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "filter",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "function",
+            "typeText": "((query: string, path: CascaderOption[]) => boolean) | undefined",
+            "typeRef": "type:d8582f48bce41c8c43df",
+            "parameters": [
+              {
+                "name": "query",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              },
+              {
+                "name": "path",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "CascaderOption[]",
+                "typeRef": "type:5479f79bddc002f83c85"
+              }
+            ],
+            "returnType": {
+              "typeText": "boolean",
+              "typeRef": "type:7087acd01ef7dd9f1d5c"
+            },
+            "required": false
+          },
+          {
+            "name": "loadData",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "function",
+            "typeText": "((path: CascaderOption[]) => void) | undefined",
+            "typeRef": "type:90b9e1471076206e819c",
+            "parameters": [
+              {
+                "name": "path",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CascaderOption[]",
+                "typeRef": "type:5479f79bddc002f83c85"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "displayRender",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "node",
+            "typeText": "((labels: string[], path: CascaderOption[]) => ReactNode) | undefined",
+            "typeRef": "type:1c0ca9a5c727c7b72a75",
+            "parameters": [
+              {
+                "name": "labels",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string[]",
+                "typeRef": "type:19a96e1d6cef0c4dc643"
+              },
+              {
+                "name": "path",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "CascaderOption[]",
+                "typeRef": "type:5479f79bddc002f83c85"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false
+          },
+          {
+            "name": "optionRender",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "node",
+            "typeText": "((option: CascaderOption, level: number) => ReactNode) | undefined",
+            "typeRef": "type:74eb69dd56fed4a8fe25",
+            "parameters": [
+              {
+                "name": "option",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CascaderOption",
+                "typeRef": "type:8a60099ae7e5d4d5dd4f"
+              },
+              {
+                "name": "level",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false
+          },
+          {
+            "name": "allowClear",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false
+          },
+          {
+            "name": "maxLevel",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 6,
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "function",
+            "typeText": "((value: (string | number)[], options: CascaderOption[]) => void) | undefined",
+            "typeRef": "type:2c94d76bc243324eb215",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "(string | number)[]",
+                "typeRef": "type:6a8218963ce603035852"
+              },
+              {
+                "name": "options",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "CascaderOption[]",
+                "typeRef": "type:5479f79bddc002f83c85"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onOpenChange",
+            "source": "packages/native/src/components/Cascader/index.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:171f26ef457895029d16",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          },
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:CascaderProps": {
+      "source": "native/src/components/Cascader/index.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "options",
+          "type": "CascaderOption[]",
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "(string | number)[]",
+          "required": false
+        },
+        {
+          "name": "defaultValue",
+          "type": "(string | number)[]",
+          "required": false
+        },
+        {
+          "name": "onChange",
+          "type": "(value: (string | number)[], options: CascaderOption[]) => void",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "changeOnSelect",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "showSearch",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        },
+        {
+          "name": "filter",
+          "type": "(query: string, path: CascaderOption[]) => boolean",
+          "required": false
+        },
+        {
+          "name": "loadData",
+          "type": "(path: CascaderOption[]) => void",
+          "required": false
+        },
+        {
+          "name": "displayRender",
+          "type": "(labels: string[], path: CascaderOption[]) => ReactNode",
+          "required": false
+        },
+        {
+          "name": "optionRender",
+          "type": "(option: CascaderOption, level: number) => ReactNode",
+          "required": false
+        },
+        {
+          "name": "allowClear",
+          "type": "boolean",
+          "required": false,
+          "default": "true"
+        },
+        {
+          "name": "maxLevel",
+          "type": "number",
+          "required": false,
+          "default": "6"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Cascader": {
+      "kind": "cssVars",
+      "source": "react/src/components/Cascader",
+      "vars": [
+        {
+          "name": "--cascader-height",
+          "description": "Minimum height of the field (defaults to the density's small control height)"
+        },
+        {
+          "name": "--cascader-radius",
+          "description": "Corner radius of the field, the dropdown and the options (defaults to --radius-sm)"
+        },
+        {
+          "name": "--cascader-font-size",
+          "description": "Font size of the field and of the options"
+        },
+        {
+          "name": "--cascader-border-color",
+          "description": "Border color of the field at rest"
+        },
+        {
+          "name": "--cascader-column-min-width",
+          "description": "Minimum width of a column of options"
+        },
+        {
+          "name": "--cascader-dropdown-max-height",
+          "description": "Maximum height of the columns before they scroll"
+        },
+        {
+          "name": "--cascader-option-padding-y",
+          "description": "Vertical padding of an option (follows the density's row padding)"
+        },
+        {
+          "name": "--cascader-option-padding-x",
+          "description": "Horizontal padding of an option (follows the density's row padding)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/cascader/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/cascader/native/basic.tsx": "import { Cascader } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <Cascader\n      label=\"Region\"\n      showSearch\n      allowClear\n      options={[\n        {\n          value: \"cn\",\n          label: \"China\",\n          children: [\n            { value: \"sh\", label: \"Shanghai\" },\n            { value: \"bj\", label: \"Beijing\" },\n          ],\n        },\n        {\n          value: \"fr\",\n          label: \"France\",\n          children: [{ value: \"paris\", label: \"Paris\" }],\n        },\n      ]}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Click the input (or press Enter, Space or Arrow Down) to open the panel, then click an option to open the next level; choosing a leaf completes the selection. The dropdown grows with its columns."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Cascader",
+      "description": "Selects a value from a hierarchy of options, one level at a time (e.g. country / region / city).",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Click the input (or press Enter, Space or Arrow Down) to open the panel, then click an option to open the next level; choosing a leaf completes the selection. The dropdown grows with its columns."
+        },
+        "default-value": {
+          "title": "Default value",
+          "description": "defaultValue takes the path of values, one per level."
+        },
+        "controlled": {
+          "title": "Controlled",
+          "description": "Pass value and update it in onChange. Clearing calls onChange with an empty array."
+        },
+        "hover": {
+          "title": "Expand on hover",
+          "description": "With expandTrigger=\"hover\", sub-menus open when the pointer hovers a parent option."
+        },
+        "search": {
+          "title": "Search",
+          "description": "showSearch lets users type to filter every path; filter customizes the matching."
+        },
+        "display-render": {
+          "title": "Custom display",
+          "description": "displayRender formats the text shown in the input; here only the last level is displayed and allowClear is off."
+        },
+        "disabled": {
+          "title": "Disabled",
+          "description": "Disable individual options with option.disabled, or the whole component with disabled."
+        },
+        "lazy-load": {
+          "title": "Load options lazily",
+          "description": "Clicking an option that has no children and is not isLeaf expands it and calls loadData instead of selecting it. Set loading on the option, add its children to options when they arrive, and mark the loaded leaves with isLeaf: true so they can be selected."
+        },
+        "custom-option": {
+          "title": "Custom options and levels",
+          "description": "optionRender renders each option with its level, maxLevel limits the depth (an option at the last level is selected), and dropdownStyle / optionStyle adjust the menu."
+        }
+      },
+      "api": {
+        "CascaderProps": {
+          "label": "Label of the input",
+          "name": "Name of the input",
+          "options": "Option tree",
+          "value": "Selected path of values (controlled; pair with onChange)",
+          "defaultValue": "Initially selected path of values (uncontrolled)",
+          "onChange": "Called when a leaf option is selected or the value is cleared",
+          "displayRender": "Formats the text shown in the input; by default labels are joined with \" / \"",
+          "disabled": "Disables the cascader",
+          "placeholder": "Placeholder of the input; defaults to a localized \"Please select\"",
+          "allowClear": "Shows a clear button (labelled \"Clear selection\", localized) when a value is selected",
+          "expandTrigger": "How sub-menus are expanded",
+          "className": "Additional class name",
+          "showSearch": "Allows typing to search all paths",
+          "filter": "Custom search predicate; by default paths whose labels contain the input match",
+          "loadData": "Loads children lazily: clicking an option that has no children and is not isLeaf expands it and calls loadData with its path (instead of selecting it). Add the children to options yourself; set loading on the option meanwhile",
+          "dropdownClassName": "Additional class name of the dropdown",
+          "optionRender": "Custom option renderer",
+          "width": "Width of the component",
+          "maxLevel": "Maximum number of levels shown; an option at the last level is selected",
+          "dropdownStyle": "Inline styles of the dropdown",
+          "optionStyle": "Inline styles of every option",
+          "ref": "Ref to the inner <input> element",
+          "style": "Inline styles of the root element",
+          "aria-label": "Accessible label of the input; overrides label and the label of an enclosing FormControl",
+          "aria-labelledby": "Id(s) of the element(s) labelling the input",
+          "aria-describedby": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl",
+          "id": "Id of the input; defaults to the id of an enclosing FormControl",
+          "required": "Marks the input as required (aria-required); defaults to the enclosing FormControl's state",
+          "readOnly": "Shows the value without allowing changes (the dropdown does not open); defaults to the enclosing FormControl's state",
+          "invalid": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state"
+        },
+        "CascaderOption": {
+          "value": "Value of the option, unique among its siblings",
+          "label": "Text displayed for the option",
+          "children": "Options of the next level",
+          "disabled": "Prevents the option from being selected",
+          "isLeaf": "Marks the option as a leaf (no children to load) when using loadData",
+          "loading": "Shows a loading indicator while its children are being loaded"
+        }
+      },
+      "keyboard": {
+        "title": "Keyboard and accessibility",
+        "open": "Enter, Space or Arrow Down on the input opens the panel and moves focus into it; focusing the input alone does not open it.",
+        "navigate": "Arrow Up / Arrow Down, Home and End move within a column.",
+        "expand": "Arrow Right or Enter expands the next column (also after lazy loading) and Enter selects a leaf; Arrow Left goes back to the previous column.",
+        "close": "Escape closes the panel and returns focus to the input; Tab closes it.",
+        "aria": "The input has the combobox role. Its default placeholder and the \"Clear selection\" button label follow the React library's locale."
+      },
+      "cssVars": {
+        "--cascader-height": "Minimum height of the field (defaults to the density's small control height)",
+        "--cascader-radius": "Corner radius of the field, the dropdown and the options (defaults to --radius-sm)",
+        "--cascader-font-size": "Font size of the field and of the options",
+        "--cascader-border-color": "Border color of the field at rest",
+        "--cascader-column-min-width": "Minimum width of a column of options",
+        "--cascader-dropdown-max-height": "Maximum height of the columns before they scroll",
+        "--cascader-option-padding-y": "Vertical padding of an option (follows the density's row padding)",
+        "--cascader-option-padding-x": "Horizontal padding of an option (follows the density's row padding)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "The option tree is the options property; the value attribute sets the default path (comma-separated or JSON array). minerva-change reports the selected path."
+          },
+          "search-hover": {
+            "title": "Search, hover and display",
+            "description": "show-search filters every path as you type, expand-trigger=\"hover\" opens sub-menus on hover, and displayRender formats the field (here only the last label). Disabled options cannot be picked."
+          },
+          "lazy": {
+            "title": "Lazy loading",
+            "description": "With loadData, activating an option without children expands it and loads its children: set loading, add children, then reassign options."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "The element is form-associated: it submits the displayed text under name, required blocks an empty selection, and form.reset() restores the value attribute."
+          }
+        },
+        "minerva-cascader": {
+          "props": {
+            "open": "Whether the panel is open.",
+            "readOnly": "Shows the value without allowing changes (the panel does not open).",
+            "hideClearButton": "Hides the clear button (allowClear={false} in React).",
+            "selectedOptions": "Options of the selected path, one per level (read-only).",
+            "isDisabled": "Whether the control is disabled (itself or by a disabled <fieldset>).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element.",
+            "validity": "Validity state (same as <input>.validity).",
+            "validationMessage": "Message describing the current validation error (empty when valid).",
+            "willValidate": "Whether the element takes part in constraint validation."
+          },
+          "events": {
+            "change": "Same as minerva-change, without detail.",
+            "minerva-change": "A path was selected or the value was cleared (detail: { value, selectedOptions }).",
+            "minerva-clear": "The clear button emptied the value.",
+            "minerva-input": "The search text changed (show-search; detail: { value }).",
+            "minerva-open-change": "The user asked to open or close the panel (detail: { open }); cancelable: preventDefault() keeps the current state."
+          },
+          "methods": {
+            "focus": "Focuses the inner input.",
+            "blur": "Removes focus from the inner input.",
+            "show": "Opens the panel.",
+            "hide": "Closes the panel.",
+            "checkValidity": "Checks validity; fires invalid when the value is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error (an empty string clears it).",
+            "formResetCallback": "Called by the browser on form.reset(): restores the value attribute.",
+            "formDisabledCallback": "Called by the browser when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Called by the browser to restore the value (back/forward cache, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

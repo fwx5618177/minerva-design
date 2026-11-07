@@ -1,0 +1,1039 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "mixed-chart",
+  "title": "Graphique combiné",
+  "description": "Barres, lignes et aires dans un même graphique, sur un ou deux axes de valeurs : chiffre d'affaires et croissance, pluie et température, diagrammes de Pareto.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "quarter": "T{{n}} {{year}}",
+      "revenue": "Chiffre d'affaires",
+      "growth": "Croissance (sur un an)",
+      "revenueAria": "Chiffre d'affaires trimestriel et sa croissance sur un an",
+      "rainfall": "Précipitations",
+      "temperature": "Température",
+      "climateAria": "Précipitations et températures mensuelles à Tokyo",
+      "sessions": "Sessions",
+      "conversionRate": "Taux de conversion",
+      "campaign": "Campagne",
+      "conversionAria": "Sessions quotidiennes et taux de conversion sur deux mois",
+      "returns": "Retours",
+      "cumulative": "Part cumulée",
+      "causes": {
+        "wrongSize": "Mauvaise taille",
+        "damaged": "Endommagé",
+        "notAsDescribed": "Non conforme",
+        "late": "Livré en retard",
+        "changedMind": "Changement d'avis",
+        "wrongItem": "Mauvais article",
+        "other": "Autre"
+      },
+      "paretoAria": "Retours par cause et leur part cumulée",
+      "pageViews": "Pages vues",
+      "locales": {
+        "chinese": "Chinois (zh-CN)",
+        "french": "Français (fr-FR)"
+      },
+      "localeAria": "Pages vues et taux de conversion par jour, {{locale}}",
+      "yearlyRevenue": "Chiffre d’affaires",
+      "users": "Utilisateurs",
+      "usersLog": "Utilisateurs (échelle log)",
+      "logAria": "Chiffre d’affaires annuel et utilisateurs sur un axe logarithmique, de 2016 à 2025",
+      "kwh": "{{value}} kWh",
+      "solarProduction": "Production solaire",
+      "consumption": "Consommation",
+      "batteryCharge": "Charge de la batterie",
+      "night": "Nuit",
+      "withBattery": "Batterie de {{value}}",
+      "selfSufficiency": "Autosuffisance de {{share}} sur deux jours, {{imported}} achetés au réseau.",
+      "energyPerHour": "Énergie par heure",
+      "solarAria": "Production solaire et consommation horaires d'une maison sur deux jours, avec l'état de charge de sa batterie",
+      "stockLevel": "Niveau de stock",
+      "deliveries": "Livraisons",
+      "promotion": "Promotion",
+      "safetyStock": "Stock de sécurité",
+      "reorderPoint": "Point de commande",
+      "inventoryHint": "Cliquez sur un jour ou une livraison.",
+      "deliveryDetails": "{{id}} : {{quantity}} unités commandées le {{ordered}}, livrées le {{arrived}} après {{lead}}.",
+      "stockOn": "{{units}} unités en stock le {{date}}.",
+      "stockLow": "Seulement {{units}} unités en stock le {{date}}, sous le stock de sécurité.",
+      "unitsInStock": "Unités",
+      "inventoryAria": "Niveau de stock quotidien d'un article sur trois mois, avec les livraisons, le point de commande et le stock de sécurité",
+      "requests": "Requêtes",
+      "errorRate": "Taux d'erreur",
+      "releases": "Mises en production",
+      "requestsPerHalfHour": "Requêtes par 30 min",
+      "opsAria": "Requêtes et taux d'erreur d'une API web sur une journée, avec ses mises en production",
+      "incidentSummary": "Le taux d'erreur a culminé à {{peak}} à {{time}} après {{version}}, jusqu'au retour à {{rollback}}.",
+      "points": "{{value}} pts",
+      "sprintStart": "Début",
+      "remainingWork": "Travail restant",
+      "completedPerDay": "Terminé",
+      "idealBurn": "Idéal",
+      "scopeAdded": "+{{value}} ajoutés",
+      "idealLeft": "Idéal : {{value}} restants",
+      "remainingLeft": "{{value}} restants",
+      "doneThatDay": "{{value}} terminés ce jour-là",
+      "behindBy": "{{value}} de retard sur l'idéal",
+      "aheadBy": "{{value}} d'avance sur l'idéal",
+      "storyPoints": "Points d'histoire",
+      "burndownAria": "Burndown de sprint : travail restant, points terminés chaque jour et progression idéale sur dix jours ouvrés",
+      "burndownLate": "{{left}} restants à {{velocity}} par jour : environ {{forecast}} ne seront pas terminés à la fin du sprint.",
+      "burndownOnTrack": "{{left}} restants à {{velocity}} par jour : le sprint est dans les temps."
+    }
+  },
+  "components": [
+    {
+      "name": "MixedChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "MixedChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Bars, lines, areas and dots, each with its `type`; `yAxis: \"right\"` plots a series against `yAxis2`"
+          },
+          {
+            "name": "stackMode",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "normal",
+              "percent"
+            ],
+            "typeText": "\"normal\" | \"percent\" | undefined",
+            "typeRef": "type:2d2343824f816d71127f",
+            "default": "normal",
+            "required": false,
+            "description": "`percent` scales every stack to 100% at each x"
+          },
+          {
+            "name": "yAxis2",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Right value axis of the series with `yAxis: \"right\"`; its range is aligned on the left ticks (vertical charts)"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "ChartOrientation | undefined",
+            "typeRef": "type:872af3679a2d7fcf3d26",
+            "default": "vertical",
+            "required": false,
+            "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the pointer"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:018692c396245c230316",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:7f639ac6d9481ff0bde9",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:677083ee0328d7ee4253",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is clicked"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:0256cf20d9a3f1b1c88a",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is clicked where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:ee073556f18eb3ee4cae",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:167734f7bd5dd7f686a6",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and when it falls back after a GPU loss)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "MixedChartProps": {
+      "source": "charts/src/react/types.ts",
+      "description": "Props of MixedChart",
+      "kind": "interface",
+      "extends": [
+        "ChartProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Bars, lines, areas and dots, each with its `type`; `yAxis: \"right\"` plots a series against `yAxis2`"
+        }
+      ]
+    },
+    "ChartProps": {
+      "source": "charts/src/react/types.ts",
+      "description": "Props of Chart: any mix of line, area, bar, scatter, candlestick, heatmap and box plot series",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Data series; each sets its own `type`"
+        },
+        {
+          "name": "stackMode",
+          "type": "\"normal\" | \"percent\"",
+          "required": false,
+          "default": "\"normal\"",
+          "description": "`percent` scales every stack to 100% at each x"
+        },
+        {
+          "name": "yAxis2",
+          "type": "ChartAxisOptions",
+          "required": false,
+          "description": "Right value axis of the series with `yAxis: \"right\"`; its range is aligned on the left ticks (vertical charts)"
+        },
+        {
+          "name": "orientation",
+          "type": "ChartOrientation",
+          "required": false,
+          "default": "\"vertical\"",
+          "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom"
+        }
+      ]
+    },
+    "ChartLabels": {
+      "source": "charts/src/engine/types.ts",
+      "description": "Texts the engine writes itself, built in for English, Chinese, Japanese and French (the language of `locale`); override any of them with `ChartOptions.labels`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "open",
+          "type": "string",
+          "required": true,
+          "default": "\"Open\"",
+          "description": "Candlestick open"
+        },
+        {
+          "name": "high",
+          "type": "string",
+          "required": true,
+          "default": "\"High\"",
+          "description": "Candlestick high"
+        },
+        {
+          "name": "low",
+          "type": "string",
+          "required": true,
+          "default": "\"Low\"",
+          "description": "Candlestick low"
+        },
+        {
+          "name": "close",
+          "type": "string",
+          "required": true,
+          "default": "\"Close\"",
+          "description": "Candlestick close"
+        },
+        {
+          "name": "max",
+          "type": "string",
+          "required": true,
+          "default": "\"Max\"",
+          "description": "Box plot upper whisker"
+        },
+        {
+          "name": "q3",
+          "type": "string",
+          "required": true,
+          "default": "\"Q3\"",
+          "description": "Box plot third quartile"
+        },
+        {
+          "name": "median",
+          "type": "string",
+          "required": true,
+          "default": "\"Median\"",
+          "description": "Box plot median"
+        },
+        {
+          "name": "q1",
+          "type": "string",
+          "required": true,
+          "default": "\"Q1\"",
+          "description": "Box plot first quartile"
+        },
+        {
+          "name": "min",
+          "type": "string",
+          "required": true,
+          "default": "\"Min\"",
+          "description": "Box plot lower whisker"
+        },
+        {
+          "name": "outliers",
+          "type": "string",
+          "required": true,
+          "default": "\"Outliers\"",
+          "description": "Number of outliers of a box"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "default": "\"Value\"",
+          "description": "Scatter `value` (bubbles) when the series has no `valueName`"
+        },
+        {
+          "name": "x",
+          "type": "string",
+          "required": true,
+          "default": "\"x\"",
+          "description": "Tooltip row of the x of a scatter point when the axis has no title"
+        },
+        {
+          "name": "y",
+          "type": "string",
+          "required": true,
+          "default": "\"y\"",
+          "description": "Tooltip row of the y of a scatter point when the axis has no title"
+        },
+        {
+          "name": "series",
+          "type": "string",
+          "required": true,
+          "default": "\"Series\"",
+          "description": "Default series names: `\"Series 1\"`, `\"Series 2\"`..."
+        },
+        {
+          "name": "chart",
+          "type": "string",
+          "required": true,
+          "default": "\"Chart\"",
+          "description": "Accessible name of a chart without named series"
+        },
+        {
+          "name": "chartOf",
+          "type": "string",
+          "required": true,
+          "default": "\"Chart: {series}\"",
+          "description": "Accessible name of a chart; `{series}` is the list of the series names"
+        },
+        {
+          "name": "start",
+          "type": "string",
+          "required": true,
+          "default": "\"Start\"",
+          "description": "Start of a range bar on a time axis (Gantt tasks)"
+        },
+        {
+          "name": "end",
+          "type": "string",
+          "required": true,
+          "default": "\"End\"",
+          "description": "End of a range bar on a time axis"
+        },
+        {
+          "name": "duration",
+          "type": "string",
+          "required": true,
+          "default": "\"Duration\"",
+          "description": "Length of a range bar on a time axis (`4 weeks`, `26 days`)"
+        },
+        {
+          "name": "progress",
+          "type": "string",
+          "required": true,
+          "default": "\"Progress\"",
+          "description": "Done share of a Gantt task"
+        },
+        {
+          "name": "dependencies",
+          "type": "string",
+          "required": true,
+          "default": "\"Depends on\"",
+          "description": "Tasks a Gantt task waits for"
+        },
+        {
+          "name": "outlier",
+          "type": "string",
+          "required": true,
+          "default": "\"Outlier\"",
+          "description": "A hovered box plot outlier"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "burndown",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/burndown.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/burndown.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  MixedChart,\n  type ChartAnnotation,\n  type ChartHoverEvent,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\n// A two-week sprint of 10 working days, 7 of them done: story points\n// completed each day and a scope change on day 4\nconst COMMITTED = 80;\nconst SPRINT_DAYS = 10;\nconst completed = [0, 5, 8, 3, 6, 9, 4, 11];\nconst added = [0, 0, 0, 0, 8, 0, 0, 0];\nconst remaining = completed.reduce<number[]>((list, done, day) => {\n  const before = list[day - 1] ?? COMMITTED;\n  return [...list, before - done + (added[day] ?? 0)];\n}, []);\nconst ideal = (day: number) => COMMITTED * (1 - day / SPRINT_DAYS);\n// end of each working day: Monday 19 October 2026, weekends skipped\nconst workingDays = Array.from(\n  { length: SPRINT_DAYS },\n  (_, k) => new Date(2026, 9, 19 + k + (k >= 5 ? 2 : 0)),\n);\n\nexport default function BurndownDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const formats = useMemo(() => {\n    const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });\n    return {\n      points: (value: number) => t(\"points\", { value: number.format(value) }),\n      day: new Intl.DateTimeFormat(locale, {\n        weekday: \"short\",\n        day: \"numeric\",\n      }),\n    };\n  }, [locale, t]);\n  const labels = useMemo(\n    () => [t(\"sprintStart\"), ...workingDays.map((d) => formats.day.format(d))],\n    [t, formats],\n  );\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"remainingWork\"),\n        type: \"area\",\n        color: \"var(--chart-series-1, #4f46e5)\",\n        opacity: 0.18,\n        format: formats.points,\n        data: remaining.map((y, day) => [labels[day] ?? \"\", y] as const),\n      },\n      {\n        name: t(\"completedPerDay\"),\n        type: \"bar\",\n        color: \"var(--success-color)\",\n        format: formats.points,\n        data: completed.map((y, day) => [labels[day] ?? \"\", y] as const),\n      },\n      {\n        name: t(\"idealBurn\"),\n        type: \"line\",\n        color: \"var(--text-secondary-color)\",\n        lineWidth: 1.5,\n        format: formats.points,\n        data: labels.map((label, day) => [label, ideal(day)] as const),\n      },\n    ],\n    [t, formats, labels],\n  );\n  const scopeDay = added.findIndex((points) => points > 0);\n  const annotations = useMemo(\n    (): ChartAnnotation[] => [\n      {\n        type: \"text\",\n        x: scopeDay,\n        y: (remaining[scopeDay] ?? 0) + 6,\n        anchor: \"bottom\",\n        text: t(\"scopeAdded\", {\n          value: formats.points(added[scopeDay] ?? 0),\n        }),\n        color: \"var(--warning-color)\",\n        weight: 600,\n      },\n    ],\n    [t, formats, scopeDay],\n  );\n\n  // where the sprint stands on the hovered day compared with the ideal line\n  const renderTooltip = (event: ChartHoverEvent) => {\n    const day = event.items[0]?.index ?? -1;\n    const left = remaining[day];\n    const label = labels[day];\n    if (label === undefined) return null;\n    if (left === undefined) {\n      return (\n        <div>\n          <strong>{label}</strong>\n          <div>{t(\"idealLeft\", { value: formats.points(ideal(day)) })}</div>\n        </div>\n      );\n    }\n    const gap = left - ideal(day);\n    return (\n      <div style={{ display: \"grid\", gap: 2 }}>\n        <strong>{label}</strong>\n        <span>{t(\"remainingLeft\", { value: formats.points(left) })}</span>\n        <span>\n          {t(\"doneThatDay\", { value: formats.points(completed[day] ?? 0) })}\n        </span>\n        <span\n          style={{\n            color: gap > 0 ? \"var(--danger-color)\" : \"var(--success-color)\",\n          }}\n        >\n          {gap > 0\n            ? t(\"behindBy\", { value: formats.points(gap) })\n            : t(\"aheadBy\", { value: formats.points(-gap) })}\n        </span>\n      </div>\n    );\n  };\n\n  const today = remaining.length - 1;\n  const velocity = completed.slice(1).reduce((sum, p) => sum + p, 0) / today;\n  const left = remaining[today] ?? 0;\n  const forecast = left - velocity * (SPRINT_DAYS - today);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <MixedChart\n        series={series}\n        annotations={annotations}\n        renderTooltip={renderTooltip}\n        xAxis={{ type: \"category\", categories: labels }}\n        yAxis={{ title: t(\"storyPoints\"), format: formats.points }}\n        height={320}\n        ariaLabel={t(\"burndownAria\")}\n      />\n      <p style={{ margin: 0 }}>\n        {forecast > 0\n          ? t(\"burndownLate\", {\n              left: formats.points(left),\n              velocity: formats.points(velocity),\n              forecast: formats.points(forecast),\n            })\n          : t(\"burndownOnTrack\", {\n              left: formats.points(left),\n              velocity: formats.points(velocity),\n            })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Burndown de sprint",
+      "description": "Le travail restant en aire, les points terminés chaque jour en barres et la progression idéale en ligne, sur des catégories xAxis explicites ; une annotation text signale un changement de périmètre. renderTooltip indique l'avance ou le retard de chaque jour sur la ligne idéale."
+    },
+    {
+      "id": "climate",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/climate.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/climate.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { MixedChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Climate of Tokyo: average rainfall (mm) and temperature (°C) per month\nconst rainfall = [52, 56, 118, 125, 138, 168, 154, 168, 210, 198, 93, 51];\nconst temperature = [\n  5.4, 6.1, 9.4, 14.3, 18.8, 21.9, 25.7, 26.9, 23.3, 18.0, 12.5, 7.7,\n];\n\nexport default function ClimateDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const mm = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"millimeter\",\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const celsius = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"celsius\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n\n  const series = useMemo((): ChartSeries[] => {\n    const months = Array.from({ length: 12 }, (_, m) =>\n      new Intl.DateTimeFormat(locale, { month: \"short\" }).format(\n        new Date(2026, m, 1),\n      ),\n    );\n    return [\n      {\n        name: t(\"rainfall\"),\n        type: \"bar\",\n        color: \"var(--chart-series-5, #0ea5e9)\",\n        format: mm,\n        data: months.map((m, i) => [m, rainfall[i] ?? 0] as const),\n      },\n      {\n        name: t(\"temperature\"),\n        type: \"line\",\n        curve: \"smooth\",\n        yAxis: \"right\",\n        color: \"var(--chart-series-4, #ef4444)\",\n        data: months.map((m, i) => [m, temperature[i] ?? 0] as const),\n      },\n    ];\n  }, [t, locale, mm]);\n\n  return (\n    <MixedChart\n      series={series}\n      yAxis={{ format: mm }}\n      yAxis2={{ format: celsius, zero: true }}\n      height={300}\n      ariaLabel={t(\"climateAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Diagramme climatique",
+      "description": "Les barres de précipitations sur l'axe de gauche, la courbe des températures sur l'axe de droite ; zero: true garde le zéro dans la plage de droite."
+    },
+    {
+      "id": "conversion",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/conversion.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/conversion.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { MixedChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Daily sessions of an online shop over two months, and the share of them\n// ending with an order: the weekly rhythm and a campaign in the middle\nconst days = Array.from({ length: 61 }, (_, d) => {\n  const weekend = [0, 6].includes(new Date(2026, 3, 1 + d).getDay());\n  const campaign = d >= 30 && d < 37 ? 1 : 0;\n  return {\n    x: new Date(2026, 3, 1 + d),\n    sessions: Math.round(\n      (weekend ? 21000 : 15500) * (1 + d / 400) * (1 + campaign * 0.6),\n    ),\n    rate:\n      (weekend ? 0.031 : 0.024) + campaign * 0.009 + Math.sin(d * 1.7) * 0.0015,\n  };\n});\n\nexport default function ConversionDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const compact = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, { notation: \"compact\" });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const percent = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"percent\",\n      minimumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"sessions\"),\n        type: \"area\",\n        curve: \"smooth\",\n        data: days.map((d) => [d.x, d.sessions] as const),\n      },\n      {\n        name: t(\"conversionRate\"),\n        type: \"line\",\n        yAxis: \"right\",\n        color: \"var(--chart-series-2, #10b981)\",\n        data: days.map((d) => [d.x, d.rate] as const),\n      },\n    ],\n    [t],\n  );\n\n  return (\n    <MixedChart\n      series={series}\n      yAxis={{ format: compact }}\n      yAxis2={{ format: percent, zero: true }}\n      annotations={[\n        {\n          type: \"rect\",\n          x0: new Date(2026, 4, 1).getTime(),\n          x1: new Date(2026, 4, 8).getTime(),\n          label: t(\"campaign\"),\n          color: \"var(--warning-color, #f59e0b)\",\n        },\n      ]}\n      height={320}\n      ariaLabel={t(\"conversionAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Trafic et conversion",
+      "description": "Une aire des sessions quotidiennes avec le taux de conversion sur l'axe de droite et une campagne mise en évidence par une annotation rect."
+    },
+    {
+      "id": "inventory",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/inventory.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/inventory.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  MixedChart,\n  type ChartAnnotation,\n  type ChartHoverEvent,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst START = new Date(2026, 6, 1).getTime();\nconst DAYS = 90;\nconst REORDER_POINT = 520;\nconst SAFETY_STOCK = 200;\nconst ORDER_QUANTITY = 1400;\nconst PROMO = [52, 58] as const; // a promotion doubles the demand\n\ninterface PurchaseOrder {\n  id: string;\n  ordered: number;\n  arrives: number;\n  quantity: number;\n}\n\n// Stock of one item at the end of each day: the warehouse orders a fixed\n// quantity when the stock falls under the reorder point, and the supplier\n// delivers after a lead time of 5 to 9 days\nconst random = mulberry32(7);\nconst { stock, orders } = (() => {\n  const levels: number[] = [];\n  const placed: PurchaseOrder[] = [];\n  let level = 1250;\n  for (let day = 0; day < DAYS; day++) {\n    const promo = day >= PROMO[0] && day <= PROMO[1];\n    const demand = Math.round((promo ? 95 : 48) * (0.7 + random() * 0.6));\n    level += placed\n      .filter((po) => po.arrives === day)\n      .reduce((sum, po) => sum + po.quantity, 0);\n    level = Math.max(0, level - demand);\n    const pending = placed.some((po) => po.arrives > day);\n    if (level <= REORDER_POINT && !pending) {\n      placed.push({\n        id: `PO-${4180 + placed.length * 7}`,\n        ordered: day,\n        arrives: day + 5 + Math.floor(random() * 5),\n        quantity: ORDER_QUANTITY,\n      });\n    }\n    levels.push(level);\n  }\n  return {\n    stock: levels,\n    orders: placed.filter((po) => po.arrives < DAYS),\n  };\n})();\nconst time = (day: number) => START + day * DAY;\n\nexport default function InventoryDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const [picked, setPicked] = useState<number | null>(null);\n\n  const formats = useMemo(\n    () => ({\n      units: new Intl.NumberFormat(locale),\n      date: new Intl.DateTimeFormat(locale, { month: \"short\", day: \"numeric\" }),\n      days: new Intl.NumberFormat(locale, {\n        style: \"unit\",\n        unit: \"day\",\n        unitDisplay: \"long\",\n      }),\n    }),\n    [locale],\n  );\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        id: \"stock\",\n        name: t(\"stockLevel\"),\n        type: \"area\",\n        curve: \"step\",\n        color: \"var(--chart-series-1, #4f46e5)\",\n        opacity: 0.18,\n        data: stock.map((units, day) => [time(day), units] as const),\n      },\n      {\n        id: \"deliveries\",\n        name: t(\"deliveries\"),\n        type: \"bar\",\n        color: \"var(--success-color)\",\n        data: orders.map((po) => [time(po.arrives), po.quantity] as const),\n      },\n    ],\n    [t],\n  );\n  const annotations = useMemo((): ChartAnnotation[] => {\n    const promo: ChartAnnotation = {\n      type: \"rect\",\n      x0: time(PROMO[0]),\n      x1: time(PROMO[1]),\n      color: \"var(--warning-color)\",\n      opacity: 0.1,\n      label: t(\"promotion\"),\n      labelPosition: \"top-right\",\n    };\n    return [\n      {\n        type: \"rect\",\n        y0: 0,\n        y1: SAFETY_STOCK,\n        color: \"var(--danger-color)\",\n        opacity: 0.08,\n        label: t(\"safetyStock\"),\n        labelPosition: \"bottom-right\",\n      },\n      {\n        type: \"line\",\n        axis: \"y\",\n        value: REORDER_POINT,\n        dash: [4, 4],\n        color: \"var(--warning-color)\",\n        label: t(\"reorderPoint\"),\n      },\n      promo,\n      ...(picked === null\n        ? []\n        : [\n            {\n              type: \"line\" as const,\n              axis: \"x\" as const,\n              value: time(picked),\n              color: \"var(--primary-color)\",\n            },\n          ]),\n    ];\n  }, [t, picked]);\n\n  const onPointClick = (event: ChartHoverEvent) => {\n    const item = event.items[0];\n    if (!item) return;\n    setPicked(Math.round((item.x - START) / DAY));\n  };\n\n  const readout = () => {\n    if (picked === null) return t(\"inventoryHint\");\n    const delivery = orders.find((po) => po.arrives === picked);\n    if (delivery) {\n      return t(\"deliveryDetails\", {\n        id: delivery.id,\n        quantity: formats.units.format(delivery.quantity),\n        ordered: formats.date.format(time(delivery.ordered)),\n        arrived: formats.date.format(time(delivery.arrives)),\n        lead: formats.days.format(delivery.arrives - delivery.ordered),\n      });\n    }\n    const units = stock[picked] ?? 0;\n    const values = {\n      date: formats.date.format(time(picked)),\n      units: formats.units.format(units),\n    };\n    return units <= SAFETY_STOCK ? t(\"stockLow\", values) : t(\"stockOn\", values);\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <MixedChart\n        series={series}\n        annotations={annotations}\n        onPointClick={onPointClick}\n        onPlotClick={() => setPicked(null)}\n        tooltip={{ mode: \"axis\" }}\n        xAxis={{ type: \"time\" }}\n        yAxis={{\n          title: t(\"unitsInStock\"),\n          format: (y) => formats.units.format(y),\n        }}\n        locale={locale}\n        height={320}\n        ariaLabel={t(\"inventoryAria\")}\n      />\n      <output aria-live=\"polite\">{readout()}</output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Stock et livraisons",
+      "description": "Une aire en escalier du niveau de stock avec des barres de livraison, une ligne de point de commande et un rect de stock de sécurité. onPointClick marque le jour d'une ligne x et affiche son bon de commande ou son stock dans une sortie ; onPlotClick l'efface."
+    },
+    {
+      "id": "locale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/locale.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/locale.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { MixedChart, type ChartSeries } from \"minerva-design/charts\";\n\n// 90 days of page views (hundreds of thousands) and the conversion rate (%)\nconst DAY = 86_400_000;\nconst start = new Date(2026, 0, 1).getTime();\nconst days = Array.from({ length: 90 }, (_, i) => {\n  const weekly = Math.sin((i / 7) * Math.PI * 2) * 0.12;\n  const trend = 1 + i / 120;\n  return {\n    x: start + i * DAY,\n    views: Math.round(186_000 * trend * (1 + weekly) + ((i * 7919) % 21_000)),\n    rate: Number(\n      (2.4 + Math.sin(i / 11) * 0.45 + ((i * 31) % 7) / 25).toFixed(2),\n    ),\n  };\n});\n\n// The same chart in two locales: compact units (万 / k), separators and dates\nconst LOCALES = [\n  { locale: \"zh-CN\", key: \"chinese\" },\n  { locale: \"fr-FR\", key: \"french\" },\n] as const;\n\nexport default function LocaleDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"pageViews\"),\n        type: \"bar\",\n        data: days.map((d) => ({ x: d.x, y: d.views })),\n      },\n      {\n        name: t(\"conversionRate\"),\n        type: \"line\",\n        yAxis: \"right\",\n        color: \"var(--chart-series-3, #f59e0b)\",\n        lineWidth: 2,\n        data: days.map((d) => ({ x: d.x, y: d.rate })),\n      },\n    ],\n    [t],\n  );\n\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"repeat(auto-fit, minmax(280px, 1fr))\",\n        gap: 16,\n        width: \"100%\",\n      }}\n    >\n      {LOCALES.map(({ locale, key }) => (\n        <figure key={locale} style={{ margin: 0, minWidth: 0 }}>\n          <figcaption\n            style={{\n              marginBottom: 4,\n              fontSize: 13,\n              color: \"var(--text-secondary-color)\",\n            }}\n          >\n            {t(`locales.${key}`)}\n          </figcaption>\n          <MixedChart\n            locale={locale}\n            series={series}\n            xAxis={{ type: \"time\" }}\n            yAxis2={{ zero: true }}\n            legend={{ position: \"bottom\" }}\n            height={280}\n            ariaLabel={t(\"localeAria\", { locale: t(`locales.${key}`) })}\n          />\n        </figure>\n      ))}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Langues",
+      "description": "Le même graphique avec locale=\"zh-CN\" et locale=\"fr-FR\" : le moteur écrit les unités compactes (万 / k), les séparateurs, les noms des mois de l'axe temporel et les dates de l'infobulle de la langue. Sans locale, les graphiques suivent la langue de la page (<html lang>)."
+    },
+    {
+      "id": "log-scale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/log-scale.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/log-scale.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { MixedChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Ten years of a software company: yearly revenue (M$) grows 160-fold, its\n// users 6,000-fold; a log right axis keeps both the first years and the last\n// ones readable\nconst years = Array.from({ length: 10 }, (_, i) => String(2016 + i));\nconst revenue = [0.4, 1.1, 2.6, 5.2, 9.8, 17, 26, 38, 51, 66];\nconst users = [\n  1_200, 6_800, 31_000, 120_000, 410_000, 1_100_000, 2_300_000, 3_900_000,\n  5_600_000, 7_400_000,\n];\n\nexport default function LogScaleDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const usd = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"USD\",\n      notation: \"compact\",\n    });\n    return (value: number) => format.format(value * 1e6);\n  }, [locale]);\n  const compact = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, { notation: \"compact\" });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"yearlyRevenue\"),\n        type: \"bar\",\n        format: usd,\n        data: years.map((year, i) => [year, revenue[i] ?? 0] as const),\n      },\n      {\n        name: t(\"users\"),\n        type: \"line\",\n        yAxis: \"right\",\n        color: \"var(--chart-series-3, #f59e0b)\",\n        lineWidth: 2.5,\n        format: (value) => number.format(value),\n        data: years.map((year, i) => [year, users[i] ?? null] as const),\n      },\n    ],\n    [t, usd, number],\n  );\n\n  return (\n    <MixedChart\n      series={series}\n      yAxis={{ format: usd, title: t(\"yearlyRevenue\") }}\n      // decades: 1k, 10k, 100k, 1M, 10M\n      yAxis2={{ type: \"log\", format: compact, title: t(\"usersLog\") }}\n      height={320}\n      ariaLabel={t(\"logAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Échelle logarithmique",
+      "description": "Les utilisateurs sont multipliés par 6 000 en dix ans : yAxis2={{ type: \"log\" }} les trace sur un axe droit logarithmique avec ses propres décades, à côté des barres de chiffre d’affaires sur l’axe gauche linéaire ; les infobulles gardent les valeurs réelles."
+    },
+    {
+      "id": "ops-overview",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/ops-overview.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/ops-overview.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Checkbox } from \"minerva-design\";\nimport { MixedChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst SLOT = 30 * 60 * 1000;\nconst START = new Date(2026, 9, 29).getTime(); // local midnight\nconst SLOTS = 48;\n// releases of the day (slot index and version); the first one was rolled back\nconst DEPLOYS = [\n  { slot: 20, version: \"v2.14.0\" },\n  { slot: 22, version: \"v2.13.2\" },\n  { slot: 31, version: \"v2.14.1\" },\n];\n\n// Requests (thousands per half hour) and share of 5xx answers of a web API\nconst random = mulberry32(503);\nconst slots = Array.from({ length: SLOTS }, (_, i) => {\n  const hour = i / 2;\n  const daily = Math.max(0, Math.sin(((hour - 6) / 24) * 2 * Math.PI));\n  const requests = 40 + 260 * daily + random() * 25;\n  // the faulty release (slots 20 and 21) makes the error rate jump\n  const incident = i === 20 ? 0.048 : i === 21 ? 0.031 : 0;\n  const errors = 0.002 + random() * 0.0015 + incident;\n  return { time: START + i * SLOT, requests, errors };\n});\n\ntype SeriesKey = \"requests\" | \"errors\" | \"deploys\";\n\nexport default function OpsOverviewDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const [visible, setVisible] = useState<Record<SeriesKey, boolean>>({\n    requests: true,\n    errors: true,\n    deploys: true,\n  });\n\n  const formats = useMemo(\n    () => ({\n      requests: new Intl.NumberFormat(locale, { notation: \"compact\" }),\n      percent: new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n      time: new Intl.DateTimeFormat(locale, {\n        hour: \"2-digit\",\n        minute: \"2-digit\",\n      }),\n    }),\n    [locale],\n  );\n\n  const series = useMemo((): ChartSeries[] => {\n    const requests = (y: number) => formats.requests.format(y * 1000);\n    const percent = (y: number) => formats.percent.format(y);\n    return [\n      {\n        id: \"requests\",\n        name: t(\"requests\"),\n        type: \"bar\",\n        color: \"var(--chart-series-1, #4f46e5)\",\n        opacity: 0.6,\n        hidden: !visible.requests,\n        format: requests,\n        data: slots.map((s) => [s.time, s.requests] as const),\n      },\n      {\n        id: \"errors\",\n        name: t(\"errorRate\"),\n        type: \"line\",\n        yAxis: \"right\",\n        color: \"var(--danger-color)\",\n        lineWidth: 2,\n        hidden: !visible.errors,\n        format: percent,\n        data: slots.map((s) => [s.time, s.errors] as const),\n      },\n      {\n        // one dot per release on the error rate, its version written next to it\n        id: \"deploys\",\n        name: t(\"releases\"),\n        type: \"scatter\",\n        yAxis: \"right\",\n        color: \"var(--text-color, #1f2937)\",\n        pointSize: 9,\n        showLabels: true,\n        hidden: !visible.deploys,\n        format: percent,\n        data: DEPLOYS.map((d) => ({\n          x: slots[d.slot]?.time ?? START,\n          y: slots[d.slot]?.errors ?? 0,\n          label: d.version,\n        })),\n      },\n    ];\n  }, [t, formats, visible]);\n\n  const peak = slots.reduce((max, s) => (s.errors > max.errors ? s : max));\n  const toggle = (key: SeriesKey) => (checked: boolean) =>\n    setVisible((current) => ({ ...current, [key]: checked }));\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 16 }}>\n        <Checkbox\n          checked={visible.requests}\n          onChange={toggle(\"requests\")}\n          label={t(\"requests\")}\n        />\n        <Checkbox\n          checked={visible.errors}\n          onChange={toggle(\"errors\")}\n          label={t(\"errorRate\")}\n        />\n        <Checkbox\n          checked={visible.deploys}\n          onChange={toggle(\"deploys\")}\n          label={t(\"releases\")}\n        />\n      </div>\n      <MixedChart\n        series={series}\n        legend={false}\n        tooltip={{ mode: \"axis\" }}\n        xAxis={{ type: \"time\", format: (x) => formats.time.format(x) }}\n        yAxis={{\n          title: t(\"requestsPerHalfHour\"),\n          format: (y) => formats.requests.format(y * 1000),\n        }}\n        yAxis2={{\n          title: t(\"errorRate\"),\n          min: 0,\n          format: (y) => formats.percent.format(y),\n        }}\n        height={320}\n        ariaLabel={t(\"opsAria\")}\n      />\n      <p style={{ margin: 0, color: \"var(--text-secondary-color)\" }}>\n        {t(\"incidentSummary\", {\n          peak: formats.percent.format(peak.errors),\n          time: formats.time.format(peak.time),\n          version: DEPLOYS[0]?.version ?? \"\",\n          rollback: DEPLOYS[1]?.version ?? \"\",\n        })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Vue d'ensemble de l'exploitation",
+      "description": "Des barres de requêtes sur l'axe de gauche, le taux d'erreur sur l'axe de droite et les mises en production en série type: \"scatter\" dont showLabels écrit chaque version. Des Checkbox remplacent la légende et règlent hidden sur chaque série."
+    },
+    {
+      "id": "pareto",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/pareto.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/pareto.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { MixedChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Returns of the last quarter by cause: a Pareto chart sorts the causes and\n// adds their cumulative share, the few causes behind 80% stand out\nconst causes = [\n  [\"wrongSize\", 412],\n  [\"damaged\", 236],\n  [\"notAsDescribed\", 151],\n  [\"late\", 88],\n  [\"changedMind\", 61],\n  [\"wrongItem\", 37],\n  [\"other\", 23],\n] as const;\n\nexport default function ParetoDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const percent = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, { style: \"percent\" });\n    return (value: number) => format.format(value / 100);\n  }, [locale]);\n\n  const series = useMemo((): ChartSeries[] => {\n    const total = causes.reduce((sum, [, n]) => sum + n, 0);\n    const cumulative = causes.map(\n      (_, i) =>\n        (causes.slice(0, i + 1).reduce((sum, [, n]) => sum + n, 0) / total) *\n        100,\n    );\n    return [\n      {\n        name: t(\"returns\"),\n        type: \"bar\",\n        color: \"var(--primary-color, #4f46e5)\",\n        data: causes.map(([key, n], i) => ({\n          x: t(`causes.${key}`),\n          y: n,\n          // the vital few: the causes reaching 80% together\n          color:\n            (cumulative[i - 1] ?? 0) < 80\n              ? \"var(--primary-color, #4f46e5)\"\n              : \"var(--border-color, #cbd5e1)\",\n        })),\n      },\n      {\n        name: t(\"cumulative\"),\n        type: \"line\",\n        yAxis: \"right\",\n        color: \"var(--chart-series-4, #ef4444)\",\n        format: percent,\n        data: causes.map(\n          ([key], i) => [t(`causes.${key}`), cumulative[i] ?? 0] as const,\n        ),\n      },\n    ];\n  }, [t, percent]);\n\n  return (\n    <MixedChart\n      series={series}\n      yAxis2={{ min: 0, max: 100, nice: false, format: percent }}\n      height={320}\n      ariaLabel={t(\"paretoAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Diagramme de Pareto",
+      "description": "Les causes triées et leur part cumulée sur un axe de droite de 0 à 100 % (min, max et nice: false) ; les causes de 80 % des retours sont mises en évidence."
+    },
+    {
+      "id": "revenue-growth",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/revenue-growth.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/revenue-growth.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { MixedChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Quarterly revenue (M$) and its growth over the same quarter of last year\nconst revenue = [18.2, 19.5, 21.1, 26.8, 21.4, 23.9, 25.2, 31.6];\nconst growth = revenue.map((value, i) =>\n  i >= 4 ? value / (revenue[i - 4] ?? value) - 1 : null,\n);\n\nexport default function RevenueGrowthDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const usd = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"USD\",\n      notation: \"compact\",\n    });\n    return (value: number) => format.format(value * 1e6);\n  }, [locale]);\n  const percent = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"percent\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n\n  const series = useMemo((): ChartSeries[] => {\n    const quarters = revenue.map((_, i) =>\n      t(\"quarter\", { n: (i % 4) + 1, year: 2025 + Math.floor(i / 4) }),\n    );\n    return [\n      {\n        name: t(\"revenue\"),\n        type: \"bar\",\n        format: usd,\n        data: quarters.map((q, i) => [q, revenue[i] ?? 0] as const),\n      },\n      {\n        name: t(\"growth\"),\n        type: \"line\",\n        // plotted against yAxis2, formatted with its own format\n        yAxis: \"right\",\n        color: \"var(--chart-series-3, #f59e0b)\",\n        lineWidth: 2.5,\n        data: quarters.map((q, i) => [q, growth[i] ?? null] as const),\n      },\n    ];\n  }, [t, usd]);\n\n  return (\n    <MixedChart\n      series={series}\n      yAxis={{ format: usd, title: t(\"revenue\") }}\n      yAxis2={{ format: percent, title: t(\"growth\") }}\n      height={320}\n      ariaLabel={t(\"revenueAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Chiffre d'affaires et croissance",
+      "description": "La ligne de croissance fixe yAxis: \"right\" et se lit sur yAxis2 avec son propre format ; la plage de droite s'aligne sur les graduations de gauche, la grille convient aux deux axes."
+    },
+    {
+      "id": "solar-battery",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/demos/solar-battery.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/demos/solar-battery.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport {\n  MixedChart,\n  type ChartAnnotation,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nconst HOUR = 60 * 60 * 1000;\nconst START = new Date(2026, 5, 20).getTime(); // local midnight\nconst HOURS = 48;\nconst CAPACITY = 10; // kWh of the home battery\nconst MAX_RATE = 4; // kW of charge or discharge\nconst SUNRISE = 5.5;\nconst SUNSET = 21.5;\n\n// A house with 6 kWp of solar panels over two days, the second one cloudy:\n// production and consumption in kWh per hour\nconst hours = Array.from({ length: HOURS }, (_, i) => {\n  const hour = i % 24;\n  const day = Math.floor(i / 24);\n  const sun = Math.max(\n    0,\n    Math.sin(((hour - SUNRISE) / (SUNSET - SUNRISE)) * Math.PI),\n  );\n  const clouds = day === 1 ? 0.4 + 0.15 * Math.sin(i * 1.7) : 1;\n  const solar = 5.2 * sun ** 1.3 * clouds;\n  // base load, breakfast, cooking and evening peaks\n  const load =\n    0.35 +\n    0.9 * Math.exp(-((hour - 7.5) ** 2) / 1.5) +\n    1.6 * Math.exp(-((hour - 19) ** 2) / 3) +\n    0.5 * Math.exp(-((hour - 12.5) ** 2) / 2);\n  return { time: START + i * HOUR, solar, load };\n});\n\n// state of charge hour by hour: surplus charges the battery, deficit drains it\nconst simulate = (battery: boolean) => {\n  let charge = CAPACITY * 0.3;\n  let imported = 0;\n  const soc = hours.map((h) => {\n    const balance = h.solar - h.load;\n    if (!battery) {\n      imported += Math.max(0, -balance);\n      return 0;\n    }\n    if (balance > 0) {\n      charge += Math.min(balance, MAX_RATE, CAPACITY - charge);\n    } else {\n      const drawn = Math.min(-balance, MAX_RATE, charge);\n      charge -= drawn;\n      imported += -balance - drawn;\n    }\n    return (charge / CAPACITY) * 100;\n  });\n  return { soc, imported };\n};\nconst consumed = hours.reduce((sum, h) => sum + h.load, 0);\n\nexport default function SolarBatteryDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.mixed-chart.data\",\n  });\n  const locale = i18n.language;\n  const [battery, setBattery] = useState(true);\n\n  const result = useMemo(() => simulate(battery), [battery]);\n  const formats = useMemo(() => {\n    const kwh = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });\n    return {\n      kwh: (value: number) => t(\"kwh\", { value: kwh.format(value) }),\n      percent: new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 0,\n      }),\n    };\n  }, [locale, t]);\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"solarProduction\"),\n        type: \"bar\",\n        color: \"var(--warning-color)\",\n        format: formats.kwh,\n        data: hours.map((h) => [h.time, h.solar] as const),\n      },\n      {\n        name: t(\"consumption\"),\n        type: \"line\",\n        color: \"var(--text-color, #1f2937)\",\n        format: formats.kwh,\n        data: hours.map((h) => [h.time, h.load] as const),\n      },\n      {\n        name: t(\"batteryCharge\"),\n        type: \"area\",\n        yAxis: \"right\",\n        color: \"var(--success-color)\",\n        opacity: 0.15,\n        // without a battery the series stays in the legend, greyed out\n        hidden: !battery,\n        format: (y) => formats.percent.format(y / 100),\n        data: hours.map((h, i) => [h.time, result.soc[i] ?? 0] as const),\n      },\n    ],\n    [t, formats, battery, result],\n  );\n  // the nights, from sunset to the next sunrise, cut to the data range\n  const annotations = useMemo((): ChartAnnotation[] => {\n    const first = START - HOUR / 2;\n    const last = START + (HOURS - 0.5) * HOUR;\n    return [-1, 0, 1].map((day) => ({\n      type: \"rect\" as const,\n      x0: Math.max(first, START + (day * 24 + SUNSET) * HOUR),\n      x1: Math.min(last, START + ((day + 1) * 24 + SUNRISE) * HOUR),\n      color: \"var(--text-secondary-color)\",\n      opacity: 0.08,\n      ...(day === 0 ? { label: t(\"night\") } : {}),\n    }));\n  }, [t]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 16,\n        }}\n      >\n        <Switch\n          checked={battery}\n          onChange={setBattery}\n          label={t(\"withBattery\", { value: formats.kwh(CAPACITY) })}\n        />\n        <output aria-live=\"polite\">\n          {t(\"selfSufficiency\", {\n            share: formats.percent.format(1 - result.imported / consumed),\n            imported: formats.kwh(result.imported),\n          })}\n        </output>\n      </div>\n      <MixedChart\n        series={series}\n        annotations={annotations}\n        tooltip={{ mode: \"axis\" }}\n        xAxis={{ type: \"time\" }}\n        yAxis={{ title: t(\"energyPerHour\"), format: formats.kwh }}\n        yAxis2={{\n          title: t(\"batteryCharge\"),\n          min: 0,\n          max: 100,\n          nice: false,\n          format: (y) => formats.percent.format(y / 100),\n        }}\n        locale={locale}\n        height={340}\n        ariaLabel={t(\"solarAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Solaire et batterie domestique",
+      "description": "La production solaire horaire en barres et la consommation en ligne sur l'axe de gauche, l'état de charge de la batterie en aire sur yAxis2 fixé à 0-100 % avec min, max et nice: false ; des annotations rect grisent les nuits. Le Switch masque la batterie et la sortie recalcule l'autosuffisance."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Graphique combiné",
+      "description": "Barres, lignes et aires dans un même graphique, sur un ou deux axes de valeurs : chiffre d'affaires et croissance, pluie et température, diagrammes de Pareto.",
+      "demos": {
+        "revenue-growth": {
+          "title": "Chiffre d'affaires et croissance",
+          "description": "La ligne de croissance fixe yAxis: \"right\" et se lit sur yAxis2 avec son propre format ; la plage de droite s'aligne sur les graduations de gauche, la grille convient aux deux axes."
+        },
+        "climate": {
+          "title": "Diagramme climatique",
+          "description": "Les barres de précipitations sur l'axe de gauche, la courbe des températures sur l'axe de droite ; zero: true garde le zéro dans la plage de droite."
+        },
+        "conversion": {
+          "title": "Trafic et conversion",
+          "description": "Une aire des sessions quotidiennes avec le taux de conversion sur l'axe de droite et une campagne mise en évidence par une annotation rect."
+        },
+        "pareto": {
+          "title": "Diagramme de Pareto",
+          "description": "Les causes triées et leur part cumulée sur un axe de droite de 0 à 100 % (min, max et nice: false) ; les causes de 80 % des retours sont mises en évidence."
+        },
+        "log-scale": {
+          "title": "Échelle logarithmique",
+          "description": "Les utilisateurs sont multipliés par 6 000 en dix ans : yAxis2={{ type: \"log\" }} les trace sur un axe droit logarithmique avec ses propres décades, à côté des barres de chiffre d’affaires sur l’axe gauche linéaire ; les infobulles gardent les valeurs réelles."
+        },
+        "locale": {
+          "title": "Langues",
+          "description": "Le même graphique avec locale=\"zh-CN\" et locale=\"fr-FR\" : le moteur écrit les unités compactes (万 / k), les séparateurs, les noms des mois de l'axe temporel et les dates de l'infobulle de la langue. Sans locale, les graphiques suivent la langue de la page (<html lang>)."
+        },
+        "solar-battery": {
+          "title": "Solaire et batterie domestique",
+          "description": "La production solaire horaire en barres et la consommation en ligne sur l'axe de gauche, l'état de charge de la batterie en aire sur yAxis2 fixé à 0-100 % avec min, max et nice: false ; des annotations rect grisent les nuits. Le Switch masque la batterie et la sortie recalcule l'autosuffisance."
+        },
+        "inventory": {
+          "title": "Stock et livraisons",
+          "description": "Une aire en escalier du niveau de stock avec des barres de livraison, une ligne de point de commande et un rect de stock de sécurité. onPointClick marque le jour d'une ligne x et affiche son bon de commande ou son stock dans une sortie ; onPlotClick l'efface."
+        },
+        "ops-overview": {
+          "title": "Vue d'ensemble de l'exploitation",
+          "description": "Des barres de requêtes sur l'axe de gauche, le taux d'erreur sur l'axe de droite et les mises en production en série type: \"scatter\" dont showLabels écrit chaque version. Des Checkbox remplacent la légende et règlent hidden sur chaque série."
+        },
+        "burndown": {
+          "title": "Burndown de sprint",
+          "description": "Le travail restant en aire, les points terminés chaque jour en barres et la progression idéale en ligne, sur des catégories xAxis explicites ; une annotation text signale un changement de périmètre. renderTooltip indique l'avance ou le retard de chaque jour sur la ligne idéale."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple de base",
+            "description": "Les barres de pluie sur l'axe de gauche et la courbe des températures sur l'axe de droite (yAxis: \"right\" et yAxis2) ; touchez pour comparer."
+          }
+        }
+      },
+      "data": {
+        "quarter": "T{{n}} {{year}}",
+        "revenue": "Chiffre d'affaires",
+        "growth": "Croissance (sur un an)",
+        "revenueAria": "Chiffre d'affaires trimestriel et sa croissance sur un an",
+        "rainfall": "Précipitations",
+        "temperature": "Température",
+        "climateAria": "Précipitations et températures mensuelles à Tokyo",
+        "sessions": "Sessions",
+        "conversionRate": "Taux de conversion",
+        "campaign": "Campagne",
+        "conversionAria": "Sessions quotidiennes et taux de conversion sur deux mois",
+        "returns": "Retours",
+        "cumulative": "Part cumulée",
+        "causes": {
+          "wrongSize": "Mauvaise taille",
+          "damaged": "Endommagé",
+          "notAsDescribed": "Non conforme",
+          "late": "Livré en retard",
+          "changedMind": "Changement d'avis",
+          "wrongItem": "Mauvais article",
+          "other": "Autre"
+        },
+        "paretoAria": "Retours par cause et leur part cumulée",
+        "pageViews": "Pages vues",
+        "locales": {
+          "chinese": "Chinois (zh-CN)",
+          "french": "Français (fr-FR)"
+        },
+        "localeAria": "Pages vues et taux de conversion par jour, {{locale}}",
+        "yearlyRevenue": "Chiffre d’affaires",
+        "users": "Utilisateurs",
+        "usersLog": "Utilisateurs (échelle log)",
+        "logAria": "Chiffre d’affaires annuel et utilisateurs sur un axe logarithmique, de 2016 à 2025",
+        "kwh": "{{value}} kWh",
+        "solarProduction": "Production solaire",
+        "consumption": "Consommation",
+        "batteryCharge": "Charge de la batterie",
+        "night": "Nuit",
+        "withBattery": "Batterie de {{value}}",
+        "selfSufficiency": "Autosuffisance de {{share}} sur deux jours, {{imported}} achetés au réseau.",
+        "energyPerHour": "Énergie par heure",
+        "solarAria": "Production solaire et consommation horaires d'une maison sur deux jours, avec l'état de charge de sa batterie",
+        "stockLevel": "Niveau de stock",
+        "deliveries": "Livraisons",
+        "promotion": "Promotion",
+        "safetyStock": "Stock de sécurité",
+        "reorderPoint": "Point de commande",
+        "inventoryHint": "Cliquez sur un jour ou une livraison.",
+        "deliveryDetails": "{{id}} : {{quantity}} unités commandées le {{ordered}}, livrées le {{arrived}} après {{lead}}.",
+        "stockOn": "{{units}} unités en stock le {{date}}.",
+        "stockLow": "Seulement {{units}} unités en stock le {{date}}, sous le stock de sécurité.",
+        "unitsInStock": "Unités",
+        "inventoryAria": "Niveau de stock quotidien d'un article sur trois mois, avec les livraisons, le point de commande et le stock de sécurité",
+        "requests": "Requêtes",
+        "errorRate": "Taux d'erreur",
+        "releases": "Mises en production",
+        "requestsPerHalfHour": "Requêtes par 30 min",
+        "opsAria": "Requêtes et taux d'erreur d'une API web sur une journée, avec ses mises en production",
+        "incidentSummary": "Le taux d'erreur a culminé à {{peak}} à {{time}} après {{version}}, jusqu'au retour à {{rollback}}.",
+        "points": "{{value}} pts",
+        "sprintStart": "Début",
+        "remainingWork": "Travail restant",
+        "completedPerDay": "Terminé",
+        "idealBurn": "Idéal",
+        "scopeAdded": "+{{value}} ajoutés",
+        "idealLeft": "Idéal : {{value}} restants",
+        "remainingLeft": "{{value}} restants",
+        "doneThatDay": "{{value}} terminés ce jour-là",
+        "behindBy": "{{value}} de retard sur l'idéal",
+        "aheadBy": "{{value}} d'avance sur l'idéal",
+        "storyPoints": "Points d'histoire",
+        "burndownAria": "Burndown de sprint : travail restant, points terminés chaque jour et progression idéale sur dix jours ouvrés",
+        "burndownLate": "{{left}} restants à {{velocity}} par jour : environ {{forecast}} ne seront pas terminés à la fin du sprint.",
+        "burndownOnTrack": "{{left}} restants à {{velocity}} par jour : le sprint est dans les temps."
+      },
+      "api": {
+        "MixedChartProps": {
+          "series": "Barres, lignes, aires et points, chacun avec son type ; yAxis: \"right\" place une série sur yAxis2",
+          "yAxis2": "Axe de valeurs de droite des séries avec yAxis: \"right\"",
+          "stackMode": "\"percent\" ramène chaque empilement à 100 %",
+          "orientation": "\"horizontal\" place les catégories sur le côté gauche"
+        },
+        "ChartProps": {
+          "series": "Séries de données ; chacune fixe son type",
+          "stackMode": "\"percent\" ramène chaque pile à 100 % à chaque x",
+          "yAxis2": "Axe des valeurs de droite des séries avec yAxis: \"right\" ; sa plage est alignée sur les graduations de gauche",
+          "orientation": "\"horizontal\" place l'axe x (catégories) à gauche et les valeurs en bas"
+        },
+        "ChartLabels": {
+          "open": "Ligne d'ouverture des chandeliers",
+          "high": "Ligne du plus haut des chandeliers",
+          "low": "Ligne du plus bas des chandeliers",
+          "close": "Ligne de clôture des chandeliers",
+          "max": "Ligne de la moustache haute des boîtes",
+          "q3": "Ligne du troisième quartile des boîtes",
+          "median": "Ligne de la médiane des boîtes",
+          "q1": "Ligne du premier quartile des boîtes",
+          "min": "Ligne de la moustache basse des boîtes",
+          "outliers": "Nombre de valeurs aberrantes d'une boîte",
+          "value": "Valeur des points (bulles) quand la série n'a pas de valueName",
+          "x": "Ligne du x d'un point quand l'axe n'a pas de titre",
+          "y": "Ligne du y d'un point quand l'axe n'a pas de titre",
+          "series": "Noms de série par défaut (« Série 1 », « Série 2 »…)",
+          "chart": "Nom accessible d'un graphique sans série",
+          "chartOf": "Nom accessible d'un graphique ; {series} est la liste des noms de séries",
+          "start": "Début d’une barre d’intervalle sur un axe temporel (tâches de Gantt)",
+          "end": "Fin d’une barre d’intervalle sur un axe temporel",
+          "duration": "Durée d’une barre d’intervalle sur un axe temporel (4 semaines, 26 jours)",
+          "progress": "Part réalisée d’une tâche de Gantt",
+          "dependencies": "Tâches dont dépend une tâche de Gantt",
+          "outlier": "Valeur aberrante survolée d’une boîte à moustaches"
+        }
+      },
+      "wc": {
+        "demos": {
+          "revenue-growth": {
+            "title": "Chiffre d’affaires et croissance sur deux axes",
+            "description": "Le chiffre d’affaires en barres sur l’axe gauche, la croissance en ligne sur l’axe droit (yAxis: \"right\")."
+          },
+          "climate": {
+            "title": "Diagramme climatique",
+            "description": "Les précipitations mensuelles en barres et la température moyenne en ligne lissée ; le réticule lit les deux."
+          }
+        },
+        "minerva-mixed-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}

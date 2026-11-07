@@ -1,0 +1,467 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "zh",
+  "renderer": "angular",
+  "page": "time-picker",
+  "title": "TimePicker 时间选择器",
+  "description": "通过时、分、秒列选择一天中的时间，也可以直接输入。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "keyboard": {
+      "title": "键盘与无障碍",
+      "open": "在输入框上按向下箭头打开面板；点击外部关闭面板。",
+      "navigate": "每一列（时、分、秒、上午/下午）都是 listbox：向上 / 向下箭头、Home 和 End 在列内移动，向左 / 向右箭头切换列。",
+      "select": "Enter 或 Space 选择当前聚焦的选项。",
+      "close": "Escape 关闭面板并把焦点还给输入框。在最后一列按 Tab 会关闭面板并移到下一个字段；在第一列按 Shift+Tab 会关闭面板并回到输入框。",
+      "typing": "输入的文本只有在构成完整且有效的时间时才会提交。失焦时会采用更宽松的解析；文本为空则清除值，无法解析则恢复之前的值。"
+    }
+  },
+  "components": [
+    {
+      "name": "TimePicker",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnTimePicker. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnTimePicker. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnTimePicker"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-time-picker",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "Date | null | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "Date | null | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "open",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "format",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "use12Hours",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "aria-labelledby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "aria-describedby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "id",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "required",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "clearable",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "TimePickerSize",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "minTime",
+            "typeText": "Date | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "maxTime",
+            "typeText": "Date | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "showSecond",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "hourStep",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "minuteStep",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          },
+          {
+            "name": "secondStep",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/time-picker/time-picker.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "Date | null | undefined",
+            "required": false
+          },
+          {
+            "name": "openChange",
+            "typeText": "boolean",
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          },
+          {
+            "prop": "open",
+            "event": "openChange",
+            "syntax": "[(open)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:TimePicker": {
+      "kind": "cssVars",
+      "source": "react/src/components/TimePicker",
+      "vars": [
+        {
+          "name": "--time-picker-width",
+          "description": "Width of the field"
+        },
+        {
+          "name": "--time-picker-panel-radius",
+          "description": "Corner radius of the panel (defaults to --radius-sm)"
+        },
+        {
+          "name": "--time-picker-panel-padding",
+          "description": "Inner padding of the panel"
+        },
+        {
+          "name": "--time-picker-column-width",
+          "description": "Width of an hours / minutes / seconds column"
+        },
+        {
+          "name": "--time-picker-column-height",
+          "description": "Height of the columns before they scroll"
+        },
+        {
+          "name": "--time-picker-cell-height",
+          "description": "Height of a time cell (defaults to the density's small control height)"
+        },
+        {
+          "name": "--time-picker-cell-padding-x",
+          "description": "Horizontal padding of a time cell (follows the density's row padding)"
+        },
+        {
+          "name": "--time-picker-selected-background",
+          "description": "Background of the selected time cell"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "choose-a-time",
+      "title": "Choose a time",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnTimePicker } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTimePicker],\n  template: `\n<mn-time-picker label=\"Start time\" [(value)]=\"time\"/><output>{{time}}</output>\n  `,\n})\nexport class Example {\n  time = null;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "disabled-time",
+      "title": "Disabled time",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnTimePicker } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTimePicker],\n  template: `\n<mn-time-picker label=\"Unavailable time\" disabled/>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TimePicker 时间选择器",
+      "description": "通过时、分、秒列选择一天中的时间，也可以直接输入。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "点击输入框（或按向下箭头）打开面板。onChange 接收一个 Date，清除时接收 undefined。未设置 label 时，输入框的无障碍名称为 \"Time\"（时间）。"
+        },
+        "default-value": {
+          "title": "默认值与清除",
+          "description": "defaultValue 设置初始时间。清除按钮的标签为 \"Clear time\"（清除时间）；设置 clearable={false} 可隐藏该按钮。"
+        },
+        "formats": {
+          "title": "格式",
+          "description": "支持 HH:mm:ss 和 HH:mm（以及对应的 12 小时制格式）。用 showSecond={false} 隐藏秒列。"
+        },
+        "twelve-hour": {
+          "title": "12 小时制",
+          "description": "use12Hours 会增加 AM/PM 列，请配合 hh:mm:ss a 或 hh:mm a 格式使用。"
+        },
+        "steps": {
+          "title": "步长",
+          "description": "hourStep、minuteStep 和 secondStep 设置选项之间的间隔。"
+        },
+        "time-range": {
+          "title": "时间范围",
+          "description": "minTime 和 maxTime 会禁用允许范围之外的选项。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "提供 small、medium（默认）和 large 三种尺寸。"
+        },
+        "disabled": {
+          "title": "禁用",
+          "description": "禁用后无法打开面板或编辑。"
+        },
+        "controlled": {
+          "title": "受控",
+          "description": "传入 value 并在 onChange 中更新。null 表示保持受控但为空，undefined 则让组件变为非受控。label 为输入框提供可见标签。"
+        }
+      },
+      "api": {
+        "TimePickerProps": {
+          "value": "选中的时间（受控；与 onChange 搭配使用）。null 表示\"无时间\"但保持受控；undefined 让选择器变为非受控。日期部分会被忽略",
+          "defaultValue": "初始选中的时间（非受控）",
+          "onChange": "以新时间调用，清除时传入 undefined",
+          "format": "显示格式：\"HH:mm:ss\"、\"HH:mm\"、\"hh:mm:ss a\" 或 \"hh:mm a\"",
+          "use12Hours": "使用 12 小时制并显示 AM/PM 列",
+          "placeholder": "输入框占位文字；默认为本地化的 \"Select time\"（选择时间）",
+          "disabled": "是否禁用",
+          "clearable": "允许通过后缀按钮清除值（标签为本地化的 \"Clear time\"）",
+          "size": "输入框和面板的尺寸",
+          "className": "额外的类名",
+          "minTime": "可选的最早时间，更早的选项会被禁用",
+          "maxTime": "可选的最晚时间，更晚的选项会被禁用",
+          "showSecond": "显示秒。设为 false 时也会从 format 中移除秒（\"HH:mm:ss\" → \"HH:mm\"）：实际使用的格式决定秒列、显示文本与解析。",
+          "hourStep": "小时选项的间隔",
+          "minuteStep": "分钟选项的间隔",
+          "secondStep": "秒选项的间隔",
+          "ref": "<input> 元素的 ref",
+          "label": "输入框的可见标签；未设置时输入框的标签为本地化的 \"Time\"（时间）",
+          "aria-label": "未显示可见标签时输入框的无障碍标签",
+          "name": "输入框的 name",
+          "onOpenChange": "面板打开或关闭时调用",
+          "style": "根元素的内联样式",
+          "aria-labelledby": "为输入框提供标签的元素 id（可多个）；在 FormControl 中默认指向 FormLabel（除非设置了 label / aria-label）",
+          "aria-describedby": "描述输入框的元素 id（可多个）；会与外层 FormControl 的帮助/错误文本合并",
+          "id": "输入框的 id；默认使用外层 FormControl 的 id",
+          "required": "将输入框标记为必填；默认继承外层 FormControl 的状态",
+          "readOnly": "只显示值而不允许修改（输入、面板、清除均不可用）；默认继承外层 FormControl 的状态",
+          "invalid": "将输入框标记为无效（aria-invalid）；默认继承外层 FormControl 的状态"
+        }
+      },
+      "keyboard": {
+        "title": "键盘与无障碍",
+        "open": "在输入框上按向下箭头打开面板；点击外部关闭面板。",
+        "navigate": "每一列（时、分、秒、上午/下午）都是 listbox：向上 / 向下箭头、Home 和 End 在列内移动，向左 / 向右箭头切换列。",
+        "select": "Enter 或 Space 选择当前聚焦的选项。",
+        "close": "Escape 关闭面板并把焦点还给输入框。在最后一列按 Tab 会关闭面板并移到下一个字段；在第一列按 Shift+Tab 会关闭面板并回到输入框。",
+        "typing": "输入的文本只有在构成完整且有效的时间时才会提交。失焦时会采用更宽松的解析；文本为空则清除值，无法解析则恢复之前的值。"
+      },
+      "cssVars": {
+        "--time-picker-width": "输入框宽度",
+        "--time-picker-panel-radius": "面板圆角（默认 --radius-sm）",
+        "--time-picker-panel-padding": "面板内边距",
+        "--time-picker-column-width": "时 / 分 / 秒每一列的宽度",
+        "--time-picker-column-height": "各列开始滚动前的高度",
+        "--time-picker-cell-height": "时间单元格高度（默认取当前密度的小号控件高度）",
+        "--time-picker-cell-padding-x": "时间单元格的水平内边距（跟随密度的行内边距）",
+        "--time-picker-selected-background": "选中时间单元格的背景色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本用法",
+            "description": "可输入时间或从面板中选择。value 特性设置初始时间；提交时间时触发 minerva-change，valueAsDate 以 Date 形式返回该时间。"
+          },
+          "formats": {
+            "title": "格式、尺寸与状态",
+            "description": "format 与 use-12-hours 控制显示方式（格式中不含秒时，hide-second 隐藏秒列）；三种尺寸；只读、禁用和错误状态。"
+          },
+          "range-steps": {
+            "title": "时间范围与步长",
+            "description": "min-time 和 max-time 禁用范围之外的选项；hour-step、minute-step 和 second-step 设置选项间隔。"
+          },
+          "form": {
+            "title": "在表单中",
+            "description": "该元素可关联表单：以 name 提交 24 小时制的值，required 会阻止空值提交，form.reset() 恢复 value 特性中的时间。"
+          }
+        },
+        "minerva-time-picker": {
+          "props": {
+            "open": "面板是否打开。",
+            "readOnly": "只显示值而不允许修改（不能输入、打开面板或清除）。",
+            "hideClearButton": "隐藏清除按钮（相当于 React 中的 clearable={false}）。",
+            "hideSecond": "隐藏秒列（相当于 React 中的 showSecond={false}）。",
+            "valueAsDate": "以 Date 表示的值（日期为今天），为空或无效时为 null。",
+            "isDisabled": "控件是否被禁用（自身禁用或位于禁用的 <fieldset> 中）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与该元素关联的 <label> 元素。",
+            "validity": "有效性状态（与 <input>.validity 相同）。",
+            "validationMessage": "描述当前校验错误的消息（有效时为空）。",
+            "willValidate": "该元素是否参与约束校验。"
+          },
+          "events": {
+            "change": "与 minerva-change 相同（类似原生事件，会冒泡）。",
+            "minerva-change": "时间已提交（选择、输入、失焦时规范化或清除），detail: { value }（清除时为 \"\"）。",
+            "minerva-input": "输入过程中文本发生变化，detail: { value }（输入的文本）。",
+            "minerva-open-change": "用户打开或关闭了面板，detail: { open }；可取消：preventDefault() 会保持当前状态。",
+            "minerva-clear": "清除按钮清空了输入框。"
+          },
+          "cssVars": {
+            "--input-height": "输入框的最小高度（默认取当前密度下对应尺寸的控件高度）。",
+            "--input-padding-x": "文本的水平内边距。",
+            "--input-radius": "输入框圆角（默认 --radius-lg）。",
+            "--input-font-size": "输入框字号。",
+            "--input-background": "输入框背景色。",
+            "--input-border-color": "默认状态下的边框颜色。",
+            "--input-focus-color": "悬停或聚焦时的边框颜色。",
+            "--icon-button-color": "清除按钮图标的颜色。",
+            "--icon-button-hover-bg": "清除按钮悬停时的背景。",
+            "--icon-button-pressed-color": "清除按钮按下时的图标颜色。",
+            "--icon-button-pressed-bg": "清除按钮按下时的背景。",
+            "--icon-button-size": "清除按钮的宽高（默认随密度的控件高度变化）。",
+            "--icon-button-icon-size": "清除按钮图标的尺寸。",
+            "--icon-button-radius": "清除按钮的圆角（默认 --radius-lg）。"
+          },
+          "methods": {
+            "focus": "聚焦内部输入框。",
+            "blur": "使内部输入框失去焦点。",
+            "show": "打开面板（不触发事件）。",
+            "hide": "关闭面板（不触发事件）。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误（传入空字符串则清除）。",
+            "formResetCallback": "表单 reset() 时由浏览器调用：恢复 value 属性中的值。",
+            "formDisabledCallback": "祖先 <fieldset> 被禁用或启用时由浏览器调用。",
+            "formStateRestoreCallback": "由浏览器调用以恢复值（往返缓存、自动填充）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

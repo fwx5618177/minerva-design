@@ -1,0 +1,899 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "calendar-heatmap",
+  "title": "日历热力图",
+  "description": "在日历上展示每日数值，类似贡献图：代码提交、学习打卡、运动、订单等。每天是一个按等级着色的格子；月份和星期名称、提示框中的日期以及每周第一天都遵循 locale。图例可隐藏 / 显示某个等级；方向键可按天和按周移动，提示框会显示日期。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "commitsTotal": "过去一年共 {{total}} 次提交",
+      "commitsAria": "过去一年每天的代码提交次数",
+      "commitsDay": "{{date}}：{{value}} 次提交",
+      "commitsHint": "点击某一天（或聚焦图表后用方向键移动并按 Enter）即可选中",
+      "minutes": "{{value}} 分钟",
+      "streaks": "当前连续 {{current}} 天 · 最长连续 {{longest}} 天",
+      "lessonsAria": "2026 年每天的语言练习分钟数",
+      "lessonDay": "{{date}}：练习 {{value}}",
+      "missedDay": "{{date}}：未练习",
+      "lessonsHint": "点击某一天查看练习时长",
+      "km": "{{value}} 公里",
+      "runsAria": "2024 至 2026 年每天的跑步距离",
+      "runsYear": "{{year}} 年：{{value}}",
+      "weekStartLabel": "每周第一天",
+      "fromLocale": "跟随语言区域",
+      "ordersAria": "2026 年每天的线上订单数，按月显示",
+      "localeLabel": "语言区域",
+      "deploysAria": "2026 年上半年每天的部署次数",
+      "kwh": "{{value}} 千瓦时",
+      "highUseOnly": "仅看高用电",
+      "showAll": "显示全部",
+      "energyAria": "2025 年每日用电量",
+      "visibleDays": "显示 {{days}} 天，共 {{value}}（占全年 {{share}}）",
+      "noRecord": "无记录",
+      "vsGoal": "比目标 {{goal}} {{value}}",
+      "sleepSummary": "平均每晚 {{average}} · {{nights}} 晚中有 {{reached}} 晚达到 {{goal}} 的目标",
+      "sleepAria": "2026 年 5 月至 10 月每晚的睡眠时长",
+      "year": "年份",
+      "incidentsYear": "{{year}} 年：{{total}} 起事故，{{quiet}} 天无事故",
+      "incidentsN": "{{value}} 起事故",
+      "incidentsAria": "{{year}} 年每日生产事故",
+      "incidentsDay": "{{date}}：{{value}} 起事故",
+      "quietDay": "{{date}}：无事故",
+      "futureDay": "{{date}}：尚未到来",
+      "hoverDay": "悬停在某一天上查看其事故",
+      "habitSummary": "锻炼 {{done}} 次（占 {{share}} 的天数）· 当前连续 {{streak}} 天",
+      "reset": "重置",
+      "workoutDone": "已完成",
+      "workoutMissed": "未完成",
+      "habitAria": "2026 年 8 月至 10 月每日的锻炼记录",
+      "markedDone": "{{date}} 已标记为完成",
+      "markedMissed": "{{date}} 已标记为未完成",
+      "habitHint": "点击某一天（或在其上按 Enter）来记录或取消一次锻炼"
+    }
+  },
+  "components": [
+    {
+      "name": "CalendarHeatmap",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "CalendarHeatmap"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "data",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly CalendarDatum[]",
+            "typeRef": "type:5f1af2a4d17fe1cfc728",
+            "required": true,
+            "description": "Daily values (several entries of the same day add up)"
+          },
+          {
+            "name": "range",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "number | readonly [CalendarDate, CalendarDate] | undefined",
+            "typeRef": "type:4b12d2b81062a2b776c5",
+            "required": false,
+            "description": "Days shown: a year (`2026`) or an inclusive `[start, end]` range"
+          },
+          {
+            "name": "layout",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "months",
+              "weeks"
+            ],
+            "typeText": "\"weeks\" | \"months\" | undefined",
+            "typeRef": "type:b873a466717fc9913cac",
+            "default": "weeks",
+            "required": false,
+            "description": "`weeks`: a column per week and a row per weekday (one strip per year when the range spans several years); `months`: a small calendar per month"
+          },
+          {
+            "name": "weekStart",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "First day of the week, 0 = Sunday … 6 = Saturday"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "BCP 47 locale of the month and weekday names, of the tooltip dates, of the default `weekStart` and of the built-in texts"
+          },
+          {
+            "name": "color",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Color of the highest level (lower levels are lighter)"
+          },
+          {
+            "name": "colors",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the levels, lowest first (replaces `color` and sets the number of levels)"
+          },
+          {
+            "name": "levels",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 4,
+            "required": false,
+            "description": "Number of color levels above the empty days"
+          },
+          {
+            "name": "thresholds",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Upper bounds of the levels but the last, ascending (`[2, 5, 10]`: 1-2, 3-5, 6-10, more); an even split of the largest value by default"
+          },
+          {
+            "name": "gap",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 3,
+            "required": false,
+            "description": "Gap between the cells, in pixels"
+          },
+          {
+            "name": "radius",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 2,
+            "required": false,
+            "description": "Corner radius of the cells, in pixels"
+          },
+          {
+            "name": "maxCellSize",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Largest cell size, in pixels (cells shrink to fit the width)"
+          },
+          {
+            "name": "monthLabels",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Month names (and years) around the cells"
+          },
+          {
+            "name": "weekdayLabels",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Weekday names beside (weeks) or above (months) the cells"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:f12d9d0b7c053d4d65a6",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:5bfc1184b082171dcbfd",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "texts",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend clicks then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back. Leave undefined to let the legend hide / show entries by itself."
+          },
+          {
+            "name": "animation",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations (skipped when the user prefers reduced motion)"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "node",
+            "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:599537a71f6aca3767b8",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onToggle",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:c5e11f23fbce8c1aa9a2",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is clicked (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          },
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:4d7c0df4667f26938fe6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) mark changes"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:e40dbbb538ff7cd7dda5",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is clicked, tapped or activated with Enter"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "CalendarHeatmapProps": {
+      "source": "charts/src/react/shapes.tsx",
+      "description": "Props of CalendarHeatmap",
+      "kind": "interface",
+      "extends": [
+        "ShapeChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "type": "readonly CalendarDatum[]",
+          "required": true,
+          "description": "Daily values (several entries of the same day add up)"
+        },
+        {
+          "name": "range",
+          "type": "number | readonly [CalendarDate, CalendarDate]",
+          "required": false,
+          "default": "the 53 weeks ending on the last day of the data",
+          "description": "Days shown: a year (`2026`) or an inclusive `[start, end]` range"
+        },
+        {
+          "name": "layout",
+          "type": "\"weeks\" | \"months\"",
+          "required": false,
+          "default": "\"weeks\"",
+          "description": "`weeks`: a column per week and a row per weekday (one strip per year when the range spans several years); `months`: a small calendar per month"
+        },
+        {
+          "name": "weekStart",
+          "type": "number",
+          "required": false,
+          "default": "from `locale`",
+          "description": "First day of the week, 0 = Sunday … 6 = Saturday"
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "the page language (`<html lang>`), else the browser language",
+          "description": "BCP 47 locale of the month and weekday names, of the tooltip dates, of the default `weekStart` and of the built-in texts"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "default": "the first palette color",
+          "description": "Color of the highest level (lower levels are lighter)"
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Colors of the levels, lowest first (replaces `color` and sets the number of levels)"
+        },
+        {
+          "name": "levels",
+          "type": "number",
+          "required": false,
+          "default": "4",
+          "description": "Number of color levels above the empty days"
+        },
+        {
+          "name": "thresholds",
+          "type": "readonly number[]",
+          "required": false,
+          "description": "Upper bounds of the levels but the last, ascending (`[2, 5, 10]`: 1-2, 3-5, 6-10, more); an even split of the largest value by default"
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "required": false,
+          "default": "3",
+          "description": "Gap between the cells, in pixels"
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "required": false,
+          "default": "2",
+          "description": "Corner radius of the cells, in pixels"
+        },
+        {
+          "name": "maxCellSize",
+          "type": "number",
+          "required": false,
+          "default": "16 (weeks), 28 (months)",
+          "description": "Largest cell size, in pixels (cells shrink to fit the width)"
+        },
+        {
+          "name": "monthLabels",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Month names (and years) around the cells"
+        },
+        {
+          "name": "weekdayLabels",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Weekday names beside (weeks) or above (months) the cells"
+        }
+      ]
+    },
+    "CalendarDatum": {
+      "source": "charts/src/engine/shapes/types.ts",
+      "description": "Value of a day of a calendar heatmap",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "date",
+          "type": "CalendarDate",
+          "required": true,
+          "description": "Day of the value (several entries of the same day add up)"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": true,
+          "description": "Value of the day (negative values count as 0)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "contributions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/contributions.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/contributions.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  CalendarHeatmap,\n  type CalendarDatum,\n  type ShapeHoverEvent,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst iso = (time: number) => new Date(time).toISOString().slice(0, 10);\n\n// A developer's commits over the last year: busy weekdays, quiet weekends,\n// a two-week holiday and a few release crunches\nconst random = mulberry32(7);\nconst END = Date.UTC(2026, 9, 24);\nconst COMMITS: CalendarDatum[] = [];\nfor (let i = 364; i >= 0; i--) {\n  const time = END - i * DAY;\n  const weekday = new Date(time).getUTCDay();\n  const weekend = weekday === 0 || weekday === 6;\n  const holiday = i > 290 && i < 305;\n  const crunch = i % 61 < 6;\n  const chance = holiday ? 0.05 : weekend ? 0.2 : 0.82;\n  if (random() < chance)\n    COMMITS.push({\n      date: iso(time),\n      value: Math.max(\n        1,\n        Math.round(random() * (weekend ? 4 : 9) * (crunch ? 2.2 : 1)),\n      ),\n    });\n}\n\nexport default function ContributionsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const [selected, setSelected] = useState<ShapeHoverEvent | null>(null);\n  const total = useMemo(() => COMMITS.reduce((sum, d) => sum + d.value, 0), []);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <p style={{ margin: 0 }}>{t(\"commitsTotal\", { total })}</p>\n      <CalendarHeatmap\n        data={COMMITS}\n        locale={i18n.language}\n        color=\"#2da44e\"\n        onClick={setSelected}\n        ariaLabel={t(\"commitsAria\")}\n      />\n      <p role=\"status\" style={{ margin: 0 }}>\n        {selected\n          ? t(\"commitsDay\", { date: selected.name, value: selected.value })\n          : t(\"commitsHint\")}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "一年的贡献",
+      "description": "不设置 range 时，图表显示截止到数据最后一天的 53 周。color 设置最高等级的颜色（较低等级更浅，在浅色和深色主题下都适用）；onClick 返回所点击的日期，name 为格式化后的日期，date 为 YYYY-MM-DD 格式。"
+    },
+    {
+      "id": "energy",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/energy.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/energy.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport { CalendarHeatmap, type CalendarDatum } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\n// kWh: up to 8, 8-14, 14-20, more than 20\nconst THRESHOLDS = [8, 14, 20];\nconst COLORS = [\n  \"var(--success-color)\",\n  \"var(--primary-color)\",\n  \"var(--warning-color)\",\n  \"var(--danger-color)\",\n];\n\n// Electricity used by a home each day of 2025 (kWh): heating in winter, air\n// conditioning in the summer heat waves, more at weekends\nconst random = mulberry32(55);\nconst START = Date.UTC(2025, 0, 1);\nconst USAGE: CalendarDatum[] = Array.from({ length: 365 }, (_, i) => {\n  const time = START + i * DAY;\n  const weekday = new Date(time).getUTCDay();\n  const winter = 9 * Math.max(0, Math.cos((2 * Math.PI * (i - 15)) / 365));\n  const heatWave = (i > 180 && i < 196) || (i > 216 && i < 226) ? 9 : 0;\n  const weekend = weekday === 0 || weekday === 6 ? 2.5 : 0;\n  const value = 5 + winter + heatWave + weekend + random() * 4;\n  return {\n    date: new Date(time).toISOString().slice(0, 10),\n    value: Math.round(value * 10) / 10,\n  };\n});\n\n/** Level of a value, as the chart computes it from THRESHOLDS */\nconst levelOf = (value: number) => {\n  const k = THRESHOLDS.findIndex((bound) => value <= bound);\n  return k < 0 ? THRESHOLDS.length : k;\n};\n\nexport default function EnergyDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const locale = i18n.language;\n  // controlled legend: the hidden levels live in the state\n  const [hidden, setHidden] = useState<number[]>([]);\n\n  const kwh = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });\n    return (value: number) => t(\"kwh\", { value: format.format(value) });\n  }, [locale, t]);\n  const visible = useMemo(\n    () => USAGE.filter((d) => !hidden.includes(levelOf(d.value))),\n    [hidden],\n  );\n  const used = visible.reduce((sum, d) => sum + d.value, 0);\n  const total = USAGE.reduce((sum, d) => sum + d.value, 0);\n  const number = new Intl.NumberFormat(locale);\n  const percent = new Intl.NumberFormat(locale, { style: \"percent\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 8,\n        }}\n      >\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          onClick={() => setHidden([0, 1])}\n        >\n          {t(\"highUseOnly\")}\n        </Button>\n        <Button\n          size=\"small\"\n          variant=\"ghost\"\n          disabled={!hidden.length}\n          onClick={() => setHidden([])}\n        >\n          {t(\"showAll\")}\n        </Button>\n      </div>\n      <CalendarHeatmap\n        data={USAGE}\n        range={2025}\n        colors={COLORS}\n        thresholds={THRESHOLDS}\n        format={kwh}\n        locale={locale}\n        legend={{ position: \"top\" }}\n        hidden={hidden}\n        onToggle={(event) => setHidden(event.hiddenIndexes)}\n        ariaLabel={t(\"energyAria\")}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {t(\"visibleDays\", {\n          days: number.format(visible.length),\n          value: kwh(used),\n          share: percent.format(used / total),\n        })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "筛选级别",
+      "description": "每日用电量，使用四种自定义颜色和阈值。hidden 让图例变为受控：onToggle 返回需要保存的 hiddenIndexes，因此按钮也能隐藏级别，读数汇总仍显示的天数。"
+    },
+    {
+      "id": "habit-toggle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/habit-toggle.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/habit-toggle.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport {\n  CalendarHeatmap,\n  type CalendarDatum,\n  type ShapeHoverEvent,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst FIRST = Date.UTC(2026, 7, 1);\nconst LAST = Date.UTC(2026, 9, 31);\nconst iso = (time: number) => new Date(time).toISOString().slice(0, 10);\nconst ALL_DAYS: string[] = [];\nfor (let time = FIRST; time <= LAST; time += DAY) ALL_DAYS.push(iso(time));\n\n// days a workout was logged since August, before any click\nconst INITIAL = (() => {\n  const random = mulberry32(31);\n  return ALL_DAYS.filter(() => random() < 0.6);\n})();\n\n/** Days in a row up to the last day */\nconst currentStreak = (done: ReadonlySet<string>) => {\n  let run = 0;\n  for (let i = ALL_DAYS.length - 1; i >= 0 && done.has(ALL_DAYS[i] ?? \"\"); i--)\n    run++;\n  return run;\n};\n\nexport default function HabitToggleDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const locale = i18n.language;\n  const [done, setDone] = useState<ReadonlySet<string>>(() => new Set(INITIAL));\n  const [last, setLast] = useState<{ name: string; done: boolean } | null>(\n    null,\n  );\n\n  // the chart only draws the data it gets: a click updates the state\n  const data = useMemo(\n    (): CalendarDatum[] => [...done].map((date) => ({ date, value: 1 })),\n    [done],\n  );\n  const toggle = (event: ShapeHoverEvent) => {\n    const date = event.date;\n    if (!date) return;\n    const next = new Set(done);\n    const nowDone = !next.has(date);\n    if (nowDone) next.add(date);\n    else next.delete(date);\n    setDone(next);\n    setLast({ name: event.name, done: nowDone });\n  };\n  const number = new Intl.NumberFormat(locale);\n  const percent = new Intl.NumberFormat(locale, { style: \"percent\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 12,\n        }}\n      >\n        <span>\n          {t(\"habitSummary\", {\n            done: number.format(done.size),\n            share: percent.format(done.size / ALL_DAYS.length),\n            streak: number.format(currentStreak(done)),\n          })}\n        </span>\n        <Button\n          size=\"small\"\n          variant=\"ghost\"\n          onClick={() => {\n            setDone(new Set(INITIAL));\n            setLast(null);\n          }}\n        >\n          {t(\"reset\")}\n        </Button>\n      </div>\n      <CalendarHeatmap\n        data={data}\n        range={[iso(FIRST), iso(LAST)]}\n        layout=\"months\"\n        levels={1}\n        color=\"var(--success-color)\"\n        legend={false}\n        format={(value) => (value ? t(\"workoutDone\") : t(\"workoutMissed\"))}\n        locale={locale}\n        onClick={toggle}\n        height={280}\n        ariaLabel={t(\"habitAria\")}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {last\n          ? last.done\n            ? t(\"markedDone\", { date: last.name })\n            : t(\"markedMissed\", { date: last.name })\n          : t(\"habitHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "点击记录一天",
+      "description": "使用 layout=\"months\" 和单一级别（levels={1}）的锻炼日志：onClick 提供被点击日期，将其加入或移出为 data 提供数据的状态。连续天数和读数随之更新。"
+    },
+    {
+      "id": "incidents",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/incidents.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/incidents.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport {\n  CalendarHeatmap,\n  type CalendarDatum,\n  type ShapeHoverEvent,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst YEARS = [2024, 2025, 2026] as const;\nconst LAST_DAY = \"2026-10-31\";\ntype Year = (typeof YEARS)[number];\n\n// Production incidents per day, from 2024 to Oct 31, 2026: fewer every year\n// as the on-call team automates, with bad weeks after big releases\nconst random = mulberry32(404);\nconst INCIDENTS: CalendarDatum[] = [];\nfor (\n  let time = Date.UTC(2024, 0, 1);\n  time <= Date.UTC(2026, 9, 31);\n  time += DAY\n) {\n  const year = new Date(time).getUTCFullYear();\n  const rate = year === 2024 ? 0.55 : year === 2025 ? 0.35 : 0.2;\n  const dayOfYear = Math.floor((time - Date.UTC(year, 0, 1)) / DAY);\n  const release = dayOfYear % 91 < 5 ? 3 : 1;\n  let n = 0;\n  while (random() < rate * release * 0.6 && n < 8) n++;\n  if (n)\n    INCIDENTS.push({\n      date: new Date(time).toISOString().slice(0, 10),\n      value: n,\n    });\n}\n\nexport default function IncidentsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const locale = i18n.language;\n  const [year, setYear] = useState<Year>(2026);\n  const [hovered, setHovered] = useState<ShapeHoverEvent | null>(null);\n\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n  const yearName = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, { useGrouping: false });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const days = useMemo(\n    () => INCIDENTS.filter((d) => String(d.date).startsWith(`${year}-`)),\n    [year],\n  );\n  const total = days.reduce((sum, d) => sum + d.value, 0);\n  const quiet = (year === 2026 ? 304 : year === 2024 ? 366 : 365) - days.length;\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"year\")}\n        direction=\"horizontal\"\n        value={String(year)}\n        onChange={(value) => {\n          setYear(Number(value) as Year);\n          setHovered(null);\n        }}\n      >\n        {YEARS.map((y) => (\n          <Radio key={y} value={String(y)} label={yearName(y)} />\n        ))}\n      </RadioGroup>\n      <p style={{ margin: 0 }}>\n        {t(\"incidentsYear\", {\n          year: yearName(year),\n          total: number.format(total),\n          quiet: number.format(quiet),\n        })}\n      </p>\n      <CalendarHeatmap\n        data={INCIDENTS}\n        // the range picks the year shown out of the same data\n        range={year}\n        thresholds={[1, 2, 4]}\n        color=\"var(--danger-color)\"\n        format={(value) => t(\"incidentsN\", { value: number.format(value) })}\n        locale={locale}\n        onHover={setHovered}\n        ariaLabel={t(\"incidentsAria\", { year: yearName(year) })}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {hovered\n          ? (hovered.date ?? \"\") > LAST_DAY\n            ? t(\"futureDay\", { date: hovered.name })\n            : hovered.value\n              ? t(\"incidentsDay\", {\n                  date: hovered.name,\n                  value: number.format(hovered.value),\n                })\n              : t(\"quietDay\", { date: hovered.name })\n          : t(\"hoverDay\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "选择年份与悬停",
+      "description": "同一份三年的生产事故数据：RadioGroup 只改变 range，从而选择要绘制的年份。onHover 在图表下方报告悬停的日期（指针离开时为 null），尚未到来的日期显示单独的提示。"
+    },
+    {
+      "id": "locale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/locale.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/locale.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport { CalendarHeatmap, type CalendarDatum } from \"minerva-design/charts\";\n\nconst DAY = 24 * 60 * 60 * 1000;\n\n// Deploys of a team during the first half of 2026 (none on weekends)\nconst DEPLOYS: CalendarDatum[] = [];\nfor (\n  let time = Date.UTC(2026, 0, 1);\n  time <= Date.UTC(2026, 5, 30);\n  time += DAY\n) {\n  const date = new Date(time);\n  const weekday = date.getUTCDay();\n  if (weekday === 0 || weekday === 6) continue;\n  const day = date.getUTCDate();\n  DEPLOYS.push({\n    date: date.toISOString().slice(0, 10),\n    value: (day * 7 + weekday * 3) % 9,\n  });\n}\n\nconst LOCALES = [\"en-US\", \"fr-FR\", \"de-DE\", \"ja-JP\", \"zh-CN\", \"ar-EG\"];\n\nexport default function LocaleDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const [locale, setLocale] = useState(\"en-US\");\n\n  // locale names in the reader's language\n  const names = useMemo(\n    () => new Intl.DisplayNames([i18n.language], { type: \"language\" }),\n    [i18n.language],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"localeLabel\")}\n        direction=\"horizontal\"\n        value={locale}\n        onChange={(value) => setLocale(String(value))}\n      >\n        {LOCALES.map((tag) => (\n          <Radio key={tag} value={tag} label={names.of(tag) ?? tag} />\n        ))}\n      </RadioGroup>\n      <CalendarHeatmap\n        data={DEPLOYS}\n        range={[\"2026-01-01\", \"2026-06-30\"]}\n        locale={locale}\n        color=\"#0ea5e9\"\n        maxCellSize={20}\n        legend={false}\n        ariaLabel={t(\"deploysAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "语言区域",
+      "description": "locale 会翻译月份和星期名称以及提示框中的日期，并决定每周第一天（美国和日本为周日，法国和德国为周一，埃及为周六）。maxCellSize 让格子在宽屏上也保持较小。"
+    },
+    {
+      "id": "months",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/months.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/months.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport { CalendarHeatmap, type CalendarDatum } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\n\n// Orders of a bakery's online shop in 2026: busier weekends and holidays\nconst random = mulberry32(11);\nconst ORDERS: CalendarDatum[] = [];\nfor (\n  let time = Date.UTC(2026, 0, 1);\n  time <= Date.UTC(2026, 11, 31);\n  time += DAY\n) {\n  const date = new Date(time);\n  const weekday = date.getUTCDay();\n  const month = date.getUTCMonth();\n  const weekend = weekday === 0 || weekday === 6;\n  const closed = weekday === 1;\n  const festive = month === 11 || (month === 1 && date.getUTCDate() <= 14);\n  if (closed) continue;\n  ORDERS.push({\n    date: date.toISOString().slice(0, 10),\n    value: Math.round(\n      (12 + random() * 18) * (weekend ? 1.8 : 1) * (festive ? 1.6 : 1),\n    ),\n  });\n}\n\ntype Start = \"locale\" | \"0\" | \"1\" | \"6\";\nconst STARTS: Start[] = [\"locale\", \"0\", \"1\", \"6\"];\n\nexport default function MonthsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const [start, setStart] = useState<Start>(\"locale\");\n  const locale = i18n.language;\n\n  // the reader's names of Sunday, Monday and Saturday (2026-03-01 is a Sunday)\n  const names = useMemo(() => {\n    const format = new Intl.DateTimeFormat(locale, {\n      weekday: \"long\",\n      timeZone: \"UTC\",\n    });\n    return (day: number) => format.format(Date.UTC(2026, 2, 1 + day));\n  }, [locale]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"weekStartLabel\")}\n        direction=\"horizontal\"\n        value={start}\n        onChange={(value) => setStart(value as Start)}\n      >\n        {STARTS.map((value) => (\n          <Radio\n            key={value}\n            value={value}\n            label={value === \"locale\" ? t(\"fromLocale\") : names(Number(value))}\n          />\n        ))}\n      </RadioGroup>\n      <CalendarHeatmap\n        data={ORDERS}\n        range={2026}\n        layout=\"months\"\n        weekStart={start === \"locale\" ? undefined : Number(start)}\n        locale={locale}\n        color=\"#d97706\"\n        levels={5}\n        height={600}\n        ariaLabel={t(\"ordersAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "月历",
+      "description": "layout=\"months\" 为每个月绘制一个小日历，并选择能让格子最大的网格排布。weekStart 会覆盖 locale 决定的每周第一天；没有订单的日子（每周一店休）保持为空。"
+    },
+    {
+      "id": "multi-year",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/multi-year.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/multi-year.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { CalendarHeatmap, type CalendarDatum } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\n\n// Three years of running, in km per day: long runs on Sundays, more running\n// in spring and autumn, a winter break and a marathon block in 2025\nconst random = mulberry32(42);\nconst RUNS: CalendarDatum[] = [];\nfor (\n  let time = Date.UTC(2024, 0, 1);\n  time <= Date.UTC(2026, 11, 31);\n  time += DAY\n) {\n  const date = new Date(time);\n  const month = date.getUTCMonth();\n  const sunday = date.getUTCDay() === 0;\n  const season =\n    month === 0 || month === 11 ? 0.25 : month >= 6 && month <= 7 ? 0.5 : 0.65;\n  const marathon = date.getUTCFullYear() === 2025 && month >= 7 && month <= 9;\n  if (random() < season + (marathon ? 0.2 : 0))\n    RUNS.push({\n      date: date.toISOString().slice(0, 10),\n      value:\n        Math.round(\n          (sunday ? 14 + random() * 14 : 4 + random() * 8) *\n            (marathon ? 1.3 : 1) *\n            10,\n        ) / 10,\n    });\n}\n\nconst TOTALS = RUNS.reduce<Record<string, number>>((totals, run) => {\n  const year = String(run.date).slice(0, 4);\n  totals[year] = (totals[year] ?? 0) + run.value;\n  return totals;\n}, {});\n\nexport default function MultiYearDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const locale = i18n.language;\n  const number = useMemo(\n    () => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }),\n    [locale],\n  );\n  const format = useMemo(\n    () => (value: number) => t(\"km\", { value: number.format(value) }),\n    [number, t],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <CalendarHeatmap\n        data={RUNS}\n        range={[\"2024-01-01\", \"2026-12-31\"]}\n        thresholds={[6, 10, 16]}\n        color=\"#f97316\"\n        format={format}\n        locale={locale}\n        ariaLabel={t(\"runsAria\")}\n      />\n      <p style={{ margin: 0 }}>\n        {Object.entries(TOTALS)\n          .map(([year, km]) => t(\"runsYear\", { year, value: format(km) }))\n          .join(\" · \")}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "多年数据",
+      "description": "超过一年的范围会按年分成多条，每条旁边标注年份；默认高度会随条数增加。"
+    },
+    {
+      "id": "sleep",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/sleep.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/sleep.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  CalendarHeatmap,\n  type CalendarDatum,\n  type ShapeHoverEvent,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst GOAL = 8; // hours\nconst FIRST = \"2026-05-01\";\nconst LAST = \"2026-10-31\";\n\n// Hours of sleep recorded by a watch each night: shorter on weeknights,\n// catching up at weekends, a few nights without the watch\nconst random = mulberry32(88);\nconst START = Date.UTC(2026, 4, 1);\nconst NIGHTS: CalendarDatum[] = [];\nfor (let i = 0; i < 184; i++) {\n  const time = START + i * DAY;\n  const weekday = new Date(time).getUTCDay();\n  if (random() < 0.06) continue;\n  const weekend = weekday === 0 || weekday === 6;\n  const hours = (weekend ? 8.2 : 6.9) + (random() - 0.5) * 1.8;\n  NIGHTS.push({\n    date: new Date(time).toISOString().slice(0, 10),\n    value: Math.round(hours * 4) / 4,\n  });\n}\n\nexport default function SleepDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const locale = i18n.language;\n\n  const hours = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"hour\",\n      unitDisplay: \"short\",\n      maximumFractionDigits: 2,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const signedHours = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"hour\",\n      unitDisplay: \"short\",\n      maximumFractionDigits: 2,\n      signDisplay: \"exceptZero\",\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const average = NIGHTS.reduce((sum, d) => sum + d.value, 0) / NIGHTS.length;\n  const reached = NIGHTS.filter((d) => d.value >= GOAL).length;\n\n  // the date in `name` is already formatted in the locale; value is the\n  // total of the day (0 for the nights without data)\n  const tooltip = (event: ShapeHoverEvent) => {\n    if (!event.value) {\n      return (\n        <div style={{ display: \"grid\", gap: 2 }}>\n          <strong>{event.name}</strong>\n          <span>{t(\"noRecord\")}</span>\n        </div>\n      );\n    }\n    const delta = event.value - GOAL;\n    return (\n      <div style={{ display: \"grid\", gap: 2 }}>\n        <strong>{event.name}</strong>\n        <span>{hours(event.value)}</span>\n        <span\n          style={{\n            color: delta >= 0 ? \"var(--success-color)\" : \"var(--danger-color)\",\n          }}\n        >\n          {t(\"vsGoal\", { value: signedHours(delta), goal: hours(GOAL) })}\n        </span>\n      </div>\n    );\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {t(\"sleepSummary\", {\n          average: hours(Math.round(average * 10) / 10),\n          reached: new Intl.NumberFormat(locale).format(reached),\n          nights: new Intl.NumberFormat(locale).format(NIGHTS.length),\n          goal: hours(GOAL),\n        })}\n      </output>\n      <CalendarHeatmap\n        data={NIGHTS}\n        range={[FIRST, LAST]}\n        // under 6 h, 6-7 h, 7-8 h, 8 h or more\n        thresholds={[6, 7, 7.75]}\n        color=\"var(--chart-series-3)\"\n        format={hours}\n        locale={locale}\n        renderTooltip={tooltip}\n        ariaLabel={t(\"sleepAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "自定义提示框",
+      "description": "用 [start, end] 范围显示六个月的睡眠。renderTooltip 在 name 中收到格式化后的日期，在 value 中收到时长，并与八小时目标比较；没有数据的夜晚显示单独的提示。"
+    },
+    {
+      "id": "streak",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/demos/streak.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/demos/streak.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  CalendarHeatmap,\n  type CalendarDatum,\n  type ShapeHoverEvent,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\n\n// Minutes spent learning a language each day of 2026, up to Oct 24: the\n// habit gets stronger over the year, with a few missed days\nconst random = mulberry32(2026);\nconst START = Date.UTC(2026, 0, 1);\nconst DAYS = 297;\nconst minutes: number[] = [];\nfor (let i = 0; i < DAYS; i++) {\n  const habit = 0.55 + (0.4 * i) / DAYS;\n  minutes.push(random() < habit ? Math.round(5 + random() * (20 + i / 4)) : 0);\n}\nconst LESSONS: CalendarDatum[] = minutes.map((value, i) => ({\n  date: new Date(START + i * DAY).toISOString().slice(0, 10),\n  value,\n}));\n\n/** Longest and current runs of days with some practice */\nconst streaks = (values: number[]) => {\n  let longest = 0;\n  let run = 0;\n  for (const v of values) {\n    run = v > 0 ? run + 1 : 0;\n    longest = Math.max(longest, run);\n  }\n  return { longest, current: run };\n};\n\n// 1-15, 16-30, 31-60 and more than 60 minutes\nconst THRESHOLDS = [15, 30, 60];\n\nexport default function StreakDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap.data\",\n  });\n  const [selected, setSelected] = useState<ShapeHoverEvent | null>(null);\n  const { longest, current } = useMemo(() => streaks(minutes), []);\n  const format = useMemo(() => (value: number) => t(\"minutes\", { value }), [t]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <p style={{ margin: 0 }}>{t(\"streaks\", { current, longest })}</p>\n      <CalendarHeatmap\n        data={LESSONS}\n        range={2026}\n        thresholds={THRESHOLDS}\n        color=\"#8b5cf6\"\n        format={format}\n        locale={i18n.language}\n        legend={{ position: \"top\" }}\n        onClick={setSelected}\n        ariaLabel={t(\"lessonsAria\")}\n      />\n      <p role=\"status\" style={{ margin: 0 }}>\n        {selected\n          ? selected.value > 0\n            ? t(\"lessonDay\", {\n                date: selected.name,\n                value: format(selected.value),\n              })\n            : t(\"missedDay\", { date: selected.name })\n          : t(\"lessonsHint\")}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "学习打卡",
+      "description": "range={2026} 显示全年，包括未来的日期。thresholds 设置各等级的上限（1–15、16–30、31–60 以及超过 60 分钟），format 决定等级名称的格式；连续天数由同一份数据计算得出。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "日历热力图",
+      "description": "在日历上展示每日数值，类似贡献图：代码提交、学习打卡、运动、订单等。每天是一个按等级着色的格子；月份和星期名称、提示框中的日期以及每周第一天都遵循 locale。图例可隐藏 / 显示某个等级；方向键可按天和按周移动，提示框会显示日期。",
+      "demos": {
+        "contributions": {
+          "title": "一年的贡献",
+          "description": "不设置 range 时，图表显示截止到数据最后一天的 53 周。color 设置最高等级的颜色（较低等级更浅，在浅色和深色主题下都适用）；onClick 返回所点击的日期，name 为格式化后的日期，date 为 YYYY-MM-DD 格式。"
+        },
+        "streak": {
+          "title": "学习打卡",
+          "description": "range={2026} 显示全年，包括未来的日期。thresholds 设置各等级的上限（1–15、16–30、31–60 以及超过 60 分钟），format 决定等级名称的格式；连续天数由同一份数据计算得出。"
+        },
+        "multi-year": {
+          "title": "多年数据",
+          "description": "超过一年的范围会按年分成多条，每条旁边标注年份；默认高度会随条数增加。"
+        },
+        "months": {
+          "title": "月历",
+          "description": "layout=\"months\" 为每个月绘制一个小日历，并选择能让格子最大的网格排布。weekStart 会覆盖 locale 决定的每周第一天；没有订单的日子（每周一店休）保持为空。"
+        },
+        "locale": {
+          "title": "语言区域",
+          "description": "locale 会翻译月份和星期名称以及提示框中的日期，并决定每周第一天（美国和日本为周日，法国和德国为周一，埃及为周六）。maxCellSize 让格子在宽屏上也保持较小。"
+        },
+        "energy": {
+          "title": "筛选级别",
+          "description": "每日用电量，使用四种自定义颜色和阈值。hidden 让图例变为受控：onToggle 返回需要保存的 hiddenIndexes，因此按钮也能隐藏级别，读数汇总仍显示的天数。"
+        },
+        "sleep": {
+          "title": "自定义提示框",
+          "description": "用 [start, end] 范围显示六个月的睡眠。renderTooltip 在 name 中收到格式化后的日期，在 value 中收到时长，并与八小时目标比较；没有数据的夜晚显示单独的提示。"
+        },
+        "incidents": {
+          "title": "选择年份与悬停",
+          "description": "同一份三年的生产事故数据：RadioGroup 只改变 range，从而选择要绘制的年份。onHover 在图表下方报告悬停的日期（指针离开时为 null），尚未到来的日期显示单独的提示。"
+        },
+        "habit-toggle": {
+          "title": "点击记录一天",
+          "description": "使用 layout=\"months\" 和单一级别（levels={1}）的锻炼日志：onClick 提供被点击日期，将其加入或移出为 data 提供数据的状态。连续天数和读数随之更新。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "最近四个月每天的提交次数，这个范围正好适合手机屏幕；月份与星期名称跟随应用语言，点击可选中某一天。"
+          }
+        },
+        "data": {
+          "total": "最近四个月共 {{total}} 次提交",
+          "tapDay": "点击某一天以选中"
+        }
+      },
+      "api": {
+        "CalendarHeatmapProps": {
+          "data": "每日数值：日期（YYYY-MM-DD 字符串、Date 或时间戳）和数值；同一天的多个数值会相加",
+          "range": "显示的日期：某一年（2026）或闭区间 [start, end]；默认为截止到数据最后一天的 53 周",
+          "layout": "weeks：每周一列、每个星期几一行（跨多年时每年一条）；months：每月一个小日历",
+          "weekStart": "每周第一天，0 = 周日 … 6 = 周六；默认由 locale 决定",
+          "locale": "月份和星期名称、提示框日期、默认 weekStart 以及内置文案所使用的 BCP 47 语言区域；默认取页面语言（`<html lang>`）",
+          "color": "最高等级的颜色（较低等级更浅）；默认为调色板的第一种颜色",
+          "colors": "各等级的颜色，从低到高（会替代 color，并决定等级数量）",
+          "levels": "空白日之外的颜色等级数量",
+          "thresholds": "除最后一级外各等级的上限，升序排列（[2, 5, 10] 表示 1–2、3–5、6–10 及以上）；默认按最大值均分",
+          "gap": "格子之间的间隙，单位为像素",
+          "radius": "格子的圆角半径，单位为像素",
+          "maxCellSize": "格子的最大尺寸，单位为像素（宽度不足时会缩小）",
+          "monthLabels": "显示月份名称（以及年份）",
+          "weekdayLabels": "在格子旁边（weeks）或上方（months）显示星期名称"
+        },
+        "CalendarDatum": {
+          "date": "数值所属的日期：YYYY-MM-DD 字符串、Date 或时间戳（按本地日历日计算）",
+          "value": "当天的数值（负数按 0 计）"
+        }
+      },
+      "data": {
+        "commitsTotal": "过去一年共 {{total}} 次提交",
+        "commitsAria": "过去一年每天的代码提交次数",
+        "commitsDay": "{{date}}：{{value}} 次提交",
+        "commitsHint": "点击某一天（或聚焦图表后用方向键移动并按 Enter）即可选中",
+        "minutes": "{{value}} 分钟",
+        "streaks": "当前连续 {{current}} 天 · 最长连续 {{longest}} 天",
+        "lessonsAria": "2026 年每天的语言练习分钟数",
+        "lessonDay": "{{date}}：练习 {{value}}",
+        "missedDay": "{{date}}：未练习",
+        "lessonsHint": "点击某一天查看练习时长",
+        "km": "{{value}} 公里",
+        "runsAria": "2024 至 2026 年每天的跑步距离",
+        "runsYear": "{{year}} 年：{{value}}",
+        "weekStartLabel": "每周第一天",
+        "fromLocale": "跟随语言区域",
+        "ordersAria": "2026 年每天的线上订单数，按月显示",
+        "localeLabel": "语言区域",
+        "deploysAria": "2026 年上半年每天的部署次数",
+        "kwh": "{{value}} 千瓦时",
+        "highUseOnly": "仅看高用电",
+        "showAll": "显示全部",
+        "energyAria": "2025 年每日用电量",
+        "visibleDays": "显示 {{days}} 天，共 {{value}}（占全年 {{share}}）",
+        "noRecord": "无记录",
+        "vsGoal": "比目标 {{goal}} {{value}}",
+        "sleepSummary": "平均每晚 {{average}} · {{nights}} 晚中有 {{reached}} 晚达到 {{goal}} 的目标",
+        "sleepAria": "2026 年 5 月至 10 月每晚的睡眠时长",
+        "year": "年份",
+        "incidentsYear": "{{year}} 年：{{total}} 起事故，{{quiet}} 天无事故",
+        "incidentsN": "{{value}} 起事故",
+        "incidentsAria": "{{year}} 年每日生产事故",
+        "incidentsDay": "{{date}}：{{value}} 起事故",
+        "quietDay": "{{date}}：无事故",
+        "futureDay": "{{date}}：尚未到来",
+        "hoverDay": "悬停在某一天上查看其事故",
+        "habitSummary": "锻炼 {{done}} 次（占 {{share}} 的天数）· 当前连续 {{streak}} 天",
+        "reset": "重置",
+        "workoutDone": "已完成",
+        "workoutMissed": "未完成",
+        "habitAria": "2026 年 8 月至 10 月每日的锻炼记录",
+        "markedDone": "{{date}} 已标记为完成",
+        "markedMissed": "{{date}} 已标记为未完成",
+        "habitHint": "点击某一天（或在其上按 Enter）来记录或取消一次锻炼"
+      },
+      "wc": {
+        "demos": {
+          "contributions": {
+            "title": "一年的贡献",
+            "description": "2025 年每天一个数值；月份和星期名称跟随页面语言的 locale。"
+          },
+          "months": {
+            "title": "按月日历",
+            "description": "每月一个小日历，五个颜色等级并设置明确的阈值（每日步数）。"
+          }
+        },
+        "minerva-calendar-heatmap": {
+          "props": {
+            "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+            "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+          },
+          "events": {
+            "minerva-hover": "悬停（或键盘聚焦）的图形元素发生变化；detail：{ index, name, value, share }，无悬停时为 null",
+            "minerva-click": "点击、轻触或按 Enter 激活了一个图形元素；detail：{ index, name, value, share }",
+            "minerva-toggle": "点击了图例项（或调用了 toggle()）；detail：{ index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "按索引隐藏或显示扇区、阶段、雷达系列或树图的顶层节点",
+            "getRenderer": "绘制图形所用的后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null；可通过引擎选项 renderer 指定"
+          }
+        }
+      }
+    }
+  }
+}

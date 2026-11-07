@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "zh",
+  "renderer": "taro",
+  "page": "html-preview",
+  "title": "HtmlPreview HTML 预览",
+  "description": "在完全沙箱化的 iframe 中预览不可信 HTML（如邮件模板）。标记经 DOMPurify 消毒（失败即清空），并在禁止脚本与网络访问的内容安全策略下渲染。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "HtmlPreview",
+      "support": {
+        "status": "beta",
+        "notes": "H5 sanitized CSP-protected opaque iframe with viewport sizing; native inert HTML source preview renders scripts as text. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native alternative only: no HTML layout, iframe sandbox, viewport rendering or script execution. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "H5 sanitized CSP-protected opaque iframe with viewport sizing; native inert HTML source preview renders scripts as text. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native alternative only: no HTML layout, iframe sandbox, viewport rendering or script execution. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "HtmlPreview"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "html",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true
+          },
+          {
+            "name": "title",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "viewport",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "height",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false
+          },
+          {
+            "name": "mobileWidth",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:HtmlPreview": {
+      "kind": "cssVars",
+      "source": "react/src/components/HtmlPreview",
+      "vars": [
+        {
+          "name": "--html-preview-bg",
+          "description": "Background color around the frame"
+        },
+        {
+          "name": "--html-preview-frame-bg",
+          "description": "Background color of the frame"
+        },
+        {
+          "name": "--html-preview-frame-border-color",
+          "description": "Border color of the frame"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "HtmlPreview HTML 预览",
+      "description": "在完全沙箱化的 iframe 中预览不可信 HTML（如邮件模板）。标记经 DOMPurify 消毒（失败即清空），并在禁止脚本与网络访问的内容安全策略下渲染。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "保留内联样式与 data: 图片；移除脚本、表单、链接与远程图片。"
+        },
+        "viewports": {
+          "title": "视口",
+          "description": "viewport=\"mobile\" 渲染固定宽度（mobileWidth）的预览；desktop 铺满容器。"
+        }
+      },
+      "api": {
+        "HtmlPreviewProps": {
+          "html": "要预览的不可信 HTML（在浏览器中消毒）",
+          "title": "iframe 的无障碍标题",
+          "viewport": "全宽桌面预览或固定宽度移动预览",
+          "mobileWidth": "移动预览宽度（像素）",
+          "height": "iframe 高度（像素）",
+          "className": "根元素的额外类名",
+          "style": "根元素的内联样式",
+          "ref": "根 <div> 元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--html-preview-bg": "预览框周围的背景色",
+        "--html-preview-frame-bg": "预览框的背景色",
+        "--html-preview-frame-border-color": "预览框的边框颜色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "html 属性经过净化后在沙箱 iframe 中渲染；label 为框架提供可访问的标题。"
+          },
+          "viewport": {
+            "title": "桌面与移动端",
+            "description": "viewport=\"mobile\" 渲染宽度固定为 mobile-width 像素的框架；标记通过 html 属性设置。"
+          },
+          "sanitized": {
+            "title": "不可信输入",
+            "description": "编辑源码：脚本和事件处理器会被移除，不会执行任何代码，内联样式会被保留。"
+          }
+        },
+        "minerva-html-preview": {
+          "props": {
+            "label": "iframe 的可访问标题（相当于 React 版的 title；未设置时回退到 aria-label）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        },
+        "limitations": "文档预览使用沙箱 iframe 宿主。iOS 与 Android 使用 Expo 示例中的 react-native-webview 适配器；脚本和外部导航保持禁用。"
+      }
+    }
+  }
+}

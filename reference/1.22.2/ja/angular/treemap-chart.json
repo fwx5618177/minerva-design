@@ -1,0 +1,539 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "treemap-chart",
+  "title": "ツリーマップ",
+  "description": "値に比例した面積の入れ子の長方形で階層データを表し、どこが最も大きいかをひと目で示します（ディスク使用量、予算、ポートフォリオ）。ホバーまたは矢印キーでセルをハイライトすると、ツールチップにそのパスが表示されます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "folders": {
+        "media": "メディア",
+        "videos": "ビデオ",
+        "photos": "写真",
+        "music": "ミュージック",
+        "applications": "アプリケーション",
+        "projects": "プロジェクト",
+        "system": "システム",
+        "library": "ライブラリ",
+        "caches": "キャッシュ",
+        "logs": "ログ",
+        "downloads": "ダウンロード",
+        "installers": "インストーラー",
+        "archives": "アーカイブ"
+      },
+      "diskAria": "フォルダー別のディスク使用量",
+      "diskSelected": "{{path}}：{{size}}（ディスクの {{share}}）",
+      "clickCell": "セルをクリックすると場所を表示します",
+      "departments": {
+        "engineering": "エンジニアリング",
+        "sales": "営業",
+        "marketing": "マーケティング",
+        "success": "カスタマーサクセス",
+        "operations": "オペレーション",
+        "finance": "経理",
+        "people": "人事",
+        "legal": "法務"
+      },
+      "budgetAria": "部門別の年間予算",
+      "sectors": {
+        "technology": "テクノロジー",
+        "finance": "金融",
+        "health": "ヘルスケア",
+        "energy": "エネルギー",
+        "consumer": "消費財"
+      },
+      "marketCap": "時価総額：{{value}}",
+      "marketAria": "セクター別・当日の騰落率で色分けした株式マーケットマップ",
+      "ofBundle": "バンドルの {{share}}",
+      "bundleAria": "モジュール別の JavaScript バンドルサイズ",
+      "bundleSummary": "合計 {{size}}。100 KB を超える依存関係：{{modules}}。",
+      "store": {
+        "categories": {
+          "electronics": "家電",
+          "home": "ホーム",
+          "fashion": "ファッション",
+          "sports": "スポーツ"
+        },
+        "subcategories": {
+          "phones": "スマートフォン",
+          "laptops": "ノート PC",
+          "audio": "オーディオ",
+          "kitchen": "キッチン",
+          "furniture": "家具",
+          "decor": "インテリア雑貨",
+          "women": "レディース",
+          "men": "メンズ",
+          "kids": "キッズ",
+          "outdoor": "アウトドア",
+          "fitness": "フィットネス"
+        },
+        "breadcrumb": "カタログのパス",
+        "all": "すべてのカテゴリ",
+        "aria": "カテゴリ・サブカテゴリ・ブランド別の四半期売上",
+        "categoryAria": "サブカテゴリ・ブランド別の{{category}}の売上",
+        "selected": "{{path}}：{{revenue}}（カテゴリの {{share}}）。",
+        "hint": "カテゴリをクリックすると開きます。",
+        "hintBrand": "ブランドをクリックすると売上を表示します。"
+      },
+      "cloud": {
+        "services": {
+          "compute": "コンピューティング",
+          "databases": "データベース",
+          "storage": "ストレージ",
+          "network": "ネットワーク",
+          "observability": "オブザーバビリティ"
+        },
+        "ofBill": "請求の {{share}}",
+        "aria": "サービス・リソース別の月間クラウドコスト",
+        "filtered": "表示中：{{visible}}（請求額 {{total}} の {{share}}）。",
+        "total": "月間請求額：{{total}}。",
+        "showAll": "すべて表示"
+      },
+      "cluster": {
+        "live": "ライブ更新",
+        "usage": "{{used}} / {{limit}}（{{share}}）",
+        "aria": "名前空間別のクラスタ Pod のメモリ使用量",
+        "nearLimit": "メモリ上限の {{threshold}} を超えた Pod：{{pods}}",
+        "healthy": "すべての Pod がメモリ上限の {{threshold}} 未満です。"
+      },
+      "sales": {
+        "regions": {
+          "europe": "ヨーロッパ",
+          "americas": "南北アメリカ",
+          "asiaPacific": "アジア太平洋"
+        },
+        "metric": "指標",
+        "metrics": {
+          "revenue": "売上",
+          "orders": "注文数",
+          "profit": "利益"
+        },
+        "shareOf": "合計の {{share}}（{{metric}}）",
+        "aria": "地域・国別の年間販売：{{metric}}"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "TreemapChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnTreemapChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnTreemapChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnTreemapChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-treemap-chart",
+        "props": [
+          {
+            "name": "data",
+            "typeText": "readonly TreemapNode[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "gap",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "headers",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "ChartRendererPreference | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "palette",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "legend",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "tooltip",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "format",
+            "typeText": "((value: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "percentFormat",
+            "typeText": "((share: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "hidden",
+            "typeText": "readonly number[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "animation",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "padding",
+            "typeText": "ChartPadding | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          },
+          {
+            "name": "texts",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "ShapeHoverEvent | null",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "itemClick",
+            "typeText": "ShapeHoverEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "visibilityChange",
+            "typeText": "ShapeToggleEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ShapeToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "nested",
+      "title": "Nested nodes",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnTreemapChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTreemapChart],\n  template: `\n@let t = labels[language()];\n<mn-treemap-chart\n  [data]=\"[\n    { name: t.media, children: [\n      { name: t.photos, value: 48 },\n      { name: t.videos, value: 96 },\n      { name: t.music, value: 22 }\n    ] },\n    { name: t.documents, children: [\n      { name: t.work, value: 31 },\n      { name: t.personal, value: 12 }\n    ] },\n    { name: t.apps, children: [\n      { name: t.tools, value: 40 },\n      { name: t.games, value: 64 }\n    ] }\n  ]\"\n  [height]=\"320\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": {\n    \"media\": \"Media\",\n    \"documents\": \"Documents\",\n    \"apps\": \"Apps\",\n    \"photos\": \"Photos\",\n    \"videos\": \"Videos\",\n    \"music\": \"Music\",\n    \"work\": \"Work\",\n    \"personal\": \"Personal\",\n    \"tools\": \"Tools\",\n    \"games\": \"Games\"\n  },\n  \"zh\": {\n    \"media\": \"媒体\",\n    \"documents\": \"文档\",\n    \"apps\": \"应用\",\n    \"photos\": \"照片\",\n    \"videos\": \"视频\",\n    \"music\": \"音乐\",\n    \"work\": \"工作\",\n    \"personal\": \"个人\",\n    \"tools\": \"工具\",\n    \"games\": \"游戏\"\n  },\n  \"ja\": {\n    \"media\": \"メディア\",\n    \"documents\": \"書類\",\n    \"apps\": \"アプリ\",\n    \"photos\": \"写真\",\n    \"videos\": \"動画\",\n    \"music\": \"音楽\",\n    \"work\": \"仕事\",\n    \"personal\": \"個人\",\n    \"tools\": \"ツール\",\n    \"games\": \"ゲーム\"\n  },\n  \"fr\": {\n    \"media\": \"Médias\",\n    \"documents\": \"Documents\",\n    \"apps\": \"Applications\",\n    \"photos\": \"Photos\",\n    \"videos\": \"Vidéos\",\n    \"music\": \"Musique\",\n    \"work\": \"Travail\",\n    \"personal\": \"Personnel\",\n    \"tools\": \"Outils\",\n    \"games\": \"Jeux\"\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "flat",
+      "title": "フラット",
+      "description": "子がない場合はすべてのノードがリーフになります。gap でセル間の余白を広げています。",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnTreemapChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTreemapChart],\n  template: `\n@let t = labels[language()];\n<mn-treemap-chart\n  [data]=\"[\n    { name: t[0], value: 4750 },\n    { name: t[1], value: 745 },\n    { name: t[2], value: 600 },\n    { name: t[3], value: 440 },\n    { name: t[4], value: 1460 },\n    { name: t[5], value: 46 }\n  ]\"\n  [gap]=\"4\"\n  [height]=\"300\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": [\"Asia\", \"Europe\", \"North America\", \"South America\", \"Africa\", \"Oceania\"],\n  \"zh\": [\"亚洲\", \"欧洲\", \"北美洲\", \"南美洲\", \"非洲\", \"大洋洲\"],\n  \"ja\": [\"アジア\", \"ヨーロッパ\", \"北米\", \"南米\", \"アフリカ\", \"オセアニア\"],\n  \"fr\": [\"Asie\", \"Europe\", \"Amérique du Nord\", \"Amérique du Sud\", \"Afrique\", \"Océanie\"]\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ツリーマップ",
+      "description": "値に比例した面積の入れ子の長方形で階層データを表し、どこが最も大きいかをひと目で示します（ディスク使用量、予算、ポートフォリオ）。ホバーまたは矢印キーでセルをハイライトすると、ツールチップにそのパスが表示されます。",
+      "demos": {
+        "basic": {
+          "title": "入れ子",
+          "description": "親は子の値を合計し、名前を見出しとして表示します。onClick はルートからクリックしたリーフまでのパスを受け取ります。"
+        },
+        "flat": {
+          "title": "フラット",
+          "description": "子がない場合はすべてのノードがリーフになります。gap でセル間の余白を広げています。"
+        },
+        "market-map": {
+          "title": "株式マーケットマップ",
+          "description": "セクター別に銘柄をまとめ、面積を時価総額、色を当日の騰落率（赤から緑）にした、金融サイトのマーケットマップのような表示です。騰落率は各セルの名前に含めています。"
+        },
+        "bundle": {
+          "title": "バンドルサイズ",
+          "description": "バンドルアナライザーのように、JavaScript バンドルのモジュールを圧縮後のサイズで 3 階層表示し、大きな依存関係をチャートの下に挙げます。"
+        },
+        "drill-down": {
+          "title": "商品カタログのドリルダウン",
+          "description": "カテゴリをクリックすると（onClick、event.path の先頭の名前を使用）、データがそのサブカテゴリとブランドに置き換わり、パンくずリストで概要に戻れます。カテゴリ内ではクリックでブランドを選択し、renderTooltip はパスの先頭にカテゴリを付けます。"
+        },
+        "cloud-costs": {
+          "title": "凡例で絞り込むクラウドコスト",
+          "description": "legend={{ position: \"top\" }} でサービスを一覧表示します。hidden と onToggle で絞り込みを制御するため、「すべて表示」ボタンでリセットでき、サマリーで残りのサービスを合計できます。renderTooltip はリソースが請求全体に占める割合を表示します。"
+        },
+        "live-cluster": {
+          "title": "クラスタのメモリをライブ表示",
+          "description": "各 Pod の使用メモリを 2 秒ごとに更新し（setInterval、スイッチをオフにしたときやアンマウント時に解除）、セルはその場でサイズが変わります。上限の 85 % を超えた Pod は color で赤になり、通知するのはその Pod の一覧だけです。"
+        },
+        "metric-switch": {
+          "title": "指標の切り替え",
+          "description": "同じツリーを売上・注文数・利益で大きさ付けするため、指標を切り替えるとセルは再描画されずに移動・リサイズします。format も指標に合わせます。国名は Intl.DisplayNames から取得し、renderTooltip は国のすべての指標を一覧表示します。"
+        }
+      },
+      "data": {
+        "folders": {
+          "media": "メディア",
+          "videos": "ビデオ",
+          "photos": "写真",
+          "music": "ミュージック",
+          "applications": "アプリケーション",
+          "projects": "プロジェクト",
+          "system": "システム",
+          "library": "ライブラリ",
+          "caches": "キャッシュ",
+          "logs": "ログ",
+          "downloads": "ダウンロード",
+          "installers": "インストーラー",
+          "archives": "アーカイブ"
+        },
+        "diskAria": "フォルダー別のディスク使用量",
+        "diskSelected": "{{path}}：{{size}}（ディスクの {{share}}）",
+        "clickCell": "セルをクリックすると場所を表示します",
+        "departments": {
+          "engineering": "エンジニアリング",
+          "sales": "営業",
+          "marketing": "マーケティング",
+          "success": "カスタマーサクセス",
+          "operations": "オペレーション",
+          "finance": "経理",
+          "people": "人事",
+          "legal": "法務"
+        },
+        "budgetAria": "部門別の年間予算",
+        "sectors": {
+          "technology": "テクノロジー",
+          "finance": "金融",
+          "health": "ヘルスケア",
+          "energy": "エネルギー",
+          "consumer": "消費財"
+        },
+        "marketCap": "時価総額：{{value}}",
+        "marketAria": "セクター別・当日の騰落率で色分けした株式マーケットマップ",
+        "ofBundle": "バンドルの {{share}}",
+        "bundleAria": "モジュール別の JavaScript バンドルサイズ",
+        "bundleSummary": "合計 {{size}}。100 KB を超える依存関係：{{modules}}。",
+        "store": {
+          "categories": {
+            "electronics": "家電",
+            "home": "ホーム",
+            "fashion": "ファッション",
+            "sports": "スポーツ"
+          },
+          "subcategories": {
+            "phones": "スマートフォン",
+            "laptops": "ノート PC",
+            "audio": "オーディオ",
+            "kitchen": "キッチン",
+            "furniture": "家具",
+            "decor": "インテリア雑貨",
+            "women": "レディース",
+            "men": "メンズ",
+            "kids": "キッズ",
+            "outdoor": "アウトドア",
+            "fitness": "フィットネス"
+          },
+          "breadcrumb": "カタログのパス",
+          "all": "すべてのカテゴリ",
+          "aria": "カテゴリ・サブカテゴリ・ブランド別の四半期売上",
+          "categoryAria": "サブカテゴリ・ブランド別の{{category}}の売上",
+          "selected": "{{path}}：{{revenue}}（カテゴリの {{share}}）。",
+          "hint": "カテゴリをクリックすると開きます。",
+          "hintBrand": "ブランドをクリックすると売上を表示します。"
+        },
+        "cloud": {
+          "services": {
+            "compute": "コンピューティング",
+            "databases": "データベース",
+            "storage": "ストレージ",
+            "network": "ネットワーク",
+            "observability": "オブザーバビリティ"
+          },
+          "ofBill": "請求の {{share}}",
+          "aria": "サービス・リソース別の月間クラウドコスト",
+          "filtered": "表示中：{{visible}}（請求額 {{total}} の {{share}}）。",
+          "total": "月間請求額：{{total}}。",
+          "showAll": "すべて表示"
+        },
+        "cluster": {
+          "live": "ライブ更新",
+          "usage": "{{used}} / {{limit}}（{{share}}）",
+          "aria": "名前空間別のクラスタ Pod のメモリ使用量",
+          "nearLimit": "メモリ上限の {{threshold}} を超えた Pod：{{pods}}",
+          "healthy": "すべての Pod がメモリ上限の {{threshold}} 未満です。"
+        },
+        "sales": {
+          "regions": {
+            "europe": "ヨーロッパ",
+            "americas": "南北アメリカ",
+            "asiaPacific": "アジア太平洋"
+          },
+          "metric": "指標",
+          "metrics": {
+            "revenue": "売上",
+            "orders": "注文数",
+            "profit": "利益"
+          },
+          "shareOf": "合計の {{share}}（{{metric}}）",
+          "aria": "地域・国別の年間販売：{{metric}}"
+        }
+      },
+      "api": {
+        "TreemapChartProps": {
+          "data": "ノード：リーフは値を持ち、親は子の値を合計する",
+          "gap": "セル間の隙間（ピクセル）",
+          "headers": "親の名前を子の上に表示する"
+        },
+        "TreemapNode": {
+          "name": "セル、見出し、ツールチップに表示する名前",
+          "value": "リーフの値（親は子の値を合計する）",
+          "color": "セルの色。最上位のノードは省略時にパレットから取得し、色のない子は親の色を薄くした色になる",
+          "children": "子ノード"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "親（ヘッダー付き）が子をまとめ、セルの面積がサイズを表します。タップすると onClick がセルのパスを受け取ります。"
+          }
+        },
+        "data": {
+          "items": {
+            "media": "メディア",
+            "photos": "写真",
+            "videos": "動画",
+            "music": "音楽",
+            "apps": "アプリ",
+            "games": "ゲーム",
+            "social": "SNS",
+            "maps": "地図",
+            "system": "システム",
+            "messages": "メッセージ"
+          },
+          "storageAria": "カテゴリ別のスマートフォンストレージ",
+          "selectedItem": "{{path}}：{{size}}",
+          "tapCell": "セルをタップしてサイズを表示"
+        }
+      },
+      "wc": {
+        "demos": {
+          "nested": {
+            "title": "入れ子のノード",
+            "description": "フォルダー別のディスク使用量。親ノードは子ノードを合計し、その上に名前を表示します。"
+          },
+          "flat": {
+            "title": "フラットなリスト",
+            "description": "地域ごとに 1 つの長方形で、面積は人口に比例します。"
+          }
+        },
+        "minerva-treemap-chart": {
+          "props": {
+            "hideHeaders": "子ノードの上の親ノード名を非表示にします",
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）している要素が変わりました。detail：{ index, name, value, share }、何もない場合は null",
+            "minerva-click": "要素がクリック、タップ、または Enter で選択されました。detail：{ index, name, value, share }",
+            "minerva-toggle": "凡例の項目がクリックされました（または toggle() が呼ばれました）。detail：{ index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "インデックスでスライス、段階、レーダーの系列、ツリーマップの最上位ノードを表示・非表示にします",
+            "getRenderer": "シェイプを描画しているバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null。エンジンオプション renderer で指定できます"
+          }
+        }
+      }
+    }
+  }
+}

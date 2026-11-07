@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "time-and-sales",
+  "title": "Time and sales",
+  "description": "A trade tape: newest trades on top, sliding in and flashing, large trades bold and tinted, same-millisecond sweeps merged, size filters and a pause while hovered. Typed-array rings keep 200,000 trades; only the visible rows are drawn.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "aria": "BTC/USDT trades",
+      "pickedBuy": "Bought {{size}} BTC at {{price}}",
+      "pickedSell": "Sold {{size}} BTC at {{price}}",
+      "pausedHint": "Paused while hovered: move away (or click the badge) to resume.",
+      "liveHint": "Hover the tape to pause it, click a row to pick a trade.",
+      "threshold": "Large trade threshold",
+      "atLeast": "≥ {{value}} BTC",
+      "minSize": "Minimum size",
+      "all": "All",
+      "aggregate": "Merge same-millisecond sweeps",
+      "tickColors": "Color prices by tick",
+      "rows": "{{value}} rows kept",
+      "colors": "Color convention",
+      "redUp": "Red up, green down",
+      "greenUp": "Green up, red down",
+      "add": "Add {{value}} trades",
+      "loaded": "{{rows}} trades, last batch in {{ms}} ms",
+      "rollingWindow": "Rolling window",
+      "lastWindow": "Last {{value}}",
+      "vwap": "VWAP",
+      "buyShare": "Bought share",
+      "bought": "Bought",
+      "sold": "Sold",
+      "btcValue": "{{value}} BTC",
+      "tradesPerSecond": "Trades / s",
+      "largest": "Largest print",
+      "largestBuy": "Buy {{size}} at {{price}}",
+      "largestSell": "Sell {{size}} at {{price}}",
+      "pressureBuy": "Buyers are lifting the offer.",
+      "pressureSell": "Sellers are hitting the bid.",
+      "pressureBalanced": "Buy and sell flow are balanced.",
+      "pressureWaiting": "Waiting for trades…",
+      "timeZone": "Time zone",
+      "zones": {
+        "local": "Local",
+        "utc": "UTC",
+        "newYork": "New York",
+        "tokyo": "Tokyo"
+      },
+      "timeIn": "Time ({{zone}})",
+      "blocksTitle": "Blocks ≥ {{value}} BTC",
+      "clearTape": "Clear",
+      "blocksSeen": "{{value}} blocks since the start",
+      "blocksWaiting": "Waiting for a block trade…",
+      "blockBuy": "Buy",
+      "blockSell": "Sell",
+      "blockLine": "{{time}} · {{size}} BTC at {{price}} ≈ {{notional}}",
+      "blockPrints": "{{value}} prints",
+      "sideTotals": "{{count}} trades · {{size}} BTC",
+      "buysTape": "Buys",
+      "sellsTape": "Sells",
+      "buysAria": "BTC/USDT buy trades",
+      "sellsAria": "BTC/USDT sell trades",
+      "netFlow": "Net flow: {{value}} BTC (bought − sold)"
+    }
+  },
+  "components": [
+    {
+      "name": "TimeAndSales",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/time-and-sales",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-time-and-sales",
+        "props": [
+          {
+            "name": "height",
+            "typeText": "string | number | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "trades",
+            "typeText": "Trades | undefined",
+            "required": false
+          },
+          {
+            "name": "options",
+            "typeText": "TimeAndSalesOptions | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-hover",
+            "typeText": "CustomEvent",
+            "description": "A row is hovered; detail: { trade, count, index }, `null` when the pointer left"
+          },
+          {
+            "name": "minerva-trade-click",
+            "typeText": "CustomEvent",
+            "description": "A row was clicked, tapped or activated with Enter; detail: { trade, count, index }"
+          },
+          {
+            "name": "minerva-pause",
+            "typeText": "CustomEvent",
+            "description": "The tape paused (pointer over it, scrolled down) or resumed; detail: { paused }"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "large-trades",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/time-and-sales/wc/large-trades.html",
+      "files": {
+        "apps/docs/src/docs/pages/time-and-sales/wc/large-trades.html": "<div style=\"display: grid; gap: 8px\">\n  <minerva-time-and-sales id=\"trades\" height=\"300\"></minerva-time-and-sales>\n  <output id=\"trade\" aria-live=\"polite\"></output>\n</div>\n",
+        "apps/docs/src/docs/pages/time-and-sales/wc/large-trades.ts": "// 2,000 trades, virtualized: consecutive trades of the same side and price\n// are merged (`aggregate`), small ones hidden (`minSize`), large ones\n// highlighted; minerva-trade-click reports the clicked row.\nimport type {\n  MinervaTimeAndSales,\n  TimeAndSalesRowEvent,\n} from \"minerva-design/web-components/order-book\";\n\nconst TEXT = {\n  en: { hint: \"Click a trade\", size: \"lots\" },\n  zh: { hint: \"点击一笔成交\", size: \"手\" },\n  ja: { hint: \"約定をクリックします\", size: \"ロット\" },\n  fr: { hint: \"Cliquez sur une transaction\", size: \"lots\" },\n};\n\nconst fraction = (value: number) => value - Math.floor(value);\nconst round = (value: number) => Math.round(value * 100) / 100;\n// the trade of a tick: around 100, mostly small, sometimes large\nconst trade = (tick: number) => ({\n  time: Date.UTC(2026, 9, 30, 9, 30) + tick * 250,\n  price: round(\n    100 + Math.sin(tick / 30) / 4 + fraction(Math.sin(tick * 3.3) * 999) / 20,\n  ),\n  size: Math.round(1 + fraction(Math.sin(tick * 9.1) * 43758.5453) ** 4 * 40),\n  side:\n    fraction(Math.sin(tick * 4.7) * 43758.5453) > 0.45\n      ? (\"buy\" as const)\n      : (\"sell\" as const),\n});\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const tape = root.querySelector<MinervaTimeAndSales>(\"#trades\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#trade\")!;\n  tape.trades = Array.from({ length: 2000 }, (_, i) => trade(i));\n  tape.options = {\n    aggregate: true,\n    minSize: 2,\n    largeTradeThreshold: 25,\n    columns: [\"time\", \"side\", \"price\", \"size\"],\n  };\n  output.textContent = text.hint;\n  const onClick = (event: Event) => {\n    const row = (event as CustomEvent<TimeAndSalesRowEvent>).detail;\n    output.textContent = `${row.trade.price} × ${row.trade.size} ${text.size} (${row.count})`;\n  };\n  tape.addEventListener(\"minerva-trade-click\", onClick);\n  return () => tape.removeEventListener(\"minerva-trade-click\", onClick);\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Aggregated tape, large trades",
+      "description": "2,000 trades, consecutive ones of the same side and price merged, small ones hidden; click a row."
+    },
+    {
+      "id": "tape",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/time-and-sales/wc/tape.html",
+      "files": {
+        "apps/docs/src/docs/pages/time-and-sales/wc/tape.html": "<minerva-time-and-sales id=\"tape\" height=\"320\"></minerva-time-and-sales>\n",
+        "apps/docs/src/docs/pages/time-and-sales/wc/tape.ts": "// <minerva-time-and-sales>: the newest trade on top (`addTrades`), large\n// trades highlighted; hovering pauses the tape, new trades are counted.\nimport type { MinervaTimeAndSales } from \"minerva-design/web-components/order-book\";\n\nconst fraction = (value: number) => value - Math.floor(value);\nconst round = (value: number) => Math.round(value * 100) / 100;\n// the trade of a tick: around 100, mostly small, sometimes large\nconst trade = (tick: number) => ({\n  time: Date.UTC(2026, 9, 30, 9, 30) + tick * 250,\n  price: round(\n    100 + Math.sin(tick / 30) / 4 + fraction(Math.sin(tick * 3.3) * 999) / 20,\n  ),\n  size: Math.round(1 + fraction(Math.sin(tick * 9.1) * 43758.5453) ** 4 * 40),\n  side:\n    fraction(Math.sin(tick * 4.7) * 43758.5453) > 0.45\n      ? (\"buy\" as const)\n      : (\"sell\" as const),\n});\n\nexport function setup(root: HTMLElement) {\n  const tape = root.querySelector<MinervaTimeAndSales>(\"#tape\")!;\n  tape.trades = Array.from({ length: 40 }, (_, i) => trade(i));\n  tape.options = { largeTradeThreshold: 20 };\n  let tick = 40;\n  let timer = 0;\n  timer = window.setInterval(() => {\n    tick += 1;\n    tape.addTrades(trade(tick));\n  }, 250);\n  return () => window.clearInterval(timer);\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Live tape",
+      "description": "A trade every 250 ms on top of the tape, large trades highlighted; hovering pauses it and counts the new trades."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Time and sales",
+      "description": "A trade tape: newest trades on top, sliding in and flashing, large trades bold and tinted, same-millisecond sweeps merged, size filters and a pause while hovered. Typed-array rings keep 200,000 trades; only the visible rows are drawn.",
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "trades takes the trades oldest first; the tape shows the newest on top. When the array grows (same items in front) only the new ones are added, otherwise the tape is replaced. The wheel or the scrollbar go through the history."
+        },
+        "live": {
+          "title": "Live tape",
+          "description": "Trades go through the ref (addTrades): new rows slide in and flash, one draw per frame. Hover to pause: the rows freeze and the badge counts the new trades; click it (or press Home) to jump back. onTradeClick gives the clicked trade."
+        },
+        "large-trades": {
+          "title": "Large trades",
+          "description": "Trades reaching largeTradeThreshold are bold and tinted, more strongly up to 8 times the threshold. aggregate merges one aggressive order sweeping several levels (same side, same millisecond) into one row: sizes summed, the last price and the count of prints."
+        },
+        "filters": {
+          "title": "Filters",
+          "description": "minSize hides the rows smaller than a size (after aggregation); priceColor=\"tick\" colors the price by its move from the previous trade. The kept history is filtered again on every change."
+        },
+        "large-data": {
+          "title": "100,000 trades",
+          "description": "The framework-free engine (createTimeAndSales from minerva-design/charts/core) stores the trades in typed-array rings: 100,000 load in milliseconds and every click adds 100,000 more, up to capacity. Only the visible rows are drawn."
+        },
+        "dark": {
+          "title": "Dark terminal",
+          "description": "A terminal palette on the CSS variables of the container, a monospace font and tick coloring (green on an uptick, red on a downtick)."
+        },
+        "compact": {
+          "title": "Compact (mobile)",
+          "description": "A phone panel: 17 px rows, seconds only (milliseconds={false}) and merged sweeps. Below 240 px wide the texts shrink and the side column is dropped."
+        },
+        "red-up": {
+          "title": "Red up, green down",
+          "description": "colorConvention=\"red-up\": red buys, green sells (mainland China, Japan, Korea)."
+        },
+        "pressure": {
+          "title": "Buy / sell pressure",
+          "description": "The trades sent to addTrades are also kept for a minute to compute rolling tape statistics twice a second: VWAP, volume bought and sold by aggressors, trades per second and the largest print. The tape itself merges sweeps (aggregate) and tints trades from 1 BTC (largeTradeThreshold)."
+        },
+        "clock": {
+          "title": "Time zones and custom formats",
+          "description": "formatTime replaces the built-in clock (local or UTC) with any Intl.DateTimeFormat, here in another time zone with milliseconds; formatPrice shows dollars and labels.time names the zone in the header."
+        },
+        "block-alerts": {
+          "title": "Block trade alerts",
+          "description": "Trades of the same side and millisecond (one sweep, as merged by aggregate) are summed: from 2 BTC they are logged with their average price and notional, and the same size is highlighted on the tape by largeTradeThreshold. Clear empties the tape through clear()."
+        },
+        "split": {
+          "title": "Buys and sells side by side",
+          "description": "One feed, two tapes: the trades are split by aggressor side before addTrades, each tape with its own ariaLabel. The headers count the prints and the volume of each side, and the net flow sums them."
+        }
+      },
+      "data": {
+        "aria": "BTC/USDT trades",
+        "pickedBuy": "Bought {{size}} BTC at {{price}}",
+        "pickedSell": "Sold {{size}} BTC at {{price}}",
+        "pausedHint": "Paused while hovered: move away (or click the badge) to resume.",
+        "liveHint": "Hover the tape to pause it, click a row to pick a trade.",
+        "threshold": "Large trade threshold",
+        "atLeast": "≥ {{value}} BTC",
+        "minSize": "Minimum size",
+        "all": "All",
+        "aggregate": "Merge same-millisecond sweeps",
+        "tickColors": "Color prices by tick",
+        "rows": "{{value}} rows kept",
+        "colors": "Color convention",
+        "redUp": "Red up, green down",
+        "greenUp": "Green up, red down",
+        "add": "Add {{value}} trades",
+        "loaded": "{{rows}} trades, last batch in {{ms}} ms",
+        "rollingWindow": "Rolling window",
+        "lastWindow": "Last {{value}}",
+        "vwap": "VWAP",
+        "buyShare": "Bought share",
+        "bought": "Bought",
+        "sold": "Sold",
+        "btcValue": "{{value}} BTC",
+        "tradesPerSecond": "Trades / s",
+        "largest": "Largest print",
+        "largestBuy": "Buy {{size}} at {{price}}",
+        "largestSell": "Sell {{size}} at {{price}}",
+        "pressureBuy": "Buyers are lifting the offer.",
+        "pressureSell": "Sellers are hitting the bid.",
+        "pressureBalanced": "Buy and sell flow are balanced.",
+        "pressureWaiting": "Waiting for trades…",
+        "timeZone": "Time zone",
+        "zones": {
+          "local": "Local",
+          "utc": "UTC",
+          "newYork": "New York",
+          "tokyo": "Tokyo"
+        },
+        "timeIn": "Time ({{zone}})",
+        "blocksTitle": "Blocks ≥ {{value}} BTC",
+        "clearTape": "Clear",
+        "blocksSeen": "{{value}} blocks since the start",
+        "blocksWaiting": "Waiting for a block trade…",
+        "blockBuy": "Buy",
+        "blockSell": "Sell",
+        "blockLine": "{{time}} · {{size}} BTC at {{price}} ≈ {{notional}}",
+        "blockPrints": "{{value}} prints",
+        "sideTotals": "{{count}} trades · {{size}} BTC",
+        "buysTape": "Buys",
+        "sellsTape": "Sells",
+        "buysAria": "BTC/USDT buy trades",
+        "sellsAria": "BTC/USDT sell trades",
+        "netFlow": "Net flow: {{value}} BTC (bought − sold)"
+      },
+      "api": {
+        "TimeAndSalesProps": {
+          "trades": "Trades, oldest first; when the array grows only the appended ones are added (other changes replace the tape)",
+          "onHover": "Hovered row (null when the pointer leaves)",
+          "onTradeClick": "Click, tap or Enter on a row",
+          "onPause": "The tape paused (hovered, scrolled or a row selected) or resumed",
+          "ref": "Imperative handle: addTrades, setTrades, clear, scrollToLatest, getInstance"
+        },
+        "TimeAndSalesHandle": {
+          "addTrades": "Appends trades (oldest first)",
+          "setTrades": "Replaces every trade",
+          "clear": "Removes every trade",
+          "scrollToLatest": "Scrolls back to the newest trade and resumes",
+          "getInstance": "The underlying engine instance (minerva-design/charts/core)"
+        },
+        "TimeAndSalesOptions": {
+          "capacity": "Trades kept (older ones are dropped)",
+          "rowHeight": "Height of a row, in pixels",
+          "columns": "Columns, left to right",
+          "minSize": "Hides the rows smaller than this size (after aggregation)",
+          "largeTradeThreshold": "Trades reaching this size are bold and tinted (stronger as they grow)",
+          "aggregate": "Merges consecutive trades of the same side and millisecond into one row: sizes summed, the last price",
+          "priceColor": "Colors the price by aggressor side, or by tick (up or down from the previous trade)",
+          "pauseOnHover": "Freezes the rows while the pointer is over the tape (new trades are counted)",
+          "animate": "New trades slide in and flash",
+          "header": "Header row with the column names",
+          "milliseconds": "Milliseconds in the default time format",
+          "timeZone": "Clock of the default time format: the local time or UTC (the clock of most exchanges)",
+          "formatTime": "Formats the time of a trade (replaces the default HH:MM:SS.mmm)",
+          "labels": "Overrides of the built-in texts, which follow locale (English, Chinese, Japanese and French built in)"
+        },
+        "OrderBookCommonOptions": {
+          "upColor": "Color of the bids and buys (the \"up\" side); --success-color by default, --danger-color with colorConvention \"red-up\"",
+          "downColor": "Color of the asks and sells (the \"down\" side); --danger-color by default, --success-color with colorConvention \"red-up\"",
+          "colorConvention": "\"red-up\" swaps the default colors: red bids and buys, green asks and sells (mainland China, Japan, Korea)",
+          "pricePrecision": "Decimals of the prices; inferred from the data when omitted",
+          "sizePrecision": "Decimals of the sizes; inferred from the data when omitted",
+          "locale": "Locale of the numbers (Intl.NumberFormat, compact units such as k or 万) and of the built-in texts (English, Chinese, Japanese, French); the page language (lang attribute of the html element) when omitted",
+          "formatPrice": "Formats a price (replaces pricePrecision and locale)",
+          "formatSize": "Formats a size (replaces sizePrecision and locale)",
+          "fontFamily": "Font of the texts; the theme font when omitted (a monospace font aligns the digits)",
+          "fontSize": "Font size of the texts, in pixels",
+          "ariaLabel": "Accessible name of the widget; the localized labels.name when omitted"
+        },
+        "OrderBookWidgetProps": {
+          "height": "Height of the widget; numbers are pixels",
+          "width": "Width of the widget; numbers are pixels",
+          "className": "Class of the container",
+          "style": "Style of the container"
+        },
+        "TimeAndSalesLabels": {
+          "time": "Time column",
+          "price": "Price column",
+          "size": "Size column",
+          "side": "Side column",
+          "buy": "Buy side",
+          "sell": "Sell side",
+          "paused": "Badge while paused",
+          "newTrades": "Badge of the new trades above the view; {count} is replaced",
+          "name": "Accessible name (when ariaLabel is not set)"
+        },
+        "TimeAndSalesRowEvent": {
+          "trade": "The trade (aggregated rows sum the sizes and keep the last price)",
+          "count": "Trades merged into the row (1 without aggregation)",
+          "index": "Row from the top (0 = newest)"
+        },
+        "MarketTrade": {
+          "time": "Execution time (ms since epoch)",
+          "price": "Execution price",
+          "size": "Executed size (base currency)",
+          "side": "Aggressor side: \"buy\" lifted an ask, \"sell\" hit a bid"
+        },
+        "TimeAndSalesInstance": {
+          "addTrades": "Appends trades (oldest first), drawn at the next frame",
+          "setTrades": "Replaces every trade",
+          "clear": "Removes every trade",
+          "setOptions": "Replaces the options",
+          "scrollToLatest": "Scrolls back to the newest trade and resumes",
+          "getCount": "Rows after filtering and aggregation",
+          "on": "Subscribes to an event (hover, tradeClick, pause); returns the unsubscribe function",
+          "resize": "Measures the container again (a ResizeObserver does it automatically)",
+          "destroy": "Removes the tape and its listeners"
+        }
+      },
+      "wc": {
+        "demos": {
+          "tape": {
+            "title": "Live tape",
+            "description": "A trade every 250 ms on top of the tape, large trades highlighted; hovering pauses it and counts the new trades."
+          },
+          "large-trades": {
+            "title": "Aggregated tape, large trades",
+            "description": "2,000 trades, consecutive ones of the same side and price merged, small ones hidden; click a row."
+          }
+        },
+        "minerva-time-and-sales": {
+          "props": {
+            "options": "Other engine options (TimeAndSalesOptions of minerva-design/charts/core: colors, texts, locale, labels…); property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "A row is hovered; detail: { trade, count, index }, null when the pointer left",
+            "minerva-trade-click": "A row was clicked, tapped or activated with Enter; detail: { trade, count, index }",
+            "minerva-pause": "The tape paused (pointer over it, scrolled down) or resumed; detail: { paused }"
+          },
+          "methods": {
+            "addTrades": "Appends trades (oldest first)",
+            "setTrades": "Replaces every trade",
+            "clear": "Removes every trade",
+            "scrollToLatest": "Scrolls back to the newest trade and resumes"
+          }
+        }
+      }
+    }
+  }
+}

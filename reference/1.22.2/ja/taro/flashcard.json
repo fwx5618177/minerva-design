@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "ja",
+  "renderer": "taro",
+  "page": "flashcard",
+  "title": "Flashcard フラッシュカード",
+  "description": "問題と解答を裏返して切り替える両面の学習カード。間隔反復の復習に使います。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Flashcard",
+      "support": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer nodes, translated front/back captions and optional hint, controlled/uncontrolled flipped with onFlippedChange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). On H5 the card is a toggle button with Enter/Space and taps on interactive face content do not flip it. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer nodes, translated front/back captions and optional hint, controlled/uncontrolled flipped with onFlippedChange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). On H5 the card is a toggle button with Enter/Space and taps on interactive face content do not flip it. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "Flashcard"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "front",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false,
+            "description": "Content of the front face (the prompt)"
+          },
+          {
+            "name": "back",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false,
+            "description": "Content of the back face (the answer)"
+          },
+          {
+            "name": "footer",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false,
+            "description": "Content below the card, not flipped (e.g. rating buttons)"
+          },
+          {
+            "name": "frontLabel",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false,
+            "description": "Caption of the front face (default \"Question\", translated; \"\" / null hides it)"
+          },
+          {
+            "name": "backLabel",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false,
+            "description": "Caption of the back face (default \"Answer\", translated; \"\" / null hides it)"
+          },
+          {
+            "name": "hint",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false,
+            "description": "Hint on the front face (default translated \"Click or press Space to flip\")"
+          },
+          {
+            "name": "showHint",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Shows the hint on the front face (default false)"
+          },
+          {
+            "name": "flipped",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Whether the back is shown (controlled)"
+          },
+          {
+            "name": "defaultFlipped",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Whether the back is initially shown (uncontrolled, default false)"
+          },
+          {
+            "name": "flipOnClick",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Tapping the card flips it (default true)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Blocks flipping and dims the card (default false)"
+          },
+          {
+            "name": "axis",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "enum",
+            "values": [
+              "x",
+              "y"
+            ],
+            "typeText": "\"y\" | \"x\" | undefined",
+            "typeRef": "type:460923cb047fb535df1e",
+            "required": false,
+            "description": "Rotation axis (default \"y\")"
+          },
+          {
+            "name": "variant",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "enum",
+            "values": [
+              "elevated",
+              "filled",
+              "outline"
+            ],
+            "typeText": "\"outline\" | \"elevated\" | \"filled\" | undefined",
+            "typeRef": "type:ef01eba2c845a3183ce7",
+            "required": false,
+            "description": "Surface style (default \"elevated\")"
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "required": false,
+            "description": "Padding and typography scale (default \"medium\")"
+          },
+          {
+            "name": "minHeight",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Minimum height (a number is in px, default \"12rem\"); the card grows to fit the taller face"
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onFlippedChange",
+            "source": "packages/taro/src/flashcard.tsx",
+            "kind": "function",
+            "typeText": "((flipped: boolean) => void) | undefined",
+            "typeRef": "type:5a46411b731e1d03e391",
+            "parameters": [
+              {
+                "name": "flipped",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the next flipped state"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "flipped",
+            "event": "onFlippedChange",
+            "syntax": "flipped={flipped} onFlippedChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Flashcard": {
+      "kind": "cssVars",
+      "source": "react/src/components/Flashcard",
+      "vars": [
+        {
+          "name": "--flashcard-min-height",
+          "description": "Minimum height of the card (defaults to 12rem; the minHeight prop sets it); the card grows to fit the taller face"
+        },
+        {
+          "name": "--flashcard-bg-color",
+          "description": "Background color of the faces (defaults to --surface-color, --surface-muted-color with variant=\"filled\")"
+        },
+        {
+          "name": "--flashcard-border-color",
+          "description": "Border color of the faces (variant=\"outline\")"
+        },
+        {
+          "name": "--flashcard-radius",
+          "description": "Corner radius of the faces (defaults to --radius-lg)"
+        },
+        {
+          "name": "--flashcard-shadow",
+          "description": "Shadow of the faces (variant=\"elevated\"; defaults to --shadow-lg)"
+        },
+        {
+          "name": "--flashcard-padding",
+          "description": "Padding of the faces (defaults to the size's spacing)"
+        },
+        {
+          "name": "--flashcard-font-size",
+          "description": "Font size of the face content (defaults to the size's font size)"
+        },
+        {
+          "name": "--flashcard-label-color",
+          "description": "Text color of the face captions"
+        },
+        {
+          "name": "--flashcard-perspective",
+          "description": "Perspective of the 3D flip (defaults to 1200px)"
+        },
+        {
+          "name": "--flashcard-duration",
+          "description": "Duration of the flip (defaults to 0.5s)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Flashcard フラッシュカード",
+      "description": "問題と解答を裏返して切り替える両面の学習カード。間隔反復の復習に使います。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "カードをクリックするか、カード上で Enter / Space を押すと 3D 回転で裏返ります。カードはトグルボタン（aria-pressed）で、隠れている面は inert、裏面は polite のライブリージョンなので、表示された解答が読み上げられます。"
+        },
+        "controlled": {
+          "title": "評価ボタン付きの制御された復習",
+          "description": "flipped / onFlippedChange で表示面を制御します。footer はカードの下に評価ボタンを置きます（裏返りません）。frontLabel / backLabel で既定のキャプション「問題」/「解答」を置き換えます。"
+        },
+        "axis-variants": {
+          "title": "回転軸・バリアント・サイズ",
+          "description": "axis=\"x\" で縦方向に裏返ります。variant は Card と同じ（elevated、outline、filled）、size は余白と文字サイズを調整します。両面は同じグリッドセルに重なるため、カードの高さは高い方の面に合わせられます。"
+        },
+        "reduced-disabled": {
+          "title": "無効化とプログラムによる切り替え",
+          "description": "disabled は裏返しを止めてカードを薄く表示します。flipOnClick={false} ではカードはボタンではなく、flipped だけが面を切り替えます。prefers-reduced-motion では回転の代わりにクロスフェードします。"
+        }
+      },
+      "api": {
+        "FlashcardProps": {
+          "front": "表面の内容（問題）",
+          "back": "裏面の内容（解答）",
+          "footer": "カードの下の内容。裏返りません（例：評価ボタン）",
+          "frontLabel": "表面の小さなキャプション。null、false、\"\" で非表示",
+          "backLabel": "裏面の小さなキャプション。null、false、\"\" で非表示",
+          "hint": "表面のヒント（showHint かつクリックで裏返るときに表示）",
+          "showHint": "表面にヒントを表示する",
+          "flipped": "裏面を表示しているか（制御。onFlippedChange と組み合わせる）",
+          "defaultFlipped": "初期状態で裏面を表示するか（非制御）",
+          "onFlippedChange": "次の裏返し状態で呼ばれる",
+          "flipOnClick": "カードのクリック（またはカード上の Enter / Space）で裏返す。false のときカードはボタンではなく、flipped だけが面を切り替える",
+          "disabled": "裏返しを止めてカードを薄く表示する",
+          "axis": "回転軸：\"y\" は横方向、\"x\" は縦方向に裏返す",
+          "variant": "表面のスタイル",
+          "size": "余白と文字サイズのスケール",
+          "minHeight": "カードの最小の高さ（数値は px）。高い方の面に合わせて伸びる",
+          "aria-label": "カードのアクセシブルラベル",
+          "className": "追加のクラス名",
+          "ref": "ルート <div> への ref"
+        }
+      },
+      "cssVars": {
+        "--flashcard-min-height": "カードの最小の高さ（既定 12rem。minHeight プロパティで設定）。高い方の面に合わせて伸びる",
+        "--flashcard-bg-color": "面の背景色（既定 --surface-color、variant=\"filled\" では --surface-muted-color）",
+        "--flashcard-border-color": "面の枠線の色（variant=\"outline\"）",
+        "--flashcard-radius": "面の角丸（既定 --radius-lg）",
+        "--flashcard-shadow": "面の影（variant=\"elevated\"。既定 --shadow-lg）",
+        "--flashcard-padding": "面の内側の余白（既定は size による）",
+        "--flashcard-font-size": "面の内容の文字サイズ（既定は size による）",
+        "--flashcard-label-color": "面のキャプションの文字色",
+        "--flashcard-perspective": "3D 回転の遠近距離（既定 1200px）",
+        "--flashcard-duration": "裏返しのアニメーション時間（既定 0.5s）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "front / back はテキスト属性です（front / back スロットにはリッチな内容を入れられます）。カードをクリックするか Enter / Space で裏返ります。flipped 属性が現在の面を反映します。"
+          },
+          "controlled": {
+            "title": "評価ボタン付きの復習",
+            "description": "minerva-flipped-change はユーザーの裏返しを通知します（キャンセル可能：preventDefault() で面を維持）。footer スロットの評価ボタンが flipped プロパティを設定します。"
+          },
+          "axis-variants": {
+            "title": "回転軸・バリアント・サイズ",
+            "description": "axis=\"x\" で縦方向に裏返ります。variant（elevated、outline、filled）と size はカスタムステート（:state(variant-outline)、:state(size-small) など）にもなります。"
+          },
+          "reduced-disabled": {
+            "title": "無効化とプログラムによる切り替え",
+            "description": "disabled は裏返しを止めます。flip-on-click=\"false\" では flipped プロパティだけが面を切り替えます。prefers-reduced-motion ではクロスフェードします。"
+          }
+        },
+        "minerva-flashcard": {
+          "events": {
+            "minerva-flipped-change": "ユーザーがカードを裏返した（detail: { flipped }）。キャンセル可能。"
+          },
+          "slots": {
+            "front": "表面の内容（問題。なければ front 属性）",
+            "back": "裏面の内容（解答。なければ back 属性）",
+            "footer": "カードの下の内容。裏返りません（例：評価ボタン）"
+          },
+          "methods": {
+            "focus": "カードにフォーカスします。",
+            "toggle": "ユーザー操作と同じようにカードを裏返します（minerva-flipped-change を発火）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

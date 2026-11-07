@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "rsc-guide",
+  "title": "Server Components",
+  "description": "Use Minerva with React Server Components: which entries are client boundaries, what can run on the server and where to import the CSS.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "entries": {
+      "title": "Entries and the \"use client\" banner",
+      "text": "minerva-design is published as several entries. The entries that contain components start with a \"use client\" directive; the theme helper entry does not, so it can run inside Server Components.",
+      "entry": "Entry",
+      "banner": "\"use client\"",
+      "yes": "Yes",
+      "no": "No",
+      "main": "All components, providers, hooks and utilities.",
+      "monaco": "The Monaco-based code editor (optional peers: @monaco-editor/react and monaco-editor).",
+      "charts": "GPU charts (WebGPU, WebGL2, WebGL, Canvas2D): Chart, LineChart, BarChart, TradingChart, Scatter3DChart and 40+ more chart components.",
+      "chartsCore": "The framework-free chart engine: createChart and formatCompact. Importing it is server-safe; charts are created in the browser.",
+      "icons": "The icon set: Icon, IconCanvas, DynamicIcon, createIcon and one component per icon (SearchIcon…). SVG icons render on the server inside client components.",
+      "iconsCore": "The framework-free icon set: icon data, toSvg, drawIcon and the GPU icon canvases. Importing it is server-safe (toSvg works on the server); canvases are created in the browser.",
+      "themeUtils": "Server-safe theme helpers: THEME_INIT_SCRIPT, cookie parsing and serialization, palette names.",
+      "utils": "Server-safe utilities: cn, themes, light, dark, githubDark, palettes, resolveTheme, generateCSSVariables, applyThemeStyles, getSystemTheme, isBilingualTheme, matchesShortcut, normalizeShortcuts, computeFixedColumnLayout."
+    },
+    "why": {
+      "title": "Why some entries are client boundaries",
+      "p1": "Every Minerva component uses state, effects, context or portals, so it must run in the browser. Because the main entry is marked \"use client\", a Server Component that imports it does not get the component code: it gets client references, placeholders that the bundler resolves to the client bundle. The components are still rendered to HTML on the server during SSR and hydrated in the browser.",
+      "p2": "A client reference is not a callable function on the server. That is fine for components, which are only rendered, but it means plain functions from a client entry cannot be executed in a Server Component. Functions needed on the server, such as parsing the theme cookie or building the init script, therefore live in a separate entry without the banner: minerva-design/theme-utils."
+    },
+    "render": {
+      "title": "Rendering components from a Server Component",
+      "text": "Import components from minerva-design directly in a Server Component, a layout or a page: no wrapper is needed, because the entry already is a client boundary.",
+      "props": "Props passed from a Server Component to a client component must be serializable: strings, numbers, booleans, plain objects, arrays and JSX. Functions are not, so event handlers such as onClick, render props and callbacks need a small client component of your own:"
+    },
+    "functions": {
+      "title": "Calling functions on the server",
+      "text": "Call the helpers of minerva-design/theme-utils and minerva-design/utils freely on the server: in layouts, route handlers, middleware or edge functions. Do not call functions from the main entry in a Server Component (toast.success, Confirm, the hooks...), and do not read its data exports (themes, palettes...) there: they are client references. Import the plain functions and data from minerva-design/utils instead.",
+      "imperative": "Imperative APIs are also safe during SSR of client components: without a document they do nothing, and promise-based dialogs such as Confirm resolve to false on the server. Trigger them from event handlers or effects, which only run in the browser."
+    },
+    "csp": {
+      "title": "Content Security Policy",
+      "text": "A strict Content-Security-Policy (no 'unsafe-inline') blocks the inline theme init script. Either render the request's nonce on the <script> element, or allow the script by its hash: THEME_INIT_SCRIPT_HASH is the 'sha256-…' source of THEME_INIT_SCRIPT, and cspHash() computes it for a script built with createThemeInitScript()."
+    },
+    "css": {
+      "title": "Where to import the CSS",
+      "text": "Import minerva-design/style.css once. In the Next.js App Router, global CSS belongs in the root layout, which is a Server Component and may import CSS. In other setups, import it in the client entry file. prose.scss is an optional extra, loaded the same way from your own Sass."
+    },
+    "next": {
+      "title": "Next steps",
+      "themePalette": "Server rendering without a theme flash: THEME_INIT_SCRIPT and theme cookies.",
+      "installation": "Packages, peer dependencies and stylesheets."
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// dist/index.js and dist/monaco.js start with\n\"use client\";\n\n// dist/theme-utils.js and dist/utils-entry.js do not: they hold plain\n// functions and data, safe to run on the server",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/page.tsx: a Server Component (no \"use client\")\nimport { Card, Tag } from \"minerva-design\";\nimport { SaveButton } from \"./save-button\";\n\nexport default async function Page() {\n  const posts = await getPosts(); // server-only data access\n\n  return posts.map((post) => (\n    // serializable props only: strings, numbers, booleans, JSX children...\n    <Card key={post.id} padding=\"medium\">\n      <Tag color=\"info\">{post.category}</Tag>\n      <h2>{post.title}</h2>\n      <SaveButton id={post.id} />\n    </Card>\n  ));\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/save-button.tsx\n\"use client\";\n\nimport { Button, toast } from \"minerva-design\";\n\n// Event handlers and imperative APIs live in a client component\nexport function SaveButton({ id }: { id: string }) {\n  return (\n    <Button\n      color=\"primary\"\n      onClick={async () => {\n        await fetch(`/api/save/${id}`, { method: \"POST\" });\n        toast.success(\"Saved\"); // shown by the ToastProvider in your layout\n      }}\n    >\n      Save\n    </Button>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/layout.tsx: a Server Component\nimport { cookies } from \"next/headers\";\nimport {\n  THEME_COOKIE_NAME,\n  THEME_INIT_SCRIPT,\n  parseThemeCookie,\n} from \"minerva-design/theme-utils\"; // server-safe: runs here\nimport { ThemeProvider } from \"minerva-design\"; // rendered, not called\n\nexport default async function RootLayout({ children }: { children: React.ReactNode }) {\n  const theme = parseThemeCookie((await cookies()).get(THEME_COOKIE_NAME)?.value);\n  return (\n    <html lang=\"en\" suppressHydrationWarning>\n      <head>\n        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />\n      </head>\n      <body>\n        <ThemeProvider defaultTheme={theme}>{children}</ThemeProvider>\n      </body>\n    </html>\n  );\n}\n\n// Plain functions and data (cn, themes, palettes, resolveTheme...):\n// import them from the server-safe utils entry, not from the main entry\nimport { cn, themes } from \"minerva-design/utils\";\n\n// Not on the server: main-entry functions are client references there\n// import { toast } from \"minerva-design\";\n// toast.success(\"Hi\"); // call it from a client component instead",
+      "language": "tsx"
+    },
+    {
+      "source": "// Strict CSP, option 1: a per-request nonce on the inline script\n<script\n  nonce={nonce}\n  suppressHydrationWarning\n  dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}\n/>\n// Content-Security-Policy: script-src 'self' 'nonce-<nonce>'\n\n// Option 2: allow the script by its hash (static HTML, CDN caching)\nimport {\n  THEME_INIT_SCRIPT_HASH,\n  createThemeInitScript,\n  cspHash,\n} from \"minerva-design/theme-utils\";\n\nconst csp = `script-src 'self' ${THEME_INIT_SCRIPT_HASH}`;\n// a customised script has its own hash:\nconst script = createThemeInitScript({ defaultTheme: \"dark\" });\nconst customCsp = `script-src 'self' ${cspHash(script)}`;",
+      "language": "tsx"
+    },
+    {
+      "source": "// Next.js App Router: import global CSS once, in the root layout\n// app/layout.tsx\nimport \"minerva-design/style.css\";\n\n// Vite / other setups: import it in the client entry file (main.tsx)",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Server Components",
+      "description": "Use Minerva with React Server Components: which entries are client boundaries, what can run on the server and where to import the CSS.",
+      "entries": {
+        "title": "Entries and the \"use client\" banner",
+        "text": "minerva-design is published as several entries. The entries that contain components start with a \"use client\" directive; the theme helper entry does not, so it can run inside Server Components.",
+        "entry": "Entry",
+        "banner": "\"use client\"",
+        "yes": "Yes",
+        "no": "No",
+        "main": "All components, providers, hooks and utilities.",
+        "monaco": "The Monaco-based code editor (optional peers: @monaco-editor/react and monaco-editor).",
+        "charts": "GPU charts (WebGPU, WebGL2, WebGL, Canvas2D): Chart, LineChart, BarChart, TradingChart, Scatter3DChart and 40+ more chart components.",
+        "chartsCore": "The framework-free chart engine: createChart and formatCompact. Importing it is server-safe; charts are created in the browser.",
+        "icons": "The icon set: Icon, IconCanvas, DynamicIcon, createIcon and one component per icon (SearchIcon…). SVG icons render on the server inside client components.",
+        "iconsCore": "The framework-free icon set: icon data, toSvg, drawIcon and the GPU icon canvases. Importing it is server-safe (toSvg works on the server); canvases are created in the browser.",
+        "themeUtils": "Server-safe theme helpers: THEME_INIT_SCRIPT, cookie parsing and serialization, palette names.",
+        "utils": "Server-safe utilities: cn, themes, light, dark, githubDark, palettes, resolveTheme, generateCSSVariables, applyThemeStyles, getSystemTheme, isBilingualTheme, matchesShortcut, normalizeShortcuts, computeFixedColumnLayout."
+      },
+      "why": {
+        "title": "Why some entries are client boundaries",
+        "p1": "Every Minerva component uses state, effects, context or portals, so it must run in the browser. Because the main entry is marked \"use client\", a Server Component that imports it does not get the component code: it gets client references, placeholders that the bundler resolves to the client bundle. The components are still rendered to HTML on the server during SSR and hydrated in the browser.",
+        "p2": "A client reference is not a callable function on the server. That is fine for components, which are only rendered, but it means plain functions from a client entry cannot be executed in a Server Component. Functions needed on the server, such as parsing the theme cookie or building the init script, therefore live in a separate entry without the banner: minerva-design/theme-utils."
+      },
+      "render": {
+        "title": "Rendering components from a Server Component",
+        "text": "Import components from minerva-design directly in a Server Component, a layout or a page: no wrapper is needed, because the entry already is a client boundary.",
+        "props": "Props passed from a Server Component to a client component must be serializable: strings, numbers, booleans, plain objects, arrays and JSX. Functions are not, so event handlers such as onClick, render props and callbacks need a small client component of your own:"
+      },
+      "functions": {
+        "title": "Calling functions on the server",
+        "text": "Call the helpers of minerva-design/theme-utils and minerva-design/utils freely on the server: in layouts, route handlers, middleware or edge functions. Do not call functions from the main entry in a Server Component (toast.success, Confirm, the hooks...), and do not read its data exports (themes, palettes...) there: they are client references. Import the plain functions and data from minerva-design/utils instead.",
+        "imperative": "Imperative APIs are also safe during SSR of client components: without a document they do nothing, and promise-based dialogs such as Confirm resolve to false on the server. Trigger them from event handlers or effects, which only run in the browser."
+      },
+      "csp": {
+        "title": "Content Security Policy",
+        "text": "A strict Content-Security-Policy (no 'unsafe-inline') blocks the inline theme init script. Either render the request's nonce on the <script> element, or allow the script by its hash: THEME_INIT_SCRIPT_HASH is the 'sha256-…' source of THEME_INIT_SCRIPT, and cspHash() computes it for a script built with createThemeInitScript()."
+      },
+      "css": {
+        "title": "Where to import the CSS",
+        "text": "Import minerva-design/style.css once. In the Next.js App Router, global CSS belongs in the root layout, which is a Server Component and may import CSS. In other setups, import it in the client entry file. prose.scss is an optional extra, loaded the same way from your own Sass."
+      },
+      "next": {
+        "title": "Next steps",
+        "themePalette": "Server rendering without a theme flash: THEME_INIT_SCRIPT and theme cookies.",
+        "installation": "Packages, peer dependencies and stylesheets."
+      }
+    }
+  }
+}

@@ -1,0 +1,537 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "histogram-chart",
+  "title": "Histogram",
+  "description": "The distribution of raw samples in bins of equal width, from a few hundred values to millions.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "requests": "Requests",
+      "latencyAria": "Distribution of one million request latencies with p50, p95 and p99",
+      "binning": "Binning rule",
+      "rules": {
+        "auto": "Auto",
+        "sturges": "Sturges",
+        "ten": "10 bins",
+        "forty": "40 bins"
+      },
+      "students": "Students",
+      "score": "Score",
+      "scoresAria": "Distribution of the exam scores",
+      "customers": "Customers",
+      "age": "Age",
+      "agesAria": "Age distribution of the customers",
+      "control": "Control",
+      "variant": "New onboarding",
+      "minutes": "Session duration (minutes)",
+      "abAria": "Session durations of the two groups of an A/B test",
+      "normalFit": "Normal fit",
+      "lsl": "LSL",
+      "usl": "USL",
+      "nominal": "Nominal",
+      "adjustTool": "Tool adjusted",
+      "capability": "Mean {{mean}}, σ {{sd}}, Cpk {{cpk}}, {{ppm}} ppm out of tolerance:",
+      "capable": "capable",
+      "notCapable": "not capable",
+      "parts": "Parts",
+      "diameter": "Diameter",
+      "qualityAria": "Distribution of the shaft diameters with the specification limits and a fitted normal curve",
+      "freeShipping": "Free shipping",
+      "medianOrder": "Median {{value}}",
+      "p99Order": "p99 {{value}}",
+      "eligibleShare": "{{share}} of the orders reach the free shipping threshold of {{threshold}}.",
+      "orders": "Orders",
+      "orderValue": "Order value (log scale)",
+      "ordersAria": "Distribution of the order values on a logarithmic scale",
+      "pause": "Pause",
+      "resume": "Resume",
+      "reset": "Reset",
+      "serviceLevel": "{{share}} of the calls answered within {{target}}, p90 {{p90}}:",
+      "targetMet": "target met",
+      "targetMissed": "target missed",
+      "calls": "Calls",
+      "waitTime": "Wait time",
+      "target": "Target",
+      "p90": "p90",
+      "callsAria": "Live distribution of the wait times of the last 600 support calls",
+      "withinShare": "{{share}} of the employees",
+      "employeesInBin": "{{value}} employees ({{share}})",
+      "clickForCumulative": "Click for the cumulative share",
+      "clickBin": "Click a bar to see the share of employees with a shorter commute.",
+      "cumulativeStatus": "{{share}} of the employees ({{employees}}) commute {{limit}} or less.",
+      "employees": "Employees",
+      "commute": "One-way commute",
+      "commuteAria": "Distribution of the commute times of the employees"
+    }
+  },
+  "components": [
+    {
+      "name": "HistogramChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "HistogramChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ChartLegendOptions",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name",
+            "typeText": "boolean | ChartLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ChartTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it",
+            "typeText": "boolean | ChartTooltipOptions"
+          },
+          {
+            "name": "crosshair",
+            "type": "boolean",
+            "required": false,
+            "description": "Vertical guide line following the pointer",
+            "typeText": "boolean"
+          },
+          {
+            "name": "interaction",
+            "type": "boolean | ChartInteractionOptions",
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)",
+            "typeText": "boolean | ChartInteractionOptions"
+          },
+          {
+            "name": "nice",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Rounds the bin width to 1, 2 or 5 × 10^k and aligns the edges on it",
+            "typeText": "boolean"
+          },
+          {
+            "name": "color",
+            "type": "string",
+            "required": false,
+            "description": "Bar color (any CSS color)",
+            "typeText": "string"
+          },
+          {
+            "name": "values",
+            "type": "ArrayLike<number>",
+            "required": true,
+            "description": "Raw samples (typed arrays are counted without copies)",
+            "typeText": "ArrayLike<number>"
+          },
+          {
+            "name": "labels",
+            "type": "Partial<ChartLabels>",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`",
+            "typeText": "Partial<ChartLabels>"
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "series",
+            "type": "readonly ChartSeries[]",
+            "required": false,
+            "description": "More series drawn over the bins (e.g. a density `line`)",
+            "typeText": "readonly ChartSeries[]"
+          },
+          {
+            "name": "xAxis",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "X axis",
+            "typeText": "ChartAxisOptions"
+          },
+          {
+            "name": "yAxis",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "Y axis",
+            "typeText": "ChartAxisOptions"
+          },
+          {
+            "name": "annotations",
+            "type": "readonly ChartAnnotation[]",
+            "required": false,
+            "description": "Background areas and reference lines",
+            "typeText": "readonly ChartAnnotation[]"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the plot area, in pixels",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": false,
+            "description": "Name of the counts (legend, tooltip; default \"Count\")",
+            "typeText": "string"
+          },
+          {
+            "name": "bins",
+            "type": "HistogramBinning",
+            "required": false,
+            "description": "Number of bins, or the rule choosing it: `auto`, `sturges`, `freedman-diaconis` (default `auto`)",
+            "typeText": "HistogramBinning"
+          },
+          {
+            "name": "domain",
+            "type": "readonly [number, number]",
+            "required": false,
+            "description": "Range covered by the bins (values outside are not counted); the data range by default",
+            "typeText": "readonly [number, number]"
+          },
+          {
+            "name": "formatBin",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats the edges of the bins in the tooltip",
+            "typeText": "((value: number) => string)"
+          }
+        ],
+        "events": [
+          {
+            "name": "zoom",
+            "type": "[view: ChartView]",
+            "typeText": "[view: ChartView]",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "typeText": "ChartView",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "hover",
+            "type": "[event: ChartHoverEvent | null]",
+            "typeText": "[event: ChartHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "plotClick",
+            "type": "[event: ChartPlotClickEvent]",
+            "typeText": "[event: ChartPlotClickEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartPlotClickEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointClick",
+            "type": "[event: ChartHoverEvent]",
+            "typeText": "[event: ChartHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "type": "[renderer: ChartRendererKind]",
+            "typeText": "[renderer: ChartRendererKind]",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "binning",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/histogram-chart/vue/binning.vue",
+      "files": {
+        "apps/docs/src/docs/pages/histogram-chart/vue/binning.vue": "<script setup lang=\"ts\">\n// The same samples in fewer or more bins: `bins` takes a count or a rule\n// (`sturges`, `freedman-diaconis`, `auto`); two groups appear with enough bins.\nimport { computed, ref } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { HistogramChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: { count: \"Count\", bins: \"Bins:\", age: \"Age\" },\n  zh: { count: \"人数\", bins: \"分箱：\", age: \"年龄\" },\n  ja: { count: \"人数\", bins: \"ビン：\", age: \"年齢\" },\n  fr: { count: \"Effectif\", bins: \"Classes :\", age: \"Âge\" },\n};\n\n// ages of 2,000 customers: two groups (students, parents), deterministic\nconst fraction = (value: number) => value - Math.floor(value);\nconst AGES = Array.from({ length: 2000 }, (_, i) => {\n  const u = fraction(Math.sin(i * 12.9898) * 43758.5453);\n  const v = fraction(Math.sin(i * 78.233) * 43758.5453);\n  return Math.round((i % 3 ? 42 : 22) + (u + v - 1) * (i % 3 ? 16 : 6));\n});\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\nconst bins = ref<number | \"sturges\">(\"sturges\");\n</script>\n\n<template>\n  <div style=\"display: grid; gap: 8px\">\n    <div style=\"display: flex; gap: 8px; align-items: center\">\n      <span>{{ text.bins }}</span>\n      <button type=\"button\" @click=\"bins = 'sturges'\">Sturges</button>\n      <button type=\"button\" @click=\"bins = 10\">10</button>\n      <button type=\"button\" @click=\"bins = 40\">40</button>\n    </div>\n    <HistogramChart\n      :values=\"AGES\"\n      :bins=\"bins\"\n      :name=\"text.count\"\n      :x-axis=\"{ title: text.age }\"\n      :height=\"280\"\n    />\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "binning",
+      "description": ""
+    },
+    {
+      "id": "latency",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/histogram-chart/vue/latency.vue",
+      "files": {
+        "apps/docs/src/docs/pages/histogram-chart/vue/latency.vue": "<script setup lang=\"ts\">\n// <HistogramChart> bins raw samples itself (`bins` \"auto\":\n// Freedman-Diaconis); a long tail of slow requests shows at a glance.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { HistogramChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: { requests: \"Requests\", ms: \"Response time (ms)\" },\n  zh: { requests: \"请求数\", ms: \"响应时间（毫秒）\" },\n  ja: { requests: \"リクエスト数\", ms: \"応答時間（ms）\" },\n  fr: { requests: \"Requêtes\", ms: \"Temps de réponse (ms)\" },\n};\n\n// 5,000 response times (ms): log-normal around 120 ms, generated\n// deterministically (the same picture on every load)\nconst fraction = (value: number) => value - Math.floor(value);\nconst LATENCY = Array.from({ length: 5000 }, (_, i) => {\n  const u = 1 - fraction(Math.sin(i * 12.9898) * 43758.5453);\n  const v = fraction(Math.sin(i * 78.233) * 43758.5453);\n  const normal = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);\n  return Math.round(Math.exp(4.8 + 0.35 * normal));\n});\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\n</script>\n\n<template>\n  <HistogramChart\n    :values=\"LATENCY\"\n    :name=\"text.requests\"\n    :x-axis=\"{ title: text.ms }\"\n    :height=\"300\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "latency",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Histogram",
+      "description": "The distribution of raw samples in bins of equal width, from a few hundred values to millions.",
+      "demos": {
+        "latency": {
+          "title": "Latency distribution",
+          "description": "One million request latencies binned in a few milliseconds; quantiles gives the exact p50, p95 and p99, drawn as x reference lines."
+        },
+        "binning": {
+          "title": "Binning rules",
+          "description": "bins takes a count or a rule: auto (Freedman-Diaconis, robust to outliers), sturges (log2 n + 1) or a fixed number; the two groups of levels appear with enough bins."
+        },
+        "ages": {
+          "title": "Fixed bins",
+          "description": "A domain and a count give round bins, one per 5 years here; formatBin writes the edges in the tooltip, typed arrays are binned without copies."
+        },
+        "comparison": {
+          "title": "Comparing two samples",
+          "description": "histogramSeries builds the bars of a sample: with the same domain and count, two samples share their bins and sit side by side in a Chart."
+        },
+        "quality-control": {
+          "title": "Process capability",
+          "description": "Diameters of machined parts against their tolerance: rect and line annotations mark the specification limits and the series prop draws the fitted normal curve over the bins. The readout computes the Cpk, and the switch shows the process once the tool is adjusted."
+        },
+        "order-values": {
+          "title": "Order values on a log scale",
+          "description": "Order values spanning three orders of magnitude are binned on their logarithm, so each bin covers the same ratio; formatBin and xAxis.format turn the edges back into dollars. Annotations mark the median, the p99 and the orders that qualify for free shipping."
+        },
+        "live-samples": {
+          "title": "Live sliding window",
+          "description": "Wait times of the last 600 support calls, updated twice a second by a setInterval that is cleared on pause and unmount. A fixed domain, bin count and yAxis range keep the axes still while the distribution shifts, and the readout tracks the service level."
+        },
+        "commute": {
+          "title": "Cumulative share on click",
+          "description": "onPointClick gives the index of the clicked bin; binValues, called with the same options, returns its edges and counts to compute the share of employees at or below it. renderTooltip shows the count and share of each bin, and onPlotClick clears the selection."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "5,000 ages counted into 14 bins of 5 years; the tooltip shows the range and the count of the touched bin."
+          }
+        }
+      },
+      "data": {
+        "requests": "Requests",
+        "latencyAria": "Distribution of one million request latencies with p50, p95 and p99",
+        "binning": "Binning rule",
+        "rules": {
+          "auto": "Auto",
+          "sturges": "Sturges",
+          "ten": "10 bins",
+          "forty": "40 bins"
+        },
+        "students": "Students",
+        "score": "Score",
+        "scoresAria": "Distribution of the exam scores",
+        "customers": "Customers",
+        "age": "Age",
+        "agesAria": "Age distribution of the customers",
+        "control": "Control",
+        "variant": "New onboarding",
+        "minutes": "Session duration (minutes)",
+        "abAria": "Session durations of the two groups of an A/B test",
+        "normalFit": "Normal fit",
+        "lsl": "LSL",
+        "usl": "USL",
+        "nominal": "Nominal",
+        "adjustTool": "Tool adjusted",
+        "capability": "Mean {{mean}}, σ {{sd}}, Cpk {{cpk}}, {{ppm}} ppm out of tolerance:",
+        "capable": "capable",
+        "notCapable": "not capable",
+        "parts": "Parts",
+        "diameter": "Diameter",
+        "qualityAria": "Distribution of the shaft diameters with the specification limits and a fitted normal curve",
+        "freeShipping": "Free shipping",
+        "medianOrder": "Median {{value}}",
+        "p99Order": "p99 {{value}}",
+        "eligibleShare": "{{share}} of the orders reach the free shipping threshold of {{threshold}}.",
+        "orders": "Orders",
+        "orderValue": "Order value (log scale)",
+        "ordersAria": "Distribution of the order values on a logarithmic scale",
+        "pause": "Pause",
+        "resume": "Resume",
+        "reset": "Reset",
+        "serviceLevel": "{{share}} of the calls answered within {{target}}, p90 {{p90}}:",
+        "targetMet": "target met",
+        "targetMissed": "target missed",
+        "calls": "Calls",
+        "waitTime": "Wait time",
+        "target": "Target",
+        "p90": "p90",
+        "callsAria": "Live distribution of the wait times of the last 600 support calls",
+        "withinShare": "{{share}} of the employees",
+        "employeesInBin": "{{value}} employees ({{share}})",
+        "clickForCumulative": "Click for the cumulative share",
+        "clickBin": "Click a bar to see the share of employees with a shorter commute.",
+        "cumulativeStatus": "{{share}} of the employees ({{employees}}) commute {{limit}} or less.",
+        "employees": "Employees",
+        "commute": "One-way commute",
+        "commuteAria": "Distribution of the commute times of the employees"
+      },
+      "api": {
+        "HistogramChartProps": {
+          "values": "Raw samples (typed arrays are counted without copies)",
+          "name": "Name of the counts (legend, tooltip)",
+          "color": "Bar color (any CSS color)",
+          "formatBin": "Formats the edges of the bins in the tooltip",
+          "series": "More series drawn over the bins (e.g. a density line)"
+        },
+        "BinOptions": {
+          "bins": "Number of bins, or the rule choosing it: \"auto\" (Freedman-Diaconis, Sturges when the spread is zero), \"sturges\" or \"freedman-diaconis\"",
+          "domain": "Range covered by the bins (values outside are not counted); the data range by default",
+          "nice": "Rounds the bin width to 1, 2 or 5 × 10^k and aligns the edges on it"
+        },
+        "HistogramBins": {
+          "edges": "Edges of the bins: one more than the bins",
+          "counts": "Number of values in every bin",
+          "width": "Width of a bin",
+          "total": "Number of values counted (finite, inside the domain)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "latency": {
+            "title": "Response time distribution",
+            "description": "5,000 raw samples binned by the chart (Freedman-Diaconis): the long tail of slow requests shows at once."
+          },
+          "binning": {
+            "title": "Binning rules",
+            "description": "The same ages in Sturges bins, 10 or 40 bins: the two groups of customers appear with enough bins."
+          }
+        },
+        "minerva-histogram-chart": {
+          "props": {
+            "valueName": "Name of the value in the tooltip",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

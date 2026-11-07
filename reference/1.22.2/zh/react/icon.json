@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "icon",
+  "title": "Icon 图标组件",
+  "description": "图标集中的单个图标：默认为内联 SVG，也可以是由 WebGPU、WebGL2、WebGL 或 Canvas2D 绘制的画布。包括具名组件（SearchIcon…）、通用的 Icon、自定义图标以及按名称选择的图标。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "intro": {
+      "title": "SVG 还是画布",
+      "svg": "默认情况下，图标是一个内联 <svg>：它可在服务端渲染，通过 currentColor 跟随文字颜色，设置 size=\"1em\" 时跟随字号；除非设置了 title 或 aria-label，否则对辅助技术隐藏。",
+      "canvas": "将 renderer 设为 \"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\" 或 \"canvas2d\" 时，同一个图标会绘制在画布上。浏览器将同时存活的 WebGL 上下文限制在 16 个左右，因此同一页面的画布图标共享一个后端：发生变化的图标被打包进一张图集，一次绘制完成后再复制到各自的画布。\"auto\" 跟随全局默认值（setDefaultIconRenderer），在本页即渲染器栏。",
+      "bundle": "只打包你导入的内容：SearchIcon 只带上自己的路径数据，画布渲染器随第一个画布图标加载，而 DynamicIcon（名称在运行时决定）是唯一会打包整套图标的组件。"
+    },
+    "platforms": {
+      "title": "React Native 与小程序",
+      "native": "minerva-design/native/icons 为 React Native 提供同一套组件（Icon、createIcon、DynamicIcon、SearchIcon…），使用 react-native-svg 绘制相同的 24×24 路径数据。react-native-svg 是可选的 peer 依赖，只有这个入口需要它（minerva-design/native 从不导入它）：在 Expo 中用 npx expo install react-native-svg 安装，其他项目用 npm install react-native-svg。图标默认使用主题的文字颜色描边（可用 color 覆盖），size 的单位是 dp，设置 title 后图标成为可访问的图片。",
+      "taro": "minerva-design/taro/icons 为 Taro 提供这些组件。小程序无法渲染内联 SVG，微信的 <image> 也不接受百分号编码的 SVG，因此每个图标都是一个 Image，其 src 为 base64 编码的 SVG data URI（toSvgBase64DataUri，不依赖 btoa）。图片没有 currentColor：颜色直接写入 SVG，默认是当前浅色或深色模式下主题的文字颜色，颜色或模式变化时会重新生成图片。size 的单位是 px，也可以是任意 CSS 长度，例如 \"48rpx\"。",
+      "tabBar": "小程序的 tabBar 只接受 PNG 或 JPG 文件：请在构建时用你选择的 SVG 光栅化工具，从 toSvg 的输出生成这些文件（每个图标、颜色和状态各一个）。Minerva 不内置光栅化工具。"
+    },
+    "data": {
+      "starting": "启动中…"
+    }
+  },
+  "components": [
+    {
+      "name": "Icon",
+      "support": {
+        "status": "n/a",
+        "notes": "React component Icon of minerva-design/icons (separate entry, outside this contract scan)."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React component Icon of minerva-design/icons (separate entry, outside this contract scan)."
+      }
+    }
+  ],
+  "api": {
+    "IconProps": {
+      "source": "icons/src/react/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<SVGProps<SVGSVGElement>, \"ref\" | \"color\" | \"stroke\" | \"strokeWidth\" | \"children\" | \"name\">"
+      ],
+      "props": [
+        {
+          "name": "icon",
+          "type": "IconDefinition",
+          "required": true,
+          "description": "The icon to draw: a built-in one (e.g. `searchIcon`) or a `defineIcon` result"
+        },
+        {
+          "name": "size",
+          "type": "number | string",
+          "required": false,
+          "default": "24",
+          "description": "Width and height (a number is in pixels; canvas renderers also follow CSS sizes such as `\"1em\"`)"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "default": "\"currentColor\"",
+          "description": "Stroke color, any CSS color"
+        },
+        {
+          "name": "strokeWidth",
+          "type": "number",
+          "required": false,
+          "default": "2",
+          "description": "Stroke width on the 24×24 grid (scales with the size)"
+        },
+        {
+          "name": "absoluteStrokeWidth",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Keeps `strokeWidth` in pixels whatever the size"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name: the icon becomes `role=\"img\"`; without it (or an `aria-label`) the icon is hidden from assistive technologies"
+        },
+        {
+          "name": "renderer",
+          "type": "IconRenderer",
+          "required": false,
+          "default": "\"svg\"",
+          "description": "Inline SVG (default), or a `<canvas>` drawn by a backend shared by every canvas icon of the page: \"auto\" (the global default, see `setDefaultIconRenderer`), \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\""
+        },
+        {
+          "name": "onRendererChange",
+          "type": "(kind: IconRendererKind) => void",
+          "required": false,
+          "description": "Canvas renderers: called with the backend that drew the icon"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<SVGSVGElement | HTMLCanvasElement>",
+          "required": false,
+          "description": "The `<svg>` element, or the `<canvas>` with a canvas renderer"
+        }
+      ]
+    },
+    "DynamicIconProps": {
+      "source": "icons/src/react/types.ts",
+      "kind": "interface",
+      "extends": [
+        "NamedIconProps"
+      ],
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Name of a built-in icon (e.g. `\"arrow-up\"`); unknown names render nothing"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "accessibility",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/demos/accessibility.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon/demos/accessibility.tsx": "import { IconButton } from \"minerva-design\";\nimport {\n  AlertTriangleIcon,\n  CheckCircleIcon,\n  SettingsIcon,\n} from \"minerva-design/icons\";\n\nexport default function AccessibilityDemo() {\n  return (\n    <div style={{ display: \"flex\", alignItems: \"center\", gap: 24 }}>\n      {/* decorative: the text says it all (aria-hidden) */}\n      <span style={{ display: \"inline-flex\", alignItems: \"center\", gap: 6 }}>\n        <CheckCircleIcon size={18} color=\"var(--success-color)\" />\n        Saved\n      </span>\n      {/* meaningful on its own: a title makes it role=\"img\" */}\n      <AlertTriangleIcon color=\"var(--warning-color)\" title=\"Warning\" />\n      {/* inside a control: the control carries the name */}\n      <IconButton icon={<SettingsIcon size={18} />} aria-label=\"Settings\" />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "无障碍",
+      "description": "装饰性图标为 aria-hidden；单独出现的图标应设置 title（role=\"img\"）；位于控件内部时，应改为给控件添加标签。"
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon/demos/basic.tsx": "import { Button } from \"minerva-design\";\nimport {\n  DownloadIcon,\n  HomeIcon,\n  SearchIcon,\n  SettingsIcon,\n  TrashIcon,\n} from \"minerva-design/icons\";\n\nexport default function BasicDemo() {\n  return (\n    <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 16 }}>\n      <HomeIcon />\n      <SearchIcon />\n      <SettingsIcon />\n      <Button startIcon={<DownloadIcon size={16} />}>Download</Button>\n      <Button\n        color=\"danger\"\n        variant=\"outline\"\n        startIcon={<TrashIcon size={16} />}\n      >\n        Delete\n      </Button>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "每个图标都是以其名称命名的组件；图标可以与文字同行显示，也可以放在按钮中。"
+    },
+    {
+      "id": "canvas",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/demos/canvas.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon/demos/canvas.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  Icon,\n  settingsIcon,\n  type IconRenderer,\n  type IconRendererKind,\n} from \"minerva-design/icons\";\nimport styles from \"../../icons/icons.module.scss\";\n\nconst RENDERERS: IconRenderer[] = [\n  \"svg\",\n  \"auto\",\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\n\nfunction Cell({ renderer }: { renderer: IconRenderer }) {\n  const { t } = useTranslation(\"common\", { keyPrefix: \"docs.icon.data\" });\n  const [drawn, setDrawn] = useState<IconRendererKind | null>(null);\n  return (\n    <span className={styles.cell}>\n      <Icon\n        icon={settingsIcon}\n        size={40}\n        color=\"var(--primary-color)\"\n        renderer={renderer}\n        onRendererChange={setDrawn}\n      />\n      <code>{renderer}</code>\n      <span className={styles.kind}>\n        {renderer === \"svg\" ? \"SVG\" : (drawn ?? t(\"starting\"))}\n      </span>\n    </span>\n  );\n}\n\n// \"auto\" follows the renderer bar at the top of the page; a forced backend\n// that cannot start here falls back to the next one\nexport default function CanvasDemo() {\n  return (\n    <div className={styles.row}>\n      {RENDERERS.map((renderer) => (\n        <Cell key={renderer} renderer={renderer} />\n      ))}\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/icons/icons.module.scss": "// Shared by the demos of the icon pages (icons, icon, icon-canvas, icons-core)\n\n.stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  background: var(--surface-subtle-color);\n}\n\n.search {\n  flex: 1 1 220px;\n  min-width: 180px;\n}\n\n.body {\n  padding: 12px 14px;\n}\n\n.grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));\n  gap: 6px;\n  padding: 2px;\n}\n\n.categoryGroup + .categoryGroup {\n  margin-top: 20px;\n}\n\n.categoryTitle {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin: 0 0 8px;\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--text-color);\n}\n\n.categoryCount {\n  padding: 0 6px;\n  border-radius: var(--radius-sm);\n  background: var(--surface-muted-color);\n  font-size: 12px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n  color: var(--text-secondary-color);\n}\n\n.tile {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  min-height: 92px;\n  padding: 12px 6px 8px;\n  border: 1px solid transparent;\n  border-radius: var(--radius-md);\n  background: transparent;\n  color: var(--text-color);\n  font: inherit;\n  cursor: pointer;\n\n  &:hover {\n    border-color: var(--border-color);\n    background: var(--hover-color);\n  }\n\n  &:focus-visible {\n    outline: 2px solid var(--focus-ring-color);\n    outline-offset: 1px;\n  }\n}\n\n.tileName {\n  max-width: 100%;\n  overflow: hidden;\n  font-size: 11px;\n  line-height: 1.3;\n  color: var(--text-secondary-color);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  background: var(--surface-subtle-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.row {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 16px 24px;\n}\n\n.cell {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 6px;\n  min-width: 72px;\n  font-size: 12px;\n  color: var(--text-secondary-color);\n}\n\n.code {\n  margin: 0;\n  padding: 10px 12px;\n  border-radius: var(--radius-md);\n  background: var(--surface-muted-color);\n  font-family: var(--font-family-mono, monospace);\n  font-size: 12px;\n  line-height: 1.5;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\n\n.canvasFrame {\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--canvas-color);\n}\n\n.kind {\n  font-variant-numeric: tabular-nums;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "渲染器",
+      "description": "同一个图标分别以 SVG 和各画布后端绘制；每个下方显示实际绘制它的后端。\"auto\" 跟随渲染器栏；强制指定的后端若在此浏览器中不可用，则回退到下一个。"
+    },
+    {
+      "id": "custom",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/demos/custom.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon/demos/custom.tsx": "import { createIcon, defineIcon, Icon } from \"minerva-design/icons\";\n\n// a custom icon on the same 24×24 grid (strokes only, round caps and joins)\nconst rocketIcon = defineIcon({\n  name: \"rocket\",\n  category: \"custom\",\n  tags: [\"launch\", \"ship\"],\n  paths: [\n    \"M12 3c3 2 5 5.5 5 9.5V16H7v-3.5C7 8.5 9 5 12 3z\",\n    \"M12 9.5h.01\",\n    \"M7 13l-3 3v3h3\",\n    \"M17 13l3 3v3h-3\",\n    \"M10 19.5l2 1.5 2-1.5\",\n  ],\n});\n\n// a component like the built-in ones\nconst RocketIcon = createIcon(rocketIcon);\n\nexport default function CustomDemo() {\n  return (\n    <div style={{ display: \"flex\", alignItems: \"center\", gap: 16 }}>\n      <RocketIcon />\n      <RocketIcon size={40} color=\"var(--primary-color)\" />\n      {/* or through the generic Icon, on any renderer */}\n      <Icon icon={rocketIcon} size={40} renderer=\"auto\" />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "自定义图标",
+      "description": "defineIcon 对你自己的路径数据做一次校验；createIcon 将其转换为与内置图标一样的组件，Icon 可在所有渲染器上绘制它。"
+    },
+    {
+      "id": "dynamic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/demos/dynamic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon/demos/dynamic.tsx": "import { DynamicIcon } from \"minerva-design/icons\";\n\n// icon names coming from data (an API, a CMS, a settings file…)\nconst services = [\n  { name: \"Storage\", icon: \"database\", status: \"check-circle\" },\n  { name: \"Mail\", icon: \"mail\", status: \"alert-triangle\" },\n  { name: \"Payments\", icon: \"credit-card\", status: \"x-circle\" },\n];\n\nconst COLORS: Record<string, string> = {\n  \"check-circle\": \"var(--success-color)\",\n  \"alert-triangle\": \"var(--warning-color)\",\n  \"x-circle\": \"var(--danger-color)\",\n};\n\nexport default function DynamicDemo() {\n  return (\n    <ul style={{ display: \"grid\", gap: 8, margin: 0, padding: 0 }}>\n      {services.map((service) => (\n        <li\n          key={service.name}\n          style={{ display: \"flex\", alignItems: \"center\", gap: 8 }}\n        >\n          <DynamicIcon name={service.icon} size={18} />\n          <span style={{ minWidth: 80 }}>{service.name}</span>\n          <DynamicIcon\n            name={service.status}\n            size={18}\n            color={COLORS[service.status]}\n            title={service.status}\n          />\n        </li>\n      ))}\n    </ul>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "按名称使用图标",
+      "description": "DynamicIcon 根据仅在运行时才知道的名称选择内置图标；未知名称不渲染任何内容。它会打包整套图标。"
+    },
+    {
+      "id": "size-color",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/demos/size-color.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon/demos/size-color.tsx": "import { BellIcon, HeartIcon, StarIcon } from \"minerva-design/icons\";\n\nconst SIZES = [16, 20, 24, 32, 48];\n\nexport default function SizeColorDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 16 }}>\n      <div style={{ display: \"flex\", alignItems: \"center\", gap: 16 }}>\n        {SIZES.map((size) => (\n          <StarIcon key={size} size={size} />\n        ))}\n      </div>\n      <div style={{ display: \"flex\", alignItems: \"center\", gap: 16 }}>\n        <HeartIcon color=\"var(--danger-color)\" />\n        <StarIcon color=\"var(--warning-color)\" />\n        <BellIcon color=\"var(--primary-color)\" />\n        {/* currentColor: follows the text color, here a link color */}\n        <span style={{ color: \"var(--link-color)\", fontSize: 20 }}>\n          <BellIcon size=\"1em\" /> 1em follows the font size\n        </span>\n      </div>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "尺寸与颜色",
+      "description": "size 接受像素值或任意 CSS 长度（1em 跟随字号）；color 接受任意 CSS 颜色，包括主题变量，默认为文字颜色。"
+    },
+    {
+      "id": "stroke",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/demos/stroke.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon/demos/stroke.tsx": "import { CloudIcon } from \"minerva-design/icons\";\n\nconst STROKES = [1, 1.5, 2, 2.5, 3];\nconst SIZES = [16, 24, 48];\n\nexport default function StrokeDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 16 }}>\n      <div style={{ display: \"flex\", alignItems: \"center\", gap: 16 }}>\n        {STROKES.map((strokeWidth) => (\n          <CloudIcon key={strokeWidth} size={32} strokeWidth={strokeWidth} />\n        ))}\n      </div>\n      {/* scaled stroke (default) vs. a constant 1.5px stroke */}\n      <div style={{ display: \"flex\", alignItems: \"center\", gap: 16 }}>\n        {SIZES.map((size) => (\n          <CloudIcon key={size} size={size} strokeWidth={1.5} />\n        ))}\n        {SIZES.map((size) => (\n          <CloudIcon\n            key={`absolute-${size}`}\n            size={size}\n            strokeWidth={1.5}\n            absoluteStrokeWidth\n          />\n        ))}\n      </div>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "描边宽度",
+      "description": "strokeWidth 基于 24×24 网格，因此会随图标缩放。absoluteStrokeWidth 则无论尺寸如何都保持固定的像素值（见最下面一行的后半部分）。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// npx expo install react-native-svg (optional peer dependency of this entry)\nimport { DynamicIcon, Icon, SearchIcon, searchIcon } from \"minerva-design/native/icons\";\n\n<SearchIcon />                                          // 24dp, theme text color\n<SearchIcon size={20} color=\"#2563eb\" title=\"Search\" /> // accessible image\n<Icon icon={searchIcon} strokeWidth={1.5} absoluteStrokeWidth />\n<DynamicIcon name={item.icon} />                        // bundles the whole set",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Icon, SearchIcon, settingsIcon } from \"minerva-design/taro/icons\";\n\n<SearchIcon />                                          // 24px base64 SVG image\n<SearchIcon size=\"48rpx\" color=\"#2563eb\" title=\"Search\" />\n<Icon icon={settingsIcon} strokeWidth={1.5} />          // theme text color, per mode",
+      "language": "tsx"
+    },
+    {
+      "source": "// build-time Node script: the tabBar only takes PNG / JPG files\nimport { writeFileSync } from \"node:fs\";\nimport { homeIcon, toSvg } from \"minerva-design/icons/core\";\n\nfor (const [state, color] of [[\"normal\", \"#6b7280\"], [\"active\", \"#2563eb\"]]) {\n  const svg = toSvg(homeIcon, { size: 81, color });\n  // rasterize: the SVG -> PNG converter of your choice\n  writeFileSync(`src/assets/tab-home-${state}.png`, await rasterize(svg));\n}",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Icon 图标组件",
+      "description": "图标集中的单个图标：默认为内联 SVG，也可以是由 WebGPU、WebGL2、WebGL 或 Canvas2D 绘制的画布。包括具名组件（SearchIcon…）、通用的 Icon、自定义图标以及按名称选择的图标。",
+      "intro": {
+        "title": "SVG 还是画布",
+        "svg": "默认情况下，图标是一个内联 <svg>：它可在服务端渲染，通过 currentColor 跟随文字颜色，设置 size=\"1em\" 时跟随字号；除非设置了 title 或 aria-label，否则对辅助技术隐藏。",
+        "canvas": "将 renderer 设为 \"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\" 或 \"canvas2d\" 时，同一个图标会绘制在画布上。浏览器将同时存活的 WebGL 上下文限制在 16 个左右，因此同一页面的画布图标共享一个后端：发生变化的图标被打包进一张图集，一次绘制完成后再复制到各自的画布。\"auto\" 跟随全局默认值（setDefaultIconRenderer），在本页即渲染器栏。",
+        "bundle": "只打包你导入的内容：SearchIcon 只带上自己的路径数据，画布渲染器随第一个画布图标加载，而 DynamicIcon（名称在运行时决定）是唯一会打包整套图标的组件。"
+      },
+      "platforms": {
+        "title": "React Native 与小程序",
+        "native": "minerva-design/native/icons 为 React Native 提供同一套组件（Icon、createIcon、DynamicIcon、SearchIcon…），使用 react-native-svg 绘制相同的 24×24 路径数据。react-native-svg 是可选的 peer 依赖，只有这个入口需要它（minerva-design/native 从不导入它）：在 Expo 中用 npx expo install react-native-svg 安装，其他项目用 npm install react-native-svg。图标默认使用主题的文字颜色描边（可用 color 覆盖），size 的单位是 dp，设置 title 后图标成为可访问的图片。",
+        "taro": "minerva-design/taro/icons 为 Taro 提供这些组件。小程序无法渲染内联 SVG，微信的 <image> 也不接受百分号编码的 SVG，因此每个图标都是一个 Image，其 src 为 base64 编码的 SVG data URI（toSvgBase64DataUri，不依赖 btoa）。图片没有 currentColor：颜色直接写入 SVG，默认是当前浅色或深色模式下主题的文字颜色，颜色或模式变化时会重新生成图片。size 的单位是 px，也可以是任意 CSS 长度，例如 \"48rpx\"。",
+        "tabBar": "小程序的 tabBar 只接受 PNG 或 JPG 文件：请在构建时用你选择的 SVG 光栅化工具，从 toSvg 的输出生成这些文件（每个图标、颜色和状态各一个）。Minerva 不内置光栅化工具。"
+      },
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "每个图标都是以其名称命名的组件；图标可以与文字同行显示，也可以放在按钮中。"
+        },
+        "size-color": {
+          "title": "尺寸与颜色",
+          "description": "size 接受像素值或任意 CSS 长度（1em 跟随字号）；color 接受任意 CSS 颜色，包括主题变量，默认为文字颜色。"
+        },
+        "stroke": {
+          "title": "描边宽度",
+          "description": "strokeWidth 基于 24×24 网格，因此会随图标缩放。absoluteStrokeWidth 则无论尺寸如何都保持固定的像素值（见最下面一行的后半部分）。"
+        },
+        "accessibility": {
+          "title": "无障碍",
+          "description": "装饰性图标为 aria-hidden；单独出现的图标应设置 title（role=\"img\"）；位于控件内部时，应改为给控件添加标签。"
+        },
+        "custom": {
+          "title": "自定义图标",
+          "description": "defineIcon 对你自己的路径数据做一次校验；createIcon 将其转换为与内置图标一样的组件，Icon 可在所有渲染器上绘制它。"
+        },
+        "dynamic": {
+          "title": "按名称使用图标",
+          "description": "DynamicIcon 根据仅在运行时才知道的名称选择内置图标；未知名称不渲染任何内容。它会打包整套图标。"
+        },
+        "canvas": {
+          "title": "渲染器",
+          "description": "同一个图标分别以 SVG 和各画布后端绘制；每个下方显示实际绘制它的后端。\"auto\" 跟随渲染器栏；强制指定的后端若在此浏览器中不可用，则回退到下一个。"
+        }
+      },
+      "data": {
+        "starting": "启动中…"
+      },
+      "api": {
+        "IconProps": {
+          "icon": "要绘制的图标：内置图标（如 searchIcon）或 defineIcon 的返回值",
+          "size": "宽度和高度；数字表示像素，画布渲染器也支持 \"1em\" 等 CSS 尺寸",
+          "color": "描边颜色，任意 CSS 颜色",
+          "strokeWidth": "基于 24×24 网格的描边宽度（随尺寸缩放）",
+          "absoluteStrokeWidth": "无论尺寸如何，strokeWidth 都保持为像素值",
+          "title": "无障碍名称：图标变为 role=\"img\"；未设置它（或 aria-label）时，图标对辅助技术隐藏",
+          "renderer": "内联 SVG，或由页面上所有画布图标共享的后端绘制的画布（\"auto\" 跟随全局默认值）",
+          "onRendererChange": "画布渲染器：以绘制该图标的后端为参数调用",
+          "ref": "<svg> 元素；使用画布渲染器时为 <canvas>"
+        },
+        "DynamicIconProps": {
+          "name": "内置图标的名称（如 \"arrow-up\"）；未知名称不渲染任何内容"
+        }
+      },
+      "wc": {
+        "minerva-icon": {
+          "props": {
+            "label": "无障碍名称：图标以此名称成为 role=\"img\"；不设置时，图标对辅助技术隐藏"
+          },
+          "events": {
+            "minerva-renderer-change": "画布模式：后端绘制了图标，或在 GPU 丢失后完成回退；detail: { renderer }"
+          },
+          "methods": {
+            "getRenderer": "绘制画布的后端（webgpu、webgl2、webgl、canvas2d）；SVG 模式下或启动前为 null"
+          }
+        },
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "<minerva-icon> 按名称绘制内置图标，可与文本并排，也可放入其他元素的插槽；设置 label 后，它会作为图像暴露给辅助技术。"
+          },
+          "canvas": {
+            "title": "渲染器",
+            "description": "renderer 属性让图标绘制在画布上；每个图标都会触发 minerva-renderer-change，带上实际绘制它的后端（显示在图标下方）。\"auto\" 跟随渲染器栏；浏览器不支持强制指定的后端时，会回退到下一个。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "React Native 中的图标",
+            "description": "同一套图标由 react-native-svg 绘制：具名组件默认使用主题文字颜色描边，size 单位为 dp，可自定义颜色和描边宽度，设置 title 后成为可访问的图片；DynamicIcon 按名称选择图标（此处为一个标签栏）。"
+          }
+        }
+      }
+    }
+  }
+}

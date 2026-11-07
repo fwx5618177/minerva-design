@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "hooks",
+  "title": "Hooks",
+  "description": "Les hooks de bas niveau utilisés par ConfigProvider : gérez vous-même le thème, la langue et les traductions de la bibliothèque React.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "reference": {
+      "title": "Référence",
+      "text": "Tous les hooks et utilitaires sont exportés depuis minerva-design.",
+      "hook": "Hook",
+      "signature": "Signature",
+      "useAutoTheme": "Conserve le thème actif dans l'état et, en dehors d'un ConfigProvider, l'écrit sous forme de variables CSS sur <html>. Avec \"auto\" ou une paire { light, dark }, il s'abonne à prefers-color-scheme et se désabonne au démontage. Renvoie le thème configuré, son setter et le schéma système actuel. Dans un ConfigProvider, il ne gère que l'état : le provider racine gère <html>.",
+      "useLocale": "Conserve la locale dans l'état et, en dehors d'un ConfigProvider, change la langue des textes intégrés de la bibliothèque React (en, zh, ja ou fr). Renvoie la locale et son setter. Dans un ConfigProvider, il ne gère que l'état : le provider racine gère la langue globale.",
+      "useI18n": "Renvoie { t, language } : t traduit les textes intégrés de la bibliothèque React avec son petit traducteur maison (clés imbriquées, interpolation des variables, pluriels via count, defaultValue) et language est la langue dans laquelle il traduit. t suit la locale du ConfigProvider imbriqué le plus proche qui en définit une, sinon la langue globale de la bibliothèque React. la bibliothèque React ne dépend d'aucune bibliothèque i18n : la configuration i18n de votre application n'est jamais affectée.",
+      "useDisclosure": "État ouvert / fermé des overlays (Modal, Drawer, Popover...), contrôlé (isOpen + onChange) ou non contrôlé (defaultIsOpen). Renvoie isOpen et des callbacks stables onOpen, onClose et onToggle.",
+      "cn": "Concatène des noms de classes en ignorant les valeurs falsy (false, null, undefined, 0, chaînes vides). Une petite alternative sans dépendance à classnames pour les classes conditionnelles.",
+      "global": "useAutoTheme et useLocale ne modifient l'état global (variables CSS sur <html>, langue de la bibliothèque React) que lorsqu'aucun ConfigProvider ne se trouve au-dessus d'eux. Ce site en a un à la racine : les démos ci-dessous passent l'état du hook à un ConfigProvider imbriqué, qui ne l'applique qu'à l'aperçu."
+    },
+    "standalone": {
+      "title": "Utiliser les hooks sans ConfigProvider",
+      "text": "Si vous n'avez pas besoin de useConfig(), vous pouvez appeler useAutoTheme et useLocale directement, à la place d'un provider. Dans un provider, ils ne font que conserver l'état : passez-le à un ConfigProvider imbriqué pour l'appliquer à un sous-arbre."
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "use-auto-theme",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-auto-theme.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-auto-theme.tsx": "import {\n  Button,\n  ConfigProvider,\n  HStack,\n  Tag,\n  type Theme,\n  useAutoTheme,\n  useConfig,\n} from \"minerva-design\";\n\nconst OPTIONS: Theme[] = [\"auto\", \"light\", \"dark\", \"github-dark\"];\n\n// Inside a ConfigProvider (this site has one at the root) useAutoTheme only\n// manages the state: the root provider owns <html>. The chosen theme is\n// applied to the preview below with a nested, scoped ConfigProvider.\nexport default function UseAutoThemeDemo() {\n  const { theme: appTheme = \"auto\" } = useConfig();\n  const [theme, setTheme, systemTheme] = useAutoTheme(appTheme);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <div\n        role=\"group\"\n        aria-label=\"Theme\"\n        style={{ display: \"flex\", flexWrap: \"wrap\", gap: 8 }}\n      >\n        {OPTIONS.map((option) => (\n          <Button\n            key={String(option)}\n            size=\"small\"\n            color={option === theme ? \"primary\" : \"neutral\"}\n            variant={option === theme ? \"solid\" : \"outline\"}\n            aria-pressed={option === theme}\n            onClick={() => setTheme(option)}\n          >\n            {String(option)}\n          </Button>\n        ))}\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"ghost\"\n          onClick={() => setTheme(appTheme)}\n        >\n          Reset\n        </Button>\n      </div>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 8,\n        }}\n      >\n        theme:{\" \"}\n        <Tag color=\"primary\">\n          {typeof theme === \"string\" ? theme : \"custom\"}\n        </Tag>{\" \"}\n        systemTheme: <Tag color=\"info\">{systemTheme}</Tag>\n      </div>\n      <ConfigProvider theme={theme}>\n        <div\n          style={{\n            padding: 16,\n            borderRadius: 8,\n            border: \"1px solid var(--border-color)\",\n            background: \"var(--background-color)\",\n            color: \"var(--text-color)\",\n          }}\n        >\n          <HStack gap={4} wrap>\n            <Button color=\"primary\">Primary</Button>\n            <Button color=\"neutral\" variant=\"outline\">\n              Secondary\n            </Button>\n            <Tag color=\"success\">preview</Tag>\n          </HStack>\n        </div>\n      </ConfigProvider>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useAutoTheme",
+      "description": "setTheme change le thème de l'aperçu, appliqué par un ConfigProvider imbriqué ; systemTheme indique toujours le schéma du système d'exploitation. Le reste de la page conserve le thème du site."
+    },
+    {
+      "id": "use-disclosure",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-disclosure.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-disclosure.tsx": "import {\n  Alert,\n  Button,\n  cn,\n  HStack,\n  Tag,\n  useDisclosure,\n  VStack,\n} from \"minerva-design\";\n\n// useDisclosure keeps an open / closed state (uncontrolled here; pass isOpen\n// and onChange to control it). cn joins class names and skips falsy values.\nexport default function UseDisclosureDemo() {\n  const panel = useDisclosure({ defaultIsOpen: true });\n\n  return (\n    <VStack gap={4}>\n      <HStack gap={4} wrap>\n        <Button size=\"small\" color=\"primary\" onClick={panel.onToggle}>\n          Toggle\n        </Button>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={panel.onOpen}\n        >\n          Open\n        </Button>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={panel.onClose}\n        >\n          Close\n        </Button>\n        isOpen:{\" \"}\n        <Tag color={panel.isOpen ? \"success\" : \"info\"}>\n          {String(panel.isOpen)}\n        </Tag>\n      </HStack>\n      {panel.isOpen && (\n        <Alert\n          color=\"info\"\n          title=\"Details\"\n          className={cn(\"disclosure-panel\", panel.isOpen && \"is-open\")}\n        >\n          className = &quot;{cn(\"disclosure-panel\", panel.isOpen && \"is-open\")}\n          &quot;\n        </Alert>\n      )}\n    </VStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useDisclosure et cn",
+      "description": "useDisclosure pilote un panneau avec onToggle, onOpen et onClose ; cn construit son nom de classe à partir de parties conditionnelles."
+    },
+    {
+      "id": "use-locale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-locale.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-locale.tsx": "import {\n  Button,\n  ConfigProvider,\n  Empty,\n  Tag,\n  useI18n,\n  useLocale,\n  type SupportedLanguage,\n} from \"minerva-design\";\n\n// a key from the React library's built-in translations\nconst AVATAR_KEY = \"avatar.default\";\nconst LANGUAGES: SupportedLanguage[] = [\"en\", \"zh\", \"ja\", \"fr\"];\n\nfunction Preview() {\n  // t() translates the React library's own strings with its built-in translator,\n  // in the language of the closest ConfigProvider\n  const { t, language } = useI18n();\n  return (\n    <>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 8,\n        }}\n      >\n        useI18n().language: <Tag color=\"primary\">{language}</Tag> {AVATAR_KEY}:{\" \"}\n        <Tag color=\"info\">{t(AVATAR_KEY)}</Tag>\n      </div>\n      {/* built-in component labels follow the language too */}\n      <Empty size=\"small\" />\n    </>\n  );\n}\n\n// Inside a ConfigProvider (this site has one at the root) useLocale only\n// manages the state: the root provider owns the React library's global language. The\n// chosen locale is applied to the preview with a nested ConfigProvider.\nexport default function UseLocaleDemo() {\n  const [locale, setLocale] = useLocale({ language: \"en\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <div\n        role=\"group\"\n        aria-label=\"Language\"\n        style={{ display: \"flex\", gap: 8 }}\n      >\n        {LANGUAGES.map((language) => (\n          <Button\n            key={language}\n            size=\"small\"\n            color={language === locale.language ? \"primary\" : \"neutral\"}\n            variant={language === locale.language ? \"solid\" : \"outline\"}\n            aria-pressed={language === locale.language}\n            onClick={() => setLocale({ language })}\n          >\n            {language}\n          </Button>\n        ))}\n      </div>\n      <ConfigProvider locale={locale}>\n        <Preview />\n      </ConfigProvider>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useLocale et useI18n",
+      "description": "setLocale change la locale passée à un ConfigProvider imbriqué ; t() de useI18n renvoie les textes intégrés de la bibliothèque React dans cette langue."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { Button, useAutoTheme, useLocale } from \"minerva-design\";\n\n// This is what ConfigProvider does internally. Use the hooks instead of\n// (not inside) a ConfigProvider: both write the same global state.\nexport function ThemeAndLanguage() {\n  const [theme, setTheme] = useAutoTheme(\"auto\");\n  const [locale, setLocale] = useLocale({ language: \"fr\" });\n\n  return (\n    <>\n      <Button onClick={() => setTheme(theme === \"dark\" ? \"light\" : \"dark\")}>\n        Toggle theme\n      </Button>\n      <Button onClick={() => setLocale({ language: \"en\" })}>\n        {locale.language}\n      </Button>\n    </>\n  );\n}",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Hooks",
+      "description": "Les hooks de bas niveau utilisés par ConfigProvider : gérez vous-même le thème, la langue et les traductions de la bibliothèque React.",
+      "reference": {
+        "title": "Référence",
+        "text": "Tous les hooks et utilitaires sont exportés depuis minerva-design.",
+        "hook": "Hook",
+        "signature": "Signature",
+        "useAutoTheme": "Conserve le thème actif dans l'état et, en dehors d'un ConfigProvider, l'écrit sous forme de variables CSS sur <html>. Avec \"auto\" ou une paire { light, dark }, il s'abonne à prefers-color-scheme et se désabonne au démontage. Renvoie le thème configuré, son setter et le schéma système actuel. Dans un ConfigProvider, il ne gère que l'état : le provider racine gère <html>.",
+        "useLocale": "Conserve la locale dans l'état et, en dehors d'un ConfigProvider, change la langue des textes intégrés de la bibliothèque React (en, zh, ja ou fr). Renvoie la locale et son setter. Dans un ConfigProvider, il ne gère que l'état : le provider racine gère la langue globale.",
+        "useI18n": "Renvoie { t, language } : t traduit les textes intégrés de la bibliothèque React avec son petit traducteur maison (clés imbriquées, interpolation des variables, pluriels via count, defaultValue) et language est la langue dans laquelle il traduit. t suit la locale du ConfigProvider imbriqué le plus proche qui en définit une, sinon la langue globale de la bibliothèque React. la bibliothèque React ne dépend d'aucune bibliothèque i18n : la configuration i18n de votre application n'est jamais affectée.",
+        "useDisclosure": "État ouvert / fermé des overlays (Modal, Drawer, Popover...), contrôlé (isOpen + onChange) ou non contrôlé (defaultIsOpen). Renvoie isOpen et des callbacks stables onOpen, onClose et onToggle.",
+        "cn": "Concatène des noms de classes en ignorant les valeurs falsy (false, null, undefined, 0, chaînes vides). Une petite alternative sans dépendance à classnames pour les classes conditionnelles.",
+        "global": "useAutoTheme et useLocale ne modifient l'état global (variables CSS sur <html>, langue de la bibliothèque React) que lorsqu'aucun ConfigProvider ne se trouve au-dessus d'eux. Ce site en a un à la racine : les démos ci-dessous passent l'état du hook à un ConfigProvider imbriqué, qui ne l'applique qu'à l'aperçu."
+      },
+      "standalone": {
+        "title": "Utiliser les hooks sans ConfigProvider",
+        "text": "Si vous n'avez pas besoin de useConfig(), vous pouvez appeler useAutoTheme et useLocale directement, à la place d'un provider. Dans un provider, ils ne font que conserver l'état : passez-le à un ConfigProvider imbriqué pour l'appliquer à un sous-arbre."
+      },
+      "demos": {
+        "use-auto-theme": {
+          "title": "useAutoTheme",
+          "description": "setTheme change le thème de l'aperçu, appliqué par un ConfigProvider imbriqué ; systemTheme indique toujours le schéma du système d'exploitation. Le reste de la page conserve le thème du site."
+        },
+        "use-locale": {
+          "title": "useLocale et useI18n",
+          "description": "setLocale change la locale passée à un ConfigProvider imbriqué ; t() de useI18n renvoie les textes intégrés de la bibliothèque React dans cette langue."
+        },
+        "use-disclosure": {
+          "title": "useDisclosure et cn",
+          "description": "useDisclosure pilote un panneau avec onToggle, onOpen et onClose ; cn construit son nom de classe à partir de parties conditionnelles."
+        }
+      }
+    }
+  }
+}

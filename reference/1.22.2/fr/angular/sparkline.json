@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "sparkline",
+  "title": "Sparkline",
+  "description": "Un graphique de la taille d’un mot, sans axes ni légende, qui montre l’allure d’une tendance à côté d’un chiffre : dans des cartes d’indicateurs, des cellules de tableau ou des listes. Survolez-le pour lire une valeur.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "orders": "Commandes",
+      "ordersAria": "Commandes hebdomadaires, {{variant}}",
+      "revenue": "Chiffre d'affaires",
+      "activeUsers": "Utilisateurs actifs",
+      "signups": "Inscriptions",
+      "p95": "Latence p95",
+      "last30Aria": "{{metric}}, 30 derniers jours",
+      "service": "Service",
+      "services": {
+        "gateway": "Passerelle API",
+        "auth": "Authentification",
+        "search": "Recherche",
+        "payments": "Paiements",
+        "notifications": "Notifications"
+      },
+      "requestsPerMin": "Requêtes / min",
+      "latency30": "Latence p95, 30 jours",
+      "latencyAria": "Latence p95 de {{service}} sur 30 jours",
+      "today": "Aujourd'hui",
+      "change": "Variation",
+      "serviceLatency": "Latence des services",
+      "symbol": "Symbole",
+      "companies": {
+        "ACME": "Acme Corporation",
+        "NOVA": "Nova Biotech",
+        "ORBT": "Orbit Aérospatiale",
+        "KITE": "Kite Robotique",
+        "LUMA": "Luma Énergie"
+      },
+      "intradayAria": "Cours de {{symbol}} aujourd'hui",
+      "price": "Cours",
+      "watchlist": "Liste de surveillance",
+      "inlineVisits": "Visites des 14 derniers jours :",
+      "visits": "Visites",
+      "visitsAria": "Visites des 14 derniers jours",
+      "inlineErrors": "Les erreurs ont bondi après le déploiement du 7e jour, puis sont revenues à la normale :",
+      "errors": "Erreurs",
+      "errorsAria": "Erreurs par jour sur les 14 derniers jours",
+      "inlineTemperature": "Température de l'après-midi ces deux semaines :",
+      "temperature": "Température",
+      "temperatureAria": "Température de l'après-midi sur les 14 derniers jours",
+      "cpu": "Processeur",
+      "cpuAria": "Utilisation du processeur de {{server}}",
+      "alert": "Alerte",
+      "healthy": "Normal",
+      "dailyActiveUsers": "Utilisateurs actifs par jour",
+      "latestDay": "Dernier jour : {{date}}",
+      "hoveredDay": "{{date}} · {{change}} depuis le 1er septembre",
+      "dauAria": "Utilisateurs actifs par jour du 1er septembre au 31 octobre",
+      "stepsN": "{{value}} pas",
+      "ofGoal": "{{value}} de l'objectif",
+      "goalSummary": "Objectif de {{goal}} pas atteint {{reached}} jours sur {{days}}",
+      "steps": "Pas",
+      "stepsAria": "Pas par jour sur quatre semaines, avec l'objectif quotidien",
+      "cities": {
+        "reykjavik": "Reykjavik",
+        "montreal": "Montréal",
+        "tokyo": "Tokyo",
+        "cairo": "Le Caire",
+        "singapore": "Singapour",
+        "sydney": "Sydney"
+      },
+      "warmestColdest": "Max. {{max}} ({{maxMonth}}) · min. {{min}} ({{minMonth}})",
+      "weatherAria": "Moyenne des maximales quotidiennes de chaque mois à {{city}}",
+      "period": "Période",
+      "periods": {
+        "week": "7 jours",
+        "month": "30 jours",
+        "quarter": "90 jours"
+      },
+      "vsFirstHalf": "seconde moitié par rapport à la première",
+      "vsPrevious": "par rapport à la période précédente",
+      "periodAria": "Chiffre d'affaires quotidien, période : {{period}}"
+    }
+  },
+  "components": [
+    {
+      "name": "Sparkline",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSparkline. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSparkline. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSparkline"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-sparkline",
+        "props": [
+          {
+            "name": "data",
+            "typeText": "ChartSeriesData",
+            "required": true,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "type",
+            "typeText": "\"bar\" | \"line\" | \"area\"",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "color",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "curve",
+            "typeText": "ChartCurve | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "name",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "reference",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "format",
+            "typeText": "((value: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "ChartRendererPreference | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "legend",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "tooltip",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "crosshair",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "annotations",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "interaction",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "padding",
+            "typeText": "ChartPadding | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "palette",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "ChartHoverEvent | null",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "zoom",
+            "typeText": "ChartView",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartView",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "typeText": "ChartRendererKind",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "kpi",
+      "title": "KPI cards",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSparkline, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSparkline],\n  template: `\n@let t = labels[language()];\n<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px\">\n  <div style=\"display: grid; gap: 4px\">\n    <span>{{ t.orders }}</span><strong>1,284</strong>\n    <mn-sparkline [data]=\"orders\" [name]=\"t.orders\" />\n  </div>\n  <div style=\"display: grid; gap: 4px\">\n    <span>{{ t.revenue }}</span><strong>€48.2k</strong>\n    <mn-sparkline type=\"area\" [data]=\"revenue\" [name]=\"t.revenue\" />\n  </div>\n  <div style=\"display: grid; gap: 4px\">\n    <span>{{ t.signups }}</span><strong>312</strong>\n    <mn-sparkline type=\"bar\" [data]=\"signups\" [name]=\"t.signups\" />\n  </div>\n</div>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  orders = [32, 41, 38, 52, 49, 61, 58, 70, 66, 74];\n  revenue = [3.1, 3.4, 3.2, 3.9, 4.4, 4.1, 4.6, 4.8, 4.5, 4.9];\n  signups = [12, 18, 9, 22, 30, 25, 19, 28, 33, 31];\n  labels = {\n  \"en\": {\n    \"orders\": \"Orders\",\n    \"revenue\": \"Revenue\",\n    \"signups\": \"Sign-ups\"\n  },\n  \"zh\": {\n    \"orders\": \"订单\",\n    \"revenue\": \"收入\",\n    \"signups\": \"注册\"\n  },\n  \"ja\": {\n    \"orders\": \"注文\",\n    \"revenue\": \"売上\",\n    \"signups\": \"登録\"\n  },\n  \"fr\": {\n    \"orders\": \"Commandes\",\n    \"revenue\": \"Chiffre d'affaires\",\n    \"signups\": \"Inscriptions\"\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "reference",
+      "title": "Target line and hover",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSparkline, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSparkline],\n  template: `\n@let t = labels[language()];\n<mn-sparkline\n  [data]=\"latency\"\n  [reference]=\"200\"\n  [name]=\"t.latency\"\n  [height]=\"64\"\n  (hover)=\"hovered = $event?.items?.[0]?.y ?? null\"\n/>\n<output aria-live=\"polite\">{{\n  hovered === null ? t.hint : t.latency + ': ' + hovered + ' ms (' + t.target + ')'\n}}</output>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  hovered: number | null = null;\n  latency = [182, 175, 190, 214, 230, 205, 188, 176, 169, 181, 196, 172];\n  labels = {\n  \"en\": {\n    \"latency\": \"p95 latency\",\n    \"target\": \"target 200 ms\",\n    \"hint\": \"Hover the line\"\n  },\n  \"zh\": {\n    \"latency\": \"p95 延迟\",\n    \"target\": \"目标 200 毫秒\",\n    \"hint\": \"将指针悬停在折线上\"\n  },\n  \"ja\": {\n    \"latency\": \"p95 レイテンシ\",\n    \"target\": \"目標 200 ms\",\n    \"hint\": \"線にカーソルを合わせます\"\n  },\n  \"fr\": {\n    \"latency\": \"Latence p95\",\n    \"target\": \"objectif 200 ms\",\n    \"hint\": \"Survolez la courbe\"\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Sparkline",
+      "description": "Un graphique de la taille d’un mot, sans axes ni légende, qui montre l’allure d’une tendance à côté d’un chiffre : dans des cartes d’indicateurs, des cellules de tableau ou des listes. Survolez-le pour lire une valeur.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "Les mêmes valeurs en ligne lissée, en aire et en barres ; reference trace une ligne pointillée à une valeur comme la moyenne ou un objectif."
+        },
+        "kpi-cards": {
+          "title": "Cartes d’indicateurs",
+          "description": "Des sparklines dans des Card, sous le chiffre et sa variation : la tendance donne du contexte au nombre. Chaque carte utilise un type et une couleur adaptés à son indicateur."
+        },
+        "table": {
+          "title": "Dans un tableau",
+          "description": "Une Sparkline par ligne dans une colonne de Table, de largeur et de hauteur fixes ; la couleur indique si la latence augmente ou diminue."
+        },
+        "watchlist": {
+          "title": "Liste de surveillance boursière",
+          "description": "Une liste de valeurs comme dans une application de trading : chaque ligne a une sparkline en aire de la séance, colorée selon la variation du jour, avec une référence en pointillés à la clôture de la veille ; les cours utilisent Intl.NumberFormat avec la devise de chaque action."
+        },
+        "inline": {
+          "title": "Dans une phrase",
+          "description": "Des sparklines de la taille d'un mot placées dans le texte avec une largeur et une hauteur fixes et display: inline-block, l'usage d'origine des sparklines."
+        },
+        "servers": {
+          "title": "Supervision de serveurs en direct",
+          "description": "Des sparklines en barres mises à jour chaque seconde avec une nouvelle mesure du processeur ; la couleur et l'étiquette passent au rouge au-delà du seuil d'alerte."
+        },
+        "hover-value": {
+          "title": "Relevé au survol",
+          "description": "onHover reçoit le point survolé (null quand le pointeur sort) : son index pilote le grand nombre et la date au-dessus, qui reviennent au dernier jour sinon. tooltip={false} masque l'infobulle que le relevé remplace."
+        },
+        "step-goal": {
+          "title": "Objectif quotidien",
+          "description": "Quatre semaines de pas en barres, les jours qui atteignent l'objectif colorés par la propriété color de leur point ; reference trace l'objectif et renderTooltip affiche la date et la part de l'objectif."
+        },
+        "weather": {
+          "title": "Petits multiples",
+          "description": "Un Sparkline par ville dans une grille de Cards. Chacun est mis à l'échelle de sa propre plage, d'où les mois le plus chaud et le plus froid écrits au-dessus ; renderTooltip nomme le mois survolé et reference marque 0 °C là où la ville gèle."
+        },
+        "periods": {
+          "title": "Choix de la période",
+          "description": "Un RadioGroup choisit les 7, 30 ou 90 derniers jours : le total, l'évolution par rapport à la période précédente et la couleur viennent des mêmes valeurs, et reference marque la moyenne quotidienne de la période."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Lignes d'indicateurs",
+            "description": "Aires, barres et lignes de la taille d'un mot à côté de la valeur du jour ; touchez une sparkline pour lire un jour dans son infobulle."
+          }
+        }
+      },
+      "data": {
+        "orders": "Commandes",
+        "ordersAria": "Commandes hebdomadaires, {{variant}}",
+        "revenue": "Chiffre d'affaires",
+        "activeUsers": "Utilisateurs actifs",
+        "signups": "Inscriptions",
+        "p95": "Latence p95",
+        "last30Aria": "{{metric}}, 30 derniers jours",
+        "service": "Service",
+        "services": {
+          "gateway": "Passerelle API",
+          "auth": "Authentification",
+          "search": "Recherche",
+          "payments": "Paiements",
+          "notifications": "Notifications"
+        },
+        "requestsPerMin": "Requêtes / min",
+        "latency30": "Latence p95, 30 jours",
+        "latencyAria": "Latence p95 de {{service}} sur 30 jours",
+        "today": "Aujourd'hui",
+        "change": "Variation",
+        "serviceLatency": "Latence des services",
+        "symbol": "Symbole",
+        "companies": {
+          "ACME": "Acme Corporation",
+          "NOVA": "Nova Biotech",
+          "ORBT": "Orbit Aérospatiale",
+          "KITE": "Kite Robotique",
+          "LUMA": "Luma Énergie"
+        },
+        "intradayAria": "Cours de {{symbol}} aujourd'hui",
+        "price": "Cours",
+        "watchlist": "Liste de surveillance",
+        "inlineVisits": "Visites des 14 derniers jours :",
+        "visits": "Visites",
+        "visitsAria": "Visites des 14 derniers jours",
+        "inlineErrors": "Les erreurs ont bondi après le déploiement du 7e jour, puis sont revenues à la normale :",
+        "errors": "Erreurs",
+        "errorsAria": "Erreurs par jour sur les 14 derniers jours",
+        "inlineTemperature": "Température de l'après-midi ces deux semaines :",
+        "temperature": "Température",
+        "temperatureAria": "Température de l'après-midi sur les 14 derniers jours",
+        "cpu": "Processeur",
+        "cpuAria": "Utilisation du processeur de {{server}}",
+        "alert": "Alerte",
+        "healthy": "Normal",
+        "dailyActiveUsers": "Utilisateurs actifs par jour",
+        "latestDay": "Dernier jour : {{date}}",
+        "hoveredDay": "{{date}} · {{change}} depuis le 1er septembre",
+        "dauAria": "Utilisateurs actifs par jour du 1er septembre au 31 octobre",
+        "stepsN": "{{value}} pas",
+        "ofGoal": "{{value}} de l'objectif",
+        "goalSummary": "Objectif de {{goal}} pas atteint {{reached}} jours sur {{days}}",
+        "steps": "Pas",
+        "stepsAria": "Pas par jour sur quatre semaines, avec l'objectif quotidien",
+        "cities": {
+          "reykjavik": "Reykjavik",
+          "montreal": "Montréal",
+          "tokyo": "Tokyo",
+          "cairo": "Le Caire",
+          "singapore": "Singapour",
+          "sydney": "Sydney"
+        },
+        "warmestColdest": "Max. {{max}} ({{maxMonth}}) · min. {{min}} ({{minMonth}})",
+        "weatherAria": "Moyenne des maximales quotidiennes de chaque mois à {{city}}",
+        "period": "Période",
+        "periods": {
+          "week": "7 jours",
+          "month": "30 jours",
+          "quarter": "90 jours"
+        },
+        "vsFirstHalf": "seconde moitié par rapport à la première",
+        "vsPrevious": "par rapport à la période précédente",
+        "periodAria": "Chiffre d'affaires quotidien, période : {{period}}"
+      },
+      "api": {
+        "SparklineProps": {
+          "height": "Hauteur de la sparkline ; les nombres sont en pixels"
+        },
+        "SparklineConfig": {
+          "data": "Valeurs (ou paires [x, y], tableaux typés…)",
+          "type": "Manière de tracer les valeurs : \"line\", \"area\" ou \"bar\"",
+          "color": "Couleur (toute couleur CSS) ; la première couleur de la palette par défaut",
+          "curve": "Forme de la ligne",
+          "name": "Nom affiché dans l’infobulle",
+          "reference": "Trace une ligne de référence pointillée à cette valeur (p. ex. un objectif ou la moyenne)",
+          "format": "Met en forme la valeur affichée dans l'infobulle"
+        }
+      },
+      "wc": {
+        "demos": {
+          "kpi": {
+            "title": "Cartes d'indicateurs",
+            "description": "Des tendances miniatures sous des chiffres clés, en courbe, en aire et en barres."
+          },
+          "reference": {
+            "title": "Ligne d'objectif et survol",
+            "description": "reference trace une ligne d'objectif en pointillés ; le survol affiche la valeur sous le pointeur."
+          }
+        },
+        "minerva-sparkline": {
+          "props": {
+            "valueName": "Nom de la valeur dans l'info-bulle",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}

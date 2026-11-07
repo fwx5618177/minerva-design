@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "avatar",
+  "title": "Avatar",
+  "description": "Représente une personne par une photo ou, à défaut, par l'initiale de son nom.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Avatar",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Avatar"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "src",
+            "type": "string",
+            "required": false,
+            "description": "Image URL. When omitted (or when it fails to load), the initials of name are shown",
+            "typeText": "string"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "default": "\"\"",
+            "required": false,
+            "description": "Name of the person; used for the initials (first letters of the first two\nwords, or the first CJK character), the alt text and the accessible label",
+            "typeText": "string"
+          },
+          {
+            "name": "alt",
+            "type": "string",
+            "required": false,
+            "description": "Alternative text of the image; pass \"\" for a decorative avatar",
+            "typeText": "string"
+          },
+          {
+            "name": "fallback",
+            "type": "string",
+            "required": false,
+            "description": "Custom fallback text shown instead of the initials when there is no\nimage (or the `fallback` slot)",
+            "typeText": "string"
+          },
+          {
+            "name": "shape",
+            "type": "\"rounded\" | \"circle\" | \"square\"",
+            "default": "\"circle\"",
+            "required": false,
+            "description": "Avatar shape",
+            "typeText": "\"rounded\" | \"circle\" | \"square\""
+          },
+          {
+            "name": "size",
+            "type": "AvatarSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Avatar size: a preset (xsmall 24px, small 32px, medium 48px, large 64px,\nxlarge 80px, xxlarge 96px) or a number of pixels",
+            "typeText": "AvatarSize"
+          },
+          {
+            "name": "stacked",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Uses tighter margins for overlapping avatars",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Fallback content used when there is no name (e.g. an icon)",
+            "typeText": "any"
+          },
+          {
+            "name": "fallback",
+            "type": "any",
+            "description": "Custom fallback content shown instead of the initials (the `fallback` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "AvatarGroup",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "AvatarGroup"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "count",
+            "type": "number",
+            "required": false,
+            "description": "Number of additional avatars, shown as a \"+N\" indicator",
+            "typeText": "number"
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "required": false,
+            "description": "Maximum number of avatars to display; the others are counted in the\n\"+N\" indicator (added to count)",
+            "typeText": "number"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Avatars (`v-if`-ed avatars are not counted)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Avatar": {
+      "kind": "cssVars",
+      "source": "react/src/components/Avatar",
+      "vars": [
+        {
+          "name": "--avatar-size",
+          "description": "Width and height of every avatar (overrides the size presets; a numeric size prop wins)"
+        },
+        {
+          "name": "--avatar-radius",
+          "description": "Corner radius of the rounded shape (defaults to --radius-sm)"
+        },
+        {
+          "name": "--avatar-bg-color",
+          "description": "Background color when no color is set (defaults to --info-color)"
+        },
+        {
+          "name": "--avatar-text-color",
+          "description": "Color of the initials"
+        },
+        {
+          "name": "--avatar-border-color",
+          "description": "Border color"
+        },
+        {
+          "name": "--avatar-stacked-overlap",
+          "description": "How far a stacked avatar overlaps the previous one"
+        },
+        {
+          "name": "--avatar-group-overlap",
+          "description": "How far each avatar overlaps the previous one"
+        },
+        {
+          "name": "--avatar-group-count-bg-color",
+          "description": "Background color of the \"+N\" counter"
+        },
+        {
+          "name": "--avatar-group-count-text-color",
+          "description": "Text color of the \"+N\" counter"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/avatar/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/avatar/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Avatar, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" align=\"center\"\n    ><Avatar\n      src=\"https://randomuser.me/api/portraits/women/44.jpg\"\n      name=\"Emma Wilson\" /><Avatar name=\"Liam Chen\" /><Avatar\n      src=\"data:image/png;base64,broken\"\n      name=\"Noah Park\" /><Avatar\n  /></HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "fallback",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/avatar/vue/fallback.vue",
+      "files": {
+        "apps/docs/src/docs/pages/avatar/vue/fallback.vue": "<script setup lang=\"ts\">\nimport { Avatar, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Avatar name=\"Ada Lovelace\" /><Avatar\n      src=\"/missing-avatar.png\"\n      name=\"Grace Hopper\" /><Avatar name=\"\"\n  /></HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "fallback",
+      "description": ""
+    },
+    {
+      "id": "group",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/avatar/vue/group.vue",
+      "files": {
+        "apps/docs/src/docs/pages/avatar/vue/group.vue": "<script setup lang=\"ts\">\nimport { Avatar, AvatarGroup } from \"minerva-design/vue\";\nconst people = [\n  { name: \"Olivia\", src: \"https://randomuser.me/api/portraits/women/68.jpg\" },\n  { name: \"James\", src: \"https://randomuser.me/api/portraits/men/75.jpg\" },\n  { name: \"Sophia\" },\n  { name: \"Lucas\" },\n];\n</script>\n<template>\n  <AvatarGroup :count=\"5\"\n    ><Avatar\n      v-for=\"person in people\"\n      :key=\"person.name\"\n      :name=\"person.name\"\n      :src=\"person.src\"\n      stacked\n  /></AvatarGroup>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "group",
+      "description": ""
+    },
+    {
+      "id": "shapes-sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/avatar/vue/shapes-sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/avatar/vue/shapes-sizes.vue": "<script setup lang=\"ts\">\nimport { Avatar, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Avatar name=\"Ada\" size=\"small\" shape=\"circle\" /><Avatar\n      name=\"Grace\"\n      size=\"medium\"\n      shape=\"square\" /><Avatar name=\"Alan\" size=\"large\" shape=\"rounded\"\n  /></HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "shapes-sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Avatar",
+      "description": "Représente une personne par une photo ou, à défaut, par l'initiale de son nom.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Emma affiche une image, Liam ses initiales ; Noah montre un échec de chargement et le dernier avatar ne reçoit aucun nom."
+        },
+        "shapes": {
+          "title": "Formes",
+          "description": "circle (par défaut), rounded ou square."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Trois tailles : small, medium (par défaut) et large."
+        },
+        "group": {
+          "title": "Groupe d'avatars",
+          "description": "Les quatre mêmes personnes sont regroupées avec chevauchement et un indicateur +5."
+        },
+        "fallback": {
+          "title": "Repli, tailles et max",
+          "description": "Les initiales reprennent la première lettre de deux mots (ou le premier caractère CJK) ; fallback ou children les remplacent. size accepte aussi des pixels et max d’AvatarGroup regroupe le reste en +N."
+        }
+      },
+      "api": {
+        "AvatarProps": {
+          "src": "URL de l'image. Si absente, la première lettre de name est affichée",
+          "name": "Nom de la personne ; sert pour l'initiale, le texte alternatif et le libellé accessible",
+          "shape": "Forme de l'avatar",
+          "size": "Taille de l’avatar : un préréglage (xsmall 24px, small 32px, medium 48px, large 64px, xlarge 80px, xxlarge 96px) ou un nombre de pixels",
+          "className": "Classe CSS supplémentaire",
+          "stacked": "Réduit les marges pour superposer les avatars",
+          "ref": "Ref vers l’élément racine <span>",
+          "alt": "Texte alternatif de l’image ; passez \"\" pour un avatar décoratif",
+          "aria-label": "Libellé accessible de l’avatar (et texte alternatif par défaut de son image)",
+          "fallback": "Contenu de repli affiché à la place des initiales quand il n’y a pas d’image",
+          "children": "Contenu de repli utilisé sans name (par ex. une icône)"
+        },
+        "AvatarGroupProps": {
+          "count": "Nombre d'avatars supplémentaires, affiché sous la forme « +N »",
+          "className": "Classe CSS supplémentaire",
+          "children": "Éléments Avatar",
+          "ref": "Ref vers l’élément racine <div>",
+          "aria-label": "Libellé accessible du groupe",
+          "max": "Nombre maximal d’avatars affichés ; les autres sont comptés dans l’indicateur « +N » (ajoutés à count)"
+        }
+      },
+      "cssVars": {
+        "--avatar-group-overlap": "Chevauchement de chaque avatar sur le précédent",
+        "--avatar-group-count-bg-color": "Couleur de fond du compteur « +N »",
+        "--avatar-group-count-text-color": "Couleur du texte du compteur « +N »",
+        "--avatar-size": "Largeur et hauteur de chaque avatar (remplace les tailles prédéfinies ; une prop size numérique l'emporte)",
+        "--avatar-radius": "Rayon des coins de la forme rounded (par défaut --radius-sm)",
+        "--avatar-bg-color": "Couleur de fond quand aucune couleur n'est définie (par défaut --info-color)",
+        "--avatar-text-color": "Couleur des initiales",
+        "--avatar-border-color": "Couleur de la bordure",
+        "--avatar-stacked-overlap": "Chevauchement d'un avatar empilé sur le précédent"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Une image (src), ou les initiales de name à défaut. Sans name, le slot par défaut contient le contenu de repli ; nommez-le avec aria-label."
+          },
+          "shapes-sizes": {
+            "title": "Formes et tailles",
+            "description": "Trois formes, six tailles prédéfinies, ou un nombre de pixels."
+          },
+          "group": {
+            "title": "Groupe d'avatars",
+            "description": "minerva-avatar-group superpose les avatars stacked ; max limite ceux qui sont visibles et count ajoute des avatars non rendus à l'indicateur +N."
+          },
+          "fallback": {
+            "title": "Repli",
+            "description": "Si l'image ne se charge pas, les initiales s'affichent, ou le slot fallback s'il est rempli."
+          }
+        },
+        "minerva-avatar": {
+          "slots": {
+            "default": "Contenu de repli utilisé en l'absence de name (par exemple une icône).",
+            "fallback": "Contenu de repli personnalisé affiché à la place des initiales."
+          }
+        },
+        "minerva-avatar-group": {
+          "slots": {
+            "default": "Éléments <minerva-avatar>."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Emma affiche une image, Liam ses initiales ; Noah montre un échec de chargement et le dernier avatar ne reçoit aucun nom."
+          },
+          "group": {
+            "title": "Groupe d'avatars",
+            "description": "Les quatre mêmes personnes sont regroupées avec chevauchement et un indicateur +5."
+          },
+          "sizes-shapes": {
+            "title": "Tailles et formes",
+            "description": "Tailles et formes avec Avatar ; l’aperçu suit le thème et la palette du site."
+          }
+        }
+      }
+    }
+  }
+}

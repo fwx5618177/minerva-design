@@ -1,0 +1,948 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "auto-complete",
+  "title": "AutoComplete オートコンプリート",
+  "description": "入力中に一致する候補を提示するテキスト入力です。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "keyboard": {
+      "title": "キーボードとアクセシビリティ",
+      "arrows": "↓ / ↑ キーで表示中の候補を移動します（端で折り返します）。",
+      "enter": "Enter でアクティブな選択肢を選びます（無効な選択肢はスキップ）。周囲のフォームは送信されません。",
+      "escape": "Escape でドロップダウンを閉じ、フォーカスは入力欄に残ります。ドロップダウンが閉じている状態で Escape を押すとテキストを消去します（onChange は \"\" を受け取ります）。Modal や Popover の中ではドロップダウンだけが閉じます。",
+      "aria": "入力欄は combobox ロールを持ち、aria-expanded・aria-controls・aria-activedescendant で listbox の候補と関連付けられます。"
+    }
+  },
+  "components": [
+    {
+      "name": "AutoComplete",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/autocomplete",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-autocomplete",
+        "props": [
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "open",
+            "typeText": "boolean",
+            "attribute": "open",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string",
+            "attribute": "placeholder",
+            "required": false
+          },
+          {
+            "name": "mode",
+            "typeText": "\"basic\" | \"custom\"",
+            "attribute": "mode",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"outline\" | \"filled\" | \"unstyled\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "attribute": "invalid",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "attribute": "readonly",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "attribute": "loading",
+            "required": false
+          },
+          {
+            "name": "placement",
+            "typeText": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+            "attribute": "placement",
+            "required": false
+          },
+          {
+            "name": "noAnimation",
+            "typeText": "boolean",
+            "attribute": "no-animation",
+            "required": false
+          },
+          {
+            "name": "autoHighlight",
+            "typeText": "boolean",
+            "attribute": "auto-highlight",
+            "required": false
+          },
+          {
+            "name": "noFillOnSelect",
+            "typeText": "boolean",
+            "attribute": "no-fill-on-select",
+            "required": false
+          },
+          {
+            "name": "groupMode",
+            "typeText": "\"first\" | \"adjacent\"",
+            "attribute": "group-mode",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": false
+          },
+          {
+            "name": "options",
+            "typeText": "AutoCompleteOption[]",
+            "required": false
+          },
+          {
+            "name": "offset",
+            "typeText": "{ x: number; y: number }",
+            "required": false
+          },
+          {
+            "name": "filterOption",
+            "typeText": "(inputValue: string, option: AutoCompleteOption) => boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "sortOption",
+            "typeText": "(a: AutoCompleteOption, b: AutoCompleteOption) => number | undefined",
+            "required": false
+          },
+          {
+            "name": "groupBy",
+            "typeText": "(option: AutoCompleteOption) => string | undefined",
+            "required": false
+          },
+          {
+            "name": "renderOption",
+            "typeText": "(option: AutoCompleteOption) => AutoCompleteRenderResult | undefined",
+            "required": false
+          },
+          {
+            "name": "renderEmpty",
+            "typeText": "() => AutoCompleteRenderResult | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "Event"
+          },
+          {
+            "name": "minerva-input",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:4a005fc48380dc779688"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The input text changed (typing, picking an option, Escape clearing) (`detail: { value }`)"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:f039d359728c91dd7710"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The text was committed: an option filled it in, Escape cleared it, or the native change (blur) (`detail: { value }`)"
+          },
+          {
+            "name": "minerva-select",
+            "typeText": "CustomEvent<{ value: string | number; option: AutoCompleteOption; }>",
+            "detailType": {
+              "typeText": "{ value: string | number; option: AutoCompleteOption; }",
+              "typeRef": "type:4a1b0e71c9bc41bb0e06"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "An option was picked with the mouse or the keyboard (`detail: { value, option }`)"
+          },
+          {
+            "name": "minerva-submit",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:2638c63bc5fee0d65267"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "Enter was pressed with no active option and non-blank text (`detail: { value }`, trimmed)"
+          },
+          {
+            "name": "minerva-open-change",
+            "typeText": "CustomEvent<{ open: boolean; }>",
+            "detailType": {
+              "typeText": "{ open: boolean; }",
+              "typeRef": "type:624bfece114287832788"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "The dropdown opens / closes (`detail: { open }`); cancelable: `preventDefault()` keeps the current state"
+          }
+        ],
+        "slots": [
+          {
+            "name": "prefix",
+            "description": "Content before the text (icon)"
+          },
+          {
+            "name": "suffix",
+            "description": "Content after the text"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-autocomplete": {
+      "kind": "element",
+      "source": "web-components/src/components/autocomplete/autocomplete.ts",
+      "className": "MinervaAutocomplete",
+      "summary": "Text input with a filtered suggestion list.",
+      "description": "Text input (combobox) suggesting options from a list (`<AutoComplete>` of React): filtering, grouping, custom rendering and async loading. Focus stays in the input; the active option is exposed with `aria-activedescendant` (the listbox lives in the same shadow root). Keyboard (WAI-ARIA combobox): ArrowDown / ArrowUp open the list and move the active option (wrapping, disabled options skipped), Enter picks the active option (or fires `minerva-submit` with the typed text when none is active), Escape closes the open list (topmost layer only) and, on a closed list, clears the text (without closing an enclosing modal). Form-associated: submits the input text under `name`; `required` makes an empty text invalid; `form.reset()` restores the `value` attribute.",
+      "properties": [
+        {
+          "name": "defaultValue",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Initial text, restored by `form.reset()` (the `value` attribute)"
+        },
+        {
+          "name": "open",
+          "attribute": "open",
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the dropdown is open"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Visible label of the input (also names the listbox)"
+        },
+        {
+          "name": "placeholder",
+          "attribute": "placeholder",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Placeholder of the input"
+        },
+        {
+          "name": "mode",
+          "attribute": "mode",
+          "type": "\"basic\" | \"custom\"",
+          "default": "\"basic\"",
+          "description": "\"basic\" renders icon / label / description; \"custom\" uses `renderOption`"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Size of the input"
+        },
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"outline\" | \"filled\" | \"unstyled\"",
+          "default": "\"outline\"",
+          "description": "Visual style of the input"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false",
+          "description": "Error state; sets aria-invalid"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false",
+          "description": "Read-only: focusable and submitted, no dropdown"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a loading indicator instead of the options"
+        },
+        {
+          "name": "placement",
+          "attribute": "placement",
+          "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+          "default": "\"bottom\"",
+          "description": "Preferred dropdown side (aligned with the input's start edge)"
+        },
+        {
+          "name": "noAnimation",
+          "attribute": "no-animation",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the opening animation"
+        },
+        {
+          "name": "autoHighlight",
+          "attribute": "auto-highlight",
+          "type": "boolean",
+          "default": "false",
+          "description": "Makes the first enabled option active whenever the dropdown opens"
+        },
+        {
+          "name": "noFillOnSelect",
+          "attribute": "no-fill-on-select",
+          "type": "boolean",
+          "default": "false",
+          "description": "Keeps the typed text when an option is picked (no fill-in)"
+        },
+        {
+          "name": "groupMode",
+          "attribute": "group-mode",
+          "type": "\"first\" | \"adjacent\"",
+          "default": "\"first\"",
+          "description": "How `groupBy` groups options: at first appearance, or runs of adjacent options"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Input text (property; the `value` attribute sets `defaultValue`)"
+        },
+        {
+          "name": "options",
+          "type": "AutoCompleteOption[]",
+          "default": "[]",
+          "description": "Options to suggest"
+        },
+        {
+          "name": "offset",
+          "type": "{ x: number; y: number }",
+          "default": "{ x: 0, y: 4 }",
+          "description": "Dropdown offset in px: for top / bottom `y` is the gap and `x` the shift, for left / right the reverse"
+        },
+        {
+          "name": "filterOption",
+          "type": "(inputValue: string, option: AutoCompleteOption) => boolean | undefined",
+          "description": "Custom filter (default: label contains the text, case-insensitive)"
+        },
+        {
+          "name": "sortOption",
+          "type": "(a: AutoCompleteOption, b: AutoCompleteOption) => number | undefined",
+          "description": "Compare function sorting the filtered options"
+        },
+        {
+          "name": "groupBy",
+          "type": "(option: AutoCompleteOption) => string | undefined",
+          "description": "Group name of an option; options are grouped under headings (\"\" = none)"
+        },
+        {
+          "name": "renderOption",
+          "type": "(option: AutoCompleteOption) => AutoCompleteRenderResult | undefined",
+          "description": "Custom option renderer (used when `mode` is \"custom\")"
+        },
+        {
+          "name": "renderEmpty",
+          "type": "() => AutoCompleteRenderResult | undefined",
+          "description": "Custom content shown when no option matches"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change"
+        },
+        {
+          "name": "minerva-input",
+          "description": "The input text changed (typing, picking an option, Escape clearing) (`detail: { value }`)"
+        },
+        {
+          "name": "minerva-change",
+          "description": "The text was committed: an option filled it in, Escape cleared it, or the native change (blur) (`detail: { value }`)"
+        },
+        {
+          "name": "minerva-select",
+          "description": "An option was picked with the mouse or the keyboard (`detail: { value, option }`)"
+        },
+        {
+          "name": "minerva-submit",
+          "description": "Enter was pressed with no active option and non-blank text (`detail: { value }`, trimmed)"
+        },
+        {
+          "name": "minerva-open-change",
+          "description": "The dropdown opens / closes (`detail: { open }`); cancelable: `preventDefault()` keeps the current state"
+        }
+      ],
+      "slots": [
+        {
+          "name": "prefix",
+          "description": "Content before the text (icon)"
+        },
+        {
+          "name": "suffix",
+          "description": "Content after the text"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The root wrapper (label, field and anchor of the dropdown)"
+        },
+        {
+          "name": "label",
+          "description": "The visible label"
+        },
+        {
+          "name": "field",
+          "description": "The input box"
+        },
+        {
+          "name": "input",
+          "description": "The native `<input role=combobox>`"
+        },
+        {
+          "name": "content",
+          "description": "The positioned dropdown"
+        },
+        {
+          "name": "list",
+          "description": "The `role=listbox` list"
+        },
+        {
+          "name": "item",
+          "description": "An option"
+        },
+        {
+          "name": "item--highlighted",
+          "description": "Item state of `item`: highlighted"
+        },
+        {
+          "name": "item--disabled",
+          "description": "Item state of `item`: disabled"
+        },
+        {
+          "name": "group-label",
+          "description": "A group heading"
+        },
+        {
+          "name": "empty",
+          "description": "The empty state (no matching option)"
+        },
+        {
+          "name": "loading",
+          "description": "The loading state (while loading)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--input-height",
+          "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--input-padding-x",
+          "description": "Horizontal padding of the text (every size)"
+        },
+        {
+          "name": "--input-radius",
+          "description": "Corner radius (defaults to --radius-lg)"
+        },
+        {
+          "name": "--input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--input-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--input-focus-color",
+          "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+        },
+        {
+          "name": "--auto-complete-dropdown-background",
+          "description": "Background of the dropdown"
+        },
+        {
+          "name": "--auto-complete-dropdown-radius",
+          "description": "Corner radius of the dropdown (defaults to --radius-lg)"
+        },
+        {
+          "name": "--auto-complete-dropdown-max-height",
+          "description": "Maximum height of the option list before it scrolls"
+        },
+        {
+          "name": "--auto-complete-font-size",
+          "description": "Font size of the dropdown"
+        },
+        {
+          "name": "--auto-complete-option-padding-y",
+          "description": "Vertical padding of an option (follows the density's row padding)"
+        },
+        {
+          "name": "--auto-complete-option-padding-x",
+          "description": "Horizontal padding of an option and of a group label"
+        },
+        {
+          "name": "--auto-complete-option-hover-background",
+          "description": "Background of the hovered / keyboard-focused option"
+        },
+        {
+          "name": "--auto-complete-option-highlight-background",
+          "description": "Background of options with `highlight: true`"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:AutoComplete": {
+      "kind": "cssVars",
+      "source": "react/src/components/AutoComplete",
+      "vars": [
+        {
+          "name": "--auto-complete-dropdown-background",
+          "description": "Background of the dropdown"
+        },
+        {
+          "name": "--auto-complete-dropdown-radius",
+          "description": "Corner radius of the dropdown (defaults to --radius-lg)"
+        },
+        {
+          "name": "--auto-complete-dropdown-max-height",
+          "description": "Maximum height of the option list before it scrolls"
+        },
+        {
+          "name": "--auto-complete-font-size",
+          "description": "Font size of the dropdown"
+        },
+        {
+          "name": "--auto-complete-option-padding-y",
+          "description": "Vertical padding of an option (follows the density's row padding)"
+        },
+        {
+          "name": "--auto-complete-option-padding-x",
+          "description": "Horizontal padding of an option and of a group label"
+        },
+        {
+          "name": "--auto-complete-option-hover-background",
+          "description": "Background of the hovered / keyboard-focused option"
+        },
+        {
+          "name": "--auto-complete-option-highlight-background",
+          "description": "Background of options with `highlight: true`"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "async-loading",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/wc/async-loading.html",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/wc/async-loading.html": "<div style=\"display: grid; gap: 12px; max-width: 360px\">\n  <minerva-autocomplete\n    id=\"city\"\n    label=\"City\"\n    placeholder=\"Type at least 2 letters\"\n    no-animation\n  >\n    <span slot=\"prefix\" aria-hidden=\"true\">🔍</span>\n  </minerva-autocomplete>\n  <output id=\"log\"></output>\n</div>\n",
+        "apps/docs/src/docs/pages/auto-complete/wc/async-loading.ts": "// minerva-input fires on every keystroke: fetch the matches (simulated\n// here with a timer) and show `loading` meanwhile. The options are already\n// filtered, so filterOption accepts everything.\ntype Option = { label: string; value: string };\ntype Autocomplete = HTMLElement & {\n  options: Option[];\n  loading: boolean;\n  filterOption: () => boolean;\n};\n\nconst CITIES = [\n  \"Paris\",\n  \"Pau\",\n  \"Perth\",\n  \"Porto\",\n  \"Prague\",\n  \"Tokyo\",\n  \"Toronto\",\n  \"Turin\",\n];\n\nexport function setup(root: HTMLElement) {\n  const input = root.querySelector<Autocomplete>(\"#city\")!;\n  const log = root.querySelector<HTMLOutputElement>(\"#log\")!;\n  let timer: ReturnType<typeof setTimeout> | undefined;\n  input.filterOption = () => true;\n  const onInput = (event: Event) => {\n    const text = (event as CustomEvent<{ value: string }>).detail.value;\n    clearTimeout(timer);\n    input.options = [];\n    input.loading = text.trim().length >= 2;\n    if (!input.loading) return;\n    timer = setTimeout(() => {\n      const query = text.trim().toLowerCase();\n      input.options = CITIES.filter((city) =>\n        city.toLowerCase().startsWith(query),\n      ).map((city) => ({ label: city, value: city.toLowerCase() }));\n      input.loading = false;\n    }, 600);\n  };\n  const onChange = (event: Event) => {\n    const { value } = (event as CustomEvent<{ value: string }>).detail;\n    log.value = `minerva-change: ${value}`;\n  };\n  input.addEventListener(\"minerva-input\", onInput);\n  input.addEventListener(\"minerva-change\", onChange);\n  return () => {\n    clearTimeout(timer);\n    input.removeEventListener(\"minerva-input\", onInput);\n    input.removeEventListener(\"minerva-change\", onChange);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "非同期読み込み",
+      "description": "minerva-input を監視して入力中に候補を取得し、その間は loading を設定します。prefix スロットにアイコンを置き、minerva-change が確定したテキストを通知します。"
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/wc/basic.html": "<div style=\"display: grid; gap: 12px; max-width: 320px\">\n  <minerva-autocomplete\n    id=\"fruit\"\n    label=\"Fruit\"\n    placeholder=\"Type a fruit, then Enter\"\n  ></minerva-autocomplete>\n  <output id=\"log\"></output>\n</div>\n",
+        "apps/docs/src/docs/pages/auto-complete/wc/basic.ts": "// `options` is a JS property. Typing filters the options (label contains\n// the text); picking one fires minerva-select and fills the input, Enter\n// with no active option fires minerva-submit with the trimmed text.\ntype Option = { label: string; value: string };\n\nexport function setup(root: HTMLElement) {\n  const input = root.querySelector<HTMLElement & { options: Option[] }>(\n    \"#fruit\",\n  )!;\n  const log = root.querySelector<HTMLOutputElement>(\"#log\")!;\n  input.options = [\"Apple\", \"Apricot\", \"Banana\", \"Blueberry\", \"Cherry\"].map(\n    (label) => ({ label, value: label.toLowerCase() }),\n  );\n  const onSelect = (event: Event) => {\n    const { value } = (event as CustomEvent<{ value: string }>).detail;\n    log.value = `minerva-select: ${value}`;\n  };\n  const onSubmit = (event: Event) => {\n    const { value } = (event as CustomEvent<{ value: string }>).detail;\n    log.value = `minerva-submit: ${value}`;\n  };\n  input.addEventListener(\"minerva-select\", onSelect);\n  input.addEventListener(\"minerva-submit\", onSubmit);\n  return () => {\n    input.removeEventListener(\"minerva-select\", onSelect);\n    input.removeEventListener(\"minerva-submit\", onSubmit);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "JS プロパティ options を設定すると、入力に応じてラベルで絞り込まれます。選択肢を選ぶと入力欄に反映され minerva-select が発火し、アクティブな選択肢がない状態で Enter を押すと入力テキストとともに minerva-submit が発火します。"
+    },
+    {
+      "id": "custom-render",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/wc/custom-render.html",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/wc/custom-render.html": "<div style=\"display: grid; gap: 12px; max-width: 360px\">\n  <minerva-autocomplete\n    id=\"user\"\n    label=\"Assignee\"\n    placeholder=\"Search by name or email\"\n    mode=\"custom\"\n  ></minerva-autocomplete>\n</div>\n",
+        "apps/docs/src/docs/pages/auto-complete/wc/custom-render.ts": "// mode=\"custom\" renders options with renderOption (a string, a DOM node or\n// a Lit template); filterOption / sortOption replace the default filtering\n// and order; renderEmpty replaces the empty state.\ntype User = { label: string; value: string; description: string };\ntype Autocomplete = HTMLElement & {\n  options: User[];\n  filterOption: (text: string, option: User) => boolean;\n  sortOption: (a: User, b: User) => number;\n  renderOption: (option: User) => Node;\n  renderEmpty: () => string;\n};\n\nexport function setup(root: HTMLElement) {\n  const input = root.querySelector<Autocomplete>(\"#user\")!;\n  input.options = [\n    { label: \"Ada Lovelace\", value: \"ada\", description: \"ada@example.com\" },\n    { label: \"Grace Hopper\", value: \"grace\", description: \"grace@example.com\" },\n    { label: \"Alan Turing\", value: \"alan\", description: \"turing@example.com\" },\n    {\n      label: \"Linus Torvalds\",\n      value: \"linus\",\n      description: \"linus@example.com\",\n    },\n  ];\n  input.filterOption = (text, option) => {\n    const query = text.trim().toLowerCase();\n    return (\n      option.label.toLowerCase().includes(query) ||\n      option.description.includes(query)\n    );\n  };\n  input.sortOption = (a, b) => a.label.localeCompare(b.label);\n  input.renderOption = (option) => {\n    const row = document.createElement(\"div\");\n    row.style.cssText = \"display: flex; gap: 8px; align-items: center\";\n    const avatar = document.createElement(\"span\");\n    avatar.textContent = option.label\n      .split(\" \")\n      .map((word) => word[0])\n      .join(\"\");\n    avatar.style.cssText =\n      \"display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--primary-color, #4f46e5); color: #fff; font-size: 12px\";\n    const text = document.createElement(\"span\");\n    text.innerHTML = `<strong></strong><br /><small style=\"opacity: 0.7\"></small>`;\n    text.querySelector(\"strong\")!.textContent = option.label;\n    text.querySelector(\"small\")!.textContent = option.description;\n    row.append(avatar, text);\n    return row;\n  };\n  input.renderEmpty = () => \"Nobody matches — try another name.\";\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "カスタム描画と絞り込み",
+      "description": "mode=\"custom\" のとき、renderOption が各選択肢の内容（文字列、DOM ノード、Lit テンプレート）を返します。ここでは filterOption がメールアドレスにも一致し、sortOption が名前順に並べ、renderEmpty が空の状態を置き換えます。"
+    },
+    {
+      "id": "rich-options",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/wc/rich-options.html",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/wc/rich-options.html": "<div style=\"display: grid; gap: 12px; max-width: 360px\">\n  <minerva-autocomplete\n    id=\"framework\"\n    label=\"Framework\"\n    placeholder=\"Search a framework\"\n    auto-highlight\n  ></minerva-autocomplete>\n  <minerva-autocomplete\n    id=\"framework-filled\"\n    aria-label=\"Framework (filled, small)\"\n    placeholder=\"Filled, small\"\n    variant=\"filled\"\n    size=\"small\"\n  ></minerva-autocomplete>\n</div>\n",
+        "apps/docs/src/docs/pages/auto-complete/wc/rich-options.ts": "// Basic mode renders each option's icon, label and description; highlight\n// marks recommended options, disabled ones are skipped by the keyboard.\n// groupBy puts options under headings; auto-highlight makes the first\n// enabled option active, so Enter picks it right away.\ntype Option = {\n  label: string;\n  value: string;\n  icon?: string;\n  description?: string;\n  highlight?: boolean;\n  disabled?: boolean;\n  group?: string;\n};\ntype Autocomplete = HTMLElement & {\n  options: Option[];\n  groupBy?: (option: Option) => string;\n};\n\nconst OPTIONS: Option[] = [\n  {\n    label: \"React\",\n    value: \"react\",\n    icon: \"⚛️\",\n    group: \"UI libraries\",\n    description: \"Component-based UI library\",\n    highlight: true,\n  },\n  {\n    label: \"Vue\",\n    value: \"vue\",\n    icon: \"🟩\",\n    group: \"UI libraries\",\n    description: \"Progressive framework\",\n  },\n  {\n    label: \"Lit\",\n    value: \"lit\",\n    icon: \"🔥\",\n    group: \"UI libraries\",\n    description: \"Web Components base class\",\n  },\n  {\n    label: \"Next.js\",\n    value: \"next\",\n    icon: \"▲\",\n    group: \"Meta-frameworks\",\n    description: \"React framework\",\n  },\n  {\n    label: \"Nuxt\",\n    value: \"nuxt\",\n    icon: \"⛰️\",\n    group: \"Meta-frameworks\",\n    description: \"Vue framework\",\n  },\n  {\n    label: \"Gatsby\",\n    value: \"gatsby\",\n    icon: \"🟣\",\n    group: \"Meta-frameworks\",\n    description: \"Deprecated in this project\",\n    disabled: true,\n  },\n];\n\nexport function setup(root: HTMLElement) {\n  root.querySelectorAll<Autocomplete>(\"minerva-autocomplete\").forEach((el) => {\n    el.options = OPTIONS;\n    el.groupBy = (option) => option.group ?? \"\";\n  });\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "リッチな選択肢とグループ",
+      "description": "選択肢にはアイコン・説明・ハイライトを付けたり、無効にしたりできます。groupBy で見出しごとにまとめます。auto-highlight は最初の有効な選択肢をアクティブにするので Enter ですぐ選べます。variant と size で入力欄の見た目を指定します。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AutoComplete オートコンプリート",
+      "description": "入力中に一致する候補を提示するテキスト入力です。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "入力した文字列をラベルに含む候補を表示します。inputProps は入力欄に渡されます。"
+        },
+        "controlled": {
+          "title": "制御モード",
+          "description": "value / onChange で入力テキストを制御し、onSelect で選択された候補を、onDropdownVisibleChange でドロップダウンの開閉を受け取ります。"
+        },
+        "rich-options": {
+          "title": "アイコン・説明・状態",
+          "description": "basic モードでは候補にアイコンと説明を付けられ、強調表示や無効化もできます。"
+        },
+        "custom-render": {
+          "title": "カスタム描画",
+          "description": "mode=\"custom\" と renderOption で候補の見た目を自由に描画します。renderEmpty は空状態を置き換えます。"
+        },
+        "grouped": {
+          "title": "グループ化",
+          "description": "groupBy で各候補のグループ名を返します。グループは出現順に見出し付きで表示されます。"
+        },
+        "filter-sort": {
+          "title": "フィルターと並び替えのカスタマイズ",
+          "description": "filterOption で既定の「部分一致」を置き換え、sortOption で結果を並べ替えます。"
+        },
+        "async-loading": {
+          "title": "リモート検索",
+          "description": "入力に応じて候補を取得し、リクエスト中は loading を表示します。"
+        },
+        "appearance": {
+          "title": "ドロップダウンの位置と色",
+          "description": "配置、オフセット、アニメーションをカスタマイズし、dropdownClassName で設定する CSS カスタムプロパティ --auto-complete-dropdown-background・--auto-complete-option-hover-background・--auto-complete-option-highlight-background でドロップダウン、ホバー中の候補、強調表示された候補の背景色を変更します。ドロップダウンは入力欄の開始端にそろい、入力欄以上の幅を持ち、ビューポート内に収まるよう反転 / シフトします。"
+        },
+        "search-box": {
+          "title": "検索ボックス",
+          "description": "autoHighlight で Enter が最初の候補を選び、fillOnSelect={false} で入力テキストを保持し、候補が選択されていないときは onSubmit で検索します。"
+        }
+      },
+      "keyboard": {
+        "title": "キーボードとアクセシビリティ",
+        "arrows": "↓ / ↑ キーで表示中の候補を移動します（端で折り返します）。",
+        "enter": "Enter でアクティブな選択肢を選びます（無効な選択肢はスキップ）。周囲のフォームは送信されません。",
+        "escape": "Escape でドロップダウンを閉じ、フォーカスは入力欄に残ります。ドロップダウンが閉じている状態で Escape を押すとテキストを消去します（onChange は \"\" を受け取ります）。Modal や Popover の中ではドロップダウンだけが閉じます。",
+        "aria": "入力欄は combobox ロールを持ち、aria-expanded・aria-controls・aria-activedescendant で listbox の候補と関連付けられます。"
+      },
+      "api": {
+        "AutoCompleteProps": {
+          "name": "入力欄の name",
+          "label": "入力欄のラベル",
+          "mode": "\"basic\" はアイコン／ラベル／説明を表示し、\"custom\" は renderOption を使います",
+          "value": "入力テキスト（制御モード。onChange と組み合わせて使用）",
+          "onChange": "入力テキストが変わったとき（入力または候補選択）に呼び出されます",
+          "options": "候補のリスト",
+          "defaultValue": "初期入力値（非制御）",
+          "onSelect": "オプションが選択されたときに呼ばれる（マウスまたはキーボード）",
+          "groupBy": "候補のグループ名を返します。候補は見出しごとにグループ化されます",
+          "renderOption": "候補のカスタム描画（mode が \"custom\" のとき）",
+          "renderEmpty": "一致する候補がないときに表示するカスタム内容",
+          "loading": "ドロップダウンに読み込み中インジケーターを表示します",
+          "inputProps": "内部の Input に渡す props（ネイティブ属性、aria-label、サイズ、前後の装飾、clearable など）",
+          "emptyProps": "既定の Empty（空状態）に渡す props",
+          "dropdownClassName": "ドロップダウン（ポータルに描画される要素）の追加クラス名。CSS カスタムプロパティ --auto-complete-dropdown-background・--auto-complete-option-hover-background・--auto-complete-option-highlight-background を設定して、ドロップダウン、ホバー中の候補、強調表示された候補の色を変更できます",
+          "placement": "ドロップダウンの希望する方向。入力欄の開始端にそろい、入力欄以上の幅を持ち、ビューポート内に収まるよう反転 / シフトします",
+          "offset": "ドロップダウンのオフセット（px）。上 / 下配置では y が入力との間隔、x が沿う方向のずれ。左 / 右配置では x が間隔",
+          "animation": "ドロップダウンを開くときにアニメーションします",
+          "filterOption": "カスタムフィルター。既定ではラベルに入力を含む候補（大文字小文字を区別しない）を表示します",
+          "sortOption": "フィルター後の候補を並べ替える比較関数",
+          "onOptionClick": "候補がマウスでクリックされたときに呼び出されます",
+          "onDropdownVisibleChange": "ドロップダウンが開閉したときに呼ばれます（マウント時には呼ばれません）",
+          "ref": "内部の <input> 要素への ref",
+          "onSubmit": "候補が選択されていない状態で Enter を押すと、前後の空白を除いたテキストで呼ばれます（検索など）",
+          "autoHighlight": "ドロップダウンを開いたときや候補が変わったときに最初の有効な候補をアクティブにします",
+          "fillOnSelect": "選択したオプションの label を入力欄に書き込む",
+          "className": "ルート要素の追加クラス名",
+          "groupMode": "\"first\" は最初の出現位置でグループ化、\"adjacent\" は連続する候補ごとにグループ化。グループ \"\" は見出しなし"
+        },
+        "AutoCompleteOption": {
+          "label": "候補として表示され、選択時に入力欄へ入るテキスト",
+          "value": "候補の一意な値",
+          "disabled": "候補を選択できないようにします",
+          "highlight": "候補を強調表示します（おすすめなど）",
+          "icon": "ラベルの前に表示するアイコン（basic モード）",
+          "description": "ラベルの下に表示する補足テキスト（basic モード）",
+          "group": "自由形式のグループ識別子。通常は groupBy で参照します",
+          "style": "候補のインラインスタイル"
+        }
+      },
+      "cssVars": {
+        "--auto-complete-dropdown-background": "ドロップダウンの背景色",
+        "--auto-complete-dropdown-radius": "ドロップダウンの角丸（既定は --radius-lg）",
+        "--auto-complete-dropdown-max-height": "スクロールが始まる前の候補リストの最大高さ",
+        "--auto-complete-font-size": "ドロップダウンのフォントサイズ",
+        "--auto-complete-option-padding-y": "候補の上下パディング（密度の行パディングに従う）",
+        "--auto-complete-option-padding-x": "候補とグループ見出しの左右パディング",
+        "--auto-complete-option-hover-background": "ホバー中 / キーボードでフォーカス中の候補の背景色",
+        "--auto-complete-option-highlight-background": "highlight: true の候補の背景色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "JS プロパティ options を設定すると、入力に応じてラベルで絞り込まれます。選択肢を選ぶと入力欄に反映され minerva-select が発火し、アクティブな選択肢がない状態で Enter を押すと入力テキストとともに minerva-submit が発火します。"
+          },
+          "rich-options": {
+            "title": "リッチな選択肢とグループ",
+            "description": "選択肢にはアイコン・説明・ハイライトを付けたり、無効にしたりできます。groupBy で見出しごとにまとめます。auto-highlight は最初の有効な選択肢をアクティブにするので Enter ですぐ選べます。variant と size で入力欄の見た目を指定します。"
+          },
+          "custom-render": {
+            "title": "カスタム描画と絞り込み",
+            "description": "mode=\"custom\" のとき、renderOption が各選択肢の内容（文字列、DOM ノード、Lit テンプレート）を返します。ここでは filterOption がメールアドレスにも一致し、sortOption が名前順に並べ、renderEmpty が空の状態を置き換えます。"
+          },
+          "async-loading": {
+            "title": "非同期読み込み",
+            "description": "minerva-input を監視して入力中に候補を取得し、その間は loading を設定します。prefix スロットにアイコンを置き、minerva-change が確定したテキストを通知します。"
+          }
+        },
+        "minerva-autocomplete": {
+          "props": {
+            "open": "ドロップダウンが開いているかどうか。",
+            "placeholder": "入力欄のプレースホルダー。",
+            "size": "入力欄のサイズ。",
+            "variant": "入力欄の見た目：outline、filled、unstyled。",
+            "invalid": "エラー状態。aria-invalid を設定します。",
+            "readOnly": "読み取り専用：フォーカス可能でフォーム送信もされますが、ドロップダウンは表示しません。",
+            "noAnimation": "開くときのアニメーションを無効にします。",
+            "noFillOnSelect": "選択肢を選んでも入力済みのテキストを保持します（反映しません）。",
+            "required": "フォームを送信するにはコントロールに値が必要です。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な fieldset による、読み取り専用）。",
+            "form": "この要素が属するフォーム（読み取り専用）。",
+            "labels": "この要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "有効性の状態。<input>.validity と同じ（読み取り専用）。",
+            "validationMessage": "現在の検証エラーを説明するメッセージ。有効なときは空（読み取り専用）。",
+            "willValidate": "この要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "change": "入力欄のネイティブ change をホストから再発行したもの（編集後のフォーカス喪失時）。",
+            "minerva-input": "入力テキストが変わった：入力、選択肢の選択、Escape によるクリア（detail: { value }）。",
+            "minerva-change": "テキストが確定した：選択肢による反映、Escape によるクリア、またはフォーカス喪失時のネイティブ change（detail: { value }）。",
+            "minerva-select": "マウスまたはキーボードで選択肢が選ばれた（detail: { value, option }）。",
+            "minerva-submit": "アクティブな選択肢がなく、テキストが空白でない状態で Enter が押された（detail: { value }、前後の空白は除去）。",
+            "minerva-open-change": "ドロップダウンが開閉する（detail: { open }）。キャンセル可能：preventDefault() で現在の状態を保ちます。"
+          },
+          "slots": {
+            "prefix": "テキストの前に置く内容（アイコン）。",
+            "suffix": "テキストの後に置く内容。"
+          },
+          "cssVars": {
+            "--input-height": "フィールドの最小の高さ。全サイズに適用（既定は密度に応じたそのサイズのコントロールの高さ）。",
+            "--input-padding-x": "テキストの左右の余白。全サイズに適用。",
+            "--input-radius": "角の丸み（既定は --radius-lg）。",
+            "--input-font-size": "フォントサイズ。全サイズに適用。",
+            "--input-background": "outline バリアントの背景色。",
+            "--input-border-color": "通常時の枠線の色。",
+            "--input-focus-color": "ホバー中またはフォーカス中の枠線の色。"
+          },
+          "methods": {
+            "focus": "入力欄にフォーカスします。",
+            "blur": "入力欄からフォーカスを外します。",
+            "checkValidity": "有効性を確認し、無効なら invalid を発火します。",
+            "reportValidity": "有効性を確認し、ブラウザの検証メッセージを表示します。",
+            "setCustomValidity": "カスタム検証エラーを設定します（\"\" で解除）。",
+            "formResetCallback": "form.reset() 時にブラウザが呼ぶフォームのライフサイクルコールバック。value 属性の値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときにブラウザが呼ぶフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "値を復元するとき（バック/フォワードキャッシュ、自動入力）にブラウザが呼ぶフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

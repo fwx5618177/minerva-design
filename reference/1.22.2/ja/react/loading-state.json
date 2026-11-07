@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "ja",
+  "renderer": "react",
+  "page": "loading-state",
+  "title": "LoadingState 読み込み状態",
+  "description": "ページ・ルート・セクションの読み込み表示。装飾用の ProgressIndicator スピナーと表示ラベルを 1 つの polite なステータス領域にまとめます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "LoadingState",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "LoadingState"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "source": "packages/react/src/components/LoadingState/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Visible text, which is also what the status region announces"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/LoadingState/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "LoadingStateSize | undefined",
+            "typeRef": "type:3726d1ab9f3b6eb4edaf",
+            "default": "medium",
+            "required": false,
+            "description": "Minimum height: small for a section, medium for a page or route, large for tall content such as a calendar"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "LoadingStateProps": {
+      "source": "react/src/components/LoadingState/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLDivElement>, \"children\">"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": "\"Loading...\" (localized)",
+          "description": "Visible text, which is also what the status region announces"
+        },
+        {
+          "name": "size",
+          "type": "LoadingStateSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Minimum height: small for a section, medium for a page or route, large for tall content such as a calendar"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root <div> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:LoadingState": {
+      "kind": "cssVars",
+      "source": "react/src/components/LoadingState",
+      "vars": [
+        {
+          "name": "--loading-state-gap",
+          "description": "Space between the spinner and the label"
+        },
+        {
+          "name": "--loading-state-padding",
+          "description": "Padding"
+        },
+        {
+          "name": "--loading-state-min-height",
+          "description": "Minimum height (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--loading-state-color",
+          "description": "Color of the label and the spinner"
+        },
+        {
+          "name": "--loading-state-font-size",
+          "description": "Font size of the label"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/loading-state/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/loading-state/demos/basic.tsx": "import { LoadingState } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return <LoadingState />;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "既定のラベルはローカライズされ、表示テキストがそのまま読み上げられます。"
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/loading-state/demos/sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/loading-state/demos/sizes.tsx": "import { LoadingState } from \"minerva-design\";\n\nexport default function SizesDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 16 }}>\n      <LoadingState size=\"small\" label=\"Loading records...\" />\n      <LoadingState size=\"large\" label=\"Loading calendar...\" />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "サイズ",
+      "description": "small・medium・large はそれぞれ最小高さ 64・160・240 px です。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "LoadingState 読み込み状態",
+      "description": "ページ・ルート・セクションの読み込み表示。装飾用の ProgressIndicator スピナーと表示ラベルを 1 つの polite なステータス領域にまとめます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "既定のラベルはローカライズされ、表示テキストがそのまま読み上げられます。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "small・medium・large はそれぞれ最小高さ 64・160・240 px です。"
+        }
+      },
+      "api": {
+        "LoadingStateProps": {
+          "label": "表示テキスト。ステータス領域で読み上げられます",
+          "size": "最小高さのプリセット",
+          "ref": "ルートの <div> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--loading-state-gap": "スピナーとラベルの間隔",
+        "--loading-state-padding": "内側の余白",
+        "--loading-state-min-height": "最小の高さ（全サイズ共通。既定値は各サイズの高さ）",
+        "--loading-state-color": "ラベルとスピナーの色",
+        "--loading-state-font-size": "ラベルのフォントサイズ"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "控えめな status 領域の中で、スピナーの横に表示ラベル（既定はローカライズされた「読み込み中...」）を表示します。"
+          },
+          "sizes": {
+            "title": "サイズ",
+            "description": "small・medium・large で最小の高さを設定します。デフォルトスロットにリッチなラベルを置けます。"
+          },
+          "section": {
+            "title": "セクションの読み込み",
+            "description": "この要素は aria-busy を設定しません。読み込み中はコンテナーをビジーにし、完了したらプレースホルダーをコンテンツに置き換えてください。"
+          }
+        },
+        "minerva-loading-state": {
+          "slots": {
+            "default": "ラベル（label 属性の代替）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

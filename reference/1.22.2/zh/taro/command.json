@@ -1,0 +1,409 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "zh",
+  "renderer": "taro",
+  "page": "command",
+  "title": "Command 命令面板",
+  "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CommandDialog",
+      "support": {
+        "status": "beta",
+        "notes": "React title/keywords/description/group command data, native search, caller-preserved filter ordering, limits, reopening query reset, custom labels/hints and disabled-command exclusion in a modal. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports shared-core global shortcuts and active-option keyboard navigation; native touch/confirm interactions do not expose document shortcuts. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "React title/keywords/description/group command data, native search, caller-preserved filter ordering, limits, reopening query reset, custom labels/hints and disabled-command exclusion in a modal. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports shared-core global shortcuts and active-option keyboard navigation; native touch/confirm interactions do not expose document shortcuts. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "CommandDialog"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "trigger",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "shortcut",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "union",
+            "typeText": "string | string[] | undefined",
+            "typeRef": "type:cdf445ffccc04acaf8cd",
+            "required": false
+          },
+          {
+            "name": "items",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "array",
+            "typeText": "CommandItem[]",
+            "typeRef": "type:ba95d7edcd10ce380775",
+            "required": true
+          },
+          {
+            "name": "title",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "description",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "resultsLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "enterLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "shortcutLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "maxResults",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "filter",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((items: CommandItem[], query: string) => CommandItem[]) | undefined",
+            "typeRef": "type:7d4444f237b3954794e1",
+            "parameters": [
+              {
+                "name": "items",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CommandItem[]",
+                "typeRef": "type:ba95d7edcd10ce380775"
+              },
+              {
+                "name": "query",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "CommandItem[]",
+              "typeRef": "type:ba95d7edcd10ce380775"
+            },
+            "required": false
+          },
+          {
+            "name": "open",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onSelect",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((item: CommandItem) => void) | undefined",
+            "typeRef": "type:30141868c69b37cef615",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CommandItem",
+                "typeRef": "type:6dd2354fda198fe97af4"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onOpenChange",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:804ddd37e56a55e58c37",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Command": {
+      "kind": "cssVars",
+      "source": "react/src/components/Command",
+      "vars": [
+        {
+          "name": "--command-search-height",
+          "description": "Minimum height of the search field (defaults to --control-height-md)"
+        },
+        {
+          "name": "--command-results-max-height",
+          "description": "Maximum height of the scrolling result list"
+        },
+        {
+          "name": "--command-item-min-height",
+          "description": "Minimum height of a result row"
+        },
+        {
+          "name": "--command-item-padding-y",
+          "description": "Vertical padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-padding-x",
+          "description": "Horizontal padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-active-background",
+          "description": "Background of the hovered / active row (defaults to a 10% primary tint)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Command 命令面板",
+      "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "受控的命令面板；onSelect 收到选中的项目后面板关闭。"
+        },
+        "shortcut": {
+          "title": "全局快捷键",
+          "description": "shortcut=\"mod+k\" 在 macOS 上用 Cmd+K、其他系统用 Ctrl+K 打开面板；shortcutLabel 显示提示。"
+        },
+        "custom-filter": {
+          "title": "结果排序",
+          "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+        },
+        "site-search": {
+          "title": "站点搜索",
+          "description": "文档站的搜索由 Button 和 CommandDialog 组合：输入筛选、分组、无结果反馈、键盘选择和关闭后焦点恢复。此示例使用 Ctrl+Shift+K，站点搜索使用 Cmd/Ctrl+K；在实际项目中用 onSelect 接入路由。"
+        }
+      },
+      "api": {
+        "CommandDialogProps": {
+          "open": "受控的打开状态；不传（undefined）时为非受控",
+          "defaultOpen": "非受控时的初始打开状态",
+          "onOpenChange": "请求改变打开状态时调用（快捷键、选择、Escape、点击遮罩）",
+          "items": "要搜索的命令；禁用的项目不会显示",
+          "onSelect": "以选中的项目调用（点击或回车），随后面板关闭",
+          "title": "对话框标题；默认为本地化的“命令面板”",
+          "description": "面板的可访问描述；默认为本地化提示",
+          "placeholder": "搜索框占位文本；默认为本地化提示",
+          "emptyText": "没有匹配结果时显示的内容",
+          "shortcutLabel": "以 <kbd> 显示在标题旁的快捷键提示，例如“⌘K”",
+          "shortcut": "打开面板的全局快捷键，例如“mod+k”；修饰键：mod、ctrl、meta/cmd、shift、alt/option",
+          "maxResults": "最多显示的结果数",
+          "filter": "自定义搜索，例如按匹配质量排序：接收启用的条目和去除首尾空白的查询（不为空），按显示顺序返回匹配的条目（之后再受 maxResults 限制）；默认是不区分大小写的子串匹配，并保持 items 的顺序",
+          "resultsLabel": "结果列表的可访问标签",
+          "enterLabel": "显示在搜索框末尾的按键提示；默认为本地化的“Enter”",
+          "className": "对话框面板的额外类名"
+        },
+        "CommandItem": {
+          "id": "唯一 id，通过 onSelect 传回",
+          "title": "主标签",
+          "description": "标题下方的次要文字",
+          "group": "分组名，以徽标显示并参与搜索",
+          "keywords": "额外的搜索词（不显示）",
+          "disabled": "从结果中隐藏该项目"
+        }
+      },
+      "cssVars": {
+        "--command-search-height": "搜索框的最小高度（默认 --control-height-md）",
+        "--command-results-max-height": "可滚动结果列表的最大高度",
+        "--command-item-min-height": "结果行的最小高度",
+        "--command-item-padding-y": "结果行的垂直内边距（跟随密度的行内边距）",
+        "--command-item-padding-x": "结果行的水平内边距（跟随密度的行内边距）",
+        "--command-item-active-background": "悬停 / 激活行的背景（默认 10% 主色调）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "items 是一个 JS 属性（id、title、description、group、keywords、disabled）。输入即可筛选，方向键移动，Enter 或点击选择；minerva-select 返回所选 id。"
+          },
+          "shortcut": {
+            "title": "全局快捷键",
+            "description": "shortcut 接受逗号分隔的列表（\"mod+k, /\"；mod 即 Ctrl，macOS 上为 ⌘），可在页面任意位置打开面板，在输入框中输入时除外。max-results 限制结果数量。"
+          },
+          "custom-filter": {
+            "title": "结果排序",
+            "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+          }
+        },
+        "minerva-command-dialog": {
+          "props": {
+            "label": "对话框标题（默认：本地化的「命令面板」）。"
+          },
+          "events": {
+            "minerva-select": "选择了一个命令（detail: { value, item }，value 为该项的 id）；随后面板关闭。",
+            "minerva-open-change": "用户请求打开（快捷键）/ 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+            "minerva-after-open": "面板已打开，焦点已移至搜索框。",
+            "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+          },
+          "cssVars": {
+            "--modal-width": "面板宽度（默认取决于尺寸，并受视口限制）。",
+            "--modal-max-height": "面板最大高度（超出时主体滚动）。",
+            "--modal-padding": "标题、描述、主体和底部的水平内边距。",
+            "--modal-radius": "面板圆角（默认 --radius-xl）。",
+            "--modal-shadow": "面板阴影（默认 --shadow-xl）。",
+            "--modal-background": "面板背景。",
+            "--modal-z-index": "面板层级（默认 --z-modal）。"
+          },
+          "methods": {
+            "show": "打开命令面板。",
+            "hide": "关闭命令面板。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

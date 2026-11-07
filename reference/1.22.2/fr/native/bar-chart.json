@@ -1,0 +1,667 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.2",
+  "locale": "fr",
+  "renderer": "native",
+  "page": "bar-chart",
+  "title": "Graphique à barres",
+  "description": "Barres groupées côte à côte ou empilées, avec des lignes superposées en option.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.2",
+    "sourceCommit": "b19e53ff0733e666aa205d6fd5bebb89b1eef18d",
+    "sourceDigest": "sha256:080b482abbb8d2745bf31d68a17d7a1299cbb89f0e3f8c1a4d1d91bdeb04d1be",
+    "referenceSourceDigest": "sha256:2a0069aef643875e6528da29db3ea67e23924d3d3dcad8f2f45e0400ede619c0"
+  },
+  "content": {
+    "data": {
+      "quarter": "T{{n}}",
+      "ticketsClosed": "Tickets résolus",
+      "ticketsAria": "Tickets de support résolus par trimestre",
+      "orders": "Commandes",
+      "average7": "Moyenne sur 7 jours",
+      "day": "Jour",
+      "ordersAria": "Commandes quotidiennes et leur moyenne sur 7 jours",
+      "revenueAria": "Chiffre d'affaires trimestriel, 2025 et 2026",
+      "nps": {
+        "promoters": "Promoteurs",
+        "passives": "Passifs",
+        "detractors": "Détracteurs"
+      },
+      "regions": {
+        "northAmerica": "Amérique du Nord",
+        "europe": "Europe",
+        "asiaPacific": "Asie-Pacifique",
+        "latinAmerica": "Amérique latine",
+        "middleEast": "Moyen-Orient"
+      },
+      "npsAria": "Part des promoteurs, passifs et détracteurs par région",
+      "channels": {
+        "web": "Web",
+        "mobile": "Application mobile",
+        "partners": "Partenaires"
+      },
+      "channelsAria": "Commandes mensuelles par canal, empilées",
+      "sales": "Ventes",
+      "salesAria": "Ventes par trimestre",
+      "unitsStatus": "{{quarter}} : {{units}} unités",
+      "tapBar": "Touchez une barre",
+      "stacked": "Empilées",
+      "grouped": "Groupées",
+      "ordersPerChannelAria": "Commandes par canal et par mois",
+      "cities": {
+        "london": "Londres",
+        "tokyo": "Tokyo",
+        "paris": "Paris"
+      },
+      "rainfallAria": "Précipitations mensuelles moyennes à Londres, Tokyo et Paris",
+      "netResult": "Résultat net",
+      "profitAria": "Résultat net mensuel, bénéfices au-dessus de zéro et pertes en dessous",
+      "unitsSold": "Unités vendues",
+      "rankingAria": "Ventes en ligne par pays, de la plus forte à la plus faible",
+      "newCustomers": "Nouveaux clients",
+      "week": "S{{n}}",
+      "weeklyTarget": "Objectif hebdomadaire",
+      "targetAria": "Nouveaux clients par semaine face à l'objectif hebdomadaire",
+      "targetSummary": "Objectif atteint {{reached}} semaines sur {{total}} ({{rate}}).",
+      "revenue": "Chiffre d'affaires",
+      "pickedMonth": "{{month}} : {{value}}",
+      "backToQuarters": "Retour aux trimestres",
+      "drillHint": "Cliquez sur un trimestre pour voir ses mois.",
+      "quarterDetail": "{{quarter}} : {{value}} au total. Cliquez sur un mois pour voir son chiffre d'affaires.",
+      "quartersAria": "Chiffre d'affaires par trimestre en 2026 ; cliquez sur un trimestre pour voir ses mois",
+      "monthsAria": "Chiffre d'affaires par mois au {{quarter}} 2026",
+      "hiringDepartments": {
+        "engineering": "Ingénierie",
+        "product": "Produit",
+        "design": "Design",
+        "sales": "Ventes",
+        "marketing": "Marketing",
+        "support": "Support"
+      },
+      "previousYear": "L'an dernier",
+      "currentYear": "Cette année",
+      "change": "Variation",
+      "compareLastYear": "Comparer avec l'an dernier",
+      "hiresAria": "Recrutements par service, cette année et l'an dernier",
+      "deploysOk": "Réussis",
+      "deploysFailed": "Annulés",
+      "changeFreeze": "Gel des changements",
+      "deploysAria": "Déploiements en production par jour sur huit semaines, réussis et annulés",
+      "deploysSummary": "{{perDay}} déploiements par jour ouvré, taux d'échec des changements de {{failure}}.",
+      "offPeak": "Heures creuses",
+      "standard": "Normal",
+      "peak": "Heures pleines",
+      "chargeHere": "Recharge",
+      "dailyAverage": "Moyenne du jour",
+      "chargingTime": "Durée de recharge",
+      "chargeFor": "{{energy}} kWh · {{duration}}",
+      "chargeAdvice": "Rechargez de {{start}} à {{end}} pour {{cost}}, soit {{saving}} de moins qu'en branchant à {{plugIn}}.",
+      "pricePerMwh": "Prix par MWh",
+      "pricesAria": "Prix de l'électricité du marché J-1 pour chaque heure de demain, avec les heures les moins chères pour recharger une voiture électrique mises en évidence"
+    }
+  },
+  "components": [
+    {
+      "name": "BarChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "BarChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as bars unless they set a `type` (e.g. a `line` overlay)"
+          },
+          {
+            "name": "stacked",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stacks the bars of every series (otherwise they are grouped side by side)"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:BarChartProps": {
+      "source": "native/src/components/Chart/types.ts",
+      "description": "Props of BarChart",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Series drawn as bars unless they set a `type` (e.g. a `line` overlay)"
+        },
+        {
+          "name": "stacked",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Stacks the bars of every series (otherwise they are grouped side by side)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/native/basic.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Text, View } from \"react-native\";\nimport { BarChart, useTheme } from \"minerva-design/native\";\n\nconst sales = [120, 180, 150, 220];\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const { colors } = useTheme();\n  const [status, setStatus] = useState<string | null>(null);\n  const number = new Intl.NumberFormat(i18n.language);\n  return (\n    <View style={{ width: \"100%\", gap: 8 }}>\n      <BarChart\n        height={220}\n        ariaLabel={t(\"salesAria\")}\n        series={[\n          {\n            name: t(\"sales\"),\n            data: sales.map(\n              (value, i) => [t(\"quarter\", { n: i + 1 }), value] as const,\n            ),\n          },\n        ]}\n        onPointClick={(event) => {\n          const item = event.items[0];\n          if (item)\n            setStatus(\n              t(\"unitsStatus\", {\n                quarter: event.xLabel,\n                units: number.format(item.y),\n              }),\n            );\n        }}\n      />\n      <Text role=\"status\" style={{ color: colors[\"text-secondary-color\"] }}>\n        {status ?? t(\"tapBar\")}\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Base",
+      "description": "Une série de tuples [catégorie, valeur] ; l’axe y inclut toujours zéro."
+    },
+    {
+      "id": "stacked",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/native/stacked.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/native/stacked.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { View } from \"react-native\";\nimport { BarChart, Switch } from \"minerva-design/native\";\n\nconst channels = [\n  { name: \"Web\", values: [40, 52, 48, 61, 70] },\n  { name: \"iOS\", values: [28, 30, 35, 41, 44] },\n  { name: \"Android\", values: [22, 27, 31, 30, 38] },\n];\n\n/** Short month names in the reader's language */\nconst monthNames = (locale: string, count: number) => {\n  const format = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  return Array.from({ length: count }, (_, m) =>\n    format.format(new Date(2026, m, 1)),\n  );\n};\n\nexport default function Stacked() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const [stacked, setStacked] = useState(true);\n  const months = monthNames(i18n.language, 5);\n  return (\n    <View style={{ width: \"100%\", gap: 12 }}>\n      <Switch\n        checked={stacked}\n        onChange={setStacked}\n        label={stacked ? t(\"stacked\") : t(\"grouped\")}\n      />\n      <BarChart\n        stacked={stacked}\n        height={240}\n        ariaLabel={t(\"ordersPerChannelAria\")}\n        series={channels.map((channel) => ({\n          name: channel.name,\n          data: months.map((month, i) => [month, channel.values[i]] as const),\n        }))}\n      />\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Empilées",
+      "description": "stacked empile les séries les unes sur les autres."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Graphique à barres",
+      "description": "Barres groupées côte à côte ou empilées, avec des lignes superposées en option.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "Une série de tuples [catégorie, valeur] ; l’axe y inclut toujours zéro."
+        },
+        "stacked": {
+          "title": "Empilées",
+          "description": "stacked empile les séries les unes sur les autres."
+        },
+        "labels": {
+          "title": "Étiquettes de valeur",
+          "description": "labels écrit la valeur au-dessus de chaque barre, avec le format de l’axe y, et réserve la place nécessaire au-dessus de la plus haute. Idéal avec peu de barres, quand les valeurs exactes comptent."
+        },
+        "percent": {
+          "title": "Empilées à 100 %",
+          "description": "percent ramène chaque pile à 100 % pour comparer la composition de groupes de tailles différentes ; l’infobulle affiche le nombre de réponses et leur part."
+        },
+        "combo": {
+          "title": "Barres et ligne",
+          "description": "Une série avec type: \"line\" est tracée par-dessus les barres, ici une moyenne sur 7 jours."
+        },
+        "grouped": {
+          "title": "Groupées",
+          "description": "Plusieurs séries sans stacked se placent côte à côte dans chaque catégorie, ici les précipitations mensuelles de trois villes ; Intl.NumberFormat écrit l'unité."
+        },
+        "profit-loss": {
+          "title": "Pertes et profits",
+          "description": "Les valeurs négatives partent de zéro vers le bas ; chaque donnée fixe sa couleur, verte pour un bénéfice et rouge pour une perte, et le format y affiche le signe."
+        },
+        "ranking": {
+          "title": "Classement",
+          "description": "Triez les données avant de les passer pour classer les catégories ; Intl.DisplayNames donne les noms de pays dans la langue du lecteur et showLabels écrit les valeurs."
+        },
+        "target": {
+          "title": "Par rapport à un objectif",
+          "description": "Une ligne y en pointillés marque l'objectif hebdomadaire et les barres qui l'atteignent sont mises en avant par la couleur de leur donnée."
+        },
+        "drilldown": {
+          "title": "Exploration descendante",
+          "description": "onPointClick sur un trimestre remplace la série par ses trois mois, et un Button ramène les trimestres ; cliquer sur un mois écrit son chiffre d'affaires dans une sortie aria-live."
+        },
+        "period-compare": {
+          "title": "Comparaison avec l'an dernier",
+          "description": "Un Switch règle hidden sur la série de l'an dernier pour afficher ou masquer la comparaison sans changer les couleurs, et renderTooltip liste les deux années avec la variation en pourcentage."
+        },
+        "deployments": {
+          "title": "Déploiements dans le temps",
+          "description": "Des barres empilées sur un axe temporel comptent les déploiements réussis et annulés de chaque jour ; des annotations rect grisent les week-ends et un gel des changements, et un résumé donne la fréquence de déploiement et le taux d'échec des changements."
+        },
+        "ev-charging": {
+          "title": "Heures de recharge les moins chères",
+          "description": "Les prix horaires de l'électricité de demain, répartis en trois séries empilées pour que chaque barre prenne la couleur de sa tranche de prix. Une annotation rect suit la plage d'heures la moins chère pour la durée de recharge choisie dans le Select, et la sortie compare son coût à une recharge dès l'arrivée."
+        }
+      },
+      "data": {
+        "quarter": "T{{n}}",
+        "ticketsClosed": "Tickets résolus",
+        "ticketsAria": "Tickets de support résolus par trimestre",
+        "orders": "Commandes",
+        "average7": "Moyenne sur 7 jours",
+        "day": "Jour",
+        "ordersAria": "Commandes quotidiennes et leur moyenne sur 7 jours",
+        "revenueAria": "Chiffre d'affaires trimestriel, 2025 et 2026",
+        "nps": {
+          "promoters": "Promoteurs",
+          "passives": "Passifs",
+          "detractors": "Détracteurs"
+        },
+        "regions": {
+          "northAmerica": "Amérique du Nord",
+          "europe": "Europe",
+          "asiaPacific": "Asie-Pacifique",
+          "latinAmerica": "Amérique latine",
+          "middleEast": "Moyen-Orient"
+        },
+        "npsAria": "Part des promoteurs, passifs et détracteurs par région",
+        "channels": {
+          "web": "Web",
+          "mobile": "Application mobile",
+          "partners": "Partenaires"
+        },
+        "channelsAria": "Commandes mensuelles par canal, empilées",
+        "sales": "Ventes",
+        "salesAria": "Ventes par trimestre",
+        "unitsStatus": "{{quarter}} : {{units}} unités",
+        "tapBar": "Touchez une barre",
+        "stacked": "Empilées",
+        "grouped": "Groupées",
+        "ordersPerChannelAria": "Commandes par canal et par mois",
+        "cities": {
+          "london": "Londres",
+          "tokyo": "Tokyo",
+          "paris": "Paris"
+        },
+        "rainfallAria": "Précipitations mensuelles moyennes à Londres, Tokyo et Paris",
+        "netResult": "Résultat net",
+        "profitAria": "Résultat net mensuel, bénéfices au-dessus de zéro et pertes en dessous",
+        "unitsSold": "Unités vendues",
+        "rankingAria": "Ventes en ligne par pays, de la plus forte à la plus faible",
+        "newCustomers": "Nouveaux clients",
+        "week": "S{{n}}",
+        "weeklyTarget": "Objectif hebdomadaire",
+        "targetAria": "Nouveaux clients par semaine face à l'objectif hebdomadaire",
+        "targetSummary": "Objectif atteint {{reached}} semaines sur {{total}} ({{rate}}).",
+        "revenue": "Chiffre d'affaires",
+        "pickedMonth": "{{month}} : {{value}}",
+        "backToQuarters": "Retour aux trimestres",
+        "drillHint": "Cliquez sur un trimestre pour voir ses mois.",
+        "quarterDetail": "{{quarter}} : {{value}} au total. Cliquez sur un mois pour voir son chiffre d'affaires.",
+        "quartersAria": "Chiffre d'affaires par trimestre en 2026 ; cliquez sur un trimestre pour voir ses mois",
+        "monthsAria": "Chiffre d'affaires par mois au {{quarter}} 2026",
+        "hiringDepartments": {
+          "engineering": "Ingénierie",
+          "product": "Produit",
+          "design": "Design",
+          "sales": "Ventes",
+          "marketing": "Marketing",
+          "support": "Support"
+        },
+        "previousYear": "L'an dernier",
+        "currentYear": "Cette année",
+        "change": "Variation",
+        "compareLastYear": "Comparer avec l'an dernier",
+        "hiresAria": "Recrutements par service, cette année et l'an dernier",
+        "deploysOk": "Réussis",
+        "deploysFailed": "Annulés",
+        "changeFreeze": "Gel des changements",
+        "deploysAria": "Déploiements en production par jour sur huit semaines, réussis et annulés",
+        "deploysSummary": "{{perDay}} déploiements par jour ouvré, taux d'échec des changements de {{failure}}.",
+        "offPeak": "Heures creuses",
+        "standard": "Normal",
+        "peak": "Heures pleines",
+        "chargeHere": "Recharge",
+        "dailyAverage": "Moyenne du jour",
+        "chargingTime": "Durée de recharge",
+        "chargeFor": "{{energy}} kWh · {{duration}}",
+        "chargeAdvice": "Rechargez de {{start}} à {{end}} pour {{cost}}, soit {{saving}} de moins qu'en branchant à {{plugIn}}.",
+        "pricePerMwh": "Prix par MWh",
+        "pricesAria": "Prix de l'électricité du marché J-1 pour chaque heure de demain, avec les heures les moins chères pour recharger une voiture électrique mises en évidence"
+      },
+      "api": {
+        "BarChartProps": {
+          "series": "Séries tracées en barres sauf si elles définissent un type (p. ex. une ligne superposée)",
+          "stacked": "Empile les barres de toutes les séries au lieu de les grouper",
+          "percent": "Ramène les piles à 100 % (implique stacked)",
+          "labels": "Écrit la valeur au-dessus de chaque barre",
+          "orientation": "\"horizontal\" fait partir les barres de la gauche, les catégories le long du bord gauche"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Base",
+            "description": "Touchez une barre : onPointClick reçoit le trimestre et sa valeur."
+          },
+          "stacked": {
+            "title": "Empilées",
+            "description": "Le Switch bascule stacked entre barres empilées et groupées."
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "grouped": {
+            "title": "Barres groupées avec étiquettes",
+            "description": "Deux années côte à côte par région ; labels écrit la valeur au-dessus de chaque barre."
+          },
+          "stacked": {
+            "title": "Barres empilées",
+            "description": "Les sessions par appareil empilées pour chaque jour de la semaine."
+          }
+        },
+        "minerva-bar-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}
