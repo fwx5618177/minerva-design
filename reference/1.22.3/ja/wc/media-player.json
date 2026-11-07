@@ -1,0 +1,824 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "media-player",
+  "title": "MediaPlayer メディアプレーヤー",
+  "description": "テーマに沿ったカスタムコントロールを備えた音声 / 動画プレーヤー。再生 / 一時停止、スキップ、バッファ範囲付きのシークバー、時間、音量、再生速度、全画面表示に対応し、キーボードで操作できます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "MediaControls",
+      "support": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      }
+    },
+    {
+      "name": "MediaPlayer",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/media-player",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-media-player",
+        "props": [
+          {
+            "name": "src",
+            "typeText": "string | undefined",
+            "attribute": "src",
+            "required": false
+          },
+          {
+            "name": "type",
+            "typeText": "\"audio\" | \"video\" | undefined",
+            "attribute": "type",
+            "required": false
+          },
+          {
+            "name": "mimeType",
+            "typeText": "string | undefined",
+            "attribute": "mime-type",
+            "required": false
+          },
+          {
+            "name": "poster",
+            "typeText": "string | undefined",
+            "attribute": "poster",
+            "required": false
+          },
+          {
+            "name": "autoPlay",
+            "typeText": "boolean",
+            "attribute": "autoplay",
+            "required": false
+          },
+          {
+            "name": "loop",
+            "typeText": "boolean",
+            "attribute": "loop",
+            "required": false
+          },
+          {
+            "name": "muted",
+            "typeText": "boolean",
+            "attribute": "muted",
+            "required": false
+          },
+          {
+            "name": "preload",
+            "typeText": "\"none\" | \"metadata\" | \"auto\"",
+            "attribute": "preload",
+            "required": false
+          },
+          {
+            "name": "crossOrigin",
+            "typeText": "\"anonymous\" | \"use-credentials\" | undefined",
+            "attribute": "crossorigin",
+            "required": false
+          },
+          {
+            "name": "startTime",
+            "typeText": "number | undefined",
+            "attribute": "start-time",
+            "required": false
+          },
+          {
+            "name": "skipSeconds",
+            "typeText": "number",
+            "attribute": "skip-seconds",
+            "required": false
+          },
+          {
+            "name": "noControls",
+            "typeText": "boolean",
+            "attribute": "no-controls",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "aspectRatio",
+            "typeText": "string",
+            "attribute": "aspect-ratio",
+            "required": false
+          },
+          {
+            "name": "pictureInPicture",
+            "typeText": "boolean",
+            "attribute": "picture-in-picture",
+            "required": false
+          },
+          {
+            "name": "playbackRates",
+            "typeText": "readonly number[]",
+            "required": false
+          },
+          {
+            "name": "tracks",
+            "typeText": "readonly MediaPlayerTrack[]",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-play",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "Playback started"
+          },
+          {
+            "name": "minerva-pause",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "Playback paused"
+          },
+          {
+            "name": "minerva-ended",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "Playback reached the end"
+          },
+          {
+            "name": "minerva-time-update",
+            "typeText": "CustomEvent<{ currentTime: number; duration: number; }>",
+            "detailType": {
+              "typeText": "{ currentTime: number; duration: number; }",
+              "typeRef": "type:bc4fee9812e39da4a0e4"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The playhead moved (`detail: { currentTime, duration }`, seconds)"
+          },
+          {
+            "name": "minerva-loaded-metadata",
+            "typeText": "CustomEvent<{ duration: number; }>",
+            "detailType": {
+              "typeText": "{ duration: number; }",
+              "typeRef": "type:f41189c70ba6df1af767"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The metadata loaded (`detail: { duration }`)"
+          },
+          {
+            "name": "minerva-error",
+            "typeText": "CustomEvent<{ error: MediaError | null; }>",
+            "detailType": {
+              "typeText": "{ error: MediaError | null; }",
+              "typeRef": "type:e4c408fa85ecea6222f0"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The media can't be loaded or played (`detail: { error }`, the `MediaError`)"
+          },
+          {
+            "name": "minerva-rate-change",
+            "typeText": "CustomEvent<{ rate: number; }>",
+            "detailType": {
+              "typeText": "{ rate: number; }",
+              "typeRef": "type:d83baf2114a7a053b388"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The playback speed changed (`detail: { rate }`)"
+          },
+          {
+            "name": "minerva-volume-change",
+            "typeText": "CustomEvent<{ volume: number; muted: boolean; }>",
+            "detailType": {
+              "typeText": "{ volume: number; muted: boolean; }",
+              "typeRef": "type:219765685fe942082e67"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The volume or the muted state changed (`detail: { volume, muted }`)"
+          },
+          {
+            "name": "minerva-track-change",
+            "typeText": "CustomEvent<{ index: number; track: MediaPlayerTrack; }>",
+            "detailType": {
+              "typeText": "{ index: number; track: MediaPlayerTrack; }",
+              "typeRef": "type:1ac7f81b9f620642d47d"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The user chose captions (`detail: { index, track }`; index -1 and track null: Off)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "heading",
+            "description": "Title of the media, shown in the audio bar / over the video"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-media-player": {
+      "kind": "element",
+      "source": "web-components/src/components/media-player/media-player.ts",
+      "className": "MinervaMediaPlayer",
+      "summary": "Audio / video player with themed controls.",
+      "description": "An `<audio>` / `<video>` element with themed custom controls (`<MediaPlayer>` of React): play / pause, skip back / forward, a seek bar (`role=slider`, buffered range), the time, mute and volume, the playback speed (cycle button), fullscreen and picture-in-picture (video), and a captions menu when `tracks` are given (cues drawn by the player). Keyboard on the focused player: Space / K play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen, C captions on / off. Captions come from the `tracks` property or, when it is empty, from `<track src srclang label kind default>` children of the element. The media events don't cross the shadow root: they are re-dispatched as `minerva-*` events. `play()`, `pause()`, `seek(seconds)` and `element` drive the media from script.",
+      "properties": [
+        {
+          "name": "src",
+          "attribute": "src",
+          "type": "string | undefined",
+          "description": "URL of the media"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "\"audio\" | \"video\" | undefined",
+          "description": "Kind of media; default: inferred from `mime-type`, else from the file extension of `src`, else \"video\""
+        },
+        {
+          "name": "mimeType",
+          "attribute": "mime-type",
+          "type": "string | undefined",
+          "description": "MIME type of the media (\"audio/mpeg\", \"video/mp4\"...), used to infer `type`"
+        },
+        {
+          "name": "poster",
+          "attribute": "poster",
+          "type": "string | undefined",
+          "description": "Image shown before a video plays"
+        },
+        {
+          "name": "autoPlay",
+          "attribute": "autoplay",
+          "type": "boolean",
+          "default": "false",
+          "description": "Starts playing as soon as possible (browsers only allow muted autoplay without a user gesture)"
+        },
+        {
+          "name": "loop",
+          "attribute": "loop",
+          "type": "boolean",
+          "default": "false",
+          "description": "Restarts at the end"
+        },
+        {
+          "name": "muted",
+          "attribute": "muted",
+          "type": "boolean",
+          "default": "false",
+          "description": "Mutes the media; follows the mute button and the M key"
+        },
+        {
+          "name": "preload",
+          "attribute": "preload",
+          "type": "\"none\" | \"metadata\" | \"auto\"",
+          "default": "\"metadata\"",
+          "description": "How much of the media the browser loads before playback"
+        },
+        {
+          "name": "crossOrigin",
+          "attribute": "crossorigin",
+          "type": "\"anonymous\" | \"use-credentials\" | undefined",
+          "description": "CORS mode of the media request (cross-origin caption files need it too, plus CORS headers on their server)"
+        },
+        {
+          "name": "startTime",
+          "attribute": "start-time",
+          "type": "number | undefined",
+          "description": "Resume position in seconds, applied once when the metadata loads (and again when `src` changes)"
+        },
+        {
+          "name": "skipSeconds",
+          "attribute": "skip-seconds",
+          "type": "number",
+          "default": "10",
+          "description": "Step of the skip back / forward buttons, in seconds (0 hides them)"
+        },
+        {
+          "name": "noControls",
+          "attribute": "no-controls",
+          "type": "boolean",
+          "default": "false",
+          "description": "Hides the custom control bar: renders the bare media element (drive it from script)"
+        },
+        {
+          "name": "height",
+          "attribute": "height",
+          "type": "string | undefined",
+          "description": "Height of a video player (CSS length; a bare number is pixels); overrides `aspect-ratio`"
+        },
+        {
+          "name": "aspectRatio",
+          "attribute": "aspect-ratio",
+          "type": "string",
+          "default": "\"16 / 9\"",
+          "description": "Aspect ratio of a video player (CSS aspect-ratio)"
+        },
+        {
+          "name": "pictureInPicture",
+          "attribute": "picture-in-picture",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a picture-in-picture button (video, where the browser supports it)"
+        },
+        {
+          "name": "playbackRates",
+          "type": "readonly number[]",
+          "default": "DEFAULT_PLAYBACK_RATES",
+          "description": "Speeds the speed button cycles through (default [0.5, 0.75, 1, 1.25, 1.5, 2])"
+        },
+        {
+          "name": "tracks",
+          "type": "readonly MediaPlayerTrack[]",
+          "default": "[]",
+          "description": "Captions / subtitles (WebVTT or SRT files, JS property): drawn by the player over the video (below the title for audio), with a captions menu in the control bar. The choice is remembered (localStorage); a `default` track shows until the user chooses. Empty: the `<track>` children are used"
+        },
+        {
+          "name": "element",
+          "type": "HTMLMediaElement | null",
+          "readonly": true,
+          "description": "The rendered `<audio>` / `<video>` element (null before the first render)"
+        }
+      ],
+      "methods": [
+        {
+          "name": "play",
+          "signature": "() => Promise<void>",
+          "description": "Starts playback (autoplay-policy rejections are swallowed: the player stays paused)"
+        },
+        {
+          "name": "pause",
+          "signature": "() => void",
+          "description": "Pauses playback"
+        },
+        {
+          "name": "seek",
+          "signature": "(seconds: number) => void",
+          "description": "Moves the playhead to `seconds` (clamped to the duration)"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-play",
+          "description": "Playback started"
+        },
+        {
+          "name": "minerva-pause",
+          "description": "Playback paused"
+        },
+        {
+          "name": "minerva-ended",
+          "description": "Playback reached the end"
+        },
+        {
+          "name": "minerva-time-update",
+          "description": "The playhead moved (`detail: { currentTime, duration }`, seconds)"
+        },
+        {
+          "name": "minerva-loaded-metadata",
+          "description": "The metadata loaded (`detail: { duration }`)"
+        },
+        {
+          "name": "minerva-error",
+          "description": "The media can't be loaded or played (`detail: { error }`, the `MediaError`)"
+        },
+        {
+          "name": "minerva-rate-change",
+          "description": "The playback speed changed (`detail: { rate }`)"
+        },
+        {
+          "name": "minerva-volume-change",
+          "description": "The volume or the muted state changed (`detail: { volume, muted }`)"
+        },
+        {
+          "name": "minerva-track-change",
+          "description": "The user chose captions (`detail: { index, track }`; index -1 and track null: Off)"
+        }
+      ],
+      "slots": [
+        {
+          "name": "heading",
+          "description": "Title of the media, shown in the audio bar / over the video"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The outermost element (the focusable player)"
+        },
+        {
+          "name": "media",
+          "description": "The native `<audio>` or `<video>` element"
+        },
+        {
+          "name": "title",
+          "description": "The title of the media (audio bar, video overlay)"
+        },
+        {
+          "name": "controls",
+          "description": "The control bar"
+        },
+        {
+          "name": "button",
+          "description": "A control button (play, skip, mute, speed, captions, fullscreen, picture-in-picture)"
+        },
+        {
+          "name": "seek",
+          "description": "The seek bar (`role=slider`) with the buffered range"
+        },
+        {
+          "name": "time",
+          "description": "The current time / duration text"
+        },
+        {
+          "name": "volume",
+          "description": "The volume bar (`role=slider`)"
+        },
+        {
+          "name": "spinner",
+          "description": "The loading indicator (while buffering)"
+        },
+        {
+          "name": "error",
+          "description": "The error message (media that can't be played)"
+        },
+        {
+          "name": "captions",
+          "description": "The captions overlay showing the active cue (video: over the picture, audio: below the title)"
+        },
+        {
+          "name": "captions-menu",
+          "description": "The captions menu (`role=menu`): Off and one item per track"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--media-player-radius",
+          "description": "Corner radius of the player (defaults to --radius-lg)"
+        },
+        {
+          "name": "--media-player-accent",
+          "description": "Color of the played range and the slider thumbs (defaults to --primary-color)"
+        },
+        {
+          "name": "--media-player-video-background",
+          "description": "Letterbox color behind a video (defaults to black)"
+        },
+        {
+          "name": "--media-player-overlay-background",
+          "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        },
+        {
+          "name": "--media-player-overlay-color",
+          "description": "Text and icon color over a video (defaults to white)"
+        },
+        {
+          "name": "--media-player-bar-background",
+          "description": "Background of the audio bar (defaults to --surface-color)"
+        },
+        {
+          "name": "--media-player-bar-color",
+          "description": "Text and icon color of the audio bar (defaults to --text-color)"
+        },
+        {
+          "name": "--media-player-button-size",
+          "description": "Size of the control buttons (defaults to the density's small control height)"
+        },
+        {
+          "name": "--media-player-track-height",
+          "description": "Thickness of the seek and volume tracks (defaults to 4px)"
+        },
+        {
+          "name": "--media-player-captions-background",
+          "description": "Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)"
+        },
+        {
+          "name": "--media-player-captions-color",
+          "description": "Color of the caption text (defaults to white over a video, the bar color for audio)"
+        },
+        {
+          "name": "--media-player-captions-font-size",
+          "description": "Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:MediaPlayer": {
+      "kind": "cssVars",
+      "source": "react/src/components/MediaPlayer",
+      "vars": [
+        {
+          "name": "--media-player-radius",
+          "description": "Corner radius of the player (defaults to --radius-lg)"
+        },
+        {
+          "name": "--media-player-accent",
+          "description": "Color of the played range and the slider thumbs (defaults to --primary-color)"
+        },
+        {
+          "name": "--media-player-video-background",
+          "description": "Letterbox color behind a video (defaults to black)"
+        },
+        {
+          "name": "--media-player-overlay-background",
+          "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        },
+        {
+          "name": "--media-player-overlay-color",
+          "description": "Text and icon color over a video (defaults to white)"
+        },
+        {
+          "name": "--media-player-bar-background",
+          "description": "Background of the audio bar (defaults to --surface-color)"
+        },
+        {
+          "name": "--media-player-bar-color",
+          "description": "Text and icon color of the audio bar (defaults to --text-color)"
+        },
+        {
+          "name": "--media-player-button-size",
+          "description": "Size of the control buttons (defaults to the density's small control height)"
+        },
+        {
+          "name": "--media-player-track-height",
+          "description": "Thickness of the seek and volume tracks (defaults to 4px)"
+        },
+        {
+          "name": "--media-player-captions-background",
+          "description": "Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)"
+        },
+        {
+          "name": "--media-player-captions-color",
+          "description": "Color of the caption text (defaults to white over a video, the bar color for audio)"
+        },
+        {
+          "name": "--media-player-captions-font-size",
+          "description": "Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "audio",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/wc/audio.html",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/wc/audio.html": "<div style=\"max-width: 480px\">\n  <minerva-media-player\n    src=\"https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3\"\n    skip-seconds=\"0\"\n  >\n    <span slot=\"heading\">T-Rex roar</span>\n  </minerva-media-player>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "音声",
+      "description": ".mp3 の src（または mime-type=\"audio/…\"）は音声バーで表示されます。skip-seconds=\"0\" でスキップボタンを非表示にします。"
+    },
+    {
+      "id": "captions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/wc/captions.html",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/wc/captions.html": "<div style=\"display: grid; gap: 12px; max-width: 560px\">\n  <minerva-media-player\n    id=\"player\"\n    src=\"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4\"\n  >\n    <span slot=\"heading\">Flower</span>\n  </minerva-media-player>\n  <output id=\"choice\" aria-live=\"polite\">Captions: default track</output>\n</div>\n",
+        "apps/docs/src/docs/pages/media-player/wc/captions.ts": "// tracks is a property (an array of { src, srclang, label, kind, default });\n// <track src srclang label default> children of the element work too.\n// minerva-track-change reports the user's choice.\nimport type {\n  MediaPlayerTrack,\n  MinervaMediaPlayer,\n} from \"minerva-design/web-components/media-player\";\n\nconst ENGLISH_VTT = `WEBVTT\n\n00:00.000 --> 00:01.800\nA flower bud in the morning light\n\n00:01.800 --> 00:03.600\nIts petals slowly <i>unfold</i>\n\n00:03.600 --> 00:06.000\n…and the bloom opens to the bees.\n`;\nconst FRENCH_SRT = `1\n00:00:00,000 --> 00:00:01,800\nUn bouton de fleur dans la lumière du matin\n\n2\n00:00:01,800 --> 00:00:03,600\nSes pétales s'ouvrent lentement\n\n3\n00:00:03,600 --> 00:00:06,000\n…et la fleur s'offre aux abeilles.\n`;\nconst tracks: MediaPlayerTrack[] = [\n  {\n    src: `data:text/vtt;charset=utf-8,${encodeURIComponent(ENGLISH_VTT)}`,\n    srclang: \"en\",\n    label: \"English\",\n    default: true,\n  },\n  {\n    src: `data:application/x-subrip;charset=utf-8,${encodeURIComponent(FRENCH_SRT)}`,\n    srclang: \"fr\",\n    label: \"Français\",\n  },\n];\n\nexport function setup(root: HTMLElement) {\n  const player = root.querySelector<MinervaMediaPlayer>(\"#player\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#choice\")!;\n  player.tracks = tracks;\n  const onTrackChange = (e: Event) => {\n    const { track } = (\n      e as CustomEvent<{ index: number; track: MediaPlayerTrack | null }>\n    ).detail;\n    output.value = `Captions: ${track?.label ?? \"Off\"}`;\n  };\n  player.addEventListener(\"minerva-track-change\", onTrackChange);\n  return () =>\n    player.removeEventListener(\"minerva-track-change\", onTrackChange);\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "字幕",
+      "description": "tracks はプロパティ（{ src, srclang, label, kind, default } の配列）です。未設定の場合は要素の <track src srclang label default> 子要素を使います。プレーヤーが字幕を描画して字幕メニューを追加し、minerva-track-change がユーザーの選択を通知します。クロスオリジンのファイルには crossorigin と CORS ヘッダーが必要です。"
+    },
+    {
+      "id": "rates-skip",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/wc/rates-skip.html",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/wc/rates-skip.html": "<div style=\"display: grid; gap: 12px; max-width: 560px\">\n  <minerva-media-player\n    id=\"player\"\n    src=\"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4\"\n    skip-seconds=\"3\"\n    aspect-ratio=\"4 / 3\"\n    aria-label=\"Flower, speed and skip\"\n  ></minerva-media-player>\n  <output id=\"rate\">Speed: 1×</output>\n</div>\n",
+        "apps/docs/src/docs/pages/media-player/wc/rates-skip.ts": "// playbackRates is a property (an array); minerva-rate-change reports the\n// speed picked with the speed button.\nimport type { MinervaMediaPlayer } from \"minerva-design/web-components/media-player\";\n\nexport function setup(root: HTMLElement) {\n  const player = root.querySelector<MinervaMediaPlayer>(\"#player\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#rate\")!;\n  player.playbackRates = [1, 1.5, 2];\n  const onRate = (e: Event) => {\n    const { rate } = (e as CustomEvent<{ rate: number }>).detail;\n    output.value = `Speed: ${rate}×`;\n  };\n  player.addEventListener(\"minerva-rate-change\", onRate);\n  return () => player.removeEventListener(\"minerva-rate-change\", onRate);\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "再生速度とスキップ幅",
+      "description": "playbackRates はプロパティ（配列）です。minerva-rate-change が速度を通知します。skip-seconds でスキップ幅を、aspect-ratio で動画のサイズを設定します。"
+    },
+    {
+      "id": "resume",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/wc/resume.html",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/wc/resume.html": "<div style=\"display: grid; gap: 12px; max-width: 560px\">\n  <minerva-media-player\n    id=\"player\"\n    src=\"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4\"\n    start-time=\"2\"\n  ></minerva-media-player>\n  <div style=\"display: flex; gap: 8px; flex-wrap: wrap\">\n    <minerva-button id=\"play\" size=\"small\">Play</minerva-button>\n    <minerva-button id=\"restart\" size=\"small\" variant=\"outline\"\n      >Restart</minerva-button\n    >\n  </div>\n  <output id=\"progress\" aria-live=\"polite\">Not started</output>\n</div>\n",
+        "apps/docs/src/docs/pages/media-player/wc/resume.ts": "// start-time resumes once the metadata loads; the media events cross the\n// shadow root as minerva-* events; play() / seek() drive the player.\nimport type { MinervaMediaPlayer } from \"minerva-design/web-components/media-player\";\n\nexport function setup(root: HTMLElement) {\n  const player = root.querySelector<MinervaMediaPlayer>(\"#player\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#progress\")!;\n  let saved = 2;\n  const onMetadata = (e: Event) => {\n    const { duration } = (e as CustomEvent<{ duration: number }>).detail;\n    output.value = `Resumed at ${saved}s of ${duration.toFixed(1)}s`;\n  };\n  const onTime = (e: Event) => {\n    const { currentTime, duration } = (\n      e as CustomEvent<{ currentTime: number; duration: number }>\n    ).detail;\n    output.value = `${Math.round((currentTime / duration) * 100)}% watched (${currentTime.toFixed(1)}s)`;\n  };\n  const onPause = () => {\n    saved = Math.floor(player.element?.currentTime ?? 0);\n    player.startTime = saved;\n    output.value = `Paused · saved position: ${saved}s`;\n  };\n  const onEnded = () => (output.value = \"Finished\");\n  const play = () => void player.play();\n  const restart = () => player.seek(0);\n  const playButton = root.querySelector(\"#play\")!;\n  const restartButton = root.querySelector(\"#restart\")!;\n  player.addEventListener(\"minerva-loaded-metadata\", onMetadata);\n  player.addEventListener(\"minerva-time-update\", onTime);\n  player.addEventListener(\"minerva-pause\", onPause);\n  player.addEventListener(\"minerva-ended\", onEnded);\n  playButton.addEventListener(\"click\", play);\n  restartButton.addEventListener(\"click\", restart);\n  return () => {\n    player.removeEventListener(\"minerva-loaded-metadata\", onMetadata);\n    player.removeEventListener(\"minerva-time-update\", onTime);\n    player.removeEventListener(\"minerva-pause\", onPause);\n    player.removeEventListener(\"minerva-ended\", onEnded);\n    playButton.removeEventListener(\"click\", play);\n    restartButton.removeEventListener(\"click\", restart);\n  };\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "再開と進捗",
+      "description": "start-time はメタデータの読み込み後に一度だけ再開します。メディアイベントは shadow root を越えないため、minerva-loaded-metadata、minerva-time-update、minerva-pause、minerva-ended を監視します。play() と seek() でプレーヤーを操作します。"
+    },
+    {
+      "id": "video",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/wc/video.html",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/wc/video.html": "<div style=\"max-width: 560px\">\n  <minerva-media-player\n    src=\"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4\"\n    picture-in-picture\n  >\n    <span slot=\"heading\">Flower</span>\n  </minerva-media-player>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "動画",
+      "description": "heading スロットは動画上のタイトルです。picture-in-picture はブラウザが対応していればボタンを追加します。プレーヤーにフォーカスして Space / K、矢印キー、M、F を使用できます。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "MediaPlayer メディアプレーヤー",
+      "description": "テーマに沿ったカスタムコントロールを備えた音声 / 動画プレーヤー。再生 / 一時停止、スキップ、バッファ範囲付きのシークバー、時間、音量、再生速度、全画面表示に対応し、キーボードで操作できます。",
+      "demos": {
+        "video": {
+          "title": "動画",
+          "description": "<video> に半透明の暗いコントロールバーを重ね、再生中はフェードアウトします（タッチ画面、ホバー時、フォーカス時は表示されたまま）。プレーヤーにフォーカスして：Space / K で再生・一時停止、← / → で 5 秒シーク、↑ / ↓ で音量、M でミュート、F で全画面。pictureInPicture はブラウザが対応していればピクチャーインピクチャーボタンを追加します。"
+        },
+        "audio": {
+          "title": "音声",
+          "description": "種類は mimeType またはファイル拡張子から推定されます（それ以外は動画）。音声はタイトル付きのサーフェスバーで表示されます。skipSeconds={0} でスキップボタンを非表示にします。"
+        },
+        "resume": {
+          "title": "再開と進捗",
+          "description": "startTime はメタデータの読み込み後に一度だけ適用されます（学習者が止めた位置から再開）。onTimeUpdate / onLoadedMetadata / onPause / onEnded で進捗を通知し、ref は play()、pause()、seek(seconds) とメディア要素を公開します。"
+        },
+        "rates-skip": {
+          "title": "再生速度とスキップ幅",
+          "description": "playbackRates は速度ボタンで切り替える速度の一覧です（onRateChange が新しい速度を通知）。skipSeconds は戻る / 進むボタンの幅を設定し、aspectRatio（または height）で動画のサイズを決めます。"
+        },
+        "captions": {
+          "title": "字幕",
+          "description": "tracks は WebVTT または SRT ファイル（{ src, srclang, label, kind, default }。ここでは data: URL）を受け取ります。<track> 子要素として描画されますが、現在の字幕はプレーヤー自身が描画するため（動画では映像の上、音声ではタイトルの下）、どのブラウザでも同じ見た目になります。CC ボタンでメニュー（オフと各トラック）が開き、フォーカス中のプレーヤーでは C キーで字幕を切り替えます。選択は記憶され（localStorage）、ユーザーが選ぶまでは default のトラックを表示します。onTrackChange が選択を通知します。クロスオリジンの字幕ファイルには、プレーヤーの crossOrigin=\"anonymous\"（または \"use-credentials\"）とサーバーの CORS ヘッダーが必要です。"
+        }
+      },
+      "api": {
+        "MediaPlayerProps": {
+          "src": "メディアの URL",
+          "type": "メディアの種類。mimeType から推定、次に src のファイル拡張子、それ以外は \"video\"",
+          "mimeType": "メディアの MIME タイプ（\"audio/mpeg\"、\"video/mp4\"…）。type の推定に使用",
+          "poster": "動画の再生前に表示する画像",
+          "title": "メディアのタイトル。音声バー内 / 動画の上に表示",
+          "autoPlay": "できるだけ早く再生を開始（ユーザー操作なしの自動再生はミュート時のみブラウザが許可）",
+          "loop": "最後まで再生したら最初から再生",
+          "muted": "ミュート。変更のたびに適用（ミュートボタンでの切り替えも可能）",
+          "defaultMuted": "初期状態でミュート（非制御）",
+          "preload": "再生前にブラウザが読み込む量",
+          "crossOrigin": "メディアリクエストの CORS モード（クロスオリジンの字幕ファイルにも必要。サーバー側の CORS ヘッダーも必要）",
+          "startTime": "再開位置（秒）。メタデータの読み込み後に一度だけ適用（src の変更時に再適用）",
+          "playbackRates": "速度ボタンで切り替える速度",
+          "skipSeconds": "戻る / 進むボタンの幅（秒、0 で非表示）",
+          "controls": "カスタムコントロールバーを表示。false の場合はメディア要素のみ（ref で操作）",
+          "height": "動画プレーヤーの高さ（数値はピクセル）。aspectRatio より優先",
+          "aspectRatio": "動画プレーヤーのアスペクト比（CSS aspect-ratio）",
+          "pictureInPicture": "ピクチャーインピクチャーボタンを表示（動画かつブラウザが対応している場合）",
+          "tracks": "字幕: WebVTT または SRT ファイル（{ src, srclang, label, kind, default }）。<track> 子要素として描画し、プレーヤーが字幕を描画、コントロールバーに字幕メニューを追加。選択は記憶される（localStorage）",
+          "onTimeUpdate": "再生中に再生位置と長さで呼ばれる（{ currentTime, duration }、秒）",
+          "onEnded": "最後まで再生したときに呼ばれる",
+          "onPlay": "再生開始時に呼ばれる",
+          "onPause": "一時停止時に呼ばれる",
+          "onLoadedMetadata": "メタデータの読み込み後に長さで呼ばれる（{ duration }）",
+          "onError": "メディアを読み込めない / 再生できないときに MediaError で呼ばれる",
+          "onRateChange": "新しい再生速度で呼ばれる",
+          "onVolumeChange": "音量またはミュート状態の変更時に呼ばれる（{ volume, muted }）",
+          "onTrackChange": "ユーザーが字幕を選んだときに呼ばれる（{ index, track }。index -1・track null はオフ）",
+          "aria-label": "プレーヤーのアクセシブルラベル（既定は title、なければ「メディアプレーヤー」）",
+          "className": "追加のクラス名",
+          "style": "ルート要素のインラインスタイル",
+          "ref": "命令型ハンドル：play()、pause()、seek(seconds)、element"
+        },
+        "MediaPlayerHandle": {
+          "play": "再生を開始（HTMLMediaElement.play() の Promise。自動再生の拒否は無視されます）",
+          "pause": "再生を一時停止",
+          "seek": "再生位置を指定秒へ移動（長さの範囲内に制限）",
+          "element": "描画された <audio> / <video> 要素（マウント前は null）"
+        },
+        "MediaPlayerTrack": {
+          "src": "WebVTT（.vtt）または SubRip（.srt）ファイルの URL。data: URL も使用可",
+          "srclang": "トラックの言語（BCP 47: \"en\"、\"fr-CA\"）。記憶された選択との照合にも使用",
+          "label": "字幕メニューに表示する名前",
+          "kind": "テキストトラックの種類: \"subtitles\"（既定）または \"captions\"",
+          "default": "ユーザーがまだ字幕を選んでいないときに表示"
+        }
+      },
+      "cssVars": {
+        "--media-player-radius": "プレーヤーの角丸（既定は --radius-lg）",
+        "--media-player-accent": "再生済み範囲とつまみの色（既定は --primary-color）",
+        "--media-player-video-background": "動画の背後の余白の色（既定は黒）",
+        "--media-player-overlay-background": "動画コントロールバーの背景（既定は --overlay-color へのグラデーション）",
+        "--media-player-overlay-color": "動画上の文字とアイコンの色（既定は白）",
+        "--media-player-bar-background": "音声バーの背景（既定は --surface-color）",
+        "--media-player-bar-color": "音声バーの文字とアイコンの色（既定は --text-color）",
+        "--media-player-button-size": "コントロールボタンのサイズ（既定は密度に応じた小サイズのコントロールの高さ）",
+        "--media-player-track-height": "シークバーと音量バーの太さ（既定は 4px）",
+        "--media-player-captions-background": "字幕テキストの背景（既定は動画で rgb(0 0 0 / 75%)、音声ではなし）",
+        "--media-player-captions-color": "字幕テキストの色（既定は動画で白、音声ではバーの色）",
+        "--media-player-captions-font-size": "字幕テキストのフォントサイズ（既定は動画で --font-size-lg、音声で --font-size-md）"
+      },
+      "wc": {
+        "demos": {
+          "video": {
+            "title": "動画",
+            "description": "heading スロットは動画上のタイトルです。picture-in-picture はブラウザが対応していればボタンを追加します。プレーヤーにフォーカスして Space / K、矢印キー、M、F を使用できます。"
+          },
+          "audio": {
+            "title": "音声",
+            "description": ".mp3 の src（または mime-type=\"audio/…\"）は音声バーで表示されます。skip-seconds=\"0\" でスキップボタンを非表示にします。"
+          },
+          "resume": {
+            "title": "再開と進捗",
+            "description": "start-time はメタデータの読み込み後に一度だけ再開します。メディアイベントは shadow root を越えないため、minerva-loaded-metadata、minerva-time-update、minerva-pause、minerva-ended を監視します。play() と seek() でプレーヤーを操作します。"
+          },
+          "rates-skip": {
+            "title": "再生速度とスキップ幅",
+            "description": "playbackRates はプロパティ（配列）です。minerva-rate-change が速度を通知します。skip-seconds でスキップ幅を、aspect-ratio で動画のサイズを設定します。"
+          },
+          "captions": {
+            "title": "字幕",
+            "description": "tracks はプロパティ（{ src, srclang, label, kind, default } の配列）です。未設定の場合は要素の <track src srclang label default> 子要素を使います。プレーヤーが字幕を描画して字幕メニューを追加し、minerva-track-change がユーザーの選択を通知します。クロスオリジンのファイルには crossorigin と CORS ヘッダーが必要です。"
+          }
+        },
+        "minerva-media-player": {
+          "props": {
+            "noControls": "カスタムコントロールバーを非表示にし、メディア要素のみを描画（スクリプトで操作）",
+            "element": "描画された <audio> / <video> 要素（読み取り専用。初回描画前は null）",
+            "tracks": "字幕（プロパティのみ）: WebVTT または SRT ファイル（{ src, srclang, label, kind, default }）。空の場合は <track> 子要素を使用"
+          },
+          "events": {
+            "minerva-play": "再生が始まりました。",
+            "minerva-pause": "一時停止しました。",
+            "minerva-ended": "最後まで再生しました。",
+            "minerva-time-update": "再生位置が変わりました（detail: { currentTime, duration }、秒）。",
+            "minerva-loaded-metadata": "メタデータを読み込みました（detail: { duration }）。",
+            "minerva-error": "メディアを読み込めない / 再生できません（detail: { error }、MediaError）。",
+            "minerva-rate-change": "再生速度が変わりました（detail: { rate }）。",
+            "minerva-volume-change": "音量またはミュート状態が変わりました（detail: { volume, muted }）。",
+            "minerva-track-change": "ユーザーが字幕を選びました（detail: { index, track }。index -1・track null はオフ）。"
+          },
+          "methods": {
+            "play": "再生を開始します（自動再生の拒否は無視され、プレーヤーは一時停止のままです）。",
+            "pause": "再生を一時停止します。",
+            "seek": "再生位置を指定秒へ移動します（長さの範囲内に制限）。"
+          },
+          "slots": {
+            "heading": "メディアのタイトル。音声バー内 / 動画の上に表示されます。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "MediaControls（React Native）",
+            "description": "React Native のコアにはメディア要素がありません。MediaControls は props（playing、currentTime、duration、buffered、muted、playbackRate）とコールバック（onPlayPause、onSeek、onMutedChange、onRateChange…）で動くテーマ付きコントロールバーです。expo-video / expo-audio に接続してください（コード内のコメント参照）。このプレビューはプレーヤーをシミュレートしています。"
+          },
+          "captions": {
+            "title": "字幕（React Native）",
+            "description": "React Native のプレーヤーにはテキストトラックがありません。tracks を指定すると、MediaControls が WebVTT / SRT ファイル（data: URL も可）を取得・解析し、currentTime の字幕をシークバーの上に描画します。CC ボタンでオフ / 各トラックを選べます。trackIndex は制御可能で、onTrackChange が選択を通知します。"
+          }
+        }
+      }
+    }
+  }
+}

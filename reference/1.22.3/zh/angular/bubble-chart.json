@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "zh",
+  "renderer": "angular",
+  "page": "bubble-chart",
+  "title": "气泡图",
+  "description": "用点的大小表示第三个数值的散点图：气泡面积与数值成正比。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "data": {
+      "continents": {
+        "asia": "亚洲",
+        "europe": "欧洲",
+        "americas": "美洲",
+        "africa": "非洲"
+      },
+      "population": "人口",
+      "gdp": "人均 GDP",
+      "lifeExpectancy": "预期寿命（岁）",
+      "countriesAria": "各国人均 GDP、预期寿命与人口",
+      "products": "产品",
+      "revenue": "收入",
+      "portfolio": {
+        "cloudStorage": "云存储",
+        "analytics": "数据分析",
+        "mobileSdk": "移动 SDK",
+        "payments": "支付",
+        "desktop": "桌面应用",
+        "hardware": "硬件",
+        "consulting": "咨询"
+      },
+      "marketShare": "相对市场份额",
+      "marketGrowth": "市场增长率",
+      "leader": "市场领先",
+      "highGrowth": "高增长",
+      "portfolioAria": "各产品的市场份额、增长率与收入",
+      "stages": {
+        "qualified": "已确认",
+        "proposal": "方案",
+        "negotiation": "谈判"
+      },
+      "amount": "金额",
+      "deal": "商机 #{{id}}",
+      "daysInPipeline": "在管道中的天数",
+      "winProbability": "赢单概率",
+      "dealStatus": "{{deal}}（{{stage}}）：{{amount}}",
+      "clickBubble": "点击一个气泡",
+      "pipelineAria": "按时长、赢单概率和金额展示的进行中商机",
+      "gdpLog": "人均 GDP（对数坐标）",
+      "highIncome": "高收入",
+      "logAria": "对数坐标下的人均 GDP 与预期寿命，气泡大小表示人口",
+      "visibleIncomes": "可见收入范围：{{from}} – {{to}}",
+      "zoomHint": "缩放后显示以美元计的可见范围",
+      "teams": {
+        "infrastructure": "基础设施",
+        "security": "安全",
+        "people": "人员",
+        "budget": "预算"
+      },
+      "exposure": "敞口",
+      "risks": {
+        "powerOutage": "停电",
+        "hardwareDelay": "硬件交付延迟",
+        "networkCutover": "网络割接",
+        "dataLeak": "数据泄露",
+        "accessReview": "权限审查积压",
+        "keyPerson": "关键人员离职",
+        "vendorSkills": "供应商技能不足",
+        "trainingGap": "培训缺口",
+        "licenseCost": "许可费用上涨",
+        "exchangeRate": "汇率波动"
+      },
+      "zones": {
+        "low": "可接受",
+        "high": "严重"
+      },
+      "riskScore": "可能性 {{likelihood}} × 影响 {{impact}} = {{score}}",
+      "exposureRow": "敞口：{{value}}",
+      "likelihood": "可能性",
+      "impact": "影响",
+      "riskAria": "按可能性、影响和成本敞口排列的项目风险",
+      "channels": {
+        "search": "搜索",
+        "social": "社交",
+        "video": "视频",
+        "email": "邮件"
+      },
+      "budget": "预算",
+      "launchedOn": "上线于 {{date}}",
+      "launch": "上线日期",
+      "roas": "广告支出回报率",
+      "breakEven": "盈亏平衡",
+      "campaignsAria": "按上线日期、广告支出回报率和预算排列的营销活动",
+      "regions": {
+        "north": "北区",
+        "south": "南区",
+        "east": "东区",
+        "west": "西区",
+        "center": "中区"
+      },
+      "sharedScale": "两个图表使用相同的大小比例",
+      "sharedScaleOn": "两个图表都用最大的气泡表示 {{value}}。",
+      "sharedScaleOff": "每个图表都用最大的气泡表示自身的最高营收。",
+      "salesPerMeter": "每平方米销售额",
+      "margin": "利润率",
+      "sharedScaleAria": "{{year}} 年各门店区域的每平方米销售额、利润率和营收",
+      "play": "播放",
+      "pause": "暂停",
+      "replay": "重播",
+      "restart": "重新开始",
+      "yearStatus": "年份：{{year}}",
+      "fertility": "生育率（每名女性生育子女数）",
+      "playbackAria": "1990 年至 2025 年各国的生育率、预期寿命和人口"
+    }
+  },
+  "components": [
+    {
+      "name": "BubbleChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnBubbleChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnBubbleChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnBubbleChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-bubble-chart",
+        "props": [
+          {
+            "name": "series",
+            "typeText": "readonly ChartSeries[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "minSize",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "maxSize",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "maxValue",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "countries",
+      "title": "国家对比",
+      "description": "人均 GDP 与预期寿命，气泡大小表示人口，颜色区分大洲；valueName 和 format 设置提示框中数值的名称和格式。",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBubbleChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBubbleChart],\n  template: `\n@let t = labels[language()];\n<mn-bubble-chart\n  [series]=\"[{ name: t.life, showLabels: true, data: [\n    { x: 34, y: 84.5, value: 124, label: t.names[0] },\n    { x: 44, y: 82.5, value: 68, label: t.names[1] },\n    { x: 12.6, y: 78.6, value: 1410, label: t.names[2] },\n    { x: 9, y: 75.9, value: 216, label: t.names[3] },\n    { x: 2.5, y: 70.8, value: 1430, label: t.names[4] },\n    { x: 2.2, y: 53.6, value: 224, label: t.names[5] },\n    { x: 52, y: 81.2, value: 84, label: t.names[6] },\n    { x: 11.5, y: 75, value: 128, label: t.names[7] }\n  ] }]\"\n  [xAxis]=\"{ title: t.gdp }\"\n  [yAxis]=\"{ title: t.life, min: 50 }\"\n  [maxSize]=\"64\"\n  [height]=\"320\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": {\n    \"gdp\": \"GDP per capita (k$)\",\n    \"life\": \"Life expectancy\",\n    \"names\": [\"Japan\", \"France\", \"China\", \"Brazil\", \"India\", \"Nigeria\", \"Germany\", \"Mexico\"]\n  },\n  \"zh\": {\n    \"gdp\": \"人均 GDP（千美元）\",\n    \"life\": \"预期寿命\",\n    \"names\": [\"日本\", \"法国\", \"中国\", \"巴西\", \"印度\", \"尼日利亚\", \"德国\", \"墨西哥\"]\n  },\n  \"ja\": {\n    \"gdp\": \"1 人あたり GDP（千ドル）\",\n    \"life\": \"平均寿命\",\n    \"names\": [\"日本\", \"フランス\", \"中国\", \"ブラジル\", \"インド\", \"ナイジェリア\", \"ドイツ\", \"メキシコ\"]\n  },\n  \"fr\": {\n    \"gdp\": \"PIB par habitant (k$)\",\n    \"life\": \"Espérance de vie\",\n    \"names\": [\"Japon\", \"France\", \"Chine\", \"Brésil\", \"Inde\", \"Nigeria\", \"Allemagne\", \"Mexique\"]\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "portfolio",
+      "title": "产品组合",
+      "description": "各产品的市场份额、市场增长率和收入，两条参考线把图分成四个象限；showLabels 在气泡周围写出名称。",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBubbleChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBubbleChart],\n  template: `\n@let t = labels[language()];\n<mn-bubble-chart\n  [series]=\"[\n    { name: t.assets[0], data: [{ x: 4, y: 3, value: 30 }] },\n    { name: t.assets[1], data: [{ x: 15, y: 7, value: 25 }] },\n    { name: t.assets[2], data: [{ x: 12, y: 6, value: 20 }] },\n    { name: t.assets[3], data: [{ x: 28, y: 12, value: 15 }] },\n    { name: t.assets[4], data: [{ x: 16, y: 4, value: 5 }] },\n    { name: t.assets[5], data: [{ x: 45, y: 18, value: 5 }] }\n  ]\"\n  [xAxis]=\"{ title: t.risk }\"\n  [yAxis]=\"{ title: t.return }\"\n  [height]=\"300\"\n  (pointClick)=\"selected = $event.items[0] ? $event.items[0].seriesName + ': ' + $event.items[0].value + ' %' : selected\"\n/>\n<output aria-live=\"polite\">{{ selected || t.hint }}</output>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  selected = \"\";\n  labels = {\n  \"en\": {\n    \"risk\": \"Risk (volatility %)\",\n    \"return\": \"Expected return %\",\n    \"hint\": \"Click a bubble\",\n    \"assets\": [\"Bonds\", \"Index fund\", \"Real estate\", \"Tech stocks\", \"Gold\", \"Start-ups\"]\n  },\n  \"zh\": {\n    \"risk\": \"风险（波动率 %）\",\n    \"return\": \"预期收益 %\",\n    \"hint\": \"点击一个气泡\",\n    \"assets\": [\"债券\", \"指数基金\", \"房地产\", \"科技股\", \"黄金\", \"初创企业\"]\n  },\n  \"ja\": {\n    \"risk\": \"リスク（ボラティリティ %）\",\n    \"return\": \"期待リターン %\",\n    \"hint\": \"バブルをクリックします\",\n    \"assets\": [\"債券\", \"インデックスファンド\", \"不動産\", \"ハイテク株\", \"金\", \"スタートアップ\"]\n  },\n  \"fr\": {\n    \"risk\": \"Risque (volatilité %)\",\n    \"return\": \"Rendement attendu %\",\n    \"hint\": \"Cliquez sur une bulle\",\n    \"assets\": [\"Obligations\", \"Fonds indiciel\", \"Immobilier\", \"Actions tech\", \"Or\", \"Start-up\"]\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "气泡图",
+      "description": "用点的大小表示第三个数值的散点图：气泡面积与数值成正比。",
+      "demos": {
+        "countries": {
+          "title": "国家对比",
+          "description": "人均 GDP 与预期寿命，气泡大小表示人口，颜色区分大洲；valueName 和 format 设置提示框中数值的名称和格式。"
+        },
+        "log-scale": {
+          "title": "对数坐标",
+          "description": "人均收入从 900 美元到 14 万美元：xAxis.type: \"log\" 让它们均匀分布（在任何位置 ×10 的距离都相同），刻度位于每个数量级的 1、2、5。默认范围不再取整个数量级，而是对齐到包含数据的最近 1、2、5 × 10^k 边界（500 美元至 20 万美元），xAxis.min / max 可覆盖；标注和提示框使用美元数值，onZoom 报告的可见范围也是美元而不是对数（Ctrl / ⌘ + 滚轮或双指缩放）。"
+        },
+        "portfolio": {
+          "title": "产品组合",
+          "description": "各产品的市场份额、市场增长率和收入，两条参考线把图分成四个象限；showLabels 在气泡周围写出名称。"
+        },
+        "pipeline": {
+          "title": "销售管道",
+          "description": "在管道中的天数与赢单概率，气泡大小表示金额；onPointClick 接收被点击气泡的数值。"
+        },
+        "risk-matrix": {
+          "title": "风险矩阵",
+          "description": "项目风险按可能性和影响程度放在 5 × 5 网格上，气泡大小表示成本敞口；不设边界的 rect 标注为低风险区和高风险区着色，renderTooltip 计算风险分值。"
+        },
+        "campaigns": {
+          "title": "营销活动",
+          "description": "营销活动按上线日期（xAxis.type: \"time\"）和广告支出回报率排列，气泡大小表示预算，每个渠道一个系列；line 标注标出盈亏平衡线，点击图例项可切换渠道。"
+        },
+        "shared-scale": {
+          "title": "共享大小比例",
+          "description": "两个图表对比两年的门店区域。使用相同的 maxValue 时，相同营收在两个图表中面积相同；不设置时，每个图表按自身的最大值确定气泡大小。"
+        },
+        "playback": {
+          "title": "逐年动画",
+          "description": "1990 年至 2025 年的生育率与预期寿命，用 setInterval 逐年播放（暂停和卸载时清除）。固定的坐标轴范围和恒定的 maxValue 让各帧可以比较，text 标注显示年份。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "人均 GDP、预期寿命与人口：气泡面积与人口成正比，提示框中按语言区域的紧凑单位显示。"
+          }
+        }
+      },
+      "data": {
+        "continents": {
+          "asia": "亚洲",
+          "europe": "欧洲",
+          "americas": "美洲",
+          "africa": "非洲"
+        },
+        "population": "人口",
+        "gdp": "人均 GDP",
+        "lifeExpectancy": "预期寿命（岁）",
+        "countriesAria": "各国人均 GDP、预期寿命与人口",
+        "products": "产品",
+        "revenue": "收入",
+        "portfolio": {
+          "cloudStorage": "云存储",
+          "analytics": "数据分析",
+          "mobileSdk": "移动 SDK",
+          "payments": "支付",
+          "desktop": "桌面应用",
+          "hardware": "硬件",
+          "consulting": "咨询"
+        },
+        "marketShare": "相对市场份额",
+        "marketGrowth": "市场增长率",
+        "leader": "市场领先",
+        "highGrowth": "高增长",
+        "portfolioAria": "各产品的市场份额、增长率与收入",
+        "stages": {
+          "qualified": "已确认",
+          "proposal": "方案",
+          "negotiation": "谈判"
+        },
+        "amount": "金额",
+        "deal": "商机 #{{id}}",
+        "daysInPipeline": "在管道中的天数",
+        "winProbability": "赢单概率",
+        "dealStatus": "{{deal}}（{{stage}}）：{{amount}}",
+        "clickBubble": "点击一个气泡",
+        "pipelineAria": "按时长、赢单概率和金额展示的进行中商机",
+        "gdpLog": "人均 GDP（对数坐标）",
+        "highIncome": "高收入",
+        "logAria": "对数坐标下的人均 GDP 与预期寿命，气泡大小表示人口",
+        "visibleIncomes": "可见收入范围：{{from}} – {{to}}",
+        "zoomHint": "缩放后显示以美元计的可见范围",
+        "teams": {
+          "infrastructure": "基础设施",
+          "security": "安全",
+          "people": "人员",
+          "budget": "预算"
+        },
+        "exposure": "敞口",
+        "risks": {
+          "powerOutage": "停电",
+          "hardwareDelay": "硬件交付延迟",
+          "networkCutover": "网络割接",
+          "dataLeak": "数据泄露",
+          "accessReview": "权限审查积压",
+          "keyPerson": "关键人员离职",
+          "vendorSkills": "供应商技能不足",
+          "trainingGap": "培训缺口",
+          "licenseCost": "许可费用上涨",
+          "exchangeRate": "汇率波动"
+        },
+        "zones": {
+          "low": "可接受",
+          "high": "严重"
+        },
+        "riskScore": "可能性 {{likelihood}} × 影响 {{impact}} = {{score}}",
+        "exposureRow": "敞口：{{value}}",
+        "likelihood": "可能性",
+        "impact": "影响",
+        "riskAria": "按可能性、影响和成本敞口排列的项目风险",
+        "channels": {
+          "search": "搜索",
+          "social": "社交",
+          "video": "视频",
+          "email": "邮件"
+        },
+        "budget": "预算",
+        "launchedOn": "上线于 {{date}}",
+        "launch": "上线日期",
+        "roas": "广告支出回报率",
+        "breakEven": "盈亏平衡",
+        "campaignsAria": "按上线日期、广告支出回报率和预算排列的营销活动",
+        "regions": {
+          "north": "北区",
+          "south": "南区",
+          "east": "东区",
+          "west": "西区",
+          "center": "中区"
+        },
+        "sharedScale": "两个图表使用相同的大小比例",
+        "sharedScaleOn": "两个图表都用最大的气泡表示 {{value}}。",
+        "sharedScaleOff": "每个图表都用最大的气泡表示自身的最高营收。",
+        "salesPerMeter": "每平方米销售额",
+        "margin": "利润率",
+        "sharedScaleAria": "{{year}} 年各门店区域的每平方米销售额、利润率和营收",
+        "play": "播放",
+        "pause": "暂停",
+        "replay": "重播",
+        "restart": "重新开始",
+        "yearStatus": "年份：{{year}}",
+        "fertility": "生育率（每名女性生育子女数）",
+        "playbackAria": "1990 年至 2025 年各国的生育率、预期寿命和人口"
+      },
+      "api": {
+        "BubbleChartProps": {
+          "series": "数据点带有 value 的系列，value 决定气泡大小（面积与数值成正比）"
+        },
+        "BubbleOptions": {
+          "minSize": "最小气泡的直径（像素）",
+          "maxSize": "最大数值对应的直径（像素）",
+          "maxValue": "以 maxSize 绘制的数值，用于在多个图表间共享比例；默认为最大值"
+        }
+      },
+      "wc": {
+        "demos": {
+          "countries": {
+            "title": "财富、健康与人口",
+            "description": "人均 GDP 与预期寿命的关系，气泡大小表示人口（面积与数值成正比）。"
+          },
+          "portfolio": {
+            "title": "投资组合的风险与收益",
+            "description": "每种资产一个系列，大小表示其在组合中的占比；点击气泡可查看对应资产。"
+          }
+        },
+        "minerva-bubble-chart": {
+          "props": {
+            "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+            "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+          },
+          "events": {
+            "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
+            "minerva-point-click": "点击了数据点或柱子；detail：{ x, xLabel, items }",
+            "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",
+            "minerva-zoom": "用户进行了缩放或平移；detail：{ x, y }（可见范围）",
+            "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "显示完整的数据范围",
+            "getView": "可见范围，引擎创建之前为 null",
+            "setView": "设置可见范围",
+            "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+          }
+        }
+      }
+    }
+  }
+}

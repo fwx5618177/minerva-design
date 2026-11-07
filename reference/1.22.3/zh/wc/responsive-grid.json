@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "zh",
+  "renderer": "wc",
+  "page": "responsive-grid",
+  "title": "ResponsiveGrid 响应式网格",
+  "description": "等宽列网格，列数随自身宽度（容器查询）而非视口变化。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "GridItem",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/grid-item",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-grid-item",
+        "props": [
+          {
+            "name": "fullWidth",
+            "typeText": "boolean",
+            "attribute": "full-width",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Content"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ResponsiveGrid",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/responsive-grid",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-responsive-grid",
+        "props": [
+          {
+            "name": "columns",
+            "typeText": "ResponsiveGridColumns",
+            "attribute": "columns",
+            "required": false
+          },
+          {
+            "name": "gap",
+            "typeText": "string | number",
+            "attribute": "gap",
+            "required": false
+          },
+          {
+            "name": "rowGap",
+            "typeText": "string | number | undefined",
+            "attribute": "row-gap",
+            "required": false
+          },
+          {
+            "name": "columnGap",
+            "typeText": "string | number | undefined",
+            "attribute": "column-gap",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Grid items"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-responsive-grid": {
+      "kind": "element",
+      "source": "web-components/src/components/responsive-grid/responsive-grid.ts",
+      "className": "MinervaResponsiveGrid",
+      "summary": "Container-query column grid.",
+      "description": "An equal-width column grid whose column count follows its own available width (container queries at 480 / 768 / 1200px), not the viewport (`<ResponsiveGrid>` of React). Children are the grid items (wrap them in `<minerva-grid-item>` to span a full row). the React library's `.layout > *` rule reaches them through `::slotted(*)`.",
+      "properties": [
+        {
+          "name": "columns",
+          "attribute": "columns",
+          "type": "ResponsiveGridColumns",
+          "default": "1",
+          "description": "Column counts (integers 1-12): a number, `\"1 2 3 4\"` (base sm md lg) or `{ base, sm, md, lg }` (container widths 480 / 768 / 1200px)"
+        },
+        {
+          "name": "gap",
+          "attribute": "gap",
+          "type": "string | number",
+          "default": "4",
+          "description": "Gap between rows and columns (spacing token number or CSS value)"
+        },
+        {
+          "name": "rowGap",
+          "attribute": "row-gap",
+          "type": "string | number | undefined",
+          "description": "Gap between rows; defaults to `gap`"
+        },
+        {
+          "name": "columnGap",
+          "attribute": "column-gap",
+          "type": "string | number | undefined",
+          "description": "Gap between columns; defaults to `gap`"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Grid items"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The query container"
+        },
+        {
+          "name": "layout",
+          "description": "The grid (its children are the grid items)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--responsive-grid-align-items",
+          "description": "Vertical alignment of the items in their row (default: stretch)"
+        },
+        {
+          "name": "--responsive-grid-justify-items",
+          "description": "Horizontal alignment of the items in their column (default: stretch)"
+        }
+      ]
+    },
+    "wc:minerva-grid-item": {
+      "kind": "element",
+      "source": "web-components/src/components/responsive-grid/responsive-grid.ts",
+      "className": "MinervaGridItem",
+      "summary": "Grid cell, optionally spanning the full row.",
+      "description": "A cell of a `<minerva-responsive-grid>` (or any CSS grid) (`<GridItem>` of React); `full-width` spans the whole row. The element itself is the grid item (the React library's `asChild` has no equivalent: style the element).",
+      "properties": [
+        {
+          "name": "fullWidth",
+          "attribute": "full-width",
+          "type": "boolean",
+          "default": "false",
+          "description": "Spans the full row of the surrounding grid"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Content"
+        }
+      ],
+      "parts": [],
+      "cssProperties": [
+        {
+          "name": "--responsive-grid-align-items",
+          "description": "Vertical alignment of the items in their row (default: stretch)"
+        },
+        {
+          "name": "--responsive-grid-justify-items",
+          "description": "Horizontal alignment of the items in their column (default: stretch)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:ResponsiveGrid": {
+      "kind": "cssVars",
+      "source": "react/src/components/ResponsiveGrid",
+      "vars": [
+        {
+          "name": "--responsive-grid-align-items",
+          "description": "Vertical alignment of the items in their row (default: stretch)"
+        },
+        {
+          "name": "--responsive-grid-justify-items",
+          "description": "Horizontal alignment of the items in their column (default: stretch)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/responsive-grid/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/responsive-grid/wc/basic.html": "<minerva-responsive-grid columns=\"1 2 3 4\" gap=\"3\">\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">1</minerva-box>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">2</minerva-box>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">3</minerva-box>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">4</minerva-box>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">5</minerva-box>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">6</minerva-box>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">7</minerva-box>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">8</minerva-box>\n</minerva-responsive-grid>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本用法",
+      "description": "columns=\"1 2 3 4\" 分别设置 base、sm、md、lg 容器宽度下的列数；网格跟随自身宽度而不是视口。"
+    },
+    {
+      "id": "container",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/responsive-grid/wc/container.html",
+      "files": {
+        "apps/docs/src/docs/pages/responsive-grid/wc/container.html": "<label style=\"display: flex; gap: 8px; align-items: center\">\n  Container width\n  <input id=\"width\" type=\"range\" min=\"280\" max=\"1300\" step=\"10\" value=\"1300\" />\n  <output id=\"value\">1300px</output>\n</label>\n<div\n  id=\"frame\"\n  style=\"\n    max-width: 100%;\n    width: 1300px;\n    margin-top: 12px;\n    padding: 8px;\n    border: 1px dashed var(--border-color);\n  \"\n>\n  <minerva-responsive-grid\n    columns='{\"base\": 1, \"sm\": 2, \"lg\": 4}'\n    row-gap=\"2\"\n    column-gap=\"6\"\n  >\n    <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">A</minerva-box>\n    <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">B</minerva-box>\n    <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">C</minerva-box>\n    <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">D</minerva-box>\n  </minerva-responsive-grid>\n</div>\n",
+        "apps/docs/src/docs/pages/responsive-grid/wc/container.ts": "// Columns follow the grid's own width (container queries), not the viewport:\n// 1 column below 480px, 2 from 480px (md inherits sm), 4 from 1200px.\nexport function setup(root: HTMLElement) {\n  const input = root.querySelector<HTMLInputElement>(\"#width\")!;\n  const value = root.querySelector<HTMLOutputElement>(\"#value\")!;\n  const frame = root.querySelector<HTMLElement>(\"#frame\")!;\n  const onInput = () => {\n    frame.style.width = `${input.value}px`;\n    value.value = `${input.value}px`;\n  };\n  input.addEventListener(\"input\", onInput);\n  return () => input.removeEventListener(\"input\", onInput);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "容器断点",
+      "description": "columns 也接受 JSON（{\"base\": 1, \"sm\": 2, \"lg\": 4}，缺失的断点继承前一个），row-gap / column-gap 分别设置行列间距。拖动滑块调整容器宽度。"
+    },
+    {
+      "id": "full-width",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/responsive-grid/wc/full-width.html",
+      "files": {
+        "apps/docs/src/docs/pages/responsive-grid/wc/full-width.html": "<minerva-responsive-grid columns=\"2 3\" gap=\"3\">\n  <minerva-grid-item full-width>\n    <minerva-box\n      p=\"3\"\n      bg=\"bg.subtle\"\n      rounded=\"md\"\n      border=\"1px solid var(--border-color)\"\n    >\n      Full-width header row\n    </minerva-box>\n  </minerva-grid-item>\n  <minerva-grid-item\n    ><minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\"\n      >1</minerva-box\n    ></minerva-grid-item\n  >\n  <minerva-grid-item\n    ><minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\"\n      >2</minerva-box\n    ></minerva-grid-item\n  >\n  <minerva-grid-item\n    ><minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\"\n      >3</minerva-box\n    ></minerva-grid-item\n  >\n  <minerva-grid-item full-width>\n    <minerva-box\n      p=\"3\"\n      bg=\"bg.subtle\"\n      rounded=\"md\"\n      border=\"1px solid var(--border-color)\"\n    >\n      Full-width footer row\n    </minerva-box>\n  </minerva-grid-item>\n</minerva-responsive-grid>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "通栏项目",
+      "description": "将子元素包裹在 <minerva-grid-item full-width> 中即可横跨整行。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ResponsiveGrid 响应式网格",
+      "description": "等宽列网格，列数随自身宽度（容器查询）而非视口变化。",
+      "demos": {
+        "basic": {
+          "title": "响应式列",
+          "description": "columns 接受 base / sm / md / lg 列数，对应 0、480、768 和 1200px 的可用宽度。"
+        },
+        "full-width": {
+          "title": "整行项目",
+          "description": "GridItem fullWidth 占满整行；rowGap 与 columnGap 相互独立。"
+        }
+      },
+      "api": {
+        "ResponsiveGridProps": {
+          "ref": "指向外层（查询容器）元素的 ref",
+          "as": "作为外层容器渲染的元素或组件（div、section、nav……）",
+          "columns": "列数（1-12 的整数）：数字，或对应 480 / 768 / 1200px 的 { base, sm, md, lg }；其他值抛出 RangeError",
+          "gap": "行列间距（间距 token 或 CSS 值）",
+          "rowGap": "行间距；默认等于 gap",
+          "columnGap": "列间距；默认等于 gap"
+        },
+        "GridItemProps": {
+          "ref": "指向项目元素（或 asChild 时的子元素）的 ref",
+          "fullWidth": "占满所在网格的整行",
+          "asChild": "将项目的属性、类名和 ref 合并到唯一子元素上，不额外渲染 div"
+        }
+      },
+      "cssVars": {
+        "--responsive-grid-align-items": "网格项在行内的垂直对齐（默认 stretch）",
+        "--responsive-grid-justify-items": "网格项在列内的水平对齐（默认 stretch）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本用法",
+            "description": "columns=\"1 2 3 4\" 分别设置 base、sm、md、lg 容器宽度下的列数；网格跟随自身宽度而不是视口。"
+          },
+          "container": {
+            "title": "容器断点",
+            "description": "columns 也接受 JSON（{\"base\": 1, \"sm\": 2, \"lg\": 4}，缺失的断点继承前一个），row-gap / column-gap 分别设置行列间距。拖动滑块调整容器宽度。"
+          },
+          "full-width": {
+            "title": "通栏项目",
+            "description": "将子元素包裹在 <minerva-grid-item full-width> 中即可横跨整行。"
+          }
+        },
+        "minerva-responsive-grid": {
+          "slots": {
+            "default": "网格项目。"
+          }
+        },
+        "minerva-grid-item": {
+          "slots": {
+            "default": "单元格内容。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

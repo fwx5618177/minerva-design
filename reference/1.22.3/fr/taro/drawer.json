@@ -1,0 +1,1096 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "fr",
+  "renderer": "taro",
+  "page": "drawer",
+  "title": "Drawer",
+  "description": "Un panneau qui glisse depuis un bord de la fenêtre pour des tâches secondaires comme les filtres ou les détails. Il se comporte comme une modale : focus piégé, Échap, clic sur le fond et retour du focus.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Drawer",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "Drawer"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "trigger",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "title",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "open",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "hiddenDescription",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "forceMount",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "hideCloseButton",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "description",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "role",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "enum",
+            "values": [
+              "alertdialog",
+              "dialog"
+            ],
+            "typeText": "\"dialog\" | \"alertdialog\" | undefined",
+            "typeRef": "type:2cc2e24324879bcc4737",
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "overlayClassName",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "side",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "enum",
+            "values": [
+              "bottom",
+              "left",
+              "right",
+              "top"
+            ],
+            "typeText": "\"top\" | \"bottom\" | \"left\" | \"right\" | undefined",
+            "typeRef": "type:6d53de26e109ca539540",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:804ddd37e56a55e58c37",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onPointerDownOutside",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((event: NativeOutsideEvent) => void) | undefined",
+            "typeRef": "type:ecda376097c0e609cf41",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NativeOutsideEvent",
+                "typeRef": "type:8c1960b9229e669f840b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onInteractOutside",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((event: NativeOutsideEvent) => void) | undefined",
+            "typeRef": "type:93e1e815666976fb4a85",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NativeOutsideEvent",
+                "typeRef": "type:8c1960b9229e669f840b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DrawerBody",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "DrawerBody"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerClose",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "DrawerClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onClick",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((event: ITouchEvent) => void) | undefined",
+            "typeRef": "type:f7b40babd9b6eccb005d",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ITouchEvent",
+                "typeRef": "type:7276d9ff893f9fea3df5"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerContent",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "DrawerContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "hiddenDescription",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "forceMount",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "hideCloseButton",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "description",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "role",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "enum",
+            "values": [
+              "alertdialog",
+              "dialog"
+            ],
+            "typeText": "\"dialog\" | \"alertdialog\" | undefined",
+            "typeRef": "type:2cc2e24324879bcc4737",
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "overlayClassName",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "side",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "enum",
+            "values": [
+              "bottom",
+              "left",
+              "right",
+              "top"
+            ],
+            "typeText": "\"top\" | \"bottom\" | \"left\" | \"right\" | undefined",
+            "typeRef": "type:6d53de26e109ca539540",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onPointerDownOutside",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((event: NativeOutsideEvent) => void) | undefined",
+            "typeRef": "type:ecda376097c0e609cf41",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NativeOutsideEvent",
+                "typeRef": "type:8c1960b9229e669f840b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onInteractOutside",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((event: NativeOutsideEvent) => void) | undefined",
+            "typeRef": "type:93e1e815666976fb4a85",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NativeOutsideEvent",
+                "typeRef": "type:8c1960b9229e669f840b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerFooter",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "DrawerFooter"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerHeader",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "DrawerHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerRoot",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "DrawerRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "modal",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:804ddd37e56a55e58c37",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DrawerTrigger",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled disclosure, compound triggers/close/sections, accessible title/description, cancellable outside taps, modal backdrop choice, forceMount state, four drawer sides/sizes, five modal widths, reactive compound header naming and themed overlay surfaces. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Browser focus return/trap, scroll lock and inert background handling are not native equivalents. Non-modal drawers leave the page interactive; native page-global outside-focus/pointer listeners are unavailable, so non-modal dismissal uses the trigger/close controls. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "DrawerTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onClick",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((event: ITouchEvent) => void) | undefined",
+            "typeRef": "type:f7b40babd9b6eccb005d",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ITouchEvent",
+                "typeRef": "type:7276d9ff893f9fea3df5"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Drawer": {
+      "kind": "cssVars",
+      "source": "react/src/components/Drawer",
+      "vars": [
+        {
+          "name": "--drawer-width",
+          "description": "Width of a left / right drawer (every size; defaults to the width of the size)"
+        },
+        {
+          "name": "--drawer-height",
+          "description": "Height of a top / bottom drawer (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--drawer-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--drawer-radius",
+          "description": "Corner radius of the inner edge (defaults to --radius-lg)"
+        },
+        {
+          "name": "--drawer-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--drawer-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--drawer-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Drawer",
+      "description": "Un panneau qui glisse depuis un bord de la fenêtre pour des tâches secondaires comme les filtres ou les détails. Il se comporte comme une modale : focus piégé, Échap, clic sur le fond et retour du focus.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Contrôlé avec open et onOpenChange, avec un corps et un pied d'actions."
+        },
+        "sides": {
+          "title": "Côtés et tailles",
+          "description": "side choisit le bord ; size règle la largeur (gauche / droite) ou la hauteur (haut / bas)."
+        },
+        "compound": {
+          "title": "API composée",
+          "description": "DrawerRoot, DrawerTrigger, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter et DrawerClose."
+        }
+      },
+      "api": {
+        "DrawerProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "trigger": "Élément qui l'ouvre au clic (un seul élément, rendu avec asChild)",
+          "side": "Bord depuis lequel le panneau glisse",
+          "size": "Préréglage de taille : largeur pour gauche / droite, hauteur pour haut / bas",
+          "title": "Titre, utilisé comme nom accessible de la boîte de dialogue",
+          "description": "Description sous le titre, utilisée comme description accessible",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "hiddenDescription": "Texte de la description masquée utilisée sans description ; par défaut « Contenu du tiroir » localisé",
+          "className": "Classe supplémentaire du panneau",
+          "ref": "Ref vers l'élément de dialogue",
+          "children": "Contenu : en général DrawerBody + DrawerFooter"
+        },
+        "DrawerRootProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "modal": "Mode modal : affiche le fond, piège le focus, bloque le défilement de la page et les interactions extérieures, et masque la page aux technologies d'assistance",
+          "children": "Déclencheur et contenu"
+        },
+        "DrawerContentProps": {
+          "ref": "Ref vers l'élément de dialogue",
+          "side": "Bord depuis lequel le panneau glisse",
+          "size": "Préréglage de taille : largeur pour gauche / droite, hauteur pour haut / bas",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "hiddenDescription": "Texte de la description masquée utilisée sans description ; par défaut « Contenu du tiroir » localisé",
+          "description": "Description visible sous le titre ; sans elle une description générique masquée est rendue",
+          "overlayClassName": "Classe de la superposition (fond)",
+          "role": "Rôle ARIA du panneau ; utilisez \"alertdialog\" pour les confirmations qui interrompent l'utilisateur",
+          "forceMount": "Garde le panneau monté une fois fermé (data-state=\"closed\"), par exemple pour une bibliothèque d'animation",
+          "onOpenAutoFocus": "Appelé avant que le focus n'entre dans le panneau à l'ouverture ; event.preventDefault() laisse le focus en place",
+          "onCloseAutoFocus": "Appelé avant que le focus ne revienne à l'élément d'ouverture à la fermeture ; event.preventDefault() l'annule",
+          "onEscapeKeyDown": "Échap pressé alors qu'il est la couche supérieure ; event.preventDefault() le garde ouvert",
+          "onPointerDownOutside": "Pointeur pressé à l'extérieur ; event.preventDefault() le garde ouvert",
+          "onInteractOutside": "Pointeur pressé ou focus à l'extérieur ; event.preventDefault() le garde ouvert"
+        }
+      },
+      "cssVars": {
+        "--drawer-width": "Largeur d'un tiroir gauche / droit (toutes les tailles ; par défaut celle de la taille)",
+        "--drawer-height": "Hauteur d'un tiroir haut / bas (toutes les tailles ; par défaut celle de la taille)",
+        "--drawer-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied",
+        "--drawer-radius": "Rayon des coins du bord intérieur (par défaut --radius-lg)",
+        "--drawer-shadow": "Ombre du panneau (par défaut --shadow-xl)",
+        "--drawer-background": "Fond du panneau",
+        "--drawer-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un panneau latéral ouvert par son slot trigger. Tout élément du light DOM portant data-drawer-close (ici les boutons du pied) le ferme."
+          },
+          "sides": {
+            "title": "Côtés",
+            "description": "side choisit le bord d'où glisse le tiroir ; size est une largeur pour gauche / droite et une hauteur pour haut / bas."
+          },
+          "non-modal": {
+            "title": "Non modal",
+            "description": "Avec non-modal la page reste interactive : pas d'overlay ni de piège de focus, et un clic à l'extérieur ferme le tiroir. minerva-open-change indique la raison."
+          }
+        },
+        "minerva-drawer": {
+          "props": {
+            "label": "Texte du titre (ou le slot header) ; nomme la boîte de dialogue.",
+            "dialogRole": "Rôle ARIA du panneau.",
+            "nonModal": "Non modal : pas d'overlay, ni piège de focus, ni blocage du défilement ; se ferme sur un clic ou un focus à l'extérieur."
+          },
+          "events": {
+            "minerva-open-change": "L'utilisateur demande l'ouverture / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+            "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+          },
+          "slots": {
+            "default": "Contenu du corps.",
+            "header": "Titre (alternative à l'attribut label).",
+            "footer": "Rangée d'actions.",
+            "trigger": "Élément qui ouvre le panneau au clic."
+          },
+          "methods": {
+            "show": "Ouvre le tiroir.",
+            "hide": "Ferme le tiroir."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        },
+        "limitations": "Drawer et DrawerContent natifs s’ouvrent par défaut en bas. Utilisez side ou placement pour les panneaux latéraux ou supérieurs. Le contenu utilise View et Text natifs."
+      }
+    }
+  }
+}

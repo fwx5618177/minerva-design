@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "zh",
+  "renderer": "wc",
+  "page": "area-chart",
+  "title": "面积图",
+  "description": "用填充面积展示随时间变化的量：默认平滑，可相互重叠、堆叠成总量，或显示为 100% 占比。悬停可查看同一 x 处的所有系列；按住 Ctrl / ⌘ 滚动滚轮或双指捏合即可缩放。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "data": {
+      "dau": "日活跃用户",
+      "dauAria": "2026 年 4 月至 6 月的日活跃用户",
+      "others": "其他",
+      "shareAria": "2016 至 2026 年各厂商的市场份额",
+      "sources": {
+        "organic": "自然搜索",
+        "direct": "直接访问",
+        "referral": "外链引荐",
+        "social": "社交媒体"
+      },
+      "visitsAria": "按流量来源堆叠的每月访问量",
+      "instances": "运行中的实例",
+      "quota": "配额",
+      "instancesAria": "一天内自动扩缩容启动的实例数",
+      "energy": {
+        "nuclear": "核能",
+        "hydro": "水电",
+        "wind": "风电",
+        "solar": "光伏",
+        "gas": "燃气"
+      },
+      "gw": "{{value}} 吉瓦",
+      "power": "功率",
+      "energyAria": "一天内按能源类型堆叠的发电量",
+      "actual": "实际",
+      "plan": "计划",
+      "cumulativeAria": "本年度累计销售额与计划对比",
+      "download": "下载",
+      "upload": "上传",
+      "bandwidthAria": "两小时内的服务器带宽，下载在零线以上，上传在零线以下",
+      "solarProduction": "太阳能发电量",
+      "kwh": "{{value}} kWh",
+      "solarAria": "2026 年屋顶太阳能装置的每日发电量",
+      "resetZoom": "重置缩放",
+      "visibleTotal": "{{from}} – {{to}}：合计 {{total}}，日均 {{average}}",
+      "zoomHint": "按住 Ctrl / ⌘ 滚动滚轮或双指缩放来放大某个季节，拖动可平移。",
+      "departments": {
+        "engineering": "工程",
+        "sales": "销售",
+        "support": "客户支持",
+        "operations": "运营",
+        "admin": "财务与人力"
+      },
+      "headcountAria": "2025 至 2026 年各部门每月人数",
+      "headcountPanel": "所选月份的人数",
+      "employees": "{{value}} 名员工",
+      "lastYear": "去年",
+      "thisYear": "今年",
+      "blackFriday": "黑色星期五",
+      "cyberMonday": "网络星期一",
+      "lastShipping": "最后发货日",
+      "seasonAria": "11 月和 12 月的每日订单，今年与去年对比",
+      "seasonSummary": "本季共 {{total}} 笔订单，同比 {{change}}。",
+      "diskUsed": "已用",
+      "diskForecast": "趋势",
+      "gb": "{{value}} GB",
+      "capacity": "容量 {{value}}",
+      "volume": "卷",
+      "volumes": {
+        "database": "数据库",
+        "logs": "日志",
+        "uploads": "用户上传"
+      },
+      "fullIn": "约 {{days}} 后写满（{{date}} 前后）",
+      "notFull": "未来 {{days}}内不会写满",
+      "diskAria": "60 天的磁盘用量及其到容量上限的趋势"
+    }
+  },
+  "components": [
+    {
+      "name": "AreaChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/area-chart",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-area-chart",
+        "props": [
+          {
+            "name": "curve",
+            "typeText": "\"linear\" | \"smooth\" | \"step\"",
+            "attribute": "curve",
+            "required": false
+          },
+          {
+            "name": "stacked",
+            "typeText": "boolean",
+            "attribute": "stacked",
+            "required": false
+          },
+          {
+            "name": "percent",
+            "typeText": "boolean",
+            "attribute": "percent",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | number | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "series",
+            "typeText": "readonly ChartSeries[] | undefined",
+            "required": false
+          },
+          {
+            "name": "options",
+            "typeText": "ChartBaseOptions | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-hover",
+            "typeText": "CustomEvent",
+            "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+          },
+          {
+            "name": "minerva-point-click",
+            "typeText": "CustomEvent",
+            "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+          },
+          {
+            "name": "minerva-plot-click",
+            "typeText": "CustomEvent",
+            "description": "The plot area was clicked where there is no point; detail: { x, y }"
+          },
+          {
+            "name": "minerva-zoom",
+            "typeText": "CustomEvent",
+            "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+          },
+          {
+            "name": "minerva-renderer-change",
+            "typeText": "CustomEvent",
+            "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "percent",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/wc/percent.html",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/wc/percent.html": "<minerva-area-chart\n  id=\"mix\"\n  percent\n  curve=\"linear\"\n  height=\"280\"\n></minerva-area-chart>\n",
+        "apps/docs/src/docs/pages/area-chart/wc/percent.ts": "// `percent` scales every stack to 100%: the share of each source over time.\nimport type { MinervaAreaChart } from \"minerva-design/web-components/chart\";\n\nconst TEXT = {\n  en: {\n    solar: \"Solar\",\n    wind: \"Wind\",\n    hydro: \"Hydro\",\n    hours: [\"00:00\", \"04:00\", \"08:00\", \"12:00\", \"16:00\", \"20:00\"],\n  },\n  zh: {\n    solar: \"太阳能\",\n    wind: \"风能\",\n    hydro: \"水电\",\n    hours: [\"00:00\", \"04:00\", \"08:00\", \"12:00\", \"16:00\", \"20:00\"],\n  },\n  ja: {\n    solar: \"太陽光\",\n    wind: \"風力\",\n    hydro: \"水力\",\n    hours: [\"0:00\", \"4:00\", \"8:00\", \"12:00\", \"16:00\", \"20:00\"],\n  },\n  fr: {\n    solar: \"Solaire\",\n    wind: \"Éolien\",\n    hydro: \"Hydraulique\",\n    hours: [\"0 h\", \"4 h\", \"8 h\", \"12 h\", \"16 h\", \"20 h\"],\n  },\n};\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const chart = root.querySelector<MinervaAreaChart>(\"#mix\")!;\n  chart.series = [\n    { name: text.solar, data: [0, 5, 40, 62, 35, 2] },\n    { name: text.wind, data: [48, 52, 30, 22, 38, 55] },\n    { name: text.hydro, data: [30, 30, 28, 26, 28, 30] },\n  ];\n  chart.options = { xAxis: { type: \"category\", categories: text.hours } };\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "百分比堆叠",
+      "description": "percent 将每个堆叠缩放到 100%：一天中各能源的占比，使用直线边缘。"
+    },
+    {
+      "id": "stacked",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/wc/stacked.html",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/wc/stacked.html": "<minerva-area-chart id=\"traffic\" stacked height=\"280\"></minerva-area-chart>\n",
+        "apps/docs/src/docs/pages/area-chart/wc/stacked.ts": "// `stacked` piles the areas up; the curve is smooth by default.\nimport type { MinervaAreaChart } from \"minerva-design/web-components/chart\";\n\nconst TEXT = {\n  en: {\n    organic: \"Organic\",\n    paid: \"Paid\",\n    referral: \"Referral\",\n    months: [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\"],\n  },\n  zh: {\n    organic: \"自然流量\",\n    paid: \"付费流量\",\n    referral: \"推荐流量\",\n    months: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  },\n  ja: {\n    organic: \"オーガニック\",\n    paid: \"有料\",\n    referral: \"参照元\",\n    months: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  },\n  fr: {\n    organic: \"Naturel\",\n    paid: \"Payant\",\n    referral: \"Référents\",\n    months: [\"janv.\", \"févr.\", \"mars\", \"avr.\", \"mai\", \"juin\"],\n  },\n};\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const chart = root.querySelector<MinervaAreaChart>(\"#traffic\")!;\n  chart.series = [\n    { name: text.organic, data: [320, 332, 301, 334, 390, 430] },\n    { name: text.paid, data: [120, 132, 101, 134, 190, 230] },\n    { name: text.referral, data: [60, 72, 71, 74, 90, 110] },\n  ];\n  chart.options = { xAxis: { type: \"category\", categories: text.months } };\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "堆叠面积图",
+      "description": "三个流量来源以平滑边缘（默认曲线）堆叠。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "面积图",
+      "description": "用填充面积展示随时间变化的量：默认平滑，可相互重叠、堆叠成总量，或显示为 100% 占比。悬停可查看同一 x 处的所有系列；按住 Ctrl / ⌘ 滚动滚轮或双指捏合即可缩放。",
+      "demos": {
+        "basic": {
+          "title": "基础",
+          "description": "以 Date 为 x 值的单个系列：边缘为平滑（单调）曲线，不会超出数据范围。"
+        },
+        "stacked": {
+          "title": "堆叠",
+          "description": "stacked 将各面积逐层堆叠，顶部边缘即为总量；适合各部分之和有实际意义的场景。点击图例项可隐藏某个来源，其余系列会重新堆叠。"
+        },
+        "percent": {
+          "title": "百分比堆叠",
+          "description": "percent 将每个 x 处的总量缩放为 100%，用于比较占比而非绝对值（如市场份额）；提示框同时显示各项数值及其占比。"
+        },
+        "step": {
+          "title": "阶梯",
+          "description": "curve=\"step\" 让每个值保持到下一个点为止，适合在离散时刻变化的计数；一条标注线标出配额上限。"
+        },
+        "energy-mix": {
+          "title": "能源结构",
+          "description": "一天内按能源类型堆叠的发电量：顶边即总需求，光伏的隆起显示了其他能源何时减少出力。每个系列可设置自己的颜色。"
+        },
+        "cumulative": {
+          "title": "累计值与计划",
+          "description": "销售额的累计值对比均匀增长的计划（以折线系列绘制）；null 值让尚未到来的月份留空。"
+        },
+        "mirrored": {
+          "title": "上下镜像",
+          "description": "下载在零线以上、上传在零线以下，共用同一刻度，这是网络监控中常见的布局；y 轴格式去掉了负号。"
+        },
+        "zoom-total": {
+          "title": "可见范围合计",
+          "description": "每次缩放或平移后，onZoom 都会返回可见的 x 范围：下方读数汇总视图内各天的太阳能发电量。按钮调用图表 ref 的 resetZoom()。"
+        },
+        "hover-panel": {
+          "title": "外置读数面板",
+          "description": "tooltip={false} 配合 crosshair 与 onHover：侧边面板按人数从多到少列出悬停月份各部门的人数，指针移开后显示最近一个月。"
+        },
+        "year-over-year": {
+          "title": "同比对比",
+          "description": "去年的旺季以浅灰色面积绘制在今年之后，按相同日历日期对齐；text 标注说明高峰，x 参考线标出圣诞节前的最后发货日。"
+        },
+        "disk-forecast": {
+          "title": "容量预测",
+          "description": "磁盘用量以面积显示，一条 line 系列将最近 30 天的趋势延伸到 y 标注标出的容量上限；rect 为未来区间加上底色，读数给出磁盘写满的日期。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "时间轴上 90 天的日活跃用户：面积默认平滑；在图表上滑动读取每一天，双指缩放。"
+          }
+        }
+      },
+      "data": {
+        "dau": "日活跃用户",
+        "dauAria": "2026 年 4 月至 6 月的日活跃用户",
+        "others": "其他",
+        "shareAria": "2016 至 2026 年各厂商的市场份额",
+        "sources": {
+          "organic": "自然搜索",
+          "direct": "直接访问",
+          "referral": "外链引荐",
+          "social": "社交媒体"
+        },
+        "visitsAria": "按流量来源堆叠的每月访问量",
+        "instances": "运行中的实例",
+        "quota": "配额",
+        "instancesAria": "一天内自动扩缩容启动的实例数",
+        "energy": {
+          "nuclear": "核能",
+          "hydro": "水电",
+          "wind": "风电",
+          "solar": "光伏",
+          "gas": "燃气"
+        },
+        "gw": "{{value}} 吉瓦",
+        "power": "功率",
+        "energyAria": "一天内按能源类型堆叠的发电量",
+        "actual": "实际",
+        "plan": "计划",
+        "cumulativeAria": "本年度累计销售额与计划对比",
+        "download": "下载",
+        "upload": "上传",
+        "bandwidthAria": "两小时内的服务器带宽，下载在零线以上，上传在零线以下",
+        "solarProduction": "太阳能发电量",
+        "kwh": "{{value}} kWh",
+        "solarAria": "2026 年屋顶太阳能装置的每日发电量",
+        "resetZoom": "重置缩放",
+        "visibleTotal": "{{from}} – {{to}}：合计 {{total}}，日均 {{average}}",
+        "zoomHint": "按住 Ctrl / ⌘ 滚动滚轮或双指缩放来放大某个季节，拖动可平移。",
+        "departments": {
+          "engineering": "工程",
+          "sales": "销售",
+          "support": "客户支持",
+          "operations": "运营",
+          "admin": "财务与人力"
+        },
+        "headcountAria": "2025 至 2026 年各部门每月人数",
+        "headcountPanel": "所选月份的人数",
+        "employees": "{{value}} 名员工",
+        "lastYear": "去年",
+        "thisYear": "今年",
+        "blackFriday": "黑色星期五",
+        "cyberMonday": "网络星期一",
+        "lastShipping": "最后发货日",
+        "seasonAria": "11 月和 12 月的每日订单，今年与去年对比",
+        "seasonSummary": "本季共 {{total}} 笔订单，同比 {{change}}。",
+        "diskUsed": "已用",
+        "diskForecast": "趋势",
+        "gb": "{{value}} GB",
+        "capacity": "容量 {{value}}",
+        "volume": "卷",
+        "volumes": {
+          "database": "数据库",
+          "logs": "日志",
+          "uploads": "用户上传"
+        },
+        "fullIn": "约 {{days}} 后写满（{{date}} 前后）",
+        "notFull": "未来 {{days}}内不会写满",
+        "diskAria": "60 天的磁盘用量及其到容量上限的趋势"
+      },
+      "api": {
+        "AreaChartProps": {
+          "series": "未设置 type 的系列绘制为面积",
+          "curve": "边缘形状：\"linear\"、\"smooth\"（单调平滑）或 \"step\"",
+          "stacked": "将各面积逐层堆叠",
+          "percent": "将每个 x 处的堆叠缩放为 100%（隐含 stacked）"
+        }
+      },
+      "wc": {
+        "demos": {
+          "stacked": {
+            "title": "堆叠面积图",
+            "description": "三个流量来源以平滑边缘（默认曲线）堆叠。"
+          },
+          "percent": {
+            "title": "百分比堆叠",
+            "description": "percent 将每个堆叠缩放到 100%：一天中各能源的占比，使用直线边缘。"
+          }
+        },
+        "minerva-area-chart": {
+          "props": {
+            "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+            "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+          },
+          "events": {
+            "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
+            "minerva-point-click": "点击了数据点或柱子；detail：{ x, xLabel, items }",
+            "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",
+            "minerva-zoom": "用户进行了缩放或平移；detail：{ x, y }（可见范围）",
+            "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "显示完整的数据范围",
+            "getView": "可见范围，引擎创建之前为 null",
+            "setView": "设置可见范围",
+            "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "icon",
+  "title": "Icon アイコンコンポーネント",
+  "description": "セットのアイコン 1 つ。既定はインライン SVG、または WebGPU、WebGL2、WebGL、Canvas2D で描画するキャンバスです。名前付きコンポーネント（SearchIcon…）、汎用の Icon、カスタムアイコン、名前で選ぶアイコン。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "intro": {
+      "title": "SVG かキャンバスか",
+      "svg": "既定ではアイコンはインラインの <svg> です。サーバーで描画でき、currentColor でテキストの色に、size=\"1em\" でフォントサイズに追従し、title か aria-label がない限り支援技術からは隠されます。",
+      "canvas": "renderer を \"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\"、\"canvas2d\" にすると、同じアイコンがキャンバスに描画されます。ブラウザーは同時に存在できる WebGL コンテキストを約 16 個に制限しているため、キャンバスアイコンはページごとに 1 つのバックエンドを共有します。変化したアイコンをアトラスにまとめ、1 回のパスで描画してから各キャンバスにコピーします。\"auto\" はグローバルの既定値（setDefaultIconRenderer）に従い、このページではレンダラーバーに従います。",
+      "bundle": "バンドルされるのはインポートしたものだけです。SearchIcon は自身のパスデータだけを含み、キャンバスレンダラーは最初のキャンバスアイコンとともに読み込まれ、DynamicIcon（名前を実行時に選ぶ）だけがセット全体をバンドルします。"
+    },
+    "platforms": {
+      "title": "React Native とミニプログラム",
+      "native": "minerva-design/native/icons は React Native 向けに同じコンポーネント（Icon、createIcon、DynamicIcon、SearchIcon…）を提供し、同じ 24×24 のパスデータを react-native-svg で描画します。react-native-svg はこのエントリーだけが必要とするオプションの peer 依存関係です（minerva-design/native はインポートしません）。Expo では npx expo install react-native-svg、それ以外では npm install react-native-svg でインストールします。color を指定しない限りテーマのテキスト色で描線し、size の単位は dp、title を指定するとアクセシブルな画像になります。",
+      "taro": "minerva-design/taro/icons は Taro 向けです。ミニプログラムはインライン SVG を描画できず、WeChat の <image> はパーセントエンコードされた SVG を受け付けないため、各アイコンは base64 の SVG データ URI を src とする Image です（toSvgBase64DataUri、btoa 不要）。画像には currentColor がないため、色は SVG に直接書き込まれます。既定はアクティブなライト／ダークモードのテーマのテキスト色で、色やモードが変わると画像を再生成します。size の単位は px、または \"48rpx\" のような任意の CSS 長さです。",
+      "tabBar": "ミニプログラムの tabBar は PNG か JPG しか受け付けません。ビルド時に toSvg の出力から、好みの SVG ラスタライザーで生成してください（アイコン、色、状態ごとに 1 ファイル）。Minerva はラスタライザーを同梱していません。"
+    },
+    "data": {
+      "starting": "起動中…"
+    }
+  },
+  "components": [
+    {
+      "name": "Icon",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnIcon. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnIcon. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnIcon"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-icon",
+        "props": [
+          {
+            "name": "icon",
+            "typeText": "IconDefinition",
+            "required": true,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "string | number",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          },
+          {
+            "name": "color",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          },
+          {
+            "name": "strokeWidth",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          },
+          {
+            "name": "absoluteStrokeWidth",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          },
+          {
+            "name": "aria-labelledby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "IconRenderer",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "rendererChange",
+            "typeText": "IconRendererKind",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "IconRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "named-icons-in-buttons",
+      "title": "Named icons in buttons",
+      "description": "Pass an icon constant of minerva-design/icons/core: only the icons used are bundled. Icons follow the text color and are hidden from assistive technologies unless they have a title (or aria-label).",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnIcon, MnButton, MnStack } from 'minerva-design/angular';\nimport { homeIcon, searchIcon, settingsIcon, bellIcon, downloadIcon, trashIcon } from 'minerva-design/icons/core';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnIcon, MnButton, MnStack],\n  template: `\n<ng-template #download><mn-icon [icon]=\"downloadIcon\" size=\"16\" /></ng-template>\n<ng-template #trash><mn-icon [icon]=\"trashIcon\" size=\"16\" /></ng-template>\n<mn-stack direction=\"row\" wrap gap=\"4\" align=\"center\">\n  <mn-icon [icon]=\"homeIcon\" />\n  <mn-icon [icon]=\"searchIcon\" />\n  <mn-icon [icon]=\"settingsIcon\" />\n  <button mnButton [startIcon]=\"download\">Download</button>\n  <button mnButton color=\"danger\" variant=\"outline\" [startIcon]=\"trash\">Delete</button>\n  <mn-icon [icon]=\"bellIcon\" size=\"32\" title=\"Notifications\" />\n</mn-stack>\n  `,\n})\nexport class Example {\n  homeIcon = homeIcon;\n  searchIcon = searchIcon;\n  settingsIcon = settingsIcon;\n  bellIcon = bellIcon;\n  downloadIcon = downloadIcon;\n  trashIcon = trashIcon;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "renderers",
+      "title": "Renderers",
+      "description": "renderer draws the icon on a canvas shared by every canvas icon of the page; rendererChange reports the backend that drew it (a forced backend that cannot start falls back to the next one, auto follows setDefaultIconRenderer). The canvas renderers load with the first canvas icon.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnIcon, MnStack } from 'minerva-design/angular';\nimport { settingsIcon } from 'minerva-design/icons/core';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnIcon, MnStack],\n  template: `\n<mn-stack direction=\"row\" wrap gap=\"5\">\n  @for (renderer of renderers; track renderer) {\n    <mn-stack gap=\"1\" align=\"center\">\n      <mn-icon\n        [icon]=\"settingsIcon\"\n        [size]=\"40\"\n        color=\"var(--primary-color)\"\n        [renderer]=\"renderer\"\n        (rendererChange)=\"drawn[renderer] = $event\"\n      />\n      <code>{{ renderer }}</code>\n      <small>{{ renderer === 'svg' ? 'SVG' : (drawn[renderer] ?? '…') }}</small>\n    </mn-stack>\n  }\n</mn-stack>\n  `,\n})\nexport class Example {\n  settingsIcon = settingsIcon;\n  renderers: import('minerva-design/angular').IconRenderer[] = [\"svg\", \"auto\", \"webgpu\", \"webgl2\", \"webgl\", \"canvas2d\"];\n  drawn: Partial<Record<string, string>> = {};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "icons-by-name",
+      "title": "Icons by name",
+      "description": "MnDynamicIcon resolves a built-in icon by name at runtime and renders nothing for unknown names. It bundles the whole set: prefer MnIcon with an icon constant when the icon is known.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnDynamicIcon, MnStack } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnDynamicIcon, MnStack],\n  template: `\n<ul mnStack gap=\"2\" style=\"margin: 0; padding: 0; list-style: none\">\n  @for (service of services; track service.name) {\n    <li style=\"display: flex; align-items: center; gap: 8px\">\n      <mn-dynamic-icon [name]=\"service.icon\" [size]=\"18\" />\n      <span style=\"min-width: 80px\">{{ service.name }}</span>\n      <mn-dynamic-icon\n        [name]=\"service.status\"\n        [size]=\"18\"\n        [color]=\"service.color\"\n        [title]=\"service.status\"\n      />\n    </li>\n  }\n</ul>\n  `,\n})\nexport class Example {\n  services = [\n  {\n    \"name\": \"Storage\",\n    \"icon\": \"database\",\n    \"status\": \"check-circle\",\n    \"color\": \"var(--success-color)\"\n  },\n  {\n    \"name\": \"Mail\",\n    \"icon\": \"mail\",\n    \"status\": \"alert-triangle\",\n    \"color\": \"var(--warning-color)\"\n  },\n  {\n    \"name\": \"Payments\",\n    \"icon\": \"credit-card\",\n    \"status\": \"x-circle\",\n    \"color\": \"var(--danger-color)\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// npx expo install react-native-svg (optional peer dependency of this entry)\nimport { DynamicIcon, Icon, SearchIcon, searchIcon } from \"minerva-design/native/icons\";\n\n<SearchIcon />                                          // 24dp, theme text color\n<SearchIcon size={20} color=\"#2563eb\" title=\"Search\" /> // accessible image\n<Icon icon={searchIcon} strokeWidth={1.5} absoluteStrokeWidth />\n<DynamicIcon name={item.icon} />                        // bundles the whole set",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Icon, SearchIcon, settingsIcon } from \"minerva-design/taro/icons\";\n\n<SearchIcon />                                          // 24px base64 SVG image\n<SearchIcon size=\"48rpx\" color=\"#2563eb\" title=\"Search\" />\n<Icon icon={settingsIcon} strokeWidth={1.5} />          // theme text color, per mode",
+      "language": "tsx"
+    },
+    {
+      "source": "// build-time Node script: the tabBar only takes PNG / JPG files\nimport { writeFileSync } from \"node:fs\";\nimport { homeIcon, toSvg } from \"minerva-design/icons/core\";\n\nfor (const [state, color] of [[\"normal\", \"#6b7280\"], [\"active\", \"#2563eb\"]]) {\n  const svg = toSvg(homeIcon, { size: 81, color });\n  // rasterize: the SVG -> PNG converter of your choice\n  writeFileSync(`src/assets/tab-home-${state}.png`, await rasterize(svg));\n}",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Icon アイコンコンポーネント",
+      "description": "セットのアイコン 1 つ。既定はインライン SVG、または WebGPU、WebGL2、WebGL、Canvas2D で描画するキャンバスです。名前付きコンポーネント（SearchIcon…）、汎用の Icon、カスタムアイコン、名前で選ぶアイコン。",
+      "intro": {
+        "title": "SVG かキャンバスか",
+        "svg": "既定ではアイコンはインラインの <svg> です。サーバーで描画でき、currentColor でテキストの色に、size=\"1em\" でフォントサイズに追従し、title か aria-label がない限り支援技術からは隠されます。",
+        "canvas": "renderer を \"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\"、\"canvas2d\" にすると、同じアイコンがキャンバスに描画されます。ブラウザーは同時に存在できる WebGL コンテキストを約 16 個に制限しているため、キャンバスアイコンはページごとに 1 つのバックエンドを共有します。変化したアイコンをアトラスにまとめ、1 回のパスで描画してから各キャンバスにコピーします。\"auto\" はグローバルの既定値（setDefaultIconRenderer）に従い、このページではレンダラーバーに従います。",
+        "bundle": "バンドルされるのはインポートしたものだけです。SearchIcon は自身のパスデータだけを含み、キャンバスレンダラーは最初のキャンバスアイコンとともに読み込まれ、DynamicIcon（名前を実行時に選ぶ）だけがセット全体をバンドルします。"
+      },
+      "platforms": {
+        "title": "React Native とミニプログラム",
+        "native": "minerva-design/native/icons は React Native 向けに同じコンポーネント（Icon、createIcon、DynamicIcon、SearchIcon…）を提供し、同じ 24×24 のパスデータを react-native-svg で描画します。react-native-svg はこのエントリーだけが必要とするオプションの peer 依存関係です（minerva-design/native はインポートしません）。Expo では npx expo install react-native-svg、それ以外では npm install react-native-svg でインストールします。color を指定しない限りテーマのテキスト色で描線し、size の単位は dp、title を指定するとアクセシブルな画像になります。",
+        "taro": "minerva-design/taro/icons は Taro 向けです。ミニプログラムはインライン SVG を描画できず、WeChat の <image> はパーセントエンコードされた SVG を受け付けないため、各アイコンは base64 の SVG データ URI を src とする Image です（toSvgBase64DataUri、btoa 不要）。画像には currentColor がないため、色は SVG に直接書き込まれます。既定はアクティブなライト／ダークモードのテーマのテキスト色で、色やモードが変わると画像を再生成します。size の単位は px、または \"48rpx\" のような任意の CSS 長さです。",
+        "tabBar": "ミニプログラムの tabBar は PNG か JPG しか受け付けません。ビルド時に toSvg の出力から、好みの SVG ラスタライザーで生成してください（アイコン、色、状態ごとに 1 ファイル）。Minerva はラスタライザーを同梱していません。"
+      },
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "各アイコンはその名前のコンポーネントです。テキストの中にもボタンの中にも並べられます。"
+        },
+        "size-color": {
+          "title": "サイズと色",
+          "description": "size はピクセルまたは任意の CSS の長さを受け取ります（1em はフォントサイズに追従）。color は任意の CSS カラー（テーマ変数を含む）を受け取り、既定はテキストの色です。"
+        },
+        "stroke": {
+          "title": "線幅",
+          "description": "strokeWidth は 24×24 グリッド上の値なので、アイコンとともに拡大縮小します。absoluteStrokeWidth はサイズに関係なくピクセル単位で保ちます（下段の後半）。"
+        },
+        "accessibility": {
+          "title": "アクセシビリティ",
+          "description": "装飾的なアイコンは aria-hidden です。単独で置くアイコンには title を付けます（role=\"img\"）。コントロールの中では、代わりにコントロールにラベルを付けます。"
+        },
+        "custom": {
+          "title": "カスタムアイコン",
+          "description": "defineIcon は独自のパスデータを一度だけ検証します。createIcon はそれを組み込みアイコンと同じようなコンポーネントにし、Icon はどのレンダラーでもそれを描画します。"
+        },
+        "dynamic": {
+          "title": "名前で選ぶアイコン",
+          "description": "DynamicIcon は実行時にしかわからない名前から組み込みアイコンを選びます。未知の名前では何も描画しません。セット全体をバンドルします。"
+        },
+        "canvas": {
+          "title": "レンダラー",
+          "description": "同じアイコンを SVG と各キャンバスバックエンドで描画し、それぞれの下に実際に描画したバックエンドを表示します。\"auto\" はレンダラーバーに従い、このブラウザーにない強制バックエンドは次のバックエンドにフォールバックします。"
+        }
+      },
+      "data": {
+        "starting": "起動中…"
+      },
+      "api": {
+        "IconProps": {
+          "icon": "描画するアイコン。組み込みアイコン（searchIcon など）または defineIcon の結果",
+          "size": "幅と高さ。数値はピクセル単位で、キャンバスレンダラーは \"1em\" などの CSS サイズにも従います",
+          "color": "ストロークの色。任意の CSS カラー",
+          "strokeWidth": "24×24 グリッド上の線幅（サイズに合わせて拡大縮小）",
+          "absoluteStrokeWidth": "サイズに関係なく strokeWidth をピクセル単位で保ちます",
+          "title": "アクセシブルな名前。指定するとアイコンは role=\"img\" になり、これ（または aria-label）がなければ支援技術から隠されます",
+          "renderer": "インライン SVG、またはページ上のすべてのキャンバスアイコンが共有するバックエンドで描画するキャンバス（\"auto\" はグローバルの既定値に従います）",
+          "onRendererChange": "キャンバスレンダラーのみ。アイコンを描画したバックエンドを引数に呼ばれます",
+          "ref": "<svg> 要素。キャンバスレンダラーでは <canvas>"
+        },
+        "DynamicIconProps": {
+          "name": "組み込みアイコンの名前（\"arrow-up\" など）。未知の名前では何も描画しません"
+        }
+      },
+      "wc": {
+        "minerva-icon": {
+          "props": {
+            "label": "アクセシブルな名前。指定するとアイコンはこの名前の role=\"img\" になり、指定しないと支援技術から隠されます"
+          },
+          "events": {
+            "minerva-renderer-change": "キャンバスモード：バックエンドがアイコンを描画した、または GPU のロスト後にフォールバックした。detail: { renderer }"
+          },
+          "methods": {
+            "getRenderer": "キャンバスを描画しているバックエンド（webgpu、webgl2、webgl、canvas2d）。SVG モードまたは起動前は null"
+          }
+        },
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "<minerva-icon> は組み込みアイコンを名前で描画し、テキストと並べたり、ほかの要素のスロットに入れたりできます。label を指定すると、支援技術には画像として伝わります。"
+          },
+          "canvas": {
+            "title": "レンダラー",
+            "description": "renderer 属性でアイコンをキャンバスに描画します。各アイコンは描画したバックエンドを付けて minerva-renderer-change を発火し、その名前を下に表示します。\"auto\" はレンダラーバーに従い、このブラウザーにない強制指定のバックエンドは次のものにフォールバックします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "React Native のアイコン",
+            "description": "同じアイコンを react-native-svg で描画します。名前付きコンポーネントはテーマのテキスト色で描かれ、size は dp 単位です。色と線幅のカスタマイズ、title によるアクセシブルな名前、名前でアイコンを選ぶ DynamicIcon（ここではタブバー）を示します。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+import{t as e}from"./docs-p7jhwIRk.js";e();

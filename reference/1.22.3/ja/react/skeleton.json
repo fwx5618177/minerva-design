@@ -1,0 +1,756 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "ja",
+  "renderer": "react",
+  "page": "skeleton",
+  "title": "Skeleton スケルトン",
+  "description": "コンテンツの読み込み中に表示されるプレースホルダーの図形です。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Skeleton",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Skeleton"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "enum",
+            "values": [
+              "button",
+              "card",
+              "circular",
+              "image",
+              "rectangular",
+              "rounded",
+              "text"
+            ],
+            "typeText": "SkeletonVariant | undefined",
+            "typeRef": "type:577fa921a0bf943c32ee",
+            "default": "text",
+            "required": false,
+            "description": "Shape of the placeholder"
+          },
+          {
+            "name": "animation",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "enum",
+            "values": [
+              "false",
+              "pulse",
+              "wave"
+            ],
+            "typeText": "SkeletonAnimation | undefined",
+            "typeRef": "type:06717216ff9dea9e6ffe",
+            "default": "pulse",
+            "required": false,
+            "description": "Loading animation; \"false\" disables it"
+          },
+          {
+            "name": "decorative",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Renders one bare decorative placeholder (`<span aria-hidden>`) instead of the announced loading region. Use it to compose your own skeleton layout inside a container that already exposes the busy state"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 32,
+            "required": false,
+            "description": "Edge length of a decorative circular placeholder (numbers are pixels); wins over width/height"
+          },
+          {
+            "name": "width",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Width of each line (numbers are pixels)"
+          },
+          {
+            "name": "height",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Height of each line (numbers are pixels)"
+          },
+          {
+            "name": "loading",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Shows the placeholder; set to false to render children"
+          },
+          {
+            "name": "borderRadius",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Custom corner radius of each line"
+          },
+          {
+            "name": "lines",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Number of lines to render"
+          },
+          {
+            "name": "avatar",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows an avatar placeholder"
+          },
+          {
+            "name": "avatarSize",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 40,
+            "required": false,
+            "description": "Avatar size (numbers are pixels)"
+          },
+          {
+            "name": "avatarShape",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "square"
+            ],
+            "typeText": "\"circle\" | \"square\" | undefined",
+            "typeRef": "type:53f830419be13b669ce8",
+            "default": "circle",
+            "required": false,
+            "description": "Avatar shape"
+          },
+          {
+            "name": "active",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Highlights the card variant as active"
+          },
+          {
+            "name": "paragraph",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a paragraph placeholder (replaces the lines)"
+          },
+          {
+            "name": "title",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a title placeholder (replaces the lines)"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the loading placeholder (rendered as a busy status region)"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SkeletonText",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "SkeletonText"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "lines",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 3,
+            "required": false,
+            "description": "Number of text lines"
+          },
+          {
+            "name": "lineHeight",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "1em",
+            "required": false,
+            "description": "Height of each line (numbers are pixels)"
+          },
+          {
+            "name": "gap",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 2,
+            "required": false,
+            "description": "Space between lines: a spacing-scale step (2 -> var(--space-2)) or any CSS length"
+          },
+          {
+            "name": "shrinkLast",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Shrinks the last line to 70% width so the block reads like real text"
+          },
+          {
+            "name": "animation",
+            "source": "packages/react/src/components/Skeleton/types.ts",
+            "kind": "enum",
+            "values": [
+              "false",
+              "pulse",
+              "wave"
+            ],
+            "typeText": "SkeletonAnimation | undefined",
+            "typeRef": "type:06717216ff9dea9e6ffe",
+            "default": "pulse",
+            "required": false,
+            "description": "Loading animation; \"false\" disables it"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "SkeletonProps": {
+      "source": "react/src/components/Skeleton/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLElement>, \"children\" | \"title\" | \"style\" | \"className\">"
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "SkeletonVariant",
+          "required": false,
+          "default": "\"text\"",
+          "description": "Shape of the placeholder"
+        },
+        {
+          "name": "animation",
+          "type": "SkeletonAnimation",
+          "required": false,
+          "default": "\"pulse\"",
+          "description": "Loading animation; \"false\" disables it"
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Renders one bare decorative placeholder (`<span aria-hidden>`) instead of the announced loading region. Use it to compose your own skeleton layout inside a container that already exposes the busy state"
+        },
+        {
+          "name": "size",
+          "type": "number | string",
+          "required": false,
+          "default": "32",
+          "description": "Edge length of a decorative circular placeholder (numbers are pixels); wins over width/height"
+        },
+        {
+          "name": "width",
+          "type": "number | string",
+          "required": false,
+          "description": "Width of each line (numbers are pixels)"
+        },
+        {
+          "name": "height",
+          "type": "number | string",
+          "required": false,
+          "description": "Height of each line (numbers are pixels)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Real content, rendered once loading is false"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Shows the placeholder; set to false to render children"
+        },
+        {
+          "name": "borderRadius",
+          "type": "number | string",
+          "required": false,
+          "description": "Custom corner radius of each line"
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "required": false,
+          "description": "Inline styles applied to each line"
+        },
+        {
+          "name": "lines",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Number of lines to render"
+        },
+        {
+          "name": "avatar",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows an avatar placeholder"
+        },
+        {
+          "name": "avatarSize",
+          "type": "number | string",
+          "required": false,
+          "default": "40",
+          "description": "Avatar size (numbers are pixels)"
+        },
+        {
+          "name": "avatarShape",
+          "type": "\"circle\" | \"square\"",
+          "required": false,
+          "default": "\"circle\"",
+          "description": "Avatar shape"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Highlights the card variant as active"
+        },
+        {
+          "name": "paragraph",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a paragraph placeholder (replaces the lines)"
+        },
+        {
+          "name": "title",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a title placeholder (replaces the lines)"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": "\"Loading\" (localized)",
+          "description": "Accessible name of the loading placeholder (rendered as a busy status region)"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "required": false,
+          "description": "Ref to the root element (<div>, or the <span> when decorative); only attached while loading (children are rendered as-is otherwise)"
+        }
+      ]
+    },
+    "SkeletonTextProps": {
+      "source": "react/src/components/Skeleton/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLDivElement>, \"children\">"
+      ],
+      "props": [
+        {
+          "name": "lines",
+          "type": "number",
+          "required": false,
+          "default": "3",
+          "description": "Number of text lines"
+        },
+        {
+          "name": "lineHeight",
+          "type": "number | string",
+          "required": false,
+          "default": "\"1em\"",
+          "description": "Height of each line (numbers are pixels)"
+        },
+        {
+          "name": "gap",
+          "type": "number | string",
+          "required": false,
+          "default": "2",
+          "description": "Space between lines: a spacing-scale step (2 -> var(--space-2)) or any CSS length"
+        },
+        {
+          "name": "shrinkLast",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Shrinks the last line to 70% width so the block reads like real text"
+        },
+        {
+          "name": "animation",
+          "type": "SkeletonAnimation",
+          "required": false,
+          "default": "\"pulse\"",
+          "description": "Loading animation; \"false\" disables it"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root <div> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Skeleton": {
+      "kind": "cssVars",
+      "source": "react/src/components/Skeleton",
+      "vars": [
+        {
+          "name": "--skeleton-color",
+          "description": "Base color of the placeholder blocks"
+        },
+        {
+          "name": "--skeleton-highlight-color",
+          "description": "Color of the moving highlight (wave animation)"
+        },
+        {
+          "name": "--skeleton-radius",
+          "description": "Corner radius of the lines and blocks (circles stay round, rectangular blocks square)"
+        },
+        {
+          "name": "--skeleton-text-height",
+          "description": "Height of a text line"
+        },
+        {
+          "name": "--skeleton-gap",
+          "description": "Space between the lines of a paragraph and next to the avatar"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "animations",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/demos/animations.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/demos/animations.tsx": "import { Skeleton } from \"minerva-design\";\n\nexport default function AnimationsDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 16, width: \"100%\" }}>\n      <Skeleton animation=\"pulse\" lines={2} />\n      <Skeleton animation=\"wave\" lines={2} />\n      <Skeleton animation=\"false\" lines={2} />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "アニメーション",
+      "description": "パルス（デフォルト）、ウェーブ、またはアニメーションなしの \"false\"。"
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/demos/basic.tsx": "import { Skeleton } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return <Skeleton lines={3} />;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "テキスト行。lines で行数を指定します。"
+    },
+    {
+      "id": "card",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/demos/card.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/demos/card.tsx": "import { Skeleton } from \"minerva-design\";\n\nexport default function CardDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 16, width: \"100%\", maxWidth: 420 }}>\n      <Skeleton variant=\"card\" avatar title paragraph />\n      <Skeleton variant=\"card\" avatar title paragraph active animation=\"wave\" />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "カード",
+      "description": "card バリアントはアバター、タイトル、段落をレイアウトします。active で強調表示します。"
+    },
+    {
+      "id": "composition",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/demos/composition.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/demos/composition.tsx": "import { Skeleton } from \"minerva-design\";\n\nexport default function CompositionDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 24, width: \"100%\" }}>\n      <Skeleton avatar title paragraph />\n      <Skeleton avatar avatarShape=\"square\" avatarSize={56} lines={2} />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "アバター、タイトル、段落",
+      "description": "アバターをタイトルと段落、または通常の行と組み合わせます。"
+    },
+    {
+      "id": "decorative",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/demos/decorative.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/demos/decorative.tsx": "import { Skeleton } from \"minerva-design\";\n\nexport default function DecorativeDemo() {\n  return (\n    <div\n      role=\"status\"\n      aria-busy=\"true\"\n      aria-label=\"Loading profile\"\n      style={{ display: \"flex\", gap: 12, alignItems: \"center\", width: 320 }}\n    >\n      <Skeleton decorative variant=\"circular\" size={40} animation=\"wave\" />\n      <div style={{ flex: 1, display: \"grid\", gap: 8 }}>\n        <Skeleton decorative width=\"60%\" animation=\"wave\" />\n        <Skeleton decorative width=\"90%\" animation=\"wave\" />\n      </div>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "装飾用ブロック",
+      "description": "decorative は aria-hidden のプレースホルダーを 1 つだけ描画し、ビジー状態を示すコンテナ内で独自のレイアウトを組めます。"
+    },
+    {
+      "id": "loading",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/demos/loading.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/demos/loading.tsx": "import { useState } from \"react\";\nimport { Button, Skeleton } from \"minerva-design\";\n\nexport default function LoadingDemo() {\n  const [loading, setLoading] = useState(true);\n\n  return (\n    <div style={{ display: \"grid\", gap: 16, width: \"100%\", maxWidth: 420 }}>\n      <Button size=\"small\" onClick={() => setLoading((prev) => !prev)}>\n        {loading ? \"Show content\" : \"Show skeleton\"}\n      </Button>\n      <Skeleton loading={loading} avatar title paragraph>\n        <article>\n          <h4 style={{ margin: \"0 0 8px\" }}>Minerva UI</h4>\n          <p style={{ margin: 0 }}>\n            The content is rendered as soon as loading becomes false.\n          </p>\n        </article>\n      </Skeleton>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "読み込み状態",
+      "description": "実際のコンテンツをラップし、loading が false になったら表示します。"
+    },
+    {
+      "id": "skeleton-text",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/demos/skeleton-text.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/demos/skeleton-text.tsx": "import { SkeletonText } from \"minerva-design\";\n\nexport default function SkeletonTextDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 24, width: 360 }}>\n      <SkeletonText />\n      <SkeletonText lines={5} lineHeight={12} gap={3} animation=\"wave\" />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "SkeletonText",
+      "description": "最終行を短くして本物のテキストのように見せる複数行のプレースホルダーです。"
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/demos/variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/demos/variants.tsx": "import { Skeleton } from \"minerva-design\";\n\nexport default function VariantsDemo() {\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"repeat(auto-fill, minmax(120px, 1fr))\",\n        gap: 16,\n        alignItems: \"center\",\n        width: \"100%\",\n      }}\n    >\n      <Skeleton variant=\"text\" width={120} />\n      <Skeleton variant=\"circular\" width={48} height={48} />\n      <Skeleton variant=\"rectangular\" width={120} height={60} />\n      <Skeleton variant=\"rounded\" width={120} height={60} />\n      <Skeleton variant=\"button\" />\n      <Skeleton variant=\"image\" width={120} height={80} />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "バリアント",
+      "description": "テキスト、円形、長方形、角丸長方形、ボタン、画像の形状。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Skeleton スケルトン",
+      "description": "コンテンツの読み込み中に表示されるプレースホルダーの図形です。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "テキスト行。lines で行数を指定します。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "テキスト、円形、長方形、角丸長方形、ボタン、画像の形状。"
+        },
+        "animations": {
+          "title": "アニメーション",
+          "description": "パルス（デフォルト）、ウェーブ、またはアニメーションなしの \"false\"。"
+        },
+        "composition": {
+          "title": "アバター、タイトル、段落",
+          "description": "アバターをタイトルと段落、または通常の行と組み合わせます。"
+        },
+        "card": {
+          "title": "カード",
+          "description": "card バリアントはアバター、タイトル、段落をレイアウトします。active で強調表示します。"
+        },
+        "loading": {
+          "title": "読み込み状態",
+          "description": "実際のコンテンツをラップし、loading が false になったら表示します。"
+        },
+        "decorative": {
+          "title": "装飾用ブロック",
+          "description": "decorative は aria-hidden のプレースホルダーを 1 つだけ描画し、ビジー状態を示すコンテナ内で独自のレイアウトを組めます。"
+        },
+        "skeleton-text": {
+          "title": "SkeletonText",
+          "description": "最終行を短くして本物のテキストのように見せる複数行のプレースホルダーです。"
+        }
+      },
+      "api": {
+        "SkeletonProps": {
+          "variant": "プレースホルダーの形状",
+          "animation": "読み込みアニメーション。\"false\" で無効になります",
+          "width": "各行の幅（数値はピクセル）",
+          "height": "各行の高さ（数値はピクセル）",
+          "className": "追加のクラス名",
+          "children": "実際のコンテンツ。loading が false になると表示されます",
+          "loading": "プレースホルダーを表示する。false にすると children を表示します",
+          "borderRadius": "各行のカスタムの角丸",
+          "style": "各行に適用するインラインスタイル",
+          "lines": "表示する行数",
+          "avatar": "アバターのプレースホルダーを表示する",
+          "avatarSize": "アバターのサイズ（数値はピクセル）",
+          "avatarShape": "アバターの形状",
+          "active": "card バリアントをアクティブとして強調表示する",
+          "paragraph": "段落のプレースホルダーを表示する（行の代わりに表示）",
+          "title": "タイトルのプレースホルダーを表示する（行の代わりに表示）",
+          "aria-label": "読み込み中プレースホルダーのアクセシブルな名前（busy 状態の status 領域として描画）",
+          "ref": "ルートの <div> 要素への ref。読み込み中のみ設定されます（それ以外は children をそのまま描画）",
+          "decorative": "読み上げられる読み込み領域の代わりに、装飾用プレースホルダー（aria-hidden の span）を 1 つだけ描画します",
+          "size": "装飾用の円形プレースホルダーの直径。width と height より優先されます"
+        },
+        "SkeletonTextProps": {
+          "lines": "テキストの行数",
+          "lineHeight": "各行の高さ（数値はピクセル）",
+          "gap": "行間：スペーシングスケールの段階または任意の CSS の長さ",
+          "shrinkLast": "最終行を幅 70% に縮めます",
+          "animation": "読み込みアニメーション。\"false\" で無効になります",
+          "ref": "ルートの <div> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--skeleton-color": "プレースホルダーの基本色",
+        "--skeleton-highlight-color": "移動するハイライトの色（wave アニメーション）",
+        "--skeleton-radius": "行とブロックの角丸（円は円のまま、矩形ブロックは角のまま）",
+        "--skeleton-text-height": "テキスト行の高さ",
+        "--skeleton-gap": "段落の行間とアバター横の間隔"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "複数の行、またはアバターと見出しと段落。スケルトンは「読み込み中」（または aria-label）という名前のビジーな status 領域です。"
+          },
+          "variants": {
+            "title": "バリアントとアニメーション",
+            "description": "プレースホルダーの形状（width / height はピクセル値も可）、pulse / wave / アニメーションなし、card バリアント。"
+          },
+          "loading": {
+            "title": "コンテンツの読み込み",
+            "description": "データが揃ったら loaded を設定すると、スケルトンはスロットのコンテンツを描画します。Reload をクリックすると再生します。"
+          },
+          "composition": {
+            "title": "カスタム構成",
+            "description": "decorative のスケルトンと minerva-skeleton-text は支援技術から隠されます。ビジー状態を通知するコンテナーの中で組み合わせてください。"
+          }
+        },
+        "minerva-skeleton": {
+          "props": {
+            "loaded": "プレースホルダーの代わりにスロットのコンテンツを表示します。",
+            "heading": "タイトルのプレースホルダーを表示します（行の代わり）。"
+          },
+          "slots": {
+            "default": "loaded 設定後に描画される実際のコンテンツ。"
+          }
+        },
+        "minerva-skeleton-text": {
+          "props": {
+            "noShrinkLast": "最後の行も全幅のままにします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "rating",
+  "title": "Rating 评分",
+  "description": "以五颗星展示任意刻度的评分，并支持鼠标或键盘打分。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Rating",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Rating"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "number",
+            "required": true,
+            "description": "Current score, from 0 to max (`v-model`)",
+            "typeText": "number"
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "default": "10",
+            "required": false,
+            "description": "Highest score; the score is always drawn on 5 stars (half stars for\nfractions between 0.25 and 0.75 of a star)",
+            "typeText": "number"
+          },
+          {
+            "name": "size",
+            "type": "RatingSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Star size: 12px, 16px or 20px",
+            "typeText": "RatingSize"
+          },
+          {
+            "name": "showValue",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows the score (one decimal) after the stars",
+            "typeText": "boolean"
+          },
+          {
+            "name": "ratingCount",
+            "type": "number",
+            "required": false,
+            "description": "Number of ratings, shown after the score when showValue is set",
+            "typeText": "number"
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Forces display mode even with a `change` / `update:modelValue` listener\n(which makes the rating interactive: hover previews, half-star clicks,\na keyboard slider)",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: number]",
+            "typeText": "[value: number]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[value: number]",
+            "typeText": "[value: number]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RatingScale",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "RatingScale"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "dimensions",
+            "type": "readonly RatingDimension[]",
+            "required": true,
+            "description": "Dimensions to rate, one row each",
+            "typeText": "readonly RatingDimension[]"
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "default": "10",
+            "required": false,
+            "description": "Highest score shared by every dimension",
+            "typeText": "number"
+          },
+          {
+            "name": "size",
+            "type": "RatingSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Star size",
+            "typeText": "RatingSize"
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Forces display mode even with a `change` listener (which makes the rows\ninteractive)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "showValue",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Shows the score at the end of each row",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "type": "[key: string, value: number]",
+            "typeText": "[key: string, value: number]",
+            "parameters": [
+              {
+                "name": "key",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              },
+              {
+                "name": "value",
+                "position": 1,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Rating": {
+      "kind": "cssVars",
+      "source": "react/src/components/Rating",
+      "vars": [
+        {
+          "name": "--rating-color",
+          "description": "Color of the filled stars (defaults to --accent-color)"
+        },
+        {
+          "name": "--rating-empty-color",
+          "description": "Color of the empty stars and of the unfilled half"
+        },
+        {
+          "name": "--rating-star-gap",
+          "description": "Space between the stars"
+        },
+        {
+          "name": "--rating-gap",
+          "description": "Space between the stars and the value"
+        },
+        {
+          "name": "--rating-value-font-size",
+          "description": "Font size of the numeric value (every size)"
+        },
+        {
+          "name": "--rating-scale-gap",
+          "description": "Space between the rows of a RatingScale"
+        },
+        {
+          "name": "--rating-empty-fill",
+          "description": "Fill of the empty stars and of the unfilled half (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--rating-hover-scale",
+          "description": "Scale of the hovered star of an interactive rating (defaults to 1.15)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/rating/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/rating/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Rating } from \"minerva-design/vue\";\n</script>\n<template>\n  <Rating :model-value=\"8.5\" show-value :rating-count=\"128\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/rating/vue/form.vue",
+      "files": {
+        "apps/docs/src/docs/pages/rating/vue/form.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Rating, FormField } from \"minerva-design/vue\";\nconst score = ref(3);\n</script>\n<template>\n  <FormField\n    label=\"Rate your experience\"\n    helper-text=\"Use the arrow keys to adjust\"\n    ><Rating v-model=\"score\" :max=\"5\" show-value aria-label=\"Experience rating\"\n  /></FormField>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "form",
+      "description": ""
+    },
+    {
+      "id": "interactive",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/rating/vue/interactive.vue",
+      "files": {
+        "apps/docs/src/docs/pages/rating/vue/interactive.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Rating, VStack } from \"minerva-design/vue\";\nconst score = ref(7);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Rating v-model=\"score\" show-value aria-label=\"Your rating\" /><output\n      >Your score: {{ score }}</output\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "interactive",
+      "description": ""
+    },
+    {
+      "id": "scale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/rating/vue/scale.vue",
+      "files": {
+        "apps/docs/src/docs/pages/rating/vue/scale.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { RatingScale } from \"minerva-design/vue\";\nconst dimensions = ref([\n  { key: \"quality\", label: \"Quality\", value: 8 },\n  { key: \"speed\", label: \"Speed\", value: 6 },\n  { key: \"support\", label: \"Support\", value: 9 },\n]);\n</script>\n<template>\n  <RatingScale\n    :dimensions=\"dimensions\"\n    @change=\"\n      (key, value) => {\n        dimensions = dimensions.map((item) =>\n          item.key === key ? { ...item, value } : item,\n        );\n      }\n    \"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "scale",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Rating 评分",
+      "description": "以五颗星展示任意刻度的评分，并支持鼠标或键盘打分。",
+      "demos": {
+        "basic": {
+          "title": "展示",
+          "description": "10 分制或 5 分制的只读评分，可显示数值与评分人数。"
+        },
+        "interactive": {
+          "title": "可交互",
+          "description": "传入 onChange 后成为滑块：悬停预览，点击星星左半或右半，或使用键盘：方向键每次半颗星（RTL 下左方向键增加），PageUp / PageDown 每次一整颗星（max / 5），Home / End 跳到 0 / max。"
+        },
+        "scale": {
+          "title": "多维评分",
+          "description": "RatingScale 在同一刻度上为多个维度评分。"
+        }
+      },
+      "api": {
+        "RatingProps": {
+          "value": "当前评分，范围 0..max",
+          "max": "满分；始终以 5 颗星展示",
+          "size": "星星尺寸：12px、16px 或 20px",
+          "showValue": "在星星后显示数值",
+          "ratingCount": "评分人数，显示在数值后",
+          "onChange": "使评分可交互（滑块）",
+          "readOnly": "即使传入 onChange 也强制只读",
+          "aria-label": "评分的无障碍标签",
+          "onKeyDown": "在内置步进前调用；调用 preventDefault() 可接管按键",
+          "className": "额外的类名",
+          "style": "根元素的内联样式",
+          "ref": "指向根 <span> 的 ref"
+        },
+        "RatingScaleProps": {
+          "dimensions": "要评分的维度，每个一行",
+          "max": "所有维度共享的满分",
+          "size": "星星尺寸",
+          "onChange": "使各行可交互；回调参数为维度 key 与新分数",
+          "readOnly": "强制只读",
+          "showValue": "在每行末尾显示数值",
+          "className": "额外的类名",
+          "ref": "指向根元素的 ref"
+        },
+        "RatingDimension": {
+          "key": "稳定的 key，回传给 onChange",
+          "label": "显示的标签",
+          "value": "该维度的当前分数",
+          "hint": "可选描述（字符串会作为该行的提示）"
+        }
+      },
+      "cssVars": {
+        "--rating-color": "实心星的颜色（默认 --accent-color）",
+        "--rating-empty-color": "空心星以及半星未填充部分的颜色",
+        "--rating-star-gap": "星星之间的间距",
+        "--rating-gap": "星星与数值之间的间距",
+        "--rating-value-font-size": "数值的字号（所有尺寸）",
+        "--rating-scale-gap": "RatingScale 各行之间的间距",
+        "--rating-empty-fill": "空星及未填充半边的填充色（默认为 --surface-muted-color）",
+        "--rating-hover-scale": "可交互评分中悬停星星的缩放比例（默认为 1.15）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "展示",
+            "description": "未设置 interactive 时星级仅用于展示（role=\"img\"），与未传 onChange 的 React Rating 一致：任意 0..max 分数绘制在 5 颗星上，可在后面显示 show-value 和 rating-count。"
+          },
+          "interactive": {
+            "title": "交互",
+            "description": "默认可交互：点击星星的左半或右半，或聚焦后使用方向键、PageUp / PageDown 以及 Home / End。minerva-change 会报告新分数。"
+          },
+          "form": {
+            "title": "在表单中",
+            "description": "该元素与表单关联：分数以 name 提交，required 会拒绝 0 分，重置会恢复 value 属性的初始值。"
+          },
+          "scale": {
+            "title": "多维评分",
+            "description": "<minerva-rating-scale> 在同一刻度上为多个维度评分。dimensions 是 JS 属性；minerva-change 携带维度 key 和更新后的列表，这里同步到一个 readonly、hide-value 的副本。"
+          }
+        },
+        "minerva-rating": {
+          "props": {
+            "defaultValue": "初始分数，由 form.reset() 恢复（即 value 属性）。",
+            "readOnly": "即使设置了 interactive 也强制为展示模式。",
+            "name": "随表单数据提交的名称。",
+            "disabled": "禁用控件：不可聚焦、不提交、不校验。",
+            "required": "控件必须有值，表单才能提交。",
+            "isDisabled": "控件是否被禁用（自身禁用或位于禁用的 <fieldset> 中，只读）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与元素关联的 <label> 元素（只读）。",
+            "validity": "有效性状态，与 <input>.validity 相同（只读）。",
+            "validationMessage": "描述当前校验错误的消息；有效时为空（只读）。",
+            "willValidate": "元素是否参与约束校验（只读）。",
+            "interactive": "使评分成为可交互的滑块（对应 React 中传入 onChange）；默认仅展示。"
+          },
+          "events": {
+            "change": "用户修改了分数。",
+            "minerva-change": "用户修改了分数；detail: { value }。"
+          },
+          "methods": {
+            "focus": "聚焦内部控件。",
+            "blur": "使内部控件失去焦点。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误，传入 \"\" 则清除。",
+            "formResetCallback": "表单关联回调，由 form.reset() 调用：恢复默认值。",
+            "formDisabledCallback": "表单关联回调，在祖先 <fieldset> 被禁用或启用时调用。",
+            "formStateRestoreCallback": "表单关联回调，在浏览器恢复值时调用（返回导航、自动填充）。"
+          }
+        },
+        "minerva-rating-scale": {
+          "props": {
+            "readOnly": "即使设置了 interactive 也强制为展示模式。",
+            "hideValue": "隐藏每行末尾的分数。",
+            "interactive": "使各行可交互（对应 React 中传入 onChange）。"
+          },
+          "events": {
+            "minerva-change": "用户为某个维度评分；detail: { key, value, dimensions }（dimensions 已更新）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

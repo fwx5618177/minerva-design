@@ -1,0 +1,586 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "textarea",
+  "title": "Textarea",
+  "description": "Multi-line text input sharing Input's sizes and variants; manual resizing is disabled, set rows instead.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Textarea",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/textarea",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-textarea",
+        "props": [
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"outline\" | \"filled\" | \"unstyled\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "attribute": "invalid",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string",
+            "attribute": "placeholder",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "attribute": "readonly",
+            "required": false
+          },
+          {
+            "name": "rows",
+            "typeText": "number | undefined",
+            "attribute": "rows",
+            "required": false
+          },
+          {
+            "name": "minLength",
+            "typeText": "number | undefined",
+            "attribute": "minlength",
+            "required": false
+          },
+          {
+            "name": "maxLength",
+            "typeText": "number | undefined",
+            "attribute": "maxlength",
+            "required": false
+          },
+          {
+            "name": "autocomplete",
+            "typeText": "string | undefined",
+            "attribute": "autocomplete",
+            "required": false
+          },
+          {
+            "name": "wrap",
+            "typeText": "\"soft\" | \"hard\" | \"off\" | undefined",
+            "attribute": "wrap",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "Event",
+            "description": "The value was committed (blur), re-dispatched from the inner textarea"
+          },
+          {
+            "name": "input",
+            "typeText": "Event",
+            "description": "The value changed (each keystroke; native, composed)"
+          },
+          {
+            "name": "minerva-input",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:8883b1fcfef1f1056c10"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "Same as `input`, with `detail: { value }`"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:6e11b5d56d97f47d96fc"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "Same as `change`, with `detail: { value }`"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-textarea": {
+      "kind": "element",
+      "source": "web-components/src/components/textarea/textarea.ts",
+      "className": "MinervaTextarea",
+      "summary": "Multi-line text field.",
+      "description": "Multi-line text field sharing the input's look (`<Textarea>` of React). Manual resizing is disabled, as in React: set `rows` or size the element instead. Form-associated: submits `value` under `name`, supports `required`, `minlength` / `maxlength` validation (the browser's messages, from the inner `<textarea>`), `form.reset()` and `<fieldset disabled>`. Name it with `<label for>`, a wrapping `<label>`, `aria-label` or `aria-labelledby`.",
+      "properties": [
+        {
+          "name": "defaultValue",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Initial value, restored by `form.reset()` (the `value` attribute). Like `<textarea>`, changing it also changes `value` until the user edits it"
+        },
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"outline\" | \"filled\" | \"unstyled\"",
+          "default": "\"outline\"",
+          "description": "Visual style"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Font size and minimum height"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false",
+          "description": "Error state; sets aria-invalid"
+        },
+        {
+          "name": "placeholder",
+          "attribute": "placeholder",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Placeholder text"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false",
+          "description": "Read-only: focusable and submitted, not editable"
+        },
+        {
+          "name": "rows",
+          "attribute": "rows",
+          "type": "number | undefined",
+          "description": "Visible text lines"
+        },
+        {
+          "name": "minLength",
+          "attribute": "minlength",
+          "type": "number | undefined",
+          "description": "Minimum length"
+        },
+        {
+          "name": "maxLength",
+          "attribute": "maxlength",
+          "type": "number | undefined",
+          "description": "Maximum length"
+        },
+        {
+          "name": "autocomplete",
+          "attribute": "autocomplete",
+          "type": "string | undefined",
+          "description": "Autocomplete hint"
+        },
+        {
+          "name": "wrap",
+          "attribute": "wrap",
+          "type": "\"soft\" | \"hard\" | \"off\" | undefined",
+          "description": "Text wrapping when submitted (\"soft\" / \"hard\" / \"off\")"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Current value (property; the `value` attribute sets `defaultValue`)"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "select",
+          "signature": "() => void",
+          "description": "Selects the text"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "description": "The value was committed (blur), re-dispatched from the inner textarea"
+        },
+        {
+          "name": "input",
+          "description": "The value changed (each keystroke; native, composed)"
+        },
+        {
+          "name": "minerva-input",
+          "description": "Same as `input`, with `detail: { value }`"
+        },
+        {
+          "name": "minerva-change",
+          "description": "Same as `change`, with `detail: { value }`"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The native `<textarea>`"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--textarea-min-height",
+          "description": "Minimum height (every size)"
+        },
+        {
+          "name": "--textarea-padding-y",
+          "description": "Vertical padding of the text"
+        },
+        {
+          "name": "--textarea-padding-x",
+          "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+        },
+        {
+          "name": "--textarea-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--textarea-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--textarea-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--textarea-border-color",
+          "description": "Border color at rest"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Textarea": {
+      "kind": "cssVars",
+      "source": "react/src/components/Textarea",
+      "vars": [
+        {
+          "name": "--textarea-min-height",
+          "description": "Minimum height (every size)"
+        },
+        {
+          "name": "--textarea-padding-y",
+          "description": "Vertical padding of the text"
+        },
+        {
+          "name": "--textarea-padding-x",
+          "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+        },
+        {
+          "name": "--textarea-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--textarea-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--textarea-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--textarea-border-color",
+          "description": "Border color at rest"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/textarea/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/textarea/wc/basic.html": "<div style=\"display: grid; gap: 8px; max-width: 420px\">\n  <label for=\"ta-bio\">Bio</label>\n  <minerva-textarea\n    id=\"ta-bio\"\n    rows=\"4\"\n    placeholder=\"Tell us about yourself\"\n  ></minerva-textarea>\n  <output id=\"ta-bio-count\">0 words</output>\n</div>\n",
+        "apps/docs/src/docs/pages/textarea/wc/basic.ts": "// `minerva-input` fires on every keystroke with detail.value.\nexport function setup(root: HTMLElement) {\n  const textarea = root.querySelector<HTMLElement>(\"#ta-bio\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#ta-bio-count\")!;\n  const onInput = (event: Event) => {\n    const { value } = (event as CustomEvent<{ value: string }>).detail;\n    const words = value.trim() ? value.trim().split(/\\s+/).length : 0;\n    output.value = `${words} word${words === 1 ? \"\" : \"s\"}`;\n  };\n  textarea.addEventListener(\"minerva-input\", onInput);\n  return () => textarea.removeEventListener(\"minerva-input\", onInput);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "rows sets the visible height (manual resizing is disabled); minerva-input reports every change, here to count words."
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/textarea/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/textarea/wc/form.html": "<form id=\"ta-form\" style=\"display: grid; gap: 8px; max-width: 420px\">\n  <label for=\"ta-form-feedback\">Feedback (20 to 200 characters)</label>\n  <minerva-textarea\n    id=\"ta-form-feedback\"\n    name=\"feedback\"\n    rows=\"4\"\n    required\n    minlength=\"20\"\n    maxlength=\"200\"\n    placeholder=\"What did you like? What can we improve?\"\n  ></minerva-textarea>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button type=\"submit\">Send</minerva-button>\n    <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n      >Reset</minerva-button\n    >\n  </div>\n  <output id=\"ta-form-result\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/textarea/wc/form.ts": "// required / minlength / maxlength use the browser's messages on submit;\n// `invalid` styles the field after a failed submit until it is fixed.\n// Reset restores the `value` attribute.\ntype Field = HTMLElement & { invalid: boolean; validity?: ValidityState };\n\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#ta-form\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#ta-form-result\")!;\n  const onInvalid = (event: Event) => ((event.target as Field).invalid = true);\n  const onInput = (event: Event) => {\n    const field = event.target as Field;\n    if (field.validity?.valid) field.invalid = false;\n  };\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    const entries = [...new FormData(form)].map(\n      ([key, value]) => `${key}=${value}`,\n    );\n    result.value = `FormData: ${entries.join(\", \")}`;\n  };\n  const onReset = () => {\n    result.value = \"\";\n    form\n      .querySelectorAll<Field>(\"minerva-textarea\")\n      .forEach((field) => (field.invalid = false));\n  };\n  form.addEventListener(\"invalid\", onInvalid, true);\n  form.addEventListener(\"minerva-input\", onInput);\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"invalid\", onInvalid, true);\n    form.removeEventListener(\"minerva-input\", onInput);\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "In a form",
+      "description": "required, minlength and maxlength are validated by the browser on submit; the value is submitted under name and reset restores the value attribute."
+    },
+    {
+      "id": "sizes-variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/textarea/wc/sizes-variants.html",
+      "files": {
+        "apps/docs/src/docs/pages/textarea/wc/sizes-variants.html": "<div style=\"display: grid; gap: 12px; max-width: 420px\">\n  <minerva-textarea\n    size=\"small\"\n    rows=\"2\"\n    aria-label=\"Small\"\n    placeholder=\"Small\"\n  ></minerva-textarea>\n  <minerva-textarea\n    size=\"large\"\n    rows=\"2\"\n    aria-label=\"Large\"\n    placeholder=\"Large\"\n  ></minerva-textarea>\n  <minerva-textarea\n    variant=\"filled\"\n    rows=\"2\"\n    aria-label=\"Filled\"\n    placeholder=\"Filled\"\n  ></minerva-textarea>\n  <minerva-textarea\n    readonly\n    rows=\"2\"\n    value=\"Read-only text\"\n    aria-label=\"Read-only\"\n  ></minerva-textarea>\n  <minerva-textarea\n    disabled\n    rows=\"2\"\n    value=\"Disabled\"\n    aria-label=\"Disabled\"\n  ></minerva-textarea>\n  <minerva-textarea\n    invalid\n    rows=\"2\"\n    value=\"Invalid\"\n    aria-label=\"Invalid\"\n  ></minerva-textarea>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Sizes, variants and states",
+      "description": "Sizes, the filled variant, and the read-only, disabled and invalid states."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Textarea",
+      "description": "Multi-line text input sharing Input's sizes and variants; manual resizing is disabled, set rows instead.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "A controlled textarea; native attributes pass through."
+        },
+        "sizes-variants": {
+          "title": "Sizes and variants",
+          "description": "Sizes change the font size and minimum height."
+        },
+        "form-control": {
+          "title": "With FormField",
+          "description": "Label, help text, error and required state come from the field."
+        }
+      },
+      "api": {
+        "TextareaProps": {
+          "variant": "Visual style",
+          "size": "Font size and minimum height",
+          "invalid": "Error state (also set by an invalid FormControl); sets aria-invalid",
+          "ref": "Ref to the <textarea> element"
+        }
+      },
+      "cssVars": {
+        "--textarea-min-height": "Minimum height (every size)",
+        "--textarea-padding-y": "Vertical padding of the text",
+        "--textarea-padding-x": "Horizontal padding of the text (defaults to the density's small control padding)",
+        "--textarea-radius": "Corner radius (defaults to --radius-md)",
+        "--textarea-font-size": "Font size (every size)",
+        "--textarea-background": "Background color of the outline variant",
+        "--textarea-border-color": "Border color at rest"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "rows sets the visible height (manual resizing is disabled); minerva-input reports every change, here to count words."
+          },
+          "sizes-variants": {
+            "title": "Sizes, variants and states",
+            "description": "Sizes, the filled variant, and the read-only, disabled and invalid states."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "required, minlength and maxlength are validated by the browser on submit; the value is submitted under name and reset restores the value attribute."
+          }
+        },
+        "minerva-textarea": {
+          "props": {
+            "defaultValue": "Initial value (the value attribute), restored by form.reset(). Like <textarea>, changing it also changes value until the user edits the field.",
+            "placeholder": "Placeholder text shown while the field is empty.",
+            "readOnly": "Read-only: focusable and submitted, but not editable.",
+            "rows": "Number of visible text lines.",
+            "minLength": "Minimum length of the value (validated by the browser).",
+            "maxLength": "Maximum length of the value.",
+            "autocomplete": "Autocomplete hint of the inner <textarea>.",
+            "wrap": "How the text is wrapped when submitted: soft, hard or off.",
+            "name": "Name under which the value is submitted with the form.",
+            "disabled": "Disables the control: not focusable, not submitted, not validated.",
+            "required": "The control must have a value for the form to be submitted.",
+            "value": "Current value (property; the value attribute sets defaultValue).",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only)."
+          },
+          "events": {
+            "change": "The value was committed (blur), re-dispatched from the inner textarea.",
+            "input": "The value changed (each keystroke; native, composed).",
+            "minerva-input": "Same as input, with detail: { value }.",
+            "minerva-change": "Same as change, with detail: { value }."
+          },
+          "methods": {
+            "focus": "Focuses the inner control.",
+            "blur": "Removes focus from the inner control.",
+            "select": "Selects the whole text.",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

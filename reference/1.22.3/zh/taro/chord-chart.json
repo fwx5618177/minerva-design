@@ -1,0 +1,931 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "zh",
+  "renderer": "taro",
+  "page": "chord-chart",
+  "title": "弦图",
+  "description": "展示围绕圆周排列的各组之间的流量：每组是一段弧，长度取决于其流量；每条流量是连接两段弧的弦带。无向模式下，一条弦带连接一对组，宽度为两组之间双向流量之和（对称矩阵中每个关系只计一次），因此只有流入的组也有自己的弧；有向模式下，每个方向各有一条带箭头的弦带。悬停某组可高亮其弦带，悬停弦带可查看双向数值；图例可隐藏 / 显示组，方向键依次遍历各组和弦带。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "data": {
+      "teams": {
+        "design": "设计",
+        "engineering": "研发",
+        "product": "产品",
+        "marketing": "市场"
+      },
+      "teamsAria": "四个团队一周内互发的消息数",
+      "regions": {
+        "northAmerica": "北美",
+        "latinAmerica": "拉丁美洲",
+        "europe": "欧洲",
+        "africa": "非洲",
+        "westAsia": "西亚",
+        "southAsia": "南亚",
+        "eastAsia": "东亚",
+        "oceania": "大洋洲"
+      },
+      "migrationValue": "{{value}} 百万人",
+      "migrationAria": "五年间世界各地区之间的人口迁移",
+      "modules": {
+        "app": "app",
+        "router": "router",
+        "store": "store",
+        "uiKit": "ui-kit",
+        "apiClient": "api-client",
+        "auth": "auth",
+        "i18n": "i18n",
+        "utils": "utils"
+      },
+      "modulesAria": "代码库各模块之间的导入关系",
+      "economies": {
+        "us": "美国",
+        "china": "中国",
+        "eu": "欧盟",
+        "mexico": "墨西哥",
+        "canada": "加拿大",
+        "japan": "日本",
+        "korea": "韩国"
+      },
+      "tradeAria": "主要经济体一年内的货物贸易",
+      "pages": {
+        "home": "首页",
+        "search": "搜索",
+        "category": "分类",
+        "product": "商品",
+        "cart": "购物车",
+        "checkout": "结算"
+      },
+      "visits": "{{value}} 千次访问",
+      "navHint": "悬停页面或弦带查看详情",
+      "navFlow": "{{source}} → {{target}}：{{value}}（反向：{{reverse}}）",
+      "navPage": "{{name}}：流入与流出共 {{value}}",
+      "navAria": "购物应用一天内各页面之间的跳转",
+      "datacenters": {
+        "usEast": "美国东部",
+        "usWest": "美国西部",
+        "euCentral": "欧洲中部",
+        "apSoutheast": "亚太东南",
+        "apNortheast": "亚太东北",
+        "saEast": "南美"
+      },
+      "gbps": "{{value}} Gbit/s",
+      "datacentersAria": "数据中心之间的复制流量",
+      "labelsLabel": "标签",
+      "labels": {
+        "auto": "自动",
+        "tangential": "切向",
+        "radial": "径向",
+        "none": "无"
+      },
+      "sortLabel": "组的顺序",
+      "sort": {
+        "none": "数据顺序",
+        "descending": "从大到小",
+        "ascending": "从小到大"
+      },
+      "ribbonColorLabel": "弦带颜色",
+      "ribbonColor": {
+        "gradient": "渐变",
+        "source": "源",
+        "target": "目标",
+        "neutral": "中性"
+      },
+      "directed": "有向",
+      "ticks": "刻度",
+      "switching": {
+        "other": "其他运营商",
+        "yearLabel": "年份",
+        "year": "{{year}} 年",
+        "net": "{{name}} {{value}}",
+        "summary": "{{name}} 赢得的用户最多（净增 {{value}}）。净变化：{{list}}。",
+        "aria": "{{year}} 年移动运营商之间的用户转网"
+      },
+      "research": {
+        "faculties": {
+          "physics": "物理",
+          "chemistry": "化学",
+          "biology": "生物",
+          "medicine": "医学",
+          "computing": "计算机科学",
+          "mathematics": "数学",
+          "economics": "经济",
+          "engineering": "工程"
+        },
+        "hint": "点击某个学院聚焦其合作关系，或点击一条带查看这一对学院",
+        "focus": "{{name}}：合著论文 {{total}} 篇，主要合作方为 {{partners}}",
+        "partner": "{{name}}（{{value}}）",
+        "pair": "{{a}}与{{b}}：合著论文 {{value}} 篇",
+        "clear": "清除",
+        "aria": "一所大学各学院五年间合著的论文"
+      },
+      "basket": {
+        "categories": {
+          "coffee": "咖啡",
+          "milk": "牛奶",
+          "bread": "面包",
+          "pastries": "糕点",
+          "fruit": "水果",
+          "cereal": "麦片",
+          "yogurt": "酸奶",
+          "juice": "果汁"
+        },
+        "pair": "{{a}} + {{b}}",
+        "together": "在 {{value}} 个购物篮中一起购买（占全部购物篮的 {{share}}）",
+        "withOthers": "与其他品类组合 {{value}} 次",
+        "aria": "一个月内在同一购物篮中一起购买的商品品类"
+      },
+      "calls": {
+        "services": {
+          "gateway": "网关",
+          "users": "用户",
+          "orders": "订单",
+          "inventory": "库存",
+          "payments": "支付",
+          "notifications": "通知"
+        },
+        "perSecond": "{{value}} 次/秒",
+        "summary": "总计：{{total}}。最繁忙：{{from}} → {{to}}（{{value}}）",
+        "pause": "暂停",
+        "resume": "继续",
+        "aria": "微服务之间的实时每秒调用次数"
+      },
+      "hubs": {
+        "london": "伦敦",
+        "paris": "巴黎",
+        "frankfurt": "法兰克福",
+        "istanbul": "伊斯坦布尔",
+        "dubai": "迪拜",
+        "singapore": "新加坡",
+        "tokyo": "东京",
+        "newYork": "纽约",
+        "millions": "{{value}} 百万人次",
+        "showAll": "显示全部枢纽",
+        "eastOnly": "东部枢纽",
+        "westOnly": "西部枢纽",
+        "tooFew": "至少显示两个枢纽才能看到它们之间的航线",
+        "summary": "显示 {{total}} 个枢纽中的 {{shown}} 个：{{routes}} 条航线，每年 {{passengers}}",
+        "aria": "主要机场枢纽之间的年旅客量"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "ChordChart",
+      "support": {
+        "status": "beta",
+        "notes": "Shape charts drawn on a Canvas 2D node by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, entry / update animations, sunburst drill-down with onDrill, and a generic ShapeChart taking any shape type's options. No keyboard navigation and no React tooltip content: tooltip.render may only return text. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Shape charts drawn on a Canvas 2D node by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, entry / update animations, sunburst drill-down with onDrill, and a generic ShapeChart taking any shape type's options. No keyboard navigation and no React tooltip content: tooltip.render may only return text. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "ChordChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "groups",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly (string | ChordGroup)[] | undefined",
+            "typeRef": "type:a2dc79840661498eae07",
+            "required": false,
+            "description": "Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended. With `matrix`, unnamed rows are numbered from 1."
+          },
+          {
+            "name": "matrix",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly (readonly number[])[] | undefined",
+            "typeRef": "type:14cda7081cd30af85dad",
+            "required": false,
+            "description": "Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent)"
+          },
+          {
+            "name": "links",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly ChordLink[] | undefined",
+            "typeRef": "type:2c67592f3a0996019a5b",
+            "required": false,
+            "description": "Flows as a list (by group name or index); takes precedence over `matrix`"
+          },
+          {
+            "name": "directed",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "`false`: one ribbon per pair of groups, as wide as the flows between them in both directions (a symmetric matrix counts each relation once), arcs sized by the ribbons of the group. `true`: one ribbon per direction (same width at both ends), arcs sized by the outgoing plus the incoming flows; flows from a group to itself are ignored."
+          },
+          {
+            "name": "arrows",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Arrowheads at the target end of the ribbons"
+          },
+          {
+            "name": "padAngle",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 2,
+            "required": false,
+            "description": "Gap between the groups, in degrees"
+          },
+          {
+            "name": "startAngle",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Angle of the first group, degrees clockwise from 12 o'clock"
+          },
+          {
+            "name": "sortGroups",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "enum",
+            "values": [
+              "ascending",
+              "descending",
+              "none"
+            ],
+            "typeText": "\"none\" | \"descending\" | \"ascending\" | undefined",
+            "typeRef": "type:154ca89219e5412440c1",
+            "required": false,
+            "description": "Order of the groups around the circle"
+          },
+          {
+            "name": "sortSubgroups",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "enum",
+            "values": [
+              "ascending",
+              "auto",
+              "descending",
+              "none"
+            ],
+            "typeText": "\"none\" | \"auto\" | \"descending\" | \"ascending\" | undefined",
+            "typeRef": "type:4e1e010f0af7a29736cb",
+            "default": "auto",
+            "required": false,
+            "description": "Order of the ribbon ends along an arc: `auto` minimizes the crossings; otherwise the order of the groups, or by value"
+          },
+          {
+            "name": "ribbonColor",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "enum",
+            "values": [
+              "gradient",
+              "neutral",
+              "source",
+              "target"
+            ],
+            "typeText": "\"neutral\" | \"target\" | \"gradient\" | \"source\" | undefined",
+            "typeRef": "type:f280eddf1871945519d6",
+            "default": "gradient",
+            "required": false,
+            "description": "Color of the ribbons without `color`: a gradient from the source to the target color, one of the two, or a neutral gray"
+          },
+          {
+            "name": "ribbonOpacity",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.65,
+            "required": false,
+            "description": "Opacity of the ribbons, 0-1 (highlighted ribbons are more opaque)"
+          },
+          {
+            "name": "arcWidth",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Thickness of the group arcs, in pixels"
+          },
+          {
+            "name": "ticks",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "number | boolean | undefined",
+            "typeRef": "type:11d9d08024b0b84c460e",
+            "required": false,
+            "description": "Value ticks outside the arcs (labelled where there is room); a number sets the step between ticks"
+          },
+          {
+            "name": "tickFormat",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:0ed66f8404442b5bd3aa",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the tick labels"
+          },
+          {
+            "name": "labels",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "none",
+              "radial",
+              "tangential"
+            ],
+            "typeText": "\"none\" | \"auto\" | \"tangential\" | \"radial\" | undefined",
+            "typeRef": "type:450a54e2e59f3bb532d3",
+            "default": "auto",
+            "required": false,
+            "description": "Group labels along the arc (`tangential`) or the radius (`radial`); `auto` picks tangential when every name fits; colliding labels are shortened or skipped"
+          },
+          {
+            "name": "palette",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; tapping an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip drawn on the canvas (`render` may return its text); `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:b7ec984d2eb3ed678a80",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:9b7cae367bbdb6b10ac6",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend taps then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back."
+          },
+          {
+            "name": "animation",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations"
+          },
+          {
+            "name": "padding",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, accessible names, number and percent formats, calendar dates). Mini-programs have no `<html lang>`: pass the app language"
+          },
+          {
+            "name": "texts",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")"
+          },
+          {
+            "name": "height",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "disableScroll",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Keeps the page from scrolling while a finger moves on the chart"
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the `<Canvas>` (generated by default)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:348e97229a786720de93",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted mark changes (tap, or the mouse on H5)"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:2f0a619712ca66b7ac75",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is tapped"
+          },
+          {
+            "name": "onToggle",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:5e77e83d29468fb39c06",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is tapped (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "弦图",
+      "description": "展示围绕圆周排列的各组之间的流量：每组是一段弧，长度取决于其流量；每条流量是连接两段弧的弦带。无向模式下，一条弦带连接一对组，宽度为两组之间双向流量之和（对称矩阵中每个关系只计一次），因此只有流入的组也有自己的弧；有向模式下，每个方向各有一条带箭头的弦带。悬停某组可高亮其弦带，悬停弦带可查看双向数值；图例可隐藏 / 显示组，方向键依次遍历各组和弦带。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "传入方阵和各行名称：matrix[i][j] 表示从组 i 流向组 j 的量，这里是四个团队一周内互发的消息数。图表足够大时，弧外会显示数值刻度。"
+        },
+        "migration": {
+          "title": "地区间人口迁移",
+          "description": "每个地区的弧长是迁出与迁入人数之和；弦带宽度为两个地区之间的双向迁移人数，提示框分别列出两个方向（数值、反向）。对角线（地区内部迁移）绘制为一个回环。groups 设置颜色，format 设置单位，padAngle 加大间隙。"
+        },
+        "dependencies": {
+          "title": "模块依赖矩阵",
+          "description": "代码库各模块之间的导入关系。directed 为每个方向绘制一条弦带，并在被导入的模块一端加箭头；ribbonColor=\"source\" 按导入方着色，循环依赖（同一对模块之间的两个箭头）一眼可见。labels=\"radial\" 沿半径方向书写名称。"
+        },
+        "trade": {
+          "title": "经济体之间的贸易",
+          "description": "双边货物贸易以 links 列表（{ source, target, value }）而非矩阵给出。sortGroups=\"descending\" 让贸易额最大的经济体排在前面；弦带的提示框显示一个方向的出口（数值）和另一个方向的出口（反向），以紧凑美元格式显示。"
+        },
+        "directed": {
+          "title": "带箭头的有向流量",
+          "description": "购物应用各页面之间的跳转。弧长为每个页面的流出与流入访问之和；onHover 返回悬停弦带的 source、target、value 和 reverseValue，显示在下方的说明文字中。"
+        },
+        "dark": {
+          "title": "深色控制台",
+          "description": "图表从容器的 CSS 变量读取颜色，这里是一个深色运维控制台，搭配霓虹色板、更细的弧（arcWidth）和更透明的弦带（ribbonOpacity）。"
+        },
+        "options": {
+          "title": "选项",
+          "description": "尝试不同的标签模式（auto 在每个名称都能放进弧内时使用切向标签，否则使用径向标签）、组的排序、弦带颜色、有向弦带以及刻度。"
+        },
+        "brand-switching": {
+          "title": "品牌转换",
+          "description": "用户在各移动运营商之间的转网情况，每年一个矩阵。directed 为每个方向绘制一条带，ribbonColor=\"target\" 按赢得用户的运营商着色；净增用户数由同一矩阵计算得出。"
+        },
+        "focus": {
+          "title": "聚焦某个分组",
+          "description": "各学院之间合著的论文。onClick 点击弧段后保留该学院的带，其余带通过连线的 color 变为中性色，并列出其主要合作方；点击带则显示这一对学院。"
+        },
+        "co-purchase": {
+          "title": "购物篮分析",
+          "description": "在同一购物篮中一起购买的品类。sortGroups 与 sortSubgroups=\"descending\" 让最大的品类和组合排在前面，ticks={1000} 设置刻度步长并配合紧凑的 tickFormat，renderTooltip 将组合显示为占全部购物篮的比例。"
+        },
+        "live": {
+          "title": "实时服务调用",
+          "description": "微服务之间的每秒调用次数，每 2 秒刷新并带有过渡动画。directed 配合 ribbonColor=\"source\" 显示谁在调用谁；说明文字给出总量和最繁忙的调用。"
+        },
+        "legend": {
+          "title": "受控图例",
+          "description": "各机场枢纽之间的旅客量。legend={{ position: \"top\" }} 用于切换枢纽，配合 hidden + onToggle 将隐藏列表保存在页面中，因此按钮可以应用预设，说明文字统计仍可见的航线。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "四个团队一周内互发的消息，以视图绘制；按住团队或弦带可高亮，点击会调用 onClick。"
+          }
+        },
+        "data": {
+          "tapHint": "点击团队或弦带以选中",
+          "flow": "{{source}} → {{target}}：{{value}} 条消息（反向 {{reverse}} 条）",
+          "team": "{{name}}：{{value}} 条消息"
+        }
+      },
+      "api": {
+        "ChordChartProps": {
+          "groups": "各组（名称或 { name, color }），按其在圆周上的顺序；仅在 links 中出现的组追加在后，未命名的矩阵行从 1 开始编号",
+          "matrix": "流量方阵：matrix[i][j] 表示从组 i 流向组 j 的量（未提供 links 时使用）",
+          "links": "以列表形式给出的流量 { source, target, value, color }（按组名或索引）；优先于 matrix",
+          "directed": "每个方向一条弦带，弧长为流出与流入之和（忽略自身流量）；否则每对组一条弦带，宽度为双向流量之和（对称矩阵中每个关系只计一次）",
+          "arrows": "在弦带的目标端绘制箭头（有向时默认为 true）",
+          "padAngle": "各组之间的间隙，单位为度",
+          "startAngle": "第一组的起始角度，从 12 点方向顺时针计算，单位为度",
+          "sortGroups": "各组在圆周上的顺序：数据顺序、按总量升序或降序",
+          "sortSubgroups": "弦带端点在弧上的顺序：auto 尽量减少交叉，其余按组的顺序或按数值排序",
+          "ribbonColor": "未设置 color 的弦带颜色：从源到目标的渐变、两者之一，或中性灰",
+          "ribbonOpacity": "弦带的不透明度，0-1（悬停时更不透明）",
+          "arcWidth": "组弧的粗细，单位为像素（默认为半径的 6%，8-18 像素）",
+          "ticks": "弧外的数值刻度，在有空间时标注数值；传入数字可设置标注刻度的步长",
+          "tickFormat": "刻度标签的格式化函数（默认为当前语言的紧凑数字，而不是 format，以免单位挤占刻度空间）",
+          "labels": "组标签：沿弧（tangential）、沿半径（radial）、自动（auto）或不显示（none）；会发生碰撞的标签会被缩短或省略"
+        },
+        "native_ChordChartProps": {
+          "groups": "各组（名称或 { name, color }），按其在圆周上的顺序；仅在 links 中出现的组追加在后，未命名的矩阵行从 1 开始编号",
+          "matrix": "流量方阵：matrix[i][j] 表示从组 i 流向组 j 的量（未提供 links 时使用）",
+          "links": "以列表形式给出的流量 { source, target, value, color }（按组名或索引）；优先于 matrix",
+          "directed": "每个方向一条弦带，弧长为流出与流入之和（忽略自身流量）；否则每对组一条弦带，宽度为双向流量之和（对称矩阵中每个关系只计一次）",
+          "arrows": "在弦带的目标端绘制箭头（有向时默认为 true）",
+          "padAngle": "各组之间的间隙，单位为度",
+          "startAngle": "第一组的起始角度，从 12 点方向顺时针计算，单位为度",
+          "sortGroups": "各组在圆周上的顺序：数据顺序、按总量升序或降序",
+          "sortSubgroups": "弦带端点在弧上的顺序：auto 尽量减少交叉，其余按组的顺序或按数值排序",
+          "ribbonColor": "未设置 color 的弦带颜色：从源到目标的渐变、两者之一，或中性灰",
+          "ribbonOpacity": "弦带的不透明度，0-1（悬停时更不透明）",
+          "arcWidth": "组弧的粗细，单位为像素（默认为半径的 6%，8-18 像素）",
+          "ticks": "弧外的数值刻度，在有空间时标注数值；传入数字可设置标注刻度的步长",
+          "tickFormat": "刻度标签的格式化函数（默认为当前语言的紧凑数字，而不是 format，以免单位挤占刻度空间）",
+          "labels": "组标签：沿弧（tangential）、沿半径（radial）、自动（auto）或不显示（none）；会发生碰撞的标签会被缩短或省略"
+        },
+        "ChordGroup": {
+          "name": "显示在标签、图例和提示框中的名称；links 可以通过此名称（或索引）引用该组",
+          "color": "弧及其弦带端点的颜色；省略时取自色板"
+        },
+        "ChordLink": {
+          "source": "源组：其名称，或在 groups 中的索引",
+          "target": "目标组：其名称，或在 groups 中的索引",
+          "value": "流量大小（负值按 0 计；相同两端之间的流量会累加）",
+          "color": "弦带颜色；省略时遵循 ribbonColor"
+        }
+      },
+      "data": {
+        "teams": {
+          "design": "设计",
+          "engineering": "研发",
+          "product": "产品",
+          "marketing": "市场"
+        },
+        "teamsAria": "四个团队一周内互发的消息数",
+        "regions": {
+          "northAmerica": "北美",
+          "latinAmerica": "拉丁美洲",
+          "europe": "欧洲",
+          "africa": "非洲",
+          "westAsia": "西亚",
+          "southAsia": "南亚",
+          "eastAsia": "东亚",
+          "oceania": "大洋洲"
+        },
+        "migrationValue": "{{value}} 百万人",
+        "migrationAria": "五年间世界各地区之间的人口迁移",
+        "modules": {
+          "app": "app",
+          "router": "router",
+          "store": "store",
+          "uiKit": "ui-kit",
+          "apiClient": "api-client",
+          "auth": "auth",
+          "i18n": "i18n",
+          "utils": "utils"
+        },
+        "modulesAria": "代码库各模块之间的导入关系",
+        "economies": {
+          "us": "美国",
+          "china": "中国",
+          "eu": "欧盟",
+          "mexico": "墨西哥",
+          "canada": "加拿大",
+          "japan": "日本",
+          "korea": "韩国"
+        },
+        "tradeAria": "主要经济体一年内的货物贸易",
+        "pages": {
+          "home": "首页",
+          "search": "搜索",
+          "category": "分类",
+          "product": "商品",
+          "cart": "购物车",
+          "checkout": "结算"
+        },
+        "visits": "{{value}} 千次访问",
+        "navHint": "悬停页面或弦带查看详情",
+        "navFlow": "{{source}} → {{target}}：{{value}}（反向：{{reverse}}）",
+        "navPage": "{{name}}：流入与流出共 {{value}}",
+        "navAria": "购物应用一天内各页面之间的跳转",
+        "datacenters": {
+          "usEast": "美国东部",
+          "usWest": "美国西部",
+          "euCentral": "欧洲中部",
+          "apSoutheast": "亚太东南",
+          "apNortheast": "亚太东北",
+          "saEast": "南美"
+        },
+        "gbps": "{{value}} Gbit/s",
+        "datacentersAria": "数据中心之间的复制流量",
+        "labelsLabel": "标签",
+        "labels": {
+          "auto": "自动",
+          "tangential": "切向",
+          "radial": "径向",
+          "none": "无"
+        },
+        "sortLabel": "组的顺序",
+        "sort": {
+          "none": "数据顺序",
+          "descending": "从大到小",
+          "ascending": "从小到大"
+        },
+        "ribbonColorLabel": "弦带颜色",
+        "ribbonColor": {
+          "gradient": "渐变",
+          "source": "源",
+          "target": "目标",
+          "neutral": "中性"
+        },
+        "directed": "有向",
+        "ticks": "刻度",
+        "switching": {
+          "other": "其他运营商",
+          "yearLabel": "年份",
+          "year": "{{year}} 年",
+          "net": "{{name}} {{value}}",
+          "summary": "{{name}} 赢得的用户最多（净增 {{value}}）。净变化：{{list}}。",
+          "aria": "{{year}} 年移动运营商之间的用户转网"
+        },
+        "research": {
+          "faculties": {
+            "physics": "物理",
+            "chemistry": "化学",
+            "biology": "生物",
+            "medicine": "医学",
+            "computing": "计算机科学",
+            "mathematics": "数学",
+            "economics": "经济",
+            "engineering": "工程"
+          },
+          "hint": "点击某个学院聚焦其合作关系，或点击一条带查看这一对学院",
+          "focus": "{{name}}：合著论文 {{total}} 篇，主要合作方为 {{partners}}",
+          "partner": "{{name}}（{{value}}）",
+          "pair": "{{a}}与{{b}}：合著论文 {{value}} 篇",
+          "clear": "清除",
+          "aria": "一所大学各学院五年间合著的论文"
+        },
+        "basket": {
+          "categories": {
+            "coffee": "咖啡",
+            "milk": "牛奶",
+            "bread": "面包",
+            "pastries": "糕点",
+            "fruit": "水果",
+            "cereal": "麦片",
+            "yogurt": "酸奶",
+            "juice": "果汁"
+          },
+          "pair": "{{a}} + {{b}}",
+          "together": "在 {{value}} 个购物篮中一起购买（占全部购物篮的 {{share}}）",
+          "withOthers": "与其他品类组合 {{value}} 次",
+          "aria": "一个月内在同一购物篮中一起购买的商品品类"
+        },
+        "calls": {
+          "services": {
+            "gateway": "网关",
+            "users": "用户",
+            "orders": "订单",
+            "inventory": "库存",
+            "payments": "支付",
+            "notifications": "通知"
+          },
+          "perSecond": "{{value}} 次/秒",
+          "summary": "总计：{{total}}。最繁忙：{{from}} → {{to}}（{{value}}）",
+          "pause": "暂停",
+          "resume": "继续",
+          "aria": "微服务之间的实时每秒调用次数"
+        },
+        "hubs": {
+          "london": "伦敦",
+          "paris": "巴黎",
+          "frankfurt": "法兰克福",
+          "istanbul": "伊斯坦布尔",
+          "dubai": "迪拜",
+          "singapore": "新加坡",
+          "tokyo": "东京",
+          "newYork": "纽约",
+          "millions": "{{value}} 百万人次",
+          "showAll": "显示全部枢纽",
+          "eastOnly": "东部枢纽",
+          "westOnly": "西部枢纽",
+          "tooFew": "至少显示两个枢纽才能看到它们之间的航线",
+          "summary": "显示 {{total}} 个枢纽中的 {{shown}} 个：{{routes}} 条航线，每年 {{passengers}}",
+          "aria": "主要机场枢纽之间的年旅客量"
+        }
+      },
+      "wc": {
+        "demos": {
+          "teams": {
+            "title": "团队之间的消息",
+            "description": "一周内发送消息的方阵（行：发送方，列：接收方）；悬停在团队上会高亮其流带。"
+          },
+          "migration": {
+            "title": "双向的有向流动",
+            "description": "以连线列表表示地区之间的迁移，每个方向一条带箭头的流带；悬停事件同时给出流带的两个方向（value 与 reverseValue）。"
+          }
+        },
+        "minerva-chord-chart": {
+          "props": {
+            "height": "图表高度（包含图例）：像素或任意 CSS 长度",
+            "options": "其他引擎选项（ChordChartOptions：padAngle、startAngle、sortGroups、sortSubgroups、ribbonOpacity、arcWidth、ticks、arrows、palette、format、percentFormat…）；仅属性",
+            "instance": "引擎实例（minerva-design/charts/core），元素渲染并连接到文档前为 null"
+          },
+          "events": {
+            "minerva-hover": "悬停（或键盘聚焦）的分组或流带发生变化；detail：{ index, name, value, percent, color, source, target, reverseValue }，无悬停时为 null",
+            "minerva-click": "点击、轻触或用 Enter 激活了分组或流带；detail：{ index, name, value, percent, color, source, target, reverseValue }",
+            "minerva-toggle": "点击了图例项（或调用了 toggle()）；detail：{ index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "按索引隐藏 / 显示一个分组",
+            "getRenderer": "绘制图形所用的后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null；可通过引擎选项 renderer 指定"
+          }
+        }
+      }
+    }
+  }
+}

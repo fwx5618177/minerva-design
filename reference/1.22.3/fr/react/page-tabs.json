@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "page-tabs",
+  "title": "PageTabs",
+  "description": "Une barre des pages ouvertes de l’application (navigation entre routes, pas une tablist ARIA) : l’application gère les routes, la fermeture et la protection des modifications non enregistrées. Les éléments sont des surfaces plates arrondies ; les titres longs sont tronqués et affichés en entier dans une infobulle ; la page courante reste visible et des boutons de défilement apparaissent quand la liste déborde.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "PageTab",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "PageTab"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Identifier of the page (exposed as data-value)"
+          },
+          {
+            "name": "label",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Title of the page; truncated with an ellipsis, shown in full in a tooltip"
+          },
+          {
+            "name": "active",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Marks the item as the current page (aria-current=\"page\")"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the label button (the separate action keeps its own state)"
+          },
+          {
+            "name": "icon",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Icon displayed before the label"
+          },
+          {
+            "name": "action",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Separate control rendered next to the label (e.g. a close IconButton)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onSelect",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "function",
+            "typeText": "(() => void) | undefined",
+            "typeRef": "type:3cf6c64b24d5483a2c59",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the label button is activated"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PageTabs",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "PageTabs"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Accessible label of the navigation landmark (e.g. \"Open pages\")"
+          },
+          {
+            "name": "activeValue",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Value of the current route's item. When it (or the set of items) changes, the active item is scrolled into view"
+          },
+          {
+            "name": "actions",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Global actions shown after the scrollable list (e.g. a page menu)"
+          },
+          {
+            "name": "scrollLeftLabel",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the \"scroll left\" button"
+          },
+          {
+            "name": "scrollRightLabel",
+            "source": "packages/react/src/components/PageTabs/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the \"scroll right\" button"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "PageTabsProps": {
+      "source": "react/src/components/PageTabs/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLElement>, \"children\">"
+      ],
+      "props": [
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": true,
+          "description": "Accessible label of the navigation landmark (e.g. \"Open pages\")"
+        },
+        {
+          "name": "activeValue",
+          "type": "string",
+          "required": true,
+          "description": "Value of the current route's item. When it (or the set of items) changes, the active item is scrolled into view"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "description": "PageTab items"
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Global actions shown after the scrollable list (e.g. a page menu)"
+        },
+        {
+          "name": "scrollLeftLabel",
+          "type": "string",
+          "required": false,
+          "default": "\"Scroll pages left\" (localized)",
+          "description": "Accessible label of the \"scroll left\" button"
+        },
+        {
+          "name": "scrollRightLabel",
+          "type": "string",
+          "required": false,
+          "default": "\"Scroll pages right\" (localized)",
+          "description": "Accessible label of the \"scroll right\" button"
+        }
+      ]
+    },
+    "PageTabProps": {
+      "source": "react/src/components/PageTabs/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLDivElement>, \"children\" | \"onSelect\">"
+      ],
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the item wrapper element"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "description": "Identifier of the page (exposed as data-value)"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "description": "Title of the page; truncated with an ellipsis, shown in full in a tooltip"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Marks the item as the current page (aria-current=\"page\")"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the label button (the separate action keeps its own state)"
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Icon displayed before the label"
+        },
+        {
+          "name": "action",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Separate control rendered next to the label (e.g. a close IconButton)"
+        },
+        {
+          "name": "onSelect",
+          "type": "() => void",
+          "required": false,
+          "description": "Called when the label button is activated"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:PageTabs": {
+      "kind": "cssVars",
+      "source": "react/src/components/PageTabs",
+      "vars": [
+        {
+          "name": "--page-tabs-height",
+          "description": "Height of the tab bar"
+        },
+        {
+          "name": "--page-tabs-background",
+          "description": "Background of the tab bar"
+        },
+        {
+          "name": "--page-tabs-gap",
+          "description": "Space between the tabs"
+        },
+        {
+          "name": "--page-tabs-item-height",
+          "description": "Height of a tab"
+        },
+        {
+          "name": "--page-tabs-item-min-width",
+          "description": "Minimum width of a tab"
+        },
+        {
+          "name": "--page-tabs-item-max-width",
+          "description": "Maximum width of a tab (the label truncates)"
+        },
+        {
+          "name": "--page-tabs-item-radius",
+          "description": "Corner radius of a tab (defaults to --radius-lg)"
+        },
+        {
+          "name": "--page-tabs-selected-background",
+          "description": "Background of the active tab"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/page-tabs/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/page-tabs/demos/basic.tsx": "import { useState } from \"react\";\nimport { IconButton, PageTab, PageTabs } from \"minerva-design\";\nimport { LuFileText, LuHouse, LuX } from \"react-icons/lu\";\n\nconst initial = [\n  { value: \"home\", label: \"Dashboard\" },\n  { value: \"books\", label: \"Books\" },\n  { value: \"article\", label: \"A very long article title that gets truncated\" },\n];\n\nexport default function BasicDemo() {\n  const [pages, setPages] = useState(initial);\n  const [active, setActive] = useState(\"books\");\n\n  const close = (value: string) => {\n    const rest = pages.filter((page) => page.value !== value);\n    setPages(rest);\n    if (value === active) setActive(rest[0]?.value ?? \"\");\n  };\n\n  return (\n    <PageTabs aria-label=\"Open pages\" activeValue={active}>\n      {pages.map((page) => (\n        <PageTab\n          key={page.value}\n          value={page.value}\n          label={page.label}\n          icon={page.value === \"home\" ? <LuHouse /> : <LuFileText />}\n          active={page.value === active}\n          onSelect={() => setActive(page.value)}\n          action={\n            page.value !== \"home\" && (\n              <IconButton\n                size=\"small\"\n                aria-label={`Close ${page.label}`}\n                icon={<LuX />}\n                onClick={() => close(page.value)}\n              />\n            )\n          }\n        />\n      ))}\n    </PageTabs>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Chaque PageTab a un bouton de libellé (aria-current=\"page\" quand il est actif) et une action séparée facultative, comme un bouton de fermeture. Quand l’élément ayant le focus est fermé, le focus passe à la page courante."
+    },
+    {
+      "id": "context-menu",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/page-tabs/demos/context-menu.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/page-tabs/demos/context-menu.tsx": "import { useState } from \"react\";\nimport {\n  ContextMenu,\n  IconButton,\n  Menu,\n  PageTab,\n  PageTabs,\n} from \"minerva-design\";\nimport { LuEllipsis } from \"react-icons/lu\";\n\nconst all = [\"Overview\", \"Reports\", \"Settings\", \"Users\", \"Billing\"];\n\nexport default function ContextMenuDemo() {\n  const [pages, setPages] = useState(all);\n  const [active, setActive] = useState(\"Reports\");\n\n  const closeOthers = (keep: string) => {\n    setPages([keep]);\n    setActive(keep);\n  };\n\n  return (\n    <PageTabs\n      aria-label=\"Open pages\"\n      activeValue={active}\n      actions={\n        <Menu\n          items={[{ key: \"reset\", label: \"Reopen all pages\" }]}\n          onSelect={() => setPages(all)}\n        >\n          <IconButton\n            size=\"small\"\n            aria-label=\"Page menu\"\n            icon={<LuEllipsis />}\n          />\n        </Menu>\n      }\n    >\n      {pages.map((page) => (\n        <ContextMenu\n          key={page}\n          items={[{ key: \"close-others\", label: \"Close other pages\" }]}\n          onSelect={() => closeOthers(page)}\n        >\n          <PageTab\n            value={page}\n            label={page}\n            active={page === active}\n            onSelect={() => setActive(page)}\n          />\n        </ContextMenu>\n      ))}\n    </PageTabs>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Menu contextuel et actions",
+      "description": "Enveloppez les éléments dans un ContextMenu pour des commandes par page ; actions affiche des contrôles globaux hors de la liste défilante."
+    },
+    {
+      "id": "overflow",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/page-tabs/demos/overflow.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/page-tabs/demos/overflow.tsx": "import { useState } from \"react\";\nimport { PageTab, PageTabs } from \"minerva-design\";\n\nconst pages = Array.from({ length: 12 }, (_, i) => `Chapter ${i + 1}`);\n\nexport default function OverflowDemo() {\n  const [active, setActive] = useState(pages[9]);\n  return (\n    <div style={{ maxWidth: 520 }}>\n      <PageTabs aria-label=\"Chapters\" activeValue={active}>\n        {pages.map((page) => (\n          <PageTab\n            key={page}\n            value={page}\n            label={page}\n            active={page === active}\n            disabled={page === \"Chapter 3\"}\n            onSelect={() => setActive(page)}\n          />\n        ))}\n      </PageTabs>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Débordement et désactivation",
+      "description": "Quand les pages débordent, des boutons de défilement apparaissent et la page active est ramenée dans la zone visible. Les pages désactivées ne peuvent pas être choisies et n’affichent pas d’infobulle."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "PageTabs",
+      "description": "Une barre des pages ouvertes de l’application (navigation entre routes, pas une tablist ARIA) : l’application gère les routes, la fermeture et la protection des modifications non enregistrées. Les éléments sont des surfaces plates arrondies ; les titres longs sont tronqués et affichés en entier dans une infobulle ; la page courante reste visible et des boutons de défilement apparaissent quand la liste déborde.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Chaque PageTab a un bouton de libellé (aria-current=\"page\" quand il est actif) et une action séparée facultative, comme un bouton de fermeture. Quand l’élément ayant le focus est fermé, le focus passe à la page courante."
+        },
+        "context-menu": {
+          "title": "Menu contextuel et actions",
+          "description": "Enveloppez les éléments dans un ContextMenu pour des commandes par page ; actions affiche des contrôles globaux hors de la liste défilante."
+        },
+        "overflow": {
+          "title": "Débordement et désactivation",
+          "description": "Quand les pages débordent, des boutons de défilement apparaissent et la page active est ramenée dans la zone visible. Les pages désactivées ne peuvent pas être choisies et n’affichent pas d’infobulle."
+        }
+      },
+      "api": {
+        "PageTabsProps": {
+          "aria-label": "Libellé accessible du repère de navigation (par ex. « Pages ouvertes »)",
+          "activeValue": "Valeur de l’élément de la route courante. Quand elle (ou l’ensemble des éléments) change, l’élément actif est ramené dans la zone visible",
+          "children": "Éléments PageTab",
+          "actions": "Actions globales affichées après la liste défilante (par ex. un menu de pages)",
+          "scrollLeftLabel": "Libellé accessible du bouton « défiler vers la gauche »",
+          "scrollRightLabel": "Libellé accessible du bouton « défiler vers la droite »"
+        },
+        "PageTabProps": {
+          "ref": "Ref vers l’élément englobant de l’élément",
+          "value": "Identifiant de la page (exposé en data-value)",
+          "label": "Titre de la page ; tronqué par des points de suspension, affiché en entier dans une infobulle",
+          "active": "Marque l’élément comme page courante (aria-current=\"page\")",
+          "disabled": "Désactive le bouton de libellé (l’action séparée garde son propre état)",
+          "icon": "Icône affichée avant le libellé",
+          "action": "Contrôle séparé affiché à côté du libellé (par ex. un IconButton de fermeture)",
+          "onSelect": "Appelé quand le bouton de libellé est activé"
+        }
+      },
+      "cssVars": {
+        "--page-tabs-height": "Hauteur de la barre d'onglets",
+        "--page-tabs-background": "Fond de la barre d'onglets",
+        "--page-tabs-gap": "Espace entre les onglets",
+        "--page-tabs-item-height": "Hauteur d'un onglet",
+        "--page-tabs-item-min-width": "Largeur minimale d'un onglet",
+        "--page-tabs-item-max-width": "Largeur maximale d'un onglet (le libellé est tronqué)",
+        "--page-tabs-item-radius": "Rayon des coins d'un onglet (par défaut --radius-lg)",
+        "--page-tabs-selected-background": "Fond de l'onglet actif"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "active-value marque la page courante et suit minerva-select. closable ajoute un bouton de fermeture qui émet minerva-close : supprimez l’élément pour fermer la page. Le slot icon affiche une icône avant le libellé."
+          },
+          "actions": {
+            "title": "Actions",
+            "description": "Le slot actions affiche des contrôles globaux hors de la liste défilante (ici, un bouton qui ouvre une nouvelle page) ; le slot action d’un élément contient son propre contrôle, comme un bouton d’épinglage."
+          },
+          "overflow": {
+            "title": "Débordement et désactivation",
+            "description": "Quand les pages débordent, des boutons de défilement apparaissent (nommés par scroll-left-label / scroll-right-label) et la page active est ramenée dans la vue. Les pages désactivées ne peuvent pas être sélectionnées."
+          }
+        },
+        "minerva-page-tabs": {
+          "props": {
+            "items": "Les enfants <minerva-page-tab> (lecture seule)."
+          },
+          "events": {
+            "minerva-select": "Remonte d’un <minerva-page-tab> : une page a été choisie (detail: { value }).",
+            "minerva-close": "Remonte d’un <minerva-page-tab> : le bouton de fermeture d’une page a été activé (detail: { value })."
+          },
+          "slots": {
+            "default": "Éléments <minerva-page-tab>.",
+            "actions": "Actions globales après la liste défilante (par ex. un menu des pages)."
+          },
+          "cssVars": {
+            "--icon-button-color": "Couleur de l’icône des boutons de fermeture / défilement.",
+            "--icon-button-hover-bg": "Fond des boutons de fermeture / défilement au survol.",
+            "--icon-button-pressed-color": "Couleur de l’icône d’un bouton bascule enfoncé.",
+            "--icon-button-pressed-bg": "Fond d’un bouton bascule enfoncé.",
+            "--icon-button-size": "Largeur et hauteur des boutons de fermeture / défilement.",
+            "--icon-button-icon-size": "Taille de police de leurs icônes.",
+            "--icon-button-radius": "Rayon des coins de la forme carrée (par défaut --radius-lg)."
+          }
+        },
+        "minerva-page-tab": {
+          "props": {
+            "closable": "Affiche un bouton de fermeture intégré qui émet minerva-close.",
+            "closeLabel": "Libellé accessible du bouton de fermeture (par défaut « Fermer <label> » localisé)."
+          },
+          "events": {
+            "minerva-select": "Le bouton du libellé a été activé (detail: { value }). Annulable : preventDefault() conserve l’active-value de la barre.",
+            "minerva-close": "Le bouton de fermeture intégré a été activé (detail: { value }) ; supprimez l’élément pour fermer la page."
+          },
+          "slots": {
+            "icon": "Icône affichée avant le libellé.",
+            "action": "Contrôle séparé à côté du libellé (par ex. un bouton de fermeture ou d’épinglage)."
+          },
+          "cssVars": {
+            "--icon-button-color": "Couleur de l’icône des boutons de fermeture / défilement.",
+            "--icon-button-hover-bg": "Fond des boutons de fermeture / défilement au survol.",
+            "--icon-button-pressed-color": "Couleur de l’icône d’un bouton bascule enfoncé.",
+            "--icon-button-pressed-bg": "Fond d’un bouton bascule enfoncé.",
+            "--icon-button-size": "Largeur et hauteur des boutons de fermeture / défilement.",
+            "--icon-button-icon-size": "Taille de police de leurs icônes.",
+            "--icon-button-radius": "Rayon des coins de la forme carrée (par défaut --radius-lg)."
+          },
+          "methods": {
+            "focus": "Donne le focus au bouton du libellé."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

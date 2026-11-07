@@ -1,0 +1,641 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "ja",
+  "renderer": "react",
+  "page": "upload",
+  "title": "Upload アップロード",
+  "description": "ボタンまたはドラッグ＆ドロップでファイルを選択・検証し、転送状態とともに一覧表示します。転送処理自体はアプリ側で行います。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Upload",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Upload"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Visible label of the upload field (also names the file input)"
+          },
+          {
+            "name": "value",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "array",
+            "typeText": "UploadItem[]",
+            "typeRef": "type:e26c7d52d015cdbcc640",
+            "required": true,
+            "description": "Files to list, with their transfer state (controlled)"
+          },
+          {
+            "name": "accept",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "default": "*",
+            "required": false,
+            "description": "Accepted file types, as for <input accept> (\".pdf\", \"image/*\", \"application/json\"...)"
+          },
+          {
+            "name": "multiple",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Allows selecting several files"
+          },
+          {
+            "name": "replace",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Single-file mode: lets a new file replace the listed one (the existing file does not count toward maxCount)"
+          },
+          {
+            "name": "maxCount",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Maximum number of files, including the listed ones"
+          },
+          {
+            "name": "maxSize",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Maximum size of a file, in bytes"
+          },
+          {
+            "name": "loading",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Busy state: blocks new selections and retries (removal stays possible) and sets aria-busy"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables selection, retry and removal"
+          },
+          {
+            "name": "labels",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "object",
+            "typeText": "UploadLabels | undefined",
+            "typeRef": "type:ed976eb420408e9fc902",
+            "required": false,
+            "description": "Custom texts; each one overrides the localized default"
+          }
+        ],
+        "events": [
+          {
+            "name": "onFilesSelected",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "function",
+            "typeText": "(files: File[]) => void",
+            "typeRef": "type:2c6927fbc2413055326e",
+            "parameters": [
+              {
+                "name": "files",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "File[]",
+                "typeRef": "type:40ae21b0493523b4c65f"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": true,
+            "description": "Called with the selected (or dropped) files once they pass accept, maxSize and maxCount. Transfer, cancellation and persisted URLs belong to the caller"
+          },
+          {
+            "name": "onRemove",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "function",
+            "typeText": "((item: UploadItem) => void) | undefined",
+            "typeRef": "type:95c187c778be5b4c6e97",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "UploadItem",
+                "typeRef": "type:035c2046eded505136ac"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called to remove a file; shows a remove button on every item"
+          },
+          {
+            "name": "onRetry",
+            "source": "packages/react/src/components/Upload/types.ts",
+            "kind": "function",
+            "typeText": "((item: UploadItem) => void) | undefined",
+            "typeRef": "type:f463d1d328c6b29ef79a",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "UploadItem",
+                "typeRef": "type:035c2046eded505136ac"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called to retry a failed file; shows a retry button on failed items"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "UploadProps": {
+      "source": "react/src/components/Upload/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLDivElement>, \"onChange\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "description": "Visible label of the upload field (also names the file input)"
+        },
+        {
+          "name": "value",
+          "type": "UploadItem[]",
+          "required": true,
+          "description": "Files to list, with their transfer state (controlled)"
+        },
+        {
+          "name": "onFilesSelected",
+          "type": "(files: File[]) => void",
+          "required": true,
+          "description": "Called with the selected (or dropped) files once they pass accept, maxSize and maxCount. Transfer, cancellation and persisted URLs belong to the caller"
+        },
+        {
+          "name": "onRemove",
+          "type": "(item: UploadItem) => void",
+          "required": false,
+          "description": "Called to remove a file; shows a remove button on every item"
+        },
+        {
+          "name": "onRetry",
+          "type": "(item: UploadItem) => void",
+          "required": false,
+          "description": "Called to retry a failed file; shows a retry button on failed items"
+        },
+        {
+          "name": "accept",
+          "type": "string",
+          "required": false,
+          "default": "\"*\"",
+          "description": "Accepted file types, as for <input accept> (\".pdf\", \"image/*\", \"application/json\"...)"
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Allows selecting several files"
+        },
+        {
+          "name": "replace",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Single-file mode: lets a new file replace the listed one (the existing file does not count toward maxCount)"
+        },
+        {
+          "name": "maxCount",
+          "type": "number",
+          "required": false,
+          "default": "50 when multiple, otherwise 1",
+          "description": "Maximum number of files, including the listed ones"
+        },
+        {
+          "name": "maxSize",
+          "type": "number",
+          "required": false,
+          "description": "Maximum size of a file, in bytes"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Busy state: blocks new selections and retries (removal stays possible) and sets aria-busy"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables selection, retry and removal"
+        },
+        {
+          "name": "labels",
+          "type": "UploadLabels",
+          "required": false,
+          "description": "Custom texts; each one overrides the localized default"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root element"
+        }
+      ]
+    },
+    "UploadItem": {
+      "source": "react/src/components/Upload/types.ts",
+      "description": "A file shown in the Upload list (owned by the caller)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Stable identifier of the file"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "File name shown in the list"
+        },
+        {
+          "name": "status",
+          "type": "UploadItemStatus",
+          "required": true,
+          "description": "Transfer state of the file"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "required": false,
+          "description": "Error message shown when status is \"error\""
+        },
+        {
+          "name": "previewUrl",
+          "type": "string",
+          "required": false,
+          "description": "Image preview URL (e.g. an object URL)"
+        }
+      ]
+    },
+    "UploadLabels": {
+      "source": "react/src/components/Upload/types.ts",
+      "description": "Texts of Upload; every omitted entry uses the localized default",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "select",
+          "type": "ReactNode",
+          "required": false,
+          "default": "\"Select files\" (localized)",
+          "description": "Text of the select button"
+        },
+        {
+          "name": "uploading",
+          "type": "string",
+          "required": false,
+          "default": "\"Uploading\" (localized)",
+          "description": "Status text of an uploading file"
+        },
+        {
+          "name": "done",
+          "type": "string",
+          "required": false,
+          "default": "\"Uploaded\" (localized)",
+          "description": "Status text of an uploaded file"
+        },
+        {
+          "name": "failed",
+          "type": "string",
+          "required": false,
+          "default": "\"Upload failed\" (localized)",
+          "description": "Status text of a failed file without its own error message"
+        },
+        {
+          "name": "tooMany",
+          "type": "(max: number) => string",
+          "required": false,
+          "default": "(max) => `You can select up to ${max} files` (localized)",
+          "description": "Error shown when too many files are selected"
+        },
+        {
+          "name": "invalidType",
+          "type": "(name: string) => string",
+          "required": false,
+          "default": "(name) => `${name}: unsupported file type` (localized)",
+          "description": "Error shown when a file does not match accept"
+        },
+        {
+          "name": "tooLarge",
+          "type": "(name: string) => string",
+          "required": false,
+          "default": "(name) => `${name}: file exceeds the size limit` (localized)",
+          "description": "Error shown when a file exceeds maxSize"
+        },
+        {
+          "name": "retry",
+          "type": "(name: string) => string",
+          "required": false,
+          "default": "(name) => `Retry ${name}` (localized)",
+          "description": "Accessible label of the retry button of a file"
+        },
+        {
+          "name": "remove",
+          "type": "(name: string) => string",
+          "required": false,
+          "default": "(name) => `Remove ${name}` (localized)",
+          "description": "Accessible label of the remove button of a file"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Upload": {
+      "kind": "cssVars",
+      "source": "react/src/components/Upload",
+      "vars": [
+        {
+          "name": "--upload-gap",
+          "description": "Space between the label, the dropzone, the error and the file list"
+        },
+        {
+          "name": "--upload-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--upload-dropzone-padding",
+          "description": "Inner padding of the dropzone"
+        },
+        {
+          "name": "--upload-dropzone-radius",
+          "description": "Corner radius of the dropzone (defaults to --radius-md)"
+        },
+        {
+          "name": "--upload-dropzone-border-color",
+          "description": "Dashed border color of the dropzone at rest"
+        },
+        {
+          "name": "--upload-dropzone-background",
+          "description": "Background of the dropzone at rest"
+        },
+        {
+          "name": "--upload-preview-width",
+          "description": "Width of an image preview in the file list"
+        },
+        {
+          "name": "--upload-preview-height",
+          "description": "Height of an image preview in the file list"
+        },
+        {
+          "name": "--upload-dropzone-min-height",
+          "description": "Minimum height of the dropzone (its content is centered)"
+        },
+        {
+          "name": "--upload-item-background",
+          "description": "Background of a file row (defaults to --surface-color)"
+        },
+        {
+          "name": "--upload-dropzone-active-color",
+          "description": "Border and ring color of the dropzone while a file is dragged over it (defaults to --primary-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/upload/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/upload/demos/basic.tsx": "import { useState } from \"react\";\nimport { Upload, type UploadItem } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  const [items, setItems] = useState<UploadItem[]>([]);\n\n  const upload = (files: File[]) => {\n    const file = files[0];\n    const item: UploadItem = {\n      id: crypto.randomUUID(),\n      name: file.name,\n      status: \"uploading\",\n      previewUrl: URL.createObjectURL(file),\n    };\n    setItems([item]);\n    // simulate the transfer; a real app uploads the file here\n    setTimeout(() => setItems([{ ...item, status: \"done\" }]), 1000);\n  };\n\n  return (\n    <Upload\n      label=\"Cover image\"\n      accept=\"image/*\"\n      maxSize={5 * 1024 * 1024}\n      replace\n      value={items}\n      onFilesSelected={upload}\n      onRemove={() => setItems([])}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "単一ファイル",
+      "description": "onFilesSelected は accept と maxSize を満たしたファイルを受け取ります。転送状態は value に反映します。replace で新しいファイルが現在のファイルを置き換えます。"
+    },
+    {
+      "id": "multiple",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/upload/demos/multiple.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/upload/demos/multiple.tsx": "import { useState } from \"react\";\nimport { Upload, type UploadItem } from \"minerva-design\";\n\nconst initial: UploadItem[] = [\n  { id: \"1\", name: \"report.pdf\", status: \"done\" },\n  { id: \"2\", name: \"data.csv\", status: \"error\", error: \"Network error\" },\n];\n\nexport default function MultipleDemo() {\n  const [items, setItems] = useState(initial);\n\n  return (\n    <Upload\n      label=\"Attachments\"\n      accept=\".pdf,.csv\"\n      multiple\n      maxCount={5}\n      value={items}\n      onFilesSelected={(files) =>\n        setItems((prev) => [\n          ...prev,\n          ...files.map((file) => ({\n            id: crypto.randomUUID(),\n            name: file.name,\n            status: \"done\" as const,\n          })),\n        ])\n      }\n      onRetry={(item) =>\n        setItems((prev) =>\n          prev.map((it) =>\n            it.id === item.id ? { ...it, status: \"done\" } : it,\n          ),\n        )\n      }\n      onRemove={(item) =>\n        setItems((prev) => prev.filter((it) => it.id !== item.id))\n      }\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "複数ファイル",
+      "description": "multiple と maxCount の組み合わせ。失敗した項目はエラーを表示し、onRetry があれば再試行ボタンを表示します。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Upload アップロード",
+      "description": "ボタンまたはドラッグ＆ドロップでファイルを選択・検証し、転送状態とともに一覧表示します。転送処理自体はアプリ側で行います。",
+      "demos": {
+        "basic": {
+          "title": "単一ファイル",
+          "description": "onFilesSelected は accept と maxSize を満たしたファイルを受け取ります。転送状態は value に反映します。replace で新しいファイルが現在のファイルを置き換えます。"
+        },
+        "multiple": {
+          "title": "複数ファイル",
+          "description": "multiple と maxCount の組み合わせ。失敗した項目はエラーを表示し、onRetry があれば再試行ボタンを表示します。"
+        }
+      },
+      "api": {
+        "UploadProps": {
+          "label": "アップロード欄の表示ラベル（ファイル入力の名前にもなります）",
+          "value": "一覧表示するファイルと転送状態（制御モード）",
+          "onFilesSelected": "選択（またはドロップ）されたファイルが accept・maxSize・maxCount を満たすと呼ばれます。転送・キャンセル・保存 URL は呼び出し側の責任です",
+          "onRemove": "ファイルを削除するときに呼ばれます。各項目に削除ボタンを表示します",
+          "onRetry": "失敗したファイルを再試行するときに呼ばれます。失敗した項目に再試行ボタンを表示します",
+          "accept": "受け付けるファイル形式（<input accept> と同じ）",
+          "multiple": "複数ファイルの選択を許可します",
+          "replace": "単一ファイルモード：新しいファイルで既存のものを置き換えられます（既存ファイルは maxCount に数えません）",
+          "maxCount": "ファイル数の上限（一覧のファイルを含む）",
+          "maxSize": "1 ファイルの最大サイズ（バイト）",
+          "loading": "処理中の状態：新規選択と再試行を止め（削除は可能）、aria-busy を設定します",
+          "disabled": "選択・再試行・削除を無効にします",
+          "labels": "カスタムテキスト。各項目がローカライズされた既定値を上書きします",
+          "className": "追加のクラス名",
+          "ref": "ルート要素への ref"
+        },
+        "UploadItem": {
+          "id": "ファイルの安定した識別子",
+          "name": "一覧に表示するファイル名",
+          "status": "ファイルの転送状態",
+          "error": "status が \"error\" のときに表示するエラーメッセージ",
+          "previewUrl": "画像プレビューの URL（オブジェクト URL など）"
+        },
+        "UploadLabels": {
+          "select": "選択ボタンのテキスト",
+          "uploading": "アップロード中ファイルの状態テキスト",
+          "done": "アップロード済みファイルの状態テキスト",
+          "failed": "独自のエラーメッセージがない失敗ファイルの状態テキスト",
+          "tooMany": "選択ファイルが多すぎる場合のエラー",
+          "invalidType": "ファイルが accept に一致しない場合のエラー",
+          "tooLarge": "ファイルが maxSize を超えた場合のエラー",
+          "retry": "ファイルの再試行ボタンのアクセシブルなラベル",
+          "remove": "ファイルの削除ボタンのアクセシブルなラベル"
+        }
+      },
+      "cssVars": {
+        "--upload-gap": "ラベル・ドロップゾーン・エラー・ファイル一覧の間隔",
+        "--upload-font-size": "フォントサイズ",
+        "--upload-dropzone-padding": "ドロップゾーンの内側の余白",
+        "--upload-dropzone-radius": "ドロップゾーンの角丸（既定は --radius-md）",
+        "--upload-dropzone-border-color": "通常時のドロップゾーンの破線枠の色",
+        "--upload-dropzone-background": "通常時のドロップゾーンの背景色",
+        "--upload-preview-width": "ファイル一覧の画像プレビューの幅",
+        "--upload-preview-height": "ファイル一覧の画像プレビューの高さ",
+        "--upload-dropzone-min-height": "ドロップゾーンの最小の高さ（内容は中央揃え）",
+        "--upload-dropzone-active-color": "ファイルをドラッグ中のドロップゾーンの枠線とリングの色（既定は --primary-color）",
+        "--upload-item-background": "ファイル行の背景（既定は --surface-color）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ファイルを選択またはドロップします。accept と max-size は不正なファイルをメッセージ付きで拒否し、replace は 1 つのファイルを置き換え、multiple + max-count で複数を許可し、removable で削除ボタンを追加します。"
+          },
+          "transfer": {
+            "title": "アップロードの進行と再試行",
+            "description": "minerva-files-selected をキャンセルするとページが items を管理します。ファイルはアップロード中として表示された後、完了または失敗になります（2 つ目ごとに 1 回失敗）。retryable で minerva-retry を発火する再試行ボタンを表示します。"
+          },
+          "form": {
+            "title": "フォーム内での利用",
+            "description": "一覧のすべてのファイルが name で送信されます（multipart の FormData）。required はファイルがない場合に送信を止め、リセットで一覧が空になります。"
+          }
+        },
+        "minerva-upload": {
+          "props": {
+            "removable": "各項目に削除ボタンを表示します。",
+            "retryable": "失敗した項目に再試行ボタンを表示します。",
+            "required": "ファイルがない場合は無効になります（valueMissing）。",
+            "items": "一覧のファイルと転送状態：{ id, name, status, error?, previewUrl?, file? } の配列（プロパティ）。",
+            "texts": "カスタムテキスト（React 版の labels プロパティ。labels はフォームコントロールの <label> 一覧のため改名）。各項目がローカライズ済みの既定値を上書きします。",
+            "files": "一覧の項目のファイル。フォームと一緒に送信されます（読み取り専用）。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "change": "ユーザーが一覧のファイルを変更した。",
+            "minerva-files-selected": "有効なファイルが選択またはドロップされた。detail: { files }。キャンセル可能（キャンセルするとファイルは一覧に追加されません）。",
+            "minerva-change": "ユーザーが一覧のファイルを変更した。detail: { value }（項目）。",
+            "minerva-remove": "項目の削除ボタンが押された。detail: { item }。キャンセル可能（キャンセルすると項目は残ります）。",
+            "minerva-retry": "失敗した項目の再試行ボタンが押された。detail: { item }。"
+          },
+          "cssVars": {
+            "--icon-button-color": "内部のアイコンボタンのアイコン色。",
+            "--icon-button-hover-bg": "ホバー時の内部アイコンボタンの背景。",
+            "--icon-button-pressed-color": "押下状態の内部アイコンボタンのアイコン色。",
+            "--icon-button-pressed-bg": "押下状態の内部アイコンボタンの背景。",
+            "--icon-button-size": "内部アイコンボタンの幅と高さ（既定値は密度のコントロール高さに従う）。",
+            "--icon-button-icon-size": "内部アイコンボタンのアイコンのフォントサイズ。",
+            "--icon-button-radius": "内部アイコンボタンの角丸（既定値は --radius-lg）。"
+          },
+          "methods": {
+            "focus": "選択ボタンにフォーカスします。",
+            "showPicker": "ファイル選択ダイアログを開きます。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        },
+        "limitations": "このプレビューはブラウザーのファイル選択を使用し、Expo の例はネイティブのシステム選択を使用します。選択したファイルはローカルにあり、転送と進行状況はアプリが管理します。"
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "wc-vue",
+  "title": "Vue (Web Components)",
+  "description": "Minerva custom elements in Vue 3 and Nuxt: compiler setup, property and event binding, the controlled pattern and Volar typings.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "setup": {
+      "title": "Setup",
+      "text": "Vue supports custom elements out of the box. Tell its template compiler that minerva-* tags are custom elements, so it does not try to resolve them as Vue components (and does not warn about them):",
+      "register": "Then register the elements and load the design tokens once, in your entry file:"
+    },
+    "binding": {
+      "title": "Binding properties and events",
+      "text": "Bind with :prop and listen with @minerva-*, as with native elements. A v-model-like two-way binding is a :value (or :checked) binding plus the matching event:",
+      "properties": "Vue sets a bound value as a DOM property when the element has a property with that name, and as an attribute otherwise. Register the elements before mounting the app, so that they are defined when Vue renders them, and arrays, objects and functions (options, items, render callbacks) reach the element as they are.",
+      "booleans": "Booleans are plain booleans (:disabled=\"busy\"); static boolean attributes are written without a value (clearable, required). Add the .attr modifier to force an attribute, and .prop to force a property.",
+      "events": "Event names are kebab-case and used as they are: @minerva-change, @minerva-open-change. $event is the CustomEvent; read the new state from $event.detail. Native events (@click, @focus, @input, @change) work too.",
+      "vModel": "v-model is designed for native inputs and Vue components, so use the explicit pair: :value + @minerva-input for text fields (each keystroke) or @minerva-change (committed value), :checked + @minerva-change for checkboxes and switches."
+    },
+    "controlled": {
+      "title": "Controlled open state",
+      "text": "The element updates its own state when the user acts, then fires the event. Events that announce a change requested by the user (minerva-open-change, tab selection) are cancelable: call preventDefault() to keep the current state, and update your ref otherwise:"
+    },
+    "types": {
+      "title": "Typings (Volar)",
+      "text": "The package ships typings for Vue's GlobalComponents, generated from its Custom Elements Manifest: attributes, properties and events of every <minerva-*> tag are type-checked and completed in templates by Vue - Official (Volar) and vue-tsc. Add them to the types of your tsconfig:"
+    },
+    "nuxt": {
+      "title": "Nuxt",
+      "text": "Configure the compiler in nuxt.config and register the elements in a client-only plugin. The tags are server-rendered as plain HTML with their attributes and upgraded in the browser once the plugin has run (importing the package on the server is safe too: the modules do not touch the DOM when they load)."
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// vite.config.ts\nimport { defineConfig } from \"vite\";\nimport vue from \"@vitejs/plugin-vue\";\n\nexport default defineConfig({\n  plugins: [\n    vue({\n      template: {\n        compilerOptions: {\n          // <minerva-*> tags are custom elements, not Vue components\n          isCustomElement: (tag) => tag.startsWith(\"minerva-\"),\n        },\n      },\n    }),\n  ],\n});",
+      "language": "ts"
+    },
+    {
+      "source": "// main.ts\nimport { createApp } from \"vue\";\nimport \"minerva-design/web-components\"; // or per element: \".../select\", \".../switch\"\nimport \"minerva-design/tokens.css\";\nimport App from \"./App.vue\";\n\ncreateApp(App).mount(\"#app\");",
+      "language": "ts"
+    },
+    {
+      "source": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\n\nconst name = ref(\"Ada\");\nconst plan = ref(\"pro\");\nconst notify = ref(true);\nconst saving = ref(false);\nconst plans = [\n  { value: \"free\", label: \"Free\" },\n  { value: \"pro\", label: \"Pro\" },\n];\n</script>\n\n<template>\n  <!-- :value is set as a property; the event carries the new value -->\n  <minerva-input\n    aria-label=\"Name\"\n    :value=\"name\"\n    @minerva-input=\"name = $event.detail.value\"\n  />\n\n  <!-- arrays and objects are properties too -->\n  <minerva-select\n    aria-label=\"Plan\"\n    :options=\"plans\"\n    :value=\"plan\"\n    @minerva-change=\"plan = $event.detail.value\"\n  />\n\n  <minerva-switch\n    label=\"Email notifications\"\n    :checked=\"notify\"\n    @minerva-change=\"notify = $event.detail.checked\"\n  />\n\n  <!-- booleans: a plain boolean, set as a property -->\n  <minerva-button :loading=\"saving\" :disabled=\"!name\" @click=\"saving = true\">\n    Save\n  </minerva-button>\n</template>",
+      "language": "html"
+    },
+    {
+      "source": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\n\nconst open = ref(false);\nconst dirty = ref(true);\n\n// the user asked to close: keep the modal open while there are changes\nfunction onOpenChange(event: CustomEvent<{ open: boolean }>) {\n  if (!event.detail.open && dirty.value) event.preventDefault();\n  else open.value = event.detail.open;\n}\n</script>\n\n<template>\n  <minerva-modal label=\"Edit profile\" :open=\"open\" @minerva-open-change=\"onOpenChange\">\n    ...\n  </minerva-modal>\n</template>",
+      "language": "html"
+    },
+    {
+      "source": "// tsconfig.json (or tsconfig.app.json)\n{\n  \"compilerOptions\": {\n    \"types\": [\"minerva-design/web-components/vue\"]\n  }\n}",
+      "language": "json"
+    },
+    {
+      "source": "// nuxt.config.ts\nexport default defineNuxtConfig({\n  css: [\"minerva-design/tokens.css\"],\n  vue: {\n    compilerOptions: {\n      isCustomElement: (tag) => tag.startsWith(\"minerva-\"),\n    },\n  },\n});\n\n// plugins/minerva.client.ts: the .client suffix runs it in the browser only\nimport \"minerva-design/web-components\";\n\nexport default defineNuxtPlugin(() => {});",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Vue (Web Components)",
+      "description": "Minerva custom elements in Vue 3 and Nuxt: compiler setup, property and event binding, the controlled pattern and Volar typings.",
+      "setup": {
+        "title": "Setup",
+        "text": "Vue supports custom elements out of the box. Tell its template compiler that minerva-* tags are custom elements, so it does not try to resolve them as Vue components (and does not warn about them):",
+        "register": "Then register the elements and load the design tokens once, in your entry file:"
+      },
+      "binding": {
+        "title": "Binding properties and events",
+        "text": "Bind with :prop and listen with @minerva-*, as with native elements. A v-model-like two-way binding is a :value (or :checked) binding plus the matching event:",
+        "properties": "Vue sets a bound value as a DOM property when the element has a property with that name, and as an attribute otherwise. Register the elements before mounting the app, so that they are defined when Vue renders them, and arrays, objects and functions (options, items, render callbacks) reach the element as they are.",
+        "booleans": "Booleans are plain booleans (:disabled=\"busy\"); static boolean attributes are written without a value (clearable, required). Add the .attr modifier to force an attribute, and .prop to force a property.",
+        "events": "Event names are kebab-case and used as they are: @minerva-change, @minerva-open-change. $event is the CustomEvent; read the new state from $event.detail. Native events (@click, @focus, @input, @change) work too.",
+        "vModel": "v-model is designed for native inputs and Vue components, so use the explicit pair: :value + @minerva-input for text fields (each keystroke) or @minerva-change (committed value), :checked + @minerva-change for checkboxes and switches."
+      },
+      "controlled": {
+        "title": "Controlled open state",
+        "text": "The element updates its own state when the user acts, then fires the event. Events that announce a change requested by the user (minerva-open-change, tab selection) are cancelable: call preventDefault() to keep the current state, and update your ref otherwise:"
+      },
+      "types": {
+        "title": "Typings (Volar)",
+        "text": "The package ships typings for Vue's GlobalComponents, generated from its Custom Elements Manifest: attributes, properties and events of every <minerva-*> tag are type-checked and completed in templates by Vue - Official (Volar) and vue-tsc. Add them to the types of your tsconfig:"
+      },
+      "nuxt": {
+        "title": "Nuxt",
+        "text": "Configure the compiler in nuxt.config and register the elements in a client-only plugin. The tags are server-rendered as plain HTML with their attributes and upgraded in the browser once the plugin has run (importing the package on the server is safe too: the modules do not touch the DOM when they load)."
+      }
+    }
+  }
+}

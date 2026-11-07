@@ -1,0 +1,791 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "sankey-chart",
+  "title": "サンキー図",
+  "description": "段階間の流れを示します：エネルギー収支、ユーザー動線、予算配分など。ノードは列に並び、リンクの太さは流量に比例します。ノードの並びは反復的な緩和で調整され、流れがまっすぐになり交差が減ります。ノードにホバーするとそのすべての流れが強調され、リンクにホバーすると流出元に対する割合を確認できます。矢印キーでノードとリンクを移動できます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "data": {
+      "energy": {
+        "solar": "太陽光",
+        "wind": "風力",
+        "hydro": "水力",
+        "nuclear": "原子力",
+        "gas": "天然ガス",
+        "coal": "石炭",
+        "oil": "石油",
+        "electricity": "電力",
+        "heat": "地域熱供給",
+        "fuels": "石油製品",
+        "homes": "家庭",
+        "industry": "産業",
+        "services": "業務",
+        "transport": "運輸",
+        "losses": "損失"
+      },
+      "twh": "{{value}} TWh",
+      "energyAria": "エネルギー収支：一次エネルギー、エネルギーキャリア、最終用途（テラワット時/年）",
+      "journey": {
+        "searchAds": "検索広告",
+        "organic": "自然検索",
+        "newsletter": "ニュースレター",
+        "social": "ソーシャル",
+        "home": "トップページ",
+        "pricing": "料金ページ",
+        "blog": "ブログ",
+        "signup": "登録フォーム",
+        "left": "離脱",
+        "trial": "トライアル開始",
+        "abandoned": "登録中断",
+        "paid": "有料プラン",
+        "expired": "トライアル終了"
+      },
+      "journeyAria": "1 週間のセッション：流入チャネルから契約まで",
+      "journeyLink": "{{source}} → {{target}}：{{value}} セッション（{{source}} の {{share}}%）",
+      "journeyNode": "{{name}}：{{value}} セッション",
+      "journeyHint": "ステップや経路をクリック（またはチャートにフォーカスして Enter）すると選択できます",
+      "budget": {
+        "licenses": "ライセンス",
+        "subscriptions": "サブスクリプション",
+        "services": "サービス",
+        "grants": "助成金",
+        "budget": "年間予算",
+        "rnd": "研究開発",
+        "sales": "営業・マーケティング",
+        "operations": "運用",
+        "admin": "管理部門",
+        "platform": "プラットフォーム",
+        "mobile": "モバイルアプリ",
+        "ai": "AI 研究",
+        "campaigns": "キャンペーン",
+        "salesTeam": "営業チーム",
+        "infrastructure": "インフラ",
+        "support": "カスタマーサポート",
+        "finance": "財務・法務",
+        "offices": "オフィス"
+      },
+      "budgetAria": "年間予算：収益源、部門、プログラム",
+      "support": {
+        "email": "メール",
+        "chat": "チャット",
+        "phone": "電話",
+        "bot": "チャットボット",
+        "tier1": "一次対応",
+        "tier2": "二次対応",
+        "engineering": "開発チーム",
+        "solved": "解決",
+        "refunded": "返金",
+        "escalated": "不具合登録"
+      },
+      "supportAria": "1 か月のサポートチケット：チャネルから結果まで",
+      "alignLabel": "ノードの配置",
+      "align": {
+        "justify": "両端揃え",
+        "left": "左揃え",
+        "right": "右揃え",
+        "center": "中央"
+      },
+      "linkColorLabel": "リンクの色",
+      "linkColor": {
+        "gradient": "グラデーション",
+        "source": "流出元",
+        "target": "流入先",
+        "neutral": "ニュートラル"
+      },
+      "labelValues": "ラベルに値を表示",
+      "pnl": {
+        "cloud": "クラウド",
+        "licenses": "ライセンス",
+        "hardware": "ハードウェア",
+        "services": "サービス",
+        "revenue": "売上高",
+        "cogs": "売上原価",
+        "gross": "売上総利益",
+        "rnd": "研究開発費",
+        "sales": "販売・マーケティング費",
+        "admin": "一般管理費",
+        "operating": "営業利益",
+        "tax": "法人税等",
+        "net": "当期純利益",
+        "aria": "四半期の損益計算書：売上セグメント、コスト、利益",
+        "margins": "売上総利益率 {{gross}} ・ 営業利益率 {{operating}} ・ 純利益率 {{net}}"
+      },
+      "supply": {
+        "brazil": "ブラジル",
+        "colombia": "コロンビア",
+        "ethiopia": "エチオピア",
+        "vietnam": "ベトナム",
+        "hamburg": "ハンブルク焙煎所",
+        "rotterdam": "ロッテルダム焙煎所",
+        "north": "北倉庫",
+        "central": "中央倉庫",
+        "south": "南倉庫",
+        "cafes": "カフェ",
+        "supermarkets": "スーパーマーケット",
+        "online": "オンラインショップ",
+        "tonnes": "{{value}} t",
+        "aria": "1 か月に出荷されたコーヒー：産地から焙煎所と倉庫を経て販売チャネルまで",
+        "hint": "拠点をクリックするとそこを通るすべての流れを追跡し、出荷ルートをクリックするとそのルートを選択します",
+        "node": "{{name}}：{{from}} 拠点から {{inbound}} を入荷、{{to}} 拠点へ {{outbound}} を出荷",
+        "link": "{{source}} → {{target}}：{{value}}（{{source}} の出荷量の {{share}}）",
+        "clear": "選択を解除"
+      },
+      "hiring": {
+        "referrals": "社員紹介",
+        "jobBoards": "求人サイト",
+        "linkedin": "ビジネス SNS",
+        "agencies": "人材紹介会社",
+        "campus": "新卒採用",
+        "applied": "応募",
+        "cvRejected": "書類選考で不合格",
+        "screen": "電話面談",
+        "screenOut": "電話面談で不合格",
+        "interview": "面接",
+        "interviewOut": "面接で不合格",
+        "offer": "内定",
+        "declined": "内定辞退",
+        "hired": "入社",
+        "showDropOffs": "離脱を表示",
+        "aria": "1 年間の採用ファネル：応募経路から入社まで",
+        "summary": "応募 {{applied}} 件、採用 {{hired}} 名（{{rate}}）。電話面談を受けた候補者の {{interview}} が面接に進み、内定の {{accepted}} が承諾されています。"
+      },
+      "traffic": {
+        "client": {
+          "web": "Web アプリ",
+          "ios": "iOS アプリ",
+          "android": "Android アプリ",
+          "partners": "パートナー API"
+        },
+        "gateway": "API ゲートウェイ",
+        "service": {
+          "auth": "認証",
+          "catalog": "カタログ",
+          "search": "検索",
+          "checkout": "決済"
+        },
+        "status": {
+          "ok": "2xx 成功",
+          "clientError": "4xx クライアントエラー",
+          "serverError": "5xx サーバーエラー"
+        },
+        "rps": "{{value}} req/s",
+        "summary": "合計：{{total}}。",
+        "healthy": "サーバーエラー率：{{rate}}",
+        "incident": "サーバーエラー率：{{rate}}、決済サービスで障害発生",
+        "pause": "一時停止",
+        "resume": "再開",
+        "aria": "リアルタイム API トラフィック（秒間リクエスト数）：クライアントからサービスとステータスコードまで"
+      },
+      "plastic": {
+        "pet": "PET ボトル・トレー",
+        "hdpe": "HDPE 容器",
+        "pp": "PP カップ・キャップ",
+        "film": "LDPE フィルム",
+        "other": "その他のポリマー",
+        "market": "市場に出た包装材",
+        "collected": "リサイクル回収",
+        "incinerated": "焼却",
+        "landfill": "埋立",
+        "leaked": "自然環境への流出",
+        "recycled": "リサイクル",
+        "rejected": "選別残渣",
+        "closedLoop": "新しい包装材",
+        "downcycled": "低品位製品",
+        "mt": "{{value}} Mt",
+        "shareOfSource": "{{source}} の {{share}}",
+        "shareOfTotal": "包装材全体の {{share}}",
+        "aria": "1 年間のプラスチック包装材（メガトン）：ポリマー、廃棄経路、リサイクル"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "SankeyChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "SankeyChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "animation",
+            "type": "boolean",
+            "required": false,
+            "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "labels",
+            "type": "boolean",
+            "required": false,
+            "description": "Node labels (name and value; default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ShapeLegendOptions",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)",
+            "typeText": "boolean | ShapeLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ShapeTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it (default `true`)",
+            "typeText": "boolean | ShapeTooltipOptions"
+          },
+          {
+            "name": "labelValues",
+            "type": "boolean",
+            "required": false,
+            "description": "Shows the value after the name in the labels (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D (default `auto`, see `setDefaultChartRenderer`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the drawing, in pixels (default 8 on every side)",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "hidden",
+            "type": "readonly number[]",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back.",
+            "typeText": "readonly number[]"
+          },
+          {
+            "name": "texts",
+            "type": "Partial<ShapeChartLabels>",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")",
+            "typeText": "Partial<ShapeChartLabels>"
+          },
+          {
+            "name": "format",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)",
+            "typeText": "((value: number) => string)"
+          },
+          {
+            "name": "percentFormat",
+            "type": "((share: number) => string)",
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")",
+            "typeText": "((share: number) => string)"
+          },
+          {
+            "name": "links",
+            "type": "readonly SankeyLink[]",
+            "required": true,
+            "description": "Flows between the nodes (by name or index); links closing a cycle are ignored",
+            "typeText": "readonly SankeyLink[]"
+          },
+          {
+            "name": "nodes",
+            "type": "readonly SankeyNode[]",
+            "required": false,
+            "description": "Nodes, in their initial order; nodes only named by a link are appended",
+            "typeText": "readonly SankeyNode[]"
+          },
+          {
+            "name": "align",
+            "type": "\"left\" | \"right\" | \"center\" | \"justify\"",
+            "required": false,
+            "description": "Column of the nodes without a `column` (default `justify`)",
+            "typeText": "\"left\" | \"right\" | \"center\" | \"justify\""
+          },
+          {
+            "name": "nodeWidth",
+            "type": "number",
+            "required": false,
+            "description": "Width of the node bars, in pixels (default 12)",
+            "typeText": "number"
+          },
+          {
+            "name": "nodePadding",
+            "type": "number",
+            "required": false,
+            "description": "Vertical gap between the nodes of a column, in pixels (default 12)",
+            "typeText": "number"
+          },
+          {
+            "name": "iterations",
+            "type": "number",
+            "required": false,
+            "description": "Relaxation passes that straighten the flows and reduce crossings (default 32)",
+            "typeText": "number"
+          },
+          {
+            "name": "linkOpacity",
+            "type": "number",
+            "required": false,
+            "description": "Opacity of the links, 0-1 (default 0.4)",
+            "typeText": "number"
+          },
+          {
+            "name": "linkColor",
+            "type": "\"neutral\" | \"target\" | \"gradient\" | \"source\"",
+            "required": false,
+            "description": "Color of the links without `color` (default `gradient`)",
+            "typeText": "\"neutral\" | \"target\" | \"gradient\" | \"source\""
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "type": "[event: ShapeHoverEvent | null]",
+            "typeText": "[event: ShapeHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "click",
+            "type": "[event: ShapeHoverEvent]",
+            "typeText": "[event: ShapeHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "toggle",
+            "type": "[event: ShapeToggleEvent]",
+            "typeText": "[event: ShapeToggleEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "energy",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/vue/energy.vue",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/vue/energy.vue": "<script setup lang=\"ts\">\n// Energy flows from the sources to the uses through the grid: link\n// thickness is the flow, colored from the source to the target.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { SankeyChart } from \"minerva-design/vue/charts\";\n\nconst NODES = {\n  en: [\n    \"Solar\",\n    \"Wind\",\n    \"Gas\",\n    \"Grid\",\n    \"Homes\",\n    \"Industry\",\n    \"Transport\",\n    \"Losses\",\n  ],\n  zh: [\"太阳能\", \"风能\", \"天然气\", \"电网\", \"居民\", \"工业\", \"交通\", \"损耗\"],\n  ja: [\"太陽光\", \"風力\", \"ガス\", \"送電網\", \"家庭\", \"産業\", \"運輸\", \"損失\"],\n  fr: [\n    \"Solaire\",\n    \"Éolien\",\n    \"Gaz\",\n    \"Réseau\",\n    \"Foyers\",\n    \"Industrie\",\n    \"Transports\",\n    \"Pertes\",\n  ],\n};\n\n// source, target (node indexes), TWh\nconst LINKS = [\n  [0, 3, 32],\n  [1, 3, 48],\n  [2, 3, 70],\n  [3, 4, 52],\n  [3, 5, 61],\n  [3, 6, 22],\n  [3, 7, 15],\n].map(([source, target, value]) => ({ source, target, value }));\n\nconst { language } = useI18n();\nconst nodes = computed(() =>\n  (NODES[language.value] ?? NODES.en).map((name) => ({ name })),\n);\nconst format = (value: number) => `${value} TWh`;\n</script>\n\n<template>\n  <SankeyChart :nodes=\"nodes\" :links=\"LINKS\" :format=\"format\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "energy",
+      "description": ""
+    },
+    {
+      "id": "journey",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/vue/journey.vue",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/vue/journey.vue": "<script setup lang=\"ts\">\n// A user journey with drop-offs: `align=\"left\"` keeps every step in its\n// column, `link-color=\"source\"` colors a flow like the page it leaves.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { SankeyChart } from \"minerva-design/vue/charts\";\n\nconst STEPS = {\n  en: [\"Home page\", \"Search\", \"Product page\", \"Cart\", \"Checkout\", \"Left\"],\n  zh: [\"首页\", \"搜索\", \"商品页\", \"购物车\", \"结账\", \"离开\"],\n  ja: [\"トップページ\", \"検索\", \"商品ページ\", \"カート\", \"購入手続き\", \"離脱\"],\n  fr: [\"Accueil\", \"Recherche\", \"Fiche produit\", \"Panier\", \"Paiement\", \"Départ\"],\n};\n\n// from, to (step indexes), visitors\nconst FLOWS = [\n  [0, 1, 420],\n  [0, 2, 310],\n  [0, 5, 270],\n  [1, 2, 330],\n  [1, 5, 90],\n  [2, 3, 380],\n  [2, 5, 260],\n  [3, 4, 240],\n  [3, 5, 140],\n].map(([source, target, value]) => ({ source, target, value }));\n\nconst { language } = useI18n();\nconst nodes = computed(() =>\n  (STEPS[language.value] ?? STEPS.en).map((name, i) => ({\n    name,\n    ...(i === 5 ? { color: \"var(--text-secondary-color, #9ca3af)\" } : {}),\n  })),\n);\n</script>\n\n<template>\n  <SankeyChart :nodes=\"nodes\" :links=\"FLOWS\" align=\"left\" link-color=\"source\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "journey",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "サンキー図",
+      "description": "段階間の流れを示します：エネルギー収支、ユーザー動線、予算配分など。ノードは列に並び、リンクの太さは流量に比例します。ノードの並びは反復的な緩和で調整され、流れがまっすぐになり交差が減ります。ノードにホバーするとそのすべての流れが強調され、リンクにホバーすると流出元に対する割合を確認できます。矢印キーでノードとリンクを移動できます。",
+      "demos": {
+        "energy": {
+          "title": "エネルギーフロー",
+          "description": "国のエネルギー収支における一次エネルギー、エネルギーキャリア、最終用途。ノードごとに色があり、リンクは流出元の色から流入先の色へグラデーションします。format でラベルとツールチップに単位を付けます。"
+        },
+        "journey": {
+          "title": "ユーザージャーニー",
+          "description": "1 週間のセッションがどこから来て、どこで終わるか。align=\"left\" で離脱したユーザーを離脱元のページの隣に置き、linkColor=\"source\" で経路を流入チャネルの色で塗り、onClick でクリックしたノードやリンク（流出元と流入先を含む）を受け取ります。"
+        },
+        "budget": {
+          "title": "予算配分",
+          "description": "収益源が年間予算になり、部門とプログラムに配分されます。linkColor=\"target\" で各フローを配分先の色で塗り、閲覧者のロケールの短縮通貨表記で金額を簡潔に表示します。"
+        },
+        "options": {
+          "title": "配置と配色",
+          "description": "チャットボットはサポート階層を経ずにチケットを解決するため、その流れは 1 列を飛ばします。align は column を指定していないノードの列を、linkColor はリンクの塗り方を、labelValues はラベルに値を表示するかを決めます。"
+        },
+        "income-statement": {
+          "title": "損益計算書",
+          "description": "事業セグメントが売上高に集まり、コストと利益に分かれて当期純利益まで流れます。各リンクは自身の color で着色し（利益は緑、コストは赤）、セグメントは linkColor=\"source\" のままです。コンパクトな通貨書式で金額を短く表示します。"
+        },
+        "supply-chain": {
+          "title": "サプライチェーンの追跡",
+          "description": "産地から販売チャネルまでのコーヒーの流れです。ノードを onClick すると、そのノードを通るすべての経路が色付きのまま残り、それ以外のリンクは color でグレーになります。リンクをクリックするとそのリンクだけが選択され、送り元に対する割合が表示されます。"
+        },
+        "hiring-funnel": {
+          "title": "採用ファネル",
+          "description": "応募経路から採用までの候補者と、各段階での離脱です。リンクはノードを名前で参照するので、スイッチは離脱ノードとそのリンクを除くだけで済みます。align=\"left\" により各離脱ノードは対応する段階のすぐ隣に置かれます。"
+        },
+        "live-traffic": {
+          "title": "リアルタイム API トラフィック",
+          "description": "クライアントからサービス、そしてステータスコードまでの秒間リクエスト数を 1.5 秒ごとに更新します。流量は上流から下流へ計算されるため各ノードの流入と流出が一致し、iterations={0} で更新の間もノードの位置が変わりません。"
+        },
+        "plastic": {
+          "title": "プラスチック包装のマテリアルフロー",
+          "description": "市場に出たポリマーと、包装材の行き先です。renderTooltip はリンクを送り元に対する割合（percent）として、ノードを包装材全体に対する割合として表示します。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "収益源が年間予算に流れ込み、各部門へ配分されます。ノードやフローを押すとハイライトされ、タップで onClick が呼ばれます。"
+          }
+        },
+        "data": {
+          "tapHint": "部門またはフローをタップして選択"
+        }
+      },
+      "api": {
+        "SankeyChartProps": {
+          "nodes": "初期順序のノード（名前、色、任意の列）。リンクでのみ指定されたノードは末尾に追加されます",
+          "links": "2 つのノード間の流れ。ノードは名前またはインデックスで指定し、循環を作るリンクは無視されます",
+          "nodeWidth": "ノードバーの幅（ピクセル）",
+          "nodePadding": "同じ列のノード間の縦の間隔（ピクセル、スペースが足りないときは縮小）",
+          "align": "列を指定していないノードの列：justify は終点を最後の列に、left / right は始点 / 終点に揃え、center は始点を最初の流入先の手前に置きます",
+          "iterations": "ノードを隣接ノードの方へ動かして流れをまっすぐにし、交差を減らす緩和の反復回数",
+          "linkColor": "色を指定していないリンクの色：流出元から流入先へのグラデーション、どちらか一方、またはニュートラルなグレー",
+          "linkOpacity": "リンクの不透明度（0〜1）。ホバー中の流れはより不透明になります",
+          "labels": "ノードのラベル（名前と値）を表示します。重なるラベルは省略されます",
+          "labelValues": "ラベルの名前の後に値を表示します"
+        },
+        "SankeyNode": {
+          "name": "ラベルとツールチップに表示する名前。リンクはこの名前でノードを参照できます",
+          "color": "ノードとそのリンク端の色。省略時はパレットから取得します",
+          "column": "ノードの列（0 が左端）。省略時はリンクから計算します"
+        },
+        "SankeyLink": {
+          "source": "流出元ノード：名前、または nodes 内のインデックス",
+          "target": "流入先ノード：名前、または nodes 内のインデックス",
+          "value": "流量（負の値は 0 として扱います）",
+          "color": "流れの色。省略時は linkColor に従います"
+        }
+      },
+      "data": {
+        "energy": {
+          "solar": "太陽光",
+          "wind": "風力",
+          "hydro": "水力",
+          "nuclear": "原子力",
+          "gas": "天然ガス",
+          "coal": "石炭",
+          "oil": "石油",
+          "electricity": "電力",
+          "heat": "地域熱供給",
+          "fuels": "石油製品",
+          "homes": "家庭",
+          "industry": "産業",
+          "services": "業務",
+          "transport": "運輸",
+          "losses": "損失"
+        },
+        "twh": "{{value}} TWh",
+        "energyAria": "エネルギー収支：一次エネルギー、エネルギーキャリア、最終用途（テラワット時/年）",
+        "journey": {
+          "searchAds": "検索広告",
+          "organic": "自然検索",
+          "newsletter": "ニュースレター",
+          "social": "ソーシャル",
+          "home": "トップページ",
+          "pricing": "料金ページ",
+          "blog": "ブログ",
+          "signup": "登録フォーム",
+          "left": "離脱",
+          "trial": "トライアル開始",
+          "abandoned": "登録中断",
+          "paid": "有料プラン",
+          "expired": "トライアル終了"
+        },
+        "journeyAria": "1 週間のセッション：流入チャネルから契約まで",
+        "journeyLink": "{{source}} → {{target}}：{{value}} セッション（{{source}} の {{share}}%）",
+        "journeyNode": "{{name}}：{{value}} セッション",
+        "journeyHint": "ステップや経路をクリック（またはチャートにフォーカスして Enter）すると選択できます",
+        "budget": {
+          "licenses": "ライセンス",
+          "subscriptions": "サブスクリプション",
+          "services": "サービス",
+          "grants": "助成金",
+          "budget": "年間予算",
+          "rnd": "研究開発",
+          "sales": "営業・マーケティング",
+          "operations": "運用",
+          "admin": "管理部門",
+          "platform": "プラットフォーム",
+          "mobile": "モバイルアプリ",
+          "ai": "AI 研究",
+          "campaigns": "キャンペーン",
+          "salesTeam": "営業チーム",
+          "infrastructure": "インフラ",
+          "support": "カスタマーサポート",
+          "finance": "財務・法務",
+          "offices": "オフィス"
+        },
+        "budgetAria": "年間予算：収益源、部門、プログラム",
+        "support": {
+          "email": "メール",
+          "chat": "チャット",
+          "phone": "電話",
+          "bot": "チャットボット",
+          "tier1": "一次対応",
+          "tier2": "二次対応",
+          "engineering": "開発チーム",
+          "solved": "解決",
+          "refunded": "返金",
+          "escalated": "不具合登録"
+        },
+        "supportAria": "1 か月のサポートチケット：チャネルから結果まで",
+        "alignLabel": "ノードの配置",
+        "align": {
+          "justify": "両端揃え",
+          "left": "左揃え",
+          "right": "右揃え",
+          "center": "中央"
+        },
+        "linkColorLabel": "リンクの色",
+        "linkColor": {
+          "gradient": "グラデーション",
+          "source": "流出元",
+          "target": "流入先",
+          "neutral": "ニュートラル"
+        },
+        "labelValues": "ラベルに値を表示",
+        "pnl": {
+          "cloud": "クラウド",
+          "licenses": "ライセンス",
+          "hardware": "ハードウェア",
+          "services": "サービス",
+          "revenue": "売上高",
+          "cogs": "売上原価",
+          "gross": "売上総利益",
+          "rnd": "研究開発費",
+          "sales": "販売・マーケティング費",
+          "admin": "一般管理費",
+          "operating": "営業利益",
+          "tax": "法人税等",
+          "net": "当期純利益",
+          "aria": "四半期の損益計算書：売上セグメント、コスト、利益",
+          "margins": "売上総利益率 {{gross}} ・ 営業利益率 {{operating}} ・ 純利益率 {{net}}"
+        },
+        "supply": {
+          "brazil": "ブラジル",
+          "colombia": "コロンビア",
+          "ethiopia": "エチオピア",
+          "vietnam": "ベトナム",
+          "hamburg": "ハンブルク焙煎所",
+          "rotterdam": "ロッテルダム焙煎所",
+          "north": "北倉庫",
+          "central": "中央倉庫",
+          "south": "南倉庫",
+          "cafes": "カフェ",
+          "supermarkets": "スーパーマーケット",
+          "online": "オンラインショップ",
+          "tonnes": "{{value}} t",
+          "aria": "1 か月に出荷されたコーヒー：産地から焙煎所と倉庫を経て販売チャネルまで",
+          "hint": "拠点をクリックするとそこを通るすべての流れを追跡し、出荷ルートをクリックするとそのルートを選択します",
+          "node": "{{name}}：{{from}} 拠点から {{inbound}} を入荷、{{to}} 拠点へ {{outbound}} を出荷",
+          "link": "{{source}} → {{target}}：{{value}}（{{source}} の出荷量の {{share}}）",
+          "clear": "選択を解除"
+        },
+        "hiring": {
+          "referrals": "社員紹介",
+          "jobBoards": "求人サイト",
+          "linkedin": "ビジネス SNS",
+          "agencies": "人材紹介会社",
+          "campus": "新卒採用",
+          "applied": "応募",
+          "cvRejected": "書類選考で不合格",
+          "screen": "電話面談",
+          "screenOut": "電話面談で不合格",
+          "interview": "面接",
+          "interviewOut": "面接で不合格",
+          "offer": "内定",
+          "declined": "内定辞退",
+          "hired": "入社",
+          "showDropOffs": "離脱を表示",
+          "aria": "1 年間の採用ファネル：応募経路から入社まで",
+          "summary": "応募 {{applied}} 件、採用 {{hired}} 名（{{rate}}）。電話面談を受けた候補者の {{interview}} が面接に進み、内定の {{accepted}} が承諾されています。"
+        },
+        "traffic": {
+          "client": {
+            "web": "Web アプリ",
+            "ios": "iOS アプリ",
+            "android": "Android アプリ",
+            "partners": "パートナー API"
+          },
+          "gateway": "API ゲートウェイ",
+          "service": {
+            "auth": "認証",
+            "catalog": "カタログ",
+            "search": "検索",
+            "checkout": "決済"
+          },
+          "status": {
+            "ok": "2xx 成功",
+            "clientError": "4xx クライアントエラー",
+            "serverError": "5xx サーバーエラー"
+          },
+          "rps": "{{value}} req/s",
+          "summary": "合計：{{total}}。",
+          "healthy": "サーバーエラー率：{{rate}}",
+          "incident": "サーバーエラー率：{{rate}}、決済サービスで障害発生",
+          "pause": "一時停止",
+          "resume": "再開",
+          "aria": "リアルタイム API トラフィック（秒間リクエスト数）：クライアントからサービスとステータスコードまで"
+        },
+        "plastic": {
+          "pet": "PET ボトル・トレー",
+          "hdpe": "HDPE 容器",
+          "pp": "PP カップ・キャップ",
+          "film": "LDPE フィルム",
+          "other": "その他のポリマー",
+          "market": "市場に出た包装材",
+          "collected": "リサイクル回収",
+          "incinerated": "焼却",
+          "landfill": "埋立",
+          "leaked": "自然環境への流出",
+          "recycled": "リサイクル",
+          "rejected": "選別残渣",
+          "closedLoop": "新しい包装材",
+          "downcycled": "低品位製品",
+          "mt": "{{value}} Mt",
+          "shareOfSource": "{{source}} の {{share}}",
+          "shareOfTotal": "包装材全体の {{share}}",
+          "aria": "1 年間のプラスチック包装材（メガトン）：ポリマー、廃棄経路、リサイクル"
+        }
+      },
+      "wc": {
+        "demos": {
+          "energy": {
+            "title": "エネルギーの流れ",
+            "description": "供給源から送電網を経て用途へ。リンクの太さが流量で、色は送り元から送り先へ変化します。"
+          },
+          "journey": {
+            "title": "離脱を含むユーザー導線",
+            "description": "ページ間を移動する訪問者と離脱者。ステップは左揃え、流れは送り元の色です。"
+          }
+        },
+        "minerva-sankey-chart": {
+          "props": {
+            "hideLabels": "ノードのラベルを非表示にします",
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）している要素が変わりました。detail：{ index, name, value, share }、何もない場合は null",
+            "minerva-click": "要素がクリック、タップ、または Enter で選択されました。detail：{ index, name, value, share }",
+            "minerva-toggle": "凡例の項目がクリックされました（または toggle() が呼ばれました）。detail：{ index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "インデックスでスライス、段階、レーダーの系列、ツリーマップの最上位ノードを表示・非表示にします",
+            "getRenderer": "シェイプを描画しているバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null。エンジンオプション renderer で指定できます"
+          }
+        }
+      }
+    }
+  }
+}

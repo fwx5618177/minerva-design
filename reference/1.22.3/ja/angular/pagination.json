@@ -1,0 +1,370 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "pagination",
+  "title": "Pagination ページネーション",
+  "description": "長いデータの一覧をページに分割し、ページ間を移動できるようにします。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "a11y": {
+      "title": "キーボード操作",
+      "body": "ページネーションはネイティブボタンで構成された <nav> ランドマークです。現在のページには aria-current=\"page\" が付与され、利用できない項目は無効になります。項目にフォーカスがあるとき、ArrowLeft/ArrowRight で前/次のページ、Home/End で最初/最後のページに移動し、フォーカスは現在のページに追従します。フォーカス中のボタンが無効になった場合は、現在のページにフォーカスが移ります。"
+    }
+  },
+  "components": [
+    {
+      "name": "Pagination",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnPagination. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnPagination. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnPagination"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-pagination",
+        "props": [
+          {
+            "name": "page",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "pageSize",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "total",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "simple",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "showJumper",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "showSizeChanger",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "pageSizeOptions",
+            "typeText": "readonly number[]",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "shape",
+            "typeText": "\"circle\" | \"square\" | \"rounded\"",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          },
+          {
+            "name": "variant",
+            "typeText": "\"outline\" | \"solid\" | \"ghost\"",
+            "required": false,
+            "source": "packages/angular/src/components/navigation/index.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "pageChange",
+            "typeText": "number",
+            "required": false
+          },
+          {
+            "name": "pageSizeChange",
+            "typeText": "number",
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "page",
+            "event": "pageChange",
+            "syntax": "[(page)]"
+          },
+          {
+            "prop": "pageSize",
+            "event": "pageSizeChange",
+            "syntax": "[(pageSize)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Pagination": {
+      "kind": "cssVars",
+      "source": "react/src/components/Pagination",
+      "vars": [
+        {
+          "name": "--pagination-item-size",
+          "description": "Height and minimum width of the page buttons (every size; defaults to the density's control height)"
+        },
+        {
+          "name": "--pagination-item-radius",
+          "description": "Corner radius of the page buttons (defaults to --radius-md; the shape prop wins)"
+        },
+        {
+          "name": "--pagination-gap",
+          "description": "Space between the items"
+        },
+        {
+          "name": "--pagination-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--pagination-active-background",
+          "description": "Background of the current page (solid variant)"
+        },
+        {
+          "name": "--pagination-active-color",
+          "description": "Text color of the current page (solid variant)"
+        },
+        {
+          "name": "--pagination-hover-background",
+          "description": "Background of a hovered page button (defaults to --hover-color)"
+        },
+        {
+          "name": "--pagination-subtle-background",
+          "description": "Background of the current page of the ghost variant (defaults to --primary-color-subtle)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "page-and-page-size",
+      "title": "Page and page size",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnPagination } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnPagination],\n  template: `\n<mn-pagination [total]=\"128\" [(page)]=\"page\" [(pageSize)]=\"pageSize\" showSizeChanger showJumper/><output>Page {{page}} · {{pageSize}} per page</output>\n  `,\n})\nexport class Example {\n  page = 1;\n  pageSize = 10;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "simple-pagination",
+      "title": "Simple pagination",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnPagination } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnPagination],\n  template: `\n<mn-pagination [total]=\"65\" simple/><mn-pagination [total]=\"100\" disabled/>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Pagination ページネーション",
+      "description": "長いデータの一覧をページに分割し、ページ間を移動できるようにします。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "50 件を 10 件ずつ表示し、最初は 1/5 ページです。次へで 2 ページへ進みます。"
+        },
+        "many-pages": {
+          "title": "多数のページ",
+          "description": "ページ数が多い場合、最初と最後のページは常に表示され、省略記号の項目で 5 ページずつ移動します。"
+        },
+        "total-and-jumper": {
+          "title": "総数とクイックジャンプ",
+          "description": "showTotal は項目数を表示し（totalRender でカスタマイズ可能）、showQuickJumper は「移動」入力欄を追加します。"
+        },
+        "size-changer": {
+          "title": "表示件数の切り替え",
+          "description": "showSizeChanger で表示件数のセレクターを追加します。切り替えると onChange は 1 ページ目と新しい件数を受け取ります。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "3 つのサイズ：small、medium（デフォルト）、large。"
+        },
+        "shapes-and-variants": {
+          "title": "形状とバリアント",
+          "description": "形状（rounded、circle、square）とバリアント（solid、outline、ghost）を組み合わせます。"
+        },
+        "simple": {
+          "title": "シンプルモード",
+          "description": "120 件、全 12 ページの 1 ページ目から始まり、前へ・次へで制御されたページ番号を更新します。"
+        },
+        "custom-render": {
+          "title": "カスタム描画",
+          "description": "アイコンを置き換えるか、itemRender ですべての項目を自分で描画します。"
+        },
+        "disabled": {
+          "title": "無効",
+          "description": "すべての操作を無効にします。"
+        },
+        "responsive": {
+          "title": "レスポンシブ",
+          "description": "responsive は小さな画面でレイアウトを調整します。"
+        },
+        "compact": {
+          "title": "コンパクトなページ一覧とカウンター",
+          "description": "siblingCount / boundaryCount で操作できない省略記号付きのコンパクトな一覧になります。hideNumbers は「現在 / 合計」カウンターを表示し、hideEdges は前へ / 次へを隠します。"
+        }
+      },
+      "api": {
+        "PaginationProps": {
+          "current": "現在のページ（1 始まり、制御）。onChange で更新する",
+          "defaultCurrent": "非制御（current 未指定）時の初期ページ",
+          "total": "項目の総数",
+          "pageSize": "1 ページあたりの件数（制御）。onChange で更新する",
+          "defaultPageSize": "非制御（pageSize 未指定）時の 1 ページあたりの初期件数",
+          "onChange": "ページまたは表示件数が変わったときに、新しいページと件数で呼び出される（件数を変更すると 1 ページ目に戻る）",
+          "disabled": "ページネーションを無効にする",
+          "showQuickJumper": "指定ページへ移動する入力欄を表示する",
+          "showSizeChanger": "表示件数のセレクターを表示する",
+          "pageSizeOptions": "表示件数セレクターの選択肢",
+          "itemRender": "ページ、前へ/次へ、ジャンプ項目のカスタム描画",
+          "className": "追加のクラス名",
+          "style": "インラインスタイル",
+          "showTotal": "総件数を表示します。関数を渡すとそれで描画します（totalRender と同じシグネチャ）",
+          "totalRender": "総数のカスタム描画。range は現在のページの [最初, 最後] の項目番号",
+          "size": "ページネーションのサイズ",
+          "shape": "ページ項目の形状",
+          "variant": "ページ項目の見た目：solid（現在のページをプライマリカラーで塗りつぶし）、outline（現在のページをプライマリカラーの枠線と文字で表示）、ghost（枠線なしの透明な項目、現在のページはプライマリカラーの文字、ホバー時に着色）",
+          "simple": "シンプルモード：前へ/次へボタンとページ入力欄",
+          "responsive": "小さな画面でレイアウトを調整する",
+          "icons": "前へ、次へ、ジャンプ項目のカスタムアイコン。省略したものは既定のアイコンのまま",
+          "ref": "ルートの <nav> 要素への ref",
+          "labels": "コンポーネントのテキスト（ボタン、クイックジャンパー、件数セレクターのアクセシブルなラベル）。省略した項目はロケールに応じた既定値を使います",
+          "siblingCount": "現在のページの両側に表示するページ数。これ（または boundaryCount）を指定すると、操作できない「…」付きのコンパクト表示になります",
+          "boundaryCount": "コンパクト表示で先頭と末尾に常に表示するページ数",
+          "hideEdges": "前へ / 次へボタンを非表示にします",
+          "hideNumbers": "ページボタンを読み取り専用の「現在 / 合計」カウンター（控えめに読み上げ）に置き換え、前へ / 次へは残します"
+        },
+        "PaginationLabels": {
+          "prev": "前のページボタンのアクセシブルなラベル",
+          "next": "次のページボタンのアクセシブルなラベル",
+          "jumpPrev": "複数ページ戻る項目のラベル",
+          "jumpNext": "複数ページ進む項目のラベル",
+          "page": "ページボタンのアクセシブルなラベルを返します",
+          "jumpTo": "クイックジャンパーの表示テキスト",
+          "jumpToInput": "クイックジャンパー入力欄のアクセシブルなラベル",
+          "pageSize": "表示件数セレクトのアクセシブルなラベル",
+          "pageSizeOption": "表示件数オプションのテキストを返します",
+          "currentPage": "シンプルモードのページ入力欄のアクセシブルなラベル",
+          "nav": "ナビゲーションランドマークのアクセシブルなラベル",
+          "total": "合計のテキスト（showTotal が true で totalRender がない場合）"
+        }
+      },
+      "a11y": {
+        "title": "キーボード操作",
+        "body": "ページネーションはネイティブボタンで構成された <nav> ランドマークです。現在のページには aria-current=\"page\" が付与され、利用できない項目は無効になります。項目にフォーカスがあるとき、ArrowLeft/ArrowRight で前/次のページ、Home/End で最初/最後のページに移動し、フォーカスは現在のページに追従します。フォーカス中のボタンが無効になった場合は、現在のページにフォーカスが移ります。"
+      },
+      "cssVars": {
+        "--pagination-item-size": "ページボタンの高さと最小幅（全サイズ共通。既定値は密度のコントロールの高さ）",
+        "--pagination-item-radius": "ページボタンの角丸（既定値は --radius-md。shape プロパティが優先）",
+        "--pagination-gap": "項目間の間隔",
+        "--pagination-font-size": "フォントサイズ",
+        "--pagination-active-background": "現在のページの背景（solid バリアント）",
+        "--pagination-active-color": "現在のページの文字色（solid バリアント）",
+        "--pagination-hover-background": "ホバー中のページボタンの背景（既定は --hover-color）",
+        "--pagination-subtle-background": "ghost バリアントの現在のページの背景（既定は --primary-color-subtle）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "total と page-size でページ数が決まります。要素は current を自身で更新し、新しいページとページサイズを含む minerva-page-change を発火します。制御するには preventDefault() を呼びます。"
+          },
+          "total-and-jumper": {
+            "title": "合計、サイズ切り替え、クイックジャンプ",
+            "description": "show-total、show-size-changer（選択肢は page-size-options=\"10,20,50\"）、show-quick-jumper。JS プロパティの totalRender で合計のテキストをカスタマイズできます。"
+          },
+          "appearance": {
+            "title": "サイズ、形状、バリアント",
+            "description": "size、shape、variant で項目のスタイルを指定します。sibling-count / boundary-count でコンパクトなページリストになり、disabled はすべての操作を無効にします。"
+          },
+          "simple": {
+            "title": "シンプルモード、カウンター、アイコン",
+            "description": "simple は前へ / 次へとページ入力を、hide-numbers は「現在 / 合計」のカウンターを表示します。prev-icon、next-icon、jump-prev-icon、jump-next-icon スロットでアイコンを置き換えられ、responsive は小さな画面に対応します。"
+          }
+        },
+        "minerva-pagination": {
+          "props": {
+            "totalPages": "ページ数（最小 1、読み取り専用）。"
+          },
+          "events": {
+            "minerva-page-change": "ユーザーがページまたはページサイズを変更しました（detail: { page, pageSize }）。キャンセル可能：preventDefault() で現在のページとサイズを維持します。"
+          },
+          "slots": {
+            "prev-icon": "前のページボタンのアイコン。",
+            "next-icon": "次のページボタンのアイコン。",
+            "jump-prev-icon": "後方ジャンプ項目のアイコン。",
+            "jump-next-icon": "前方ジャンプ項目のアイコン。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "50 件を 10 件ずつ表示し、最初は 1/5 ページです。次へで 2 ページへ進みます。"
+          },
+          "simple": {
+            "title": "シンプルモード",
+            "description": "120 件、全 12 ページの 1 ページ目から始まり、前へ・次へで制御されたページ番号を更新します。"
+          }
+        }
+      }
+    }
+  }
+}

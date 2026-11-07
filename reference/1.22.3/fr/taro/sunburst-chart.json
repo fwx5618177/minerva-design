@@ -1,0 +1,915 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "fr",
+  "renderer": "taro",
+  "page": "sunburst-chart",
+  "title": "Diagramme en rayons de soleil",
+  "description": "Une hiérarchie dessinée en anneaux concentriques : chaque anneau est un niveau, chaque secteur une part de son parent. Cliquez sur un parent (ou appuyez sur Entrée) pour zoomer, sur le centre (ou Retour arrière) pour remonter ; la transition anime les angles et les anneaux. Survoler un secteur met en avant ses ancêtres et ses descendants, et les étiquettes suivent l'arc ou le rayon, selon la place.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "data": {
+      "disk": {
+        "root": "Macintosh HD",
+        "applications": "Applications",
+        "documents": "Documents",
+        "projects": "Projets",
+        "archive": "Archives",
+        "pdfs": "PDF",
+        "spreadsheets": "Tableurs",
+        "photos": "Photos",
+        "developer": "Développement",
+        "caches": "Caches de paquets",
+        "simulators": "Simulateurs",
+        "system": "Système",
+        "music": "Musique",
+        "other": "Autres applications"
+      },
+      "gb": "{{value}} Go",
+      "diskAria": "Espace disque par dossier, en gigaoctets",
+      "diskPath": "Affichage de {{path}}. Cliquez sur le centre pour remonter.",
+      "diskHint": "Cliquez sur un dossier pour zoomer dessus.",
+      "org": {
+        "engineering": "Ingénierie",
+        "platform": "Plateforme",
+        "infrastructure": "Infrastructure",
+        "security": "Sécurité",
+        "devtools": "Outils développeurs",
+        "product": "Ingénierie produit",
+        "web": "Web",
+        "mobile": "Mobile",
+        "payments": "Paiements",
+        "data": "Données",
+        "analytics": "Analyse",
+        "ml": "Apprentissage automatique",
+        "sales": "Ventes",
+        "emea": "EMEA",
+        "americas": "Amériques",
+        "apac": "APAC",
+        "success": "Succès client",
+        "support": "Support",
+        "onboarding": "Intégration",
+        "marketing": "Marketing",
+        "brand": "Marque",
+        "growth": "Croissance",
+        "content": "Contenu",
+        "operations": "Opérations",
+        "finance": "Finance",
+        "people": "RH",
+        "legal": "Juridique",
+        "it": "Informatique"
+      },
+      "people": "{{value}} personnes",
+      "orgAria": "Effectifs par département, groupe et équipe",
+      "catalog": {
+        "all": "Tous les produits",
+        "electronics": "Électronique",
+        "phones": "Téléphones",
+        "flagship": "Haut de gamme",
+        "midRange": "Milieu de gamme",
+        "accessories": "Accessoires",
+        "laptops": "Ordinateurs portables",
+        "audio": "Audio",
+        "headphones": "Casques",
+        "speakers": "Enceintes",
+        "home": "Maison",
+        "kitchen": "Cuisine",
+        "furniture": "Mobilier",
+        "decor": "Décoration",
+        "fashion": "Mode",
+        "men": "Homme",
+        "women": "Femme",
+        "kids": "Enfant",
+        "sports": "Sport",
+        "outdoor": "Plein air",
+        "fitness": "Fitness"
+      },
+      "breadcrumb": "Chemin de la catégorie",
+      "catalogAria": "Chiffre d'affaires trimestriel par catégorie de produits",
+      "world": {
+        "asia": "Asie",
+        "africa": "Afrique",
+        "europe": "Europe",
+        "americas": "Amériques",
+        "oceania": "Océanie",
+        "other": "Autres pays"
+      },
+      "millions": "{{value}} M",
+      "labelsLabel": "Mode des étiquettes",
+      "labels": {
+        "auto": "Auto",
+        "tangential": "Le long de l'arc",
+        "radial": "Le long du rayon",
+        "none": "Aucune"
+      },
+      "worldAria": "Population mondiale par continent et par pays, en millions",
+      "budget": {
+        "areas": {
+          "education": "Éducation",
+          "health": "Santé",
+          "transport": "Transports",
+          "safety": "Sécurité publique",
+          "environment": "Environnement",
+          "administration": "Administration"
+        },
+        "programs": {
+          "schools": "Écoles",
+          "universities": "Universités",
+          "libraries": "Bibliothèques",
+          "hospitals": "Hôpitaux",
+          "prevention": "Prévention",
+          "transit": "Transports en commun",
+          "roads": "Voirie",
+          "cycling": "Pistes cyclables",
+          "police": "Police",
+          "fire": "Pompiers",
+          "parks": "Parcs",
+          "waste": "Collecte des déchets",
+          "water": "Eau"
+        },
+        "programLine": "{{path}} : {{amount}}, soit {{share}} du budget et {{areaShare}} du domaine {{area}}.",
+        "areaLine": "{{path}} : {{amount}}, soit {{share}} du budget.",
+        "aria": "Budget annuel de la ville par domaine et par programme",
+        "hint": "Budget annuel : {{total}}. Cliquez sur un secteur pour lire sa part."
+      },
+      "time": {
+        "clients": {
+          "bakery": "Chaîne de boulangeries",
+          "clinic": "Cabinet dentaire",
+          "school": "École de langues",
+          "internal": "Interne"
+        },
+        "projects": {
+          "website": "Site web",
+          "branding": "Identité visuelle",
+          "booking": "Système de réservation",
+          "app": "Application mobile",
+          "admin": "Administration",
+          "training": "Formation"
+        },
+        "activities": {
+          "design": "Design",
+          "development": "Développement",
+          "meetings": "Réunions",
+          "review": "Relecture",
+          "support": "Support",
+          "learning": "Apprentissage"
+        },
+        "period": "Période",
+        "periods": {
+          "week": "Cette semaine",
+          "month": "Ce mois-ci"
+        },
+        "tooltip": "{{hours}} · {{share}} du temps saisi",
+        "aria": "Heures saisies par client, projet et activité ({{period}})",
+        "summary": "Facturable : {{billable}} sur {{total}} ({{share}})."
+      },
+      "requests": {
+        "services": {
+          "checkout": "Paiement",
+          "search": "Recherche",
+          "accounts": "Comptes",
+          "catalog": "Catalogue"
+        },
+        "endpoints": {
+          "cart": "Panier",
+          "payment": "Règlement",
+          "shipping": "Livraison",
+          "query": "Requêtes",
+          "suggest": "Suggestions",
+          "login": "Connexion",
+          "profile": "Profil",
+          "product": "Fiches produit",
+          "reviews": "Avis"
+        },
+        "rpm": "{{value}} req./min",
+        "aria": "Requêtes d’API par minute, par service et par endpoint, mises à jour en direct",
+        "pause": "Pause",
+        "resume": "Reprendre",
+        "total": "Total : {{value}}",
+        "busiest": "Service le plus sollicité : {{service}}"
+      },
+      "energy": {
+        "sources": {
+          "renewables": "Renouvelables",
+          "nuclear": "Nucléaire",
+          "fossil": "Fossiles"
+        },
+        "fuels": {
+          "wind": "Éolien",
+          "solar": "Solaire",
+          "hydro": "Hydraulique",
+          "biomass": "Biomasse",
+          "gas": "Gaz naturel",
+          "coal": "Charbon",
+          "oil": "Pétrole"
+        },
+        "twh": "{{value}} TWh",
+        "hideFossil": "Masquer les énergies fossiles",
+        "aria": "Production annuelle d’électricité par source et par combustible",
+        "shownOnly": "Renouvelables masquées : {{total}} affichés.",
+        "share": "Renouvelables : {{share}} des {{total}} affichés."
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "SunburstChart",
+      "support": {
+        "status": "beta",
+        "notes": "Shape charts drawn on a Canvas 2D node by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, entry / update animations, sunburst drill-down with onDrill, and a generic ShapeChart taking any shape type's options. No keyboard navigation and no React tooltip content: tooltip.render may only return text. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Shape charts drawn on a Canvas 2D node by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, entry / update animations, sunburst drill-down with onDrill, and a generic ShapeChart taking any shape type's options. No keyboard navigation and no React tooltip content: tooltip.render may only return text. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "SunburstChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "data",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly TreemapNode[]",
+            "typeRef": "type:eddc87b67d233941af29",
+            "required": true,
+            "description": "Nodes: leaves carry a value, parents sum their children"
+          },
+          {
+            "name": "innerRadius",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.26,
+            "required": false,
+            "description": "Radius of the center circle as a fraction of the outer radius"
+          },
+          {
+            "name": "levels",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Rings shown at once below the focused node"
+          },
+          {
+            "name": "startAngle",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Angle of the first node, degrees clockwise from 12 o'clock"
+          },
+          {
+            "name": "padAngle",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Gap between the sectors, in pixels"
+          },
+          {
+            "name": "cornerRadius",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 2,
+            "required": false,
+            "description": "Corner radius of the sectors, in pixels"
+          },
+          {
+            "name": "labels",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "none",
+              "radial",
+              "tangential"
+            ],
+            "typeText": "\"none\" | \"auto\" | \"tangential\" | \"radial\" | undefined",
+            "typeRef": "type:450a54e2e59f3bb532d3",
+            "default": "auto",
+            "required": false,
+            "description": "Sector labels"
+          },
+          {
+            "name": "drill",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Tapping a parent zooms into it; tapping the center goes back up"
+          },
+          {
+            "name": "drillPath",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Names from the root to the focused node (`[]` = the root). Makes the drill-down controlled: taps then only call `onDrill`."
+          },
+          {
+            "name": "palette",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; tapping an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip drawn on the canvas (`render` may return its text); `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:b7ec984d2eb3ed678a80",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:9b7cae367bbdb6b10ac6",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend taps then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back."
+          },
+          {
+            "name": "animation",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations"
+          },
+          {
+            "name": "padding",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, accessible names, number and percent formats, calendar dates). Mini-programs have no `<html lang>`: pass the app language"
+          },
+          {
+            "name": "texts",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")"
+          },
+          {
+            "name": "height",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "disableScroll",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Keeps the page from scrolling while a finger moves on the chart"
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the `<Canvas>` (generated by default)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onDrill",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeDrillEvent) => void) | undefined",
+            "typeRef": "type:6d1d10574021409aaa1f",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeDrillEvent",
+                "typeRef": "type:2f6344534a4b788a1925"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a parent or the center is tapped (or the instance's `drill()` is called)"
+          },
+          {
+            "name": "onHover",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:348e97229a786720de93",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted mark changes (tap, or the mouse on H5)"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:2f0a619712ca66b7ac75",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is tapped"
+          },
+          {
+            "name": "onToggle",
+            "source": "packages/taro/src/shape-charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:5e77e83d29468fb39c06",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is tapped (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Diagramme en rayons de soleil",
+      "description": "Une hiérarchie dessinée en anneaux concentriques : chaque anneau est un niveau, chaque secteur une part de son parent. Cliquez sur un parent (ou appuyez sur Entrée) pour zoomer, sur le centre (ou Retour arrière) pour remonter ; la transition anime les angles et les anneaux. Survoler un secteur met en avant ses ancêtres et ses descendants, et les étiquettes suivent l'arc ou le rayon, selon la place.",
+      "demos": {
+        "disk-usage": {
+          "title": "Espace disque",
+          "description": "Dossiers et applications d'un ordinateur portable, en Go. Cliquez sur un dossier pour zoomer et sur le centre pour remonter ; onDrill renvoie le chemin affiché, indiqué sous le graphique."
+        },
+        "drill-down": {
+          "title": "Exploration contrôlée avec fil d'Ariane",
+          "description": "drillPath rend le focus contrôlé : les clics appellent seulement onDrill et le fil d'Ariane possède le chemin, ses boutons peuvent donc sauter à n'importe quel niveau. cornerRadius et padAngle arrondissent et séparent les secteurs."
+        },
+        "org": {
+          "title": "Organisation",
+          "description": "Effectifs par département, groupe et équipe. levels={2} n'affiche que deux anneaux à la fois (zoomez pour voir les équipes) et labels=\"radial\" écrit les noms le long du rayon."
+        },
+        "labels": {
+          "title": "Étiquettes",
+          "description": "Population par continent et par pays. labels choisit l'écriture des noms : auto prend l'arc ou le rayon pour chaque secteur, et les noms qui ne tiennent pas sont raccourcis ou omis. La légende masque / affiche les continents ; les noms de pays viennent d'Intl.DisplayNames."
+        },
+        "city-budget": {
+          "title": "Budget d’une ville",
+          "description": "drill={false} transforme le clic en sélection plutôt qu’en zoom : onClick remplit la ligne sous le graphique, qui donne la part d’un programme dans tout le budget et dans son domaine. renderTooltip affiche le même texte, et un domaine sans programmes est une simple feuille."
+        },
+        "time-tracking": {
+          "title": "Suivi du temps",
+          "description": "Les heures par client, projet et activité sur trois anneaux. Un RadioGroup passe de la semaine au mois et les secteurs s’animent ; les heures sont formatées avec l’unité hour d’Intl.NumberFormat, et le résumé donne la part facturable."
+        },
+        "live-requests": {
+          "title": "Trafic d’API en direct",
+          "description": "Les requêtes par minute par service et par endpoint, rafraîchies toutes les 1,5 seconde (setInterval, arrêté à la pause et au démontage) par une marche aléatoire initialisée. Le total est affiché sans être annoncé ; seul un changement de service le plus sollicité l’est."
+        },
+        "energy-mix": {
+          "title": "Mix électrique",
+          "description": "La légende et un Switch modifient la même liste hidden contrôlée (onToggle) : masquer les énergies fossiles depuis l’un ou l’autre reste synchronisé. Une source sans détail (le nucléaire) est une feuille du premier anneau, et chaque combustible hérite de la couleur de sa source."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exploration",
+            "description": "Occupation du disque par dossier : touchez un dossier pour zoomer dessus et le centre pour remonter ; onDrill indique le chemin."
+          }
+        },
+        "data": {
+          "tapHint": "Touchez un dossier pour zoomer dessus.",
+          "path": "Affichage de {{path}}. Touchez le centre pour remonter."
+        }
+      },
+      "api": {
+        "SunburstChartProps": {
+          "data": "Nœuds : les feuilles portent une valeur, les parents additionnent leurs enfants",
+          "innerRadius": "Rayon du cercle central, en fraction du rayon extérieur",
+          "levels": "Anneaux affichés à la fois sous le nœud ciblé (moins s'ils feraient moins de 18 px)",
+          "startAngle": "Angle du premier nœud, en degrés dans le sens horaire depuis midi",
+          "padAngle": "Espace entre les secteurs, en pixels",
+          "cornerRadius": "Rayon des coins des secteurs, en pixels",
+          "labels": "Étiquettes des secteurs : auto écrit chaque nom le long de l'arc ou du rayon, selon ce qui tient le mieux ; tangential, radial ou none imposent un mode",
+          "drill": "Cliquer sur un parent (ou Entrée) zoome dessus ; cliquer sur le centre (ou Retour arrière) remonte",
+          "drillPath": "Noms de la racine au nœud ciblé ([] = la racine) ; rend l'exploration contrôlée",
+          "onDrill": "Appelé quand un parent ou le centre est cliqué (ou que drill() est appelé), avec le nouveau chemin"
+        },
+        "TreemapNode": {
+          "name": "Nom affiché dans le secteur, au centre et dans l'infobulle",
+          "value": "Valeur d'une feuille (les parents additionnent leurs enfants)",
+          "color": "Couleur ; les nœuds de premier niveau prennent la palette si absente, les enfants des nuances de leur parent",
+          "children": "Nœuds enfants"
+        },
+        "ShapeDrillEvent": {
+          "path": "Noms de la racine au nouveau nœud ciblé ([] = la racine)"
+        }
+      },
+      "data": {
+        "disk": {
+          "root": "Macintosh HD",
+          "applications": "Applications",
+          "documents": "Documents",
+          "projects": "Projets",
+          "archive": "Archives",
+          "pdfs": "PDF",
+          "spreadsheets": "Tableurs",
+          "photos": "Photos",
+          "developer": "Développement",
+          "caches": "Caches de paquets",
+          "simulators": "Simulateurs",
+          "system": "Système",
+          "music": "Musique",
+          "other": "Autres applications"
+        },
+        "gb": "{{value}} Go",
+        "diskAria": "Espace disque par dossier, en gigaoctets",
+        "diskPath": "Affichage de {{path}}. Cliquez sur le centre pour remonter.",
+        "diskHint": "Cliquez sur un dossier pour zoomer dessus.",
+        "org": {
+          "engineering": "Ingénierie",
+          "platform": "Plateforme",
+          "infrastructure": "Infrastructure",
+          "security": "Sécurité",
+          "devtools": "Outils développeurs",
+          "product": "Ingénierie produit",
+          "web": "Web",
+          "mobile": "Mobile",
+          "payments": "Paiements",
+          "data": "Données",
+          "analytics": "Analyse",
+          "ml": "Apprentissage automatique",
+          "sales": "Ventes",
+          "emea": "EMEA",
+          "americas": "Amériques",
+          "apac": "APAC",
+          "success": "Succès client",
+          "support": "Support",
+          "onboarding": "Intégration",
+          "marketing": "Marketing",
+          "brand": "Marque",
+          "growth": "Croissance",
+          "content": "Contenu",
+          "operations": "Opérations",
+          "finance": "Finance",
+          "people": "RH",
+          "legal": "Juridique",
+          "it": "Informatique"
+        },
+        "people": "{{value}} personnes",
+        "orgAria": "Effectifs par département, groupe et équipe",
+        "catalog": {
+          "all": "Tous les produits",
+          "electronics": "Électronique",
+          "phones": "Téléphones",
+          "flagship": "Haut de gamme",
+          "midRange": "Milieu de gamme",
+          "accessories": "Accessoires",
+          "laptops": "Ordinateurs portables",
+          "audio": "Audio",
+          "headphones": "Casques",
+          "speakers": "Enceintes",
+          "home": "Maison",
+          "kitchen": "Cuisine",
+          "furniture": "Mobilier",
+          "decor": "Décoration",
+          "fashion": "Mode",
+          "men": "Homme",
+          "women": "Femme",
+          "kids": "Enfant",
+          "sports": "Sport",
+          "outdoor": "Plein air",
+          "fitness": "Fitness"
+        },
+        "breadcrumb": "Chemin de la catégorie",
+        "catalogAria": "Chiffre d'affaires trimestriel par catégorie de produits",
+        "world": {
+          "asia": "Asie",
+          "africa": "Afrique",
+          "europe": "Europe",
+          "americas": "Amériques",
+          "oceania": "Océanie",
+          "other": "Autres pays"
+        },
+        "millions": "{{value}} M",
+        "labelsLabel": "Mode des étiquettes",
+        "labels": {
+          "auto": "Auto",
+          "tangential": "Le long de l'arc",
+          "radial": "Le long du rayon",
+          "none": "Aucune"
+        },
+        "worldAria": "Population mondiale par continent et par pays, en millions",
+        "budget": {
+          "areas": {
+            "education": "Éducation",
+            "health": "Santé",
+            "transport": "Transports",
+            "safety": "Sécurité publique",
+            "environment": "Environnement",
+            "administration": "Administration"
+          },
+          "programs": {
+            "schools": "Écoles",
+            "universities": "Universités",
+            "libraries": "Bibliothèques",
+            "hospitals": "Hôpitaux",
+            "prevention": "Prévention",
+            "transit": "Transports en commun",
+            "roads": "Voirie",
+            "cycling": "Pistes cyclables",
+            "police": "Police",
+            "fire": "Pompiers",
+            "parks": "Parcs",
+            "waste": "Collecte des déchets",
+            "water": "Eau"
+          },
+          "programLine": "{{path}} : {{amount}}, soit {{share}} du budget et {{areaShare}} du domaine {{area}}.",
+          "areaLine": "{{path}} : {{amount}}, soit {{share}} du budget.",
+          "aria": "Budget annuel de la ville par domaine et par programme",
+          "hint": "Budget annuel : {{total}}. Cliquez sur un secteur pour lire sa part."
+        },
+        "time": {
+          "clients": {
+            "bakery": "Chaîne de boulangeries",
+            "clinic": "Cabinet dentaire",
+            "school": "École de langues",
+            "internal": "Interne"
+          },
+          "projects": {
+            "website": "Site web",
+            "branding": "Identité visuelle",
+            "booking": "Système de réservation",
+            "app": "Application mobile",
+            "admin": "Administration",
+            "training": "Formation"
+          },
+          "activities": {
+            "design": "Design",
+            "development": "Développement",
+            "meetings": "Réunions",
+            "review": "Relecture",
+            "support": "Support",
+            "learning": "Apprentissage"
+          },
+          "period": "Période",
+          "periods": {
+            "week": "Cette semaine",
+            "month": "Ce mois-ci"
+          },
+          "tooltip": "{{hours}} · {{share}} du temps saisi",
+          "aria": "Heures saisies par client, projet et activité ({{period}})",
+          "summary": "Facturable : {{billable}} sur {{total}} ({{share}})."
+        },
+        "requests": {
+          "services": {
+            "checkout": "Paiement",
+            "search": "Recherche",
+            "accounts": "Comptes",
+            "catalog": "Catalogue"
+          },
+          "endpoints": {
+            "cart": "Panier",
+            "payment": "Règlement",
+            "shipping": "Livraison",
+            "query": "Requêtes",
+            "suggest": "Suggestions",
+            "login": "Connexion",
+            "profile": "Profil",
+            "product": "Fiches produit",
+            "reviews": "Avis"
+          },
+          "rpm": "{{value}} req./min",
+          "aria": "Requêtes d’API par minute, par service et par endpoint, mises à jour en direct",
+          "pause": "Pause",
+          "resume": "Reprendre",
+          "total": "Total : {{value}}",
+          "busiest": "Service le plus sollicité : {{service}}"
+        },
+        "energy": {
+          "sources": {
+            "renewables": "Renouvelables",
+            "nuclear": "Nucléaire",
+            "fossil": "Fossiles"
+          },
+          "fuels": {
+            "wind": "Éolien",
+            "solar": "Solaire",
+            "hydro": "Hydraulique",
+            "biomass": "Biomasse",
+            "gas": "Gaz naturel",
+            "coal": "Charbon",
+            "oil": "Pétrole"
+          },
+          "twh": "{{value}} TWh",
+          "hideFossil": "Masquer les énergies fossiles",
+          "aria": "Production annuelle d’électricité par source et par combustible",
+          "shownOnly": "Renouvelables masquées : {{total}} affichés.",
+          "share": "Renouvelables : {{share}} des {{total}} affichés."
+        }
+      },
+      "wc": {
+        "demos": {
+          "disk-usage": {
+            "title": "Occupation du disque",
+            "description": "Les dossiers au centre, leur contenu autour ; cliquez sur un dossier pour zoomer, au centre pour remonter."
+          },
+          "drill-down": {
+            "title": "Fil d’Ariane de l’exploration",
+            "description": "L’évènement drill donne le chemin de la racine au nœud ciblé : un fil d’Ariane hors du graphique."
+          }
+        },
+        "minerva-sunburst-chart": {
+          "props": {
+            "noDrill": "Désactive l’exploration (par défaut, cliquer sur un parent zoome dessus)",
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-drill": "Un parent ou le centre a été cliqué (ou drill() appelé) ; detail : { path }",
+            "minerva-hover": "La marque survolée (ou ciblée au clavier) a changé ; detail : { index, name, value, share }, null quand rien n'est survolé",
+            "minerva-click": "Une marque a été cliquée, touchée ou activée avec Entrée ; detail : { index, name, value, share }",
+            "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "drill": "Zoome sur le nœud d’un chemin (noms depuis la racine, [] = la racine)",
+            "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index",
+            "getRenderer": "Moteur de rendu des formes (webgpu, webgl2, webgl, canvas2d), null tant qu’il n’est pas prêt ; à choisir avec l’option renderer du moteur"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "loading-state",
+  "title": "LoadingState",
+  "description": "Chargement de page, de route ou de section : un spinner ProgressIndicator décoratif à côté d'un libellé visible, dans une seule région de statut polie.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "LoadingState",
+      "support": {
+        "status": "beta",
+        "notes": "Localized loading status with small/medium/large minimum heights, spinner and native error/retry extension. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Localized loading status with small/medium/large minimum heights, spinner and native error/retry extension. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/loading-state/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "loading-state",
+        "props": [
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "retryLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "error",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "size",
+            "typeText": "string",
+            "required": false,
+            "default": "medium"
+          }
+        ],
+        "events": [
+          {
+            "name": "retry"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-loading-state\": \"minerva-design/dist/weapp/loading-state/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:LoadingState": {
+      "kind": "cssVars",
+      "source": "react/src/components/LoadingState",
+      "vars": [
+        {
+          "name": "--loading-state-gap",
+          "description": "Space between the spinner and the label"
+        },
+        {
+          "name": "--loading-state-padding",
+          "description": "Padding"
+        },
+        {
+          "name": "--loading-state-min-height",
+          "description": "Minimum height (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--loading-state-color",
+          "description": "Color of the label and the spinner"
+        },
+        {
+          "name": "--loading-state-font-size",
+          "description": "Font size of the label"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "LoadingState",
+      "description": "Chargement de page, de route ou de section : un spinner ProgressIndicator décoratif à côté d'un libellé visible, dans une seule région de statut polie.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Le libellé par défaut est localisé ; le texte visible est celui annoncé par les lecteurs d'écran."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "small, medium et large fixent des hauteurs minimales de 64, 160 et 240 px."
+        }
+      },
+      "api": {
+        "LoadingStateProps": {
+          "label": "Texte visible, également annoncé par la région de statut",
+          "size": "Hauteur minimale prédéfinie",
+          "ref": "Ref vers l'élément <div> racine"
+        }
+      },
+      "cssVars": {
+        "--loading-state-gap": "Espace entre l'indicateur et le libellé",
+        "--loading-state-padding": "Marge intérieure",
+        "--loading-state-min-height": "Hauteur minimale (toutes les tailles ; par défaut celle de la taille)",
+        "--loading-state-color": "Couleur du libellé et de l'indicateur",
+        "--loading-state-font-size": "Taille de police du libellé"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un indicateur rotatif à côté d'un libellé visible (« Chargement... » localisé par défaut) dans une région status polie."
+          },
+          "sizes": {
+            "title": "Tailles",
+            "description": "small, medium et large définissent la hauteur minimale ; le slot par défaut accueille un libellé riche."
+          },
+          "section": {
+            "title": "Chargement d'une section",
+            "description": "L'élément ne définit pas aria-busy : marquez le conteneur comme occupé pendant le chargement, puis remplacez l'espace réservé par le contenu."
+          }
+        },
+        "minerva-loading-state": {
+          "slots": {
+            "default": "Libellé (alternative à l'attribut label)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

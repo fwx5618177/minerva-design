@@ -1,0 +1,725 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.3",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "date-picker",
+  "title": "DatePicker",
+  "description": "Sélectionne une date dans une grille mensuelle surgissante commençant le lundi, ou par saisie au format AAAA-MM-JJ.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.3",
+    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
+    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
+    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  },
+  "content": {
+    "keyboard": {
+      "title": "Clavier et accessibilité",
+      "open": "Flèche bas sur le champ ouvre le calendrier surgissant et déplace le focus sur la cellule du jour actif ; un clic à l'extérieur le ferme.",
+      "navigate": "Les touches fléchées, Début / Fin et Page préc. / suiv. (avec Maj : un an) déplacent le focus dans la grille du calendrier.",
+      "select": "Entrée ou Espace choisit le jour qui a le focus et ferme le panneau.",
+      "close": "Échap ferme le panneau et rend le focus au champ.",
+      "typing": "Le texte saisi est validé dès qu'il forme une date YYYY-MM-DD complète dans la plage ; à la perte du focus, les formats souples comme YYYY/M/D sont normalisés."
+    }
+  },
+  "components": [
+    {
+      "name": "DatePicker",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DatePicker"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | null | undefined",
+            "typeRef": "type:5d93807f845ffb9259f1",
+            "required": false,
+            "description": "Selected date as `\"YYYY-MM-DD\"` (controlled; pair with `onChange`). `\"\"` or `null` means \"no date\" while staying controlled; `undefined` makes the picker uncontrolled."
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Initially selected date as `\"YYYY-MM-DD\"` (uncontrolled)"
+          },
+          {
+            "name": "placeholder",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Placeholder of the input"
+          },
+          {
+            "name": "label",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Visible label of the input; without it the input is labelled \"Date\" (localized)"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the input when no visible label is shown"
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id(s) of the element(s) labelling the input; inside a FormControl it defaults to the FormLabel (unless `label` / `aria-label` is set)"
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl"
+          },
+          {
+            "name": "id",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the input; defaults to the id of an enclosing FormControl"
+          },
+          {
+            "name": "required",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Marks the input as required; defaults to the enclosing FormControl's state"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Shows the value without allowing changes (typing, panel, clearing); defaults to the enclosing FormControl's state"
+          },
+          {
+            "name": "invalid",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state"
+          },
+          {
+            "name": "name",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "default": "date-picker",
+            "required": false,
+            "description": "Name of the input"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the picker; defaults to the enclosing FormControl's state"
+          },
+          {
+            "name": "clearable",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Allows clearing the value with the suffix button"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "default": "medium",
+            "required": false,
+            "description": "Size of the input"
+          },
+          {
+            "name": "minDate",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Earliest selectable date (`\"YYYY-MM-DD\"`); earlier days are disabled"
+          },
+          {
+            "name": "maxDate",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Latest selectable date (`\"YYYY-MM-DD\"`); later days are disabled"
+          },
+          {
+            "name": "locale",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the month heading (`Intl.DateTimeFormat`)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "function",
+            "typeText": "((value: string) => void) | undefined",
+            "typeRef": "type:9ae0989a2dc6d4ff1d09",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the selected date (`\"YYYY-MM-DD\"`), or `\"\"` when the value is cleared"
+          },
+          {
+            "name": "onOpenChange",
+            "source": "packages/react/src/components/DatePicker/types.ts",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:f1732a1ac5226db324f6",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the popup calendar opens or closes"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "DatePickerProps": {
+      "source": "react/src/components/DatePicker/types.ts",
+      "description": "Props of DatePicker; `data-*` attributes are forwarded to the root element",
+      "kind": "interface",
+      "extends": [
+        "DataAttributes"
+      ],
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLInputElement>",
+          "required": false,
+          "description": "Ref to the <input> element"
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "required": false,
+          "description": "Selected date as `\"YYYY-MM-DD\"` (controlled; pair with `onChange`). `\"\"` or `null` means \"no date\" while staying controlled; `undefined` makes the picker uncontrolled."
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "description": "Initially selected date as `\"YYYY-MM-DD\"` (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "required": false,
+          "description": "Called with the selected date (`\"YYYY-MM-DD\"`), or `\"\"` when the value is cleared"
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false,
+          "default": "\"Select date\" (localized)",
+          "description": "Placeholder of the input"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Visible label of the input; without it the input is labelled \"Date\" (localized)"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label of the input when no visible label is shown"
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "required": false,
+          "description": "Id(s) of the element(s) labelling the input; inside a FormControl it defaults to the FormLabel (unless `label` / `aria-label` is set)"
+        },
+        {
+          "name": "aria-describedby",
+          "type": "string",
+          "required": false,
+          "description": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Id of the input; defaults to the id of an enclosing FormControl"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "description": "Marks the input as required; defaults to the enclosing FormControl's state"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "description": "Shows the value without allowing changes (typing, panel, clearing); defaults to the enclosing FormControl's state"
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "required": false,
+          "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "default": "\"date-picker\"",
+          "description": "Name of the input"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "description": "Called when the popup calendar opens or closes"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the picker; defaults to the enclosing FormControl's state"
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Allows clearing the value with the suffix button"
+        },
+        {
+          "name": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Size of the input"
+        },
+        {
+          "name": "minDate",
+          "type": "string",
+          "required": false,
+          "description": "Earliest selectable date (`\"YYYY-MM-DD\"`); earlier days are disabled"
+        },
+        {
+          "name": "maxDate",
+          "type": "string",
+          "required": false,
+          "description": "Latest selectable date (`\"YYYY-MM-DD\"`); later days are disabled"
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "the library language",
+          "description": "Locale of the month heading (`Intl.DateTimeFormat`)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "default": "\"\"",
+          "description": "Additional class name"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Inline styles of the root element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:DatePicker": {
+      "kind": "cssVars",
+      "source": "react/src/components/DatePicker",
+      "vars": [
+        {
+          "name": "--date-picker-width",
+          "description": "Width of the field"
+        },
+        {
+          "name": "--date-picker-panel-width",
+          "description": "Width of the popup calendar panel"
+        },
+        {
+          "name": "--date-picker-panel-radius",
+          "description": "Corner radius of the popup panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--date-picker-panel-padding",
+          "description": "Inner padding of the popup panel"
+        },
+        {
+          "name": "--date-picker-cell-size",
+          "description": "Width and height of a day cell in the popup grid"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/demos/basic.tsx": "import { useState } from \"react\";\nimport { DatePicker } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  const [date, setDate] = useState(\"\");\n\n  return (\n    <div style={{ maxWidth: 280 }}>\n      <DatePicker onChange={setDate} />\n      <p>Selected: {date || \"none\"}</p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Cliquez sur le champ (ou appuyez sur Flèche bas) pour ouvrir le calendrier surgissant. onChange reçoit une chaîne \"YYYY-MM-DD\", ou \"\" après effacement. Sans label, le champ est nommé \"Date\"."
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/demos/controlled.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/demos/controlled.tsx": "import { useState } from \"react\";\nimport { Button, DatePicker } from \"minerva-design\";\n\nexport default function ControlledDemo() {\n  const [date, setDate] = useState<string | null>(\"2026-04-17\");\n\n  return (\n    <div\n      style={{ display: \"grid\", gap: 12, justifyItems: \"start\", maxWidth: 280 }}\n    >\n      <DatePicker\n        label=\"Target date\"\n        value={date}\n        onChange={(next) => setDate(next || null)}\n      />\n      <div style={{ display: \"flex\", gap: 8 }}>\n        <Button size=\"small\" onClick={() => setDate(\"2026-05-01\")}>\n          Set to 2026-05-01\n        </Button>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={() => setDate(null)}\n        >\n          Reset\n        </Button>\n      </div>\n      <p>Value: {date ?? \"null\"}</p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Contrôlé",
+      "description": "Passez value et mettez-la à jour dans onChange. \"\" ou null garde le sélecteur contrôlé mais vide, tandis qu'undefined le rend non contrôlé."
+    },
+    {
+      "id": "default-value",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/demos/default-value.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/demos/default-value.tsx": "import { DatePicker } from \"minerva-design\";\n\nexport default function DefaultValueDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 280 }}>\n      <DatePicker defaultValue=\"2026-04-17\" />\n      <DatePicker defaultValue=\"2026-04-17\" clearable={false} />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Valeur par défaut et effacement",
+      "description": "defaultValue définit la date initiale. Le bouton d'effacement est libellé \"Clear date\" (effacer la date) ; utilisez clearable={false} pour le masquer."
+    },
+    {
+      "id": "disabled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/demos/disabled.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/demos/disabled.tsx": "import { DatePicker } from \"minerva-design\";\n\nexport default function DisabledDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 280 }}>\n      <DatePicker defaultValue=\"2026-04-17\" disabled />\n      <DatePicker defaultValue=\"2026-04-17\" readOnly />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Désactivé et lecture seule",
+      "description": "Un sélecteur désactivé ou en lecture seule ne peut être ni ouvert ni modifié."
+    },
+    {
+      "id": "form-control",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/demos/form-control.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/demos/form-control.tsx": "import { DatePicker, FormField } from \"minerva-design\";\n\nexport default function FormControlDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 16, maxWidth: 320 }}>\n      <FormField label=\"Start date\" helperText=\"Format: YYYY-MM-DD\" required>\n        <DatePicker />\n      </FormField>\n      <FormField\n        label=\"Deadline\"\n        errorMessage=\"Please choose a date in the future.\"\n      >\n        <DatePicker defaultValue=\"2026-01-01\" />\n      </FormField>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Avec FormField",
+      "description": "Dans un FormControl / FormField, DatePicker hérite de l'id, du libellé, du texte d'aide / d'erreur et des états required, disabled, readOnly et invalid."
+    },
+    {
+      "id": "min-max",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/demos/min-max.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/demos/min-max.tsx": "import { DatePicker } from \"minerva-design\";\n\nexport default function MinMaxDemo() {\n  return (\n    <div style={{ maxWidth: 280 }}>\n      <DatePicker\n        defaultValue=\"2026-04-15\"\n        minDate=\"2026-04-10\"\n        maxDate=\"2026-04-20\"\n        placeholder=\"2026-04-10 – 2026-04-20\"\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Plage de dates",
+      "description": "minDate et maxDate (\"YYYY-MM-DD\") désactivent les dates hors de la plage autorisée."
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/demos/sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/demos/sizes.tsx": "import { DatePicker } from \"minerva-design\";\n\nexport default function SizesDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 280 }}>\n      <DatePicker size=\"small\" placeholder=\"Small\" />\n      <DatePicker size=\"medium\" placeholder=\"Medium\" />\n      <DatePicker size=\"large\" placeholder=\"Large\" />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Tailles",
+      "description": "Trois tailles : small, medium (par défaut) et large."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DatePicker",
+      "description": "Sélectionne une date dans une grille mensuelle surgissante commençant le lundi, ou par saisie au format AAAA-MM-JJ.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Cliquez sur le champ (ou appuyez sur Flèche bas) pour ouvrir le calendrier surgissant. onChange reçoit une chaîne \"YYYY-MM-DD\", ou \"\" après effacement. Sans label, le champ est nommé \"Date\"."
+        },
+        "default-value": {
+          "title": "Valeur par défaut et effacement",
+          "description": "defaultValue définit la date initiale. Le bouton d'effacement est libellé \"Clear date\" (effacer la date) ; utilisez clearable={false} pour le masquer."
+        },
+        "controlled": {
+          "title": "Contrôlé",
+          "description": "Passez value et mettez-la à jour dans onChange. \"\" ou null garde le sélecteur contrôlé mais vide, tandis qu'undefined le rend non contrôlé."
+        },
+        "min-max": {
+          "title": "Plage de dates",
+          "description": "minDate et maxDate (\"YYYY-MM-DD\") désactivent les dates hors de la plage autorisée."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Trois tailles : small, medium (par défaut) et large."
+        },
+        "disabled": {
+          "title": "Désactivé et lecture seule",
+          "description": "Un sélecteur désactivé ou en lecture seule ne peut être ni ouvert ni modifié."
+        },
+        "form-control": {
+          "title": "Avec FormField",
+          "description": "Dans un FormControl / FormField, DatePicker hérite de l'id, du libellé, du texte d'aide / d'erreur et des états required, disabled, readOnly et invalid."
+        }
+      },
+      "api": {
+        "DatePickerProps": {
+          "ref": "Ref vers l'élément <input>",
+          "value": "Date sélectionnée au format \"YYYY-MM-DD\" (contrôlé ; à associer à onChange). \"\" ou null signifie « aucune date » tout en restant contrôlé ; undefined rend le sélecteur non contrôlé",
+          "defaultValue": "Date sélectionnée initialement au format \"YYYY-MM-DD\" (non contrôlé)",
+          "onChange": "Appelé avec la date sélectionnée (\"YYYY-MM-DD\"), ou \"\" quand la valeur est effacée",
+          "placeholder": "Texte indicatif du champ ; par défaut \"Select date\" traduit selon la langue",
+          "label": "Étiquette visible du champ ; sans elle, le champ est libellé \"Date\" (traduit)",
+          "aria-label": "Libellé accessible du champ quand aucune étiquette visible n'est affichée",
+          "aria-labelledby": "Id(s) du ou des éléments qui libellent le champ ; dans un FormControl, pointe par défaut vers le FormLabel (sauf si label / aria-label est défini)",
+          "aria-describedby": "Id(s) du ou des éléments qui décrivent le champ ; fusionné avec le texte d'aide / d'erreur d'un FormControl englobant",
+          "id": "Id du champ ; par défaut, l'id du FormControl englobant",
+          "required": "Marque le champ comme obligatoire ; par défaut, l'état du FormControl englobant",
+          "readOnly": "Affiche la valeur sans permettre de la modifier (saisie, panneau, effacement) ; par défaut, l'état du FormControl englobant",
+          "invalid": "Marque le champ comme invalide (aria-invalid) ; par défaut, l'état du FormControl englobant",
+          "name": "Nom du champ",
+          "onOpenChange": "Appelé quand le calendrier surgissant s'ouvre ou se ferme",
+          "disabled": "Désactive le sélecteur ; par défaut, l'état du FormControl englobant",
+          "clearable": "Permet d'effacer la valeur avec le bouton de suffixe",
+          "size": "Taille du champ",
+          "minDate": "Date minimale sélectionnable (\"YYYY-MM-DD\") ; les jours antérieurs sont désactivés",
+          "maxDate": "Date maximale sélectionnable (\"YYYY-MM-DD\") ; les jours postérieurs sont désactivés",
+          "locale": "Locale du titre du mois (Intl.DateTimeFormat)",
+          "className": "Classe CSS supplémentaire",
+          "style": "Styles en ligne de l'élément racine"
+        }
+      },
+      "keyboard": {
+        "title": "Clavier et accessibilité",
+        "open": "Flèche bas sur le champ ouvre le calendrier surgissant et déplace le focus sur la cellule du jour actif ; un clic à l'extérieur le ferme.",
+        "navigate": "Les touches fléchées, Début / Fin et Page préc. / suiv. (avec Maj : un an) déplacent le focus dans la grille du calendrier.",
+        "select": "Entrée ou Espace choisit le jour qui a le focus et ferme le panneau.",
+        "close": "Échap ferme le panneau et rend le focus au champ.",
+        "typing": "Le texte saisi est validé dès qu'il forme une date YYYY-MM-DD complète dans la plage ; à la perte du focus, les formats souples comme YYYY/M/D sont normalisés."
+      },
+      "cssVars": {
+        "--date-picker-width": "Largeur du champ",
+        "--date-picker-panel-width": "Largeur du panneau de calendrier surgissant",
+        "--date-picker-panel-radius": "Rayon des coins du panneau surgissant (par défaut --radius-lg)",
+        "--date-picker-panel-padding": "Marge intérieure du panneau surgissant",
+        "--date-picker-cell-size": "Largeur et hauteur d'une cellule de jour dans la grille surgissante"
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Calendrier natif",
+            "description": "Touchez le champ pour ouvrir le calendrier. Le choix d’un jour valide immédiatement une date locale au format YYYY-MM-DD ; l’effacement renvoie une chaîne vide. minDate et maxDate limitent la sélection. Le champ natif utilise des boutons tactiles, sans saisie de texte ni grille DOM navigable au clavier."
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Sélection et limites",
+            "description": "Saisissez YYYY-MM-DD ou choisissez une date entre le 10 et le 20 octobre. minerva-change émet { value }, une chaîne vide après effacement. L’attribut value définit la valeur initiale restaurée par la réinitialisation du formulaire."
+          }
+        },
+        "minerva-date-picker": {
+          "props": {
+            "open": "Indique si le panneau est ouvert.",
+            "readOnly": "Affiche la valeur sans permettre de la modifier (saisie, panneau, effacement).",
+            "hideClearButton": "Masque le bouton d'effacement (clearable={false} en React).",
+            "isDisabled": "Indique si le contrôle est désactivé (lui-même ou par un <fieldset> désactivé).",
+            "form": "Le formulaire auquel appartient l'élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l'élément.",
+            "validity": "État de validité (identique à <input>.validity).",
+            "validationMessage": "Message décrivant l'erreur de validation actuelle (vide si la valeur est valide).",
+            "willValidate": "Indique si l'élément participe à la validation des contraintes.",
+            "valueAsDate": "Date sélectionnée en heure locale ; null si vide ou invalide."
+          },
+          "events": {
+            "change": "Identique à minerva-change (comme l'événement natif, il remonte).",
+            "minerva-change": "Date validée : detail: { value } au format YYYY-MM-DD, chaîne vide après effacement.",
+            "minerva-input": "Modification du texte saisi : detail: { value }.",
+            "minerva-open-change": "L'utilisateur a ouvert ou fermé le panneau, detail : { open } ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-clear": "La date a été effacée."
+          },
+          "cssVars": {
+            "--input-height": "Hauteur minimale du champ (par défaut, la hauteur de contrôle de la densité pour la taille).",
+            "--input-padding-x": "Marge intérieure horizontale du texte.",
+            "--input-radius": "Rayon des coins du champ (par défaut --radius-lg).",
+            "--input-font-size": "Taille de police du champ.",
+            "--input-background": "Couleur de fond du champ.",
+            "--input-border-color": "Couleur de bordure au repos.",
+            "--input-focus-color": "Couleur de bordure au survol ou au focus.",
+            "--icon-button-color": "Couleur de l'icône du bouton d'effacement.",
+            "--icon-button-hover-bg": "Fond du bouton d'effacement au survol.",
+            "--icon-button-pressed-color": "Couleur de l'icône du bouton d'effacement lorsqu'il est enfoncé.",
+            "--icon-button-pressed-bg": "Fond du bouton d'effacement lorsqu'il est enfoncé.",
+            "--icon-button-size": "Largeur et hauteur du bouton d'effacement (par défaut selon les hauteurs de contrôle de la densité).",
+            "--icon-button-icon-size": "Taille de l'icône du bouton d'effacement.",
+            "--icon-button-radius": "Rayon des coins du bouton d'effacement (par défaut --radius-lg)."
+          },
+          "methods": {
+            "focus": "Donne le focus au champ interne.",
+            "blur": "Retire le focus du champ interne.",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si la valeur n'est pas valide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée (une chaîne vide l'efface).",
+            "formResetCallback": "Appelée par le navigateur lors de form.reset() : rétablit la valeur de l'attribut value.",
+            "formDisabledCallback": "Appelée par le navigateur quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Appelée par le navigateur pour restaurer la valeur (cache de navigation, saisie automatique)."
+          }
+        }
+      },
+      "vue": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Liez v-model à une chaîne YYYY-MM-DD ou null pour choisir, saisir ou effacer une date."
+          },
+          "range": {
+            "title": "Plage de dates",
+            "description": "Seules les dates du 10 au 20 octobre sont sélectionnables."
+          },
+          "form": {
+            "title": "Champ de formulaire",
+            "description": "Hérite du libellé, de l’état obligatoire et du texte d’aide de FormControl."
+          },
+          "states": {
+            "title": "Tailles et états",
+            "description": "Champs de petite taille, en lecture seule, désactivés et sans bouton d’effacement."
+          }
+        }
+      }
+    }
+  }
+}
