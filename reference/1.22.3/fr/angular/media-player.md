@@ -1,6 +1,6 @@
 # MediaPlayer
 
-Un lecteur audio ou vidéo aux commandes personnalisées et thématisées : lecture / pause, sauts, barre de progression avec la plage mise en mémoire tampon, durée, volume, vitesse de lecture et plein écran, utilisable au clavier.
+Lecteur audio/vidéo avec sous-titres et clavier. L’entrée React dédiée ajoute HLS/DASH/FLV, le choix de qualité, les listes de lecture, la boucle A–B, la forme d’onde, les captures et l’enregistrement.
 
 Package: minerva-design@1.22.3
 
@@ -14,15 +14,58 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.22.3",
-  "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
-  "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
-  "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  "sourceCommit": "05d8029dbc66b57df26a3da7707f0fa0e4a02bde",
+  "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+  "referenceSourceDigest": "sha256:98c68657ee3e6708d0ba87e44b497d1aba974e208ad5676dbbb9902bc229d648"
 }
 ```
 
 Type references resolve through the [type graph](/minerva-design/reference/1.22.3/types.json) or getType() from minerva-design/contracts.
 
 ## Documentation
+
+Paquet du lecteur
+
+Utilisez l’entrée dédiée pour le lecteur React complet. MediaPlayer de minerva-design conserve ses propriétés et formats d’événements existants ; les deux utilisent la même implémentation.
+
+Les moteurs dépendent des codecs, de CORS, de la lecture automatique et du contexte sécurisé du navigateur. Les exemples avancés sont pour React DOM. Les autres onglets décrivent leurs propres API ; React Native et les mini-programmes nécessitent leurs hôtes multimédias.
+
+Ces exemples utilisent des motifs FFmpeg courts et un son synthétique hébergés localement, sans service externe. Les captures et l’enregistrement apparaissent selon les capacités ; le fichier est téléchargé à la fin.
+
+API React avancée
+
+##### Sources et moteurs
+
+src accepte une URL ou PlayerSource avec type, mimeType, qualities et defaultQuality. HLS/DASH exposent les niveaux adaptatifs ; createHlsEngine/createDashEngine/createFlvEngine et engines configurent les adaptateurs, chargés à la demande.
+
+##### Liste de lecture et audio
+
+playlist contient src/title/poster ; defaultPlaylistIndex et onPlaylistIndexChange suivent l’élément courant. waveform accepte auto, decorative ou des valeurs de crête. La boucle A–B et Media Session sont aussi disponibles.
+
+##### Contrôles et actions
+
+controls=false affiche le média seul. Un objet règle play, progress, volume, quality, speed, captions, skip, abRepeat, playlist, screenshot, record, pip et fullscreen. actions et renderTooltip intègrent les actions et infobulles de l’hôte.
+
+##### Événements et erreurs
+
+L’entrée dédiée appelle onTimeUpdate(currentTime, duration), onMetadata({ width, height, duration }), onQualityChange(id) et onError(PlayerError). L’entrée racine minerva-design conserve les événements temporels objet et MediaError.
+
+##### Handle impératif
+
+La ref expose play/pause/seek, element/video, setPlaybackRate, setQuality, next/previous, setAbRepeat/clearAbRepeat, screenshot, startRecording/stopRecording et toggleFullscreen. La promesse de play permet de gérer le refus de lecture.
+
+##### Apparence et capacités
+
+locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM.
+
+Motif de test synthétique
+
+Son de test à 440 Hz
+
+```tsx
+import { MediaPlayer } from "minerva-design/media-player";
+import "minerva-design/media-player/style.css";
+```
 
 ## MediaControls
 
@@ -413,7 +456,7 @@ export class Example {
 
 ## Example: Audio
 
-Le type est déduit de mimeType ou de l’extension du fichier (vidéo sinon) ; l’audio affiche une barre de surface avec le titre. skipSeconds={0} masque les boutons de saut.
+Le type est déduit du MIME ou de l’URL. L’audio affiche une pochette et une forme d’onde avec les mêmes contrôles. skipSeconds={0} masque les boutons de saut.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -499,7 +542,7 @@ export class Example {
 
 ## Example: Sous-titres
 
-tracks accepte des fichiers WebVTT ou SRT ({ src, srclang, label, kind, default } ; ici des URL data:). Ils sont rendus comme enfants <track>, mais le lecteur dessine lui-même la réplique active (sur la vidéo, sous le titre pour l’audio) : les sous-titres ont le même aspect dans tous les navigateurs. Le bouton CC ouvre un menu (Désactivés et une entrée par piste) ; C les active / désactive sur le lecteur focalisé. Le choix est mémorisé (localStorage) et une piste default s’affiche tant que l’utilisateur n’a pas choisi ; onTrackChange le signale. Les fichiers d’une autre origine demandent crossOrigin="anonymous" (ou "use-credentials") sur le lecteur et des en-têtes CORS sur leur serveur.
+tracks accepte WebVTT/SRT (src, srclang, label, kind, default). Les sous-titres sont du texte sûr sur la vidéo ou sous l’audio. Choisissez Paramètres → Sous-titres ou C ; le choix de langue est mémorisé et onTrackChange le signale. CORS est requis pour les fichiers externes ; use-credentials envoie les identifiants.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 

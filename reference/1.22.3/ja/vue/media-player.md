@@ -1,6 +1,6 @@
 # MediaPlayer メディアプレーヤー
 
-テーマに沿ったカスタムコントロールを備えた音声 / 動画プレーヤー。再生 / 一時停止、スキップ、バッファ範囲付きのシークバー、時間、音量、再生速度、全画面表示に対応し、キーボードで操作できます。
+音声・動画、字幕、キーボード操作に対応するメディアプレーヤー。React 専用エントリでは HLS/DASH/FLV、画質選択、プレイリスト、A–B リピート、波形、スクリーンショット、録画も利用できます。
 
 Package: minerva-design@1.22.3
 
@@ -14,15 +14,58 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.22.3",
-  "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
-  "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
-  "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  "sourceCommit": "05d8029dbc66b57df26a3da7707f0fa0e4a02bde",
+  "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+  "referenceSourceDigest": "sha256:98c68657ee3e6708d0ba87e44b497d1aba974e208ad5676dbbb9902bc229d648"
 }
 ```
 
 Type references resolve through the [type graph](/minerva-design/reference/1.22.3/types.json) or getType() from minerva-design/contracts.
 
 ## Documentation
+
+プレーヤーパッケージ
+
+完全な React プレーヤーは専用エントリから利用します。従来の minerva-design MediaPlayer は既存の props とイベント形式を維持し、同じ再生実装を使用します。
+
+ストリーミングはブラウザーのコーデック、CORS、自動再生、安全なコンテキストの制約を受けます。以下の高度な例は React DOM 向けです。他のフレームワークやネイティブのタブは各 API を参照してください。React Native とミニプログラムは対応するメディアホストが必要です。
+
+例はローカル配信の短い FFmpeg テストパターンと合成音を使用し、外部サービスに依存しません。スクリーンショットと録画は利用可能な環境だけに表示され、録画終了時にファイルをダウンロードします。
+
+高度な React API
+
+##### ソースとエンジン
+
+src は URL または type、mimeType、qualities、defaultQuality を含む PlayerSource を受け取ります。HLS/DASH の自動画質に対応し、createHlsEngine / createDashEngine / createFlvEngine と engines で構成できます。ライブラリは必要時に読み込みます。
+
+##### プレイリストと音声
+
+playlist は src / title / poster を持つ項目です。defaultPlaylistIndex と onPlaylistIndexChange で現在の項目を扱います。waveform は auto、decorative、ピーク配列に対応し、A–B リピートと Media Session も利用できます。
+
+##### コントロールと操作
+
+controls=false は操作部のないメディアを表示します。オブジェクトでは play、progress、volume、quality、speed、captions、skip、abRepeat、playlist、screenshot、record、pip、fullscreen を設定します。actions と renderTooltip でホストに統合できます。
+
+##### イベントとエラー
+
+専用エントリは onTimeUpdate(currentTime, duration)、onMetadata({ width, height, duration })、onQualityChange(id)、onError(PlayerError) を使います。minerva-design のルートは従来のオブジェクト形式の時刻イベントと MediaError を維持します。
+
+##### 命令型ハンドル
+
+ref は play / pause / seek、element / video、setPlaybackRate、setQuality、next / previous、setAbRepeat / clearAbRepeat、screenshot、startRecording / stopRecording、toggleFullscreen を公開します。play の Promise で再生拒否を処理できます。
+
+##### 外観と機能の境界
+
+locale は英中日仏、messages は操作文言、theme はライト / ダークを設定します。CSS は一度読み込みます。PiP、録画、キャプチャー、音量、全画面はホスト次第です。クロスオリジンのキャプチャーには CORS が必要で、DRM ライセンスは設定されません。
+
+合成テストパターン
+
+440 Hz テスト音
+
+```tsx
+import { MediaPlayer } from "minerva-design/media-player";
+import "minerva-design/media-player/style.css";
+```
 
 ## MediaControls
 

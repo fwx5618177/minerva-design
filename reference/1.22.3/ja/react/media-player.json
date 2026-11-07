@@ -5,15 +5,53 @@
   "renderer": "react",
   "page": "media-player",
   "title": "MediaPlayer メディアプレーヤー",
-  "description": "テーマに沿ったカスタムコントロールを備えた音声 / 動画プレーヤー。再生 / 一時停止、スキップ、バッファ範囲付きのシークバー、時間、音量、再生速度、全画面表示に対応し、キーボードで操作できます。",
+  "description": "音声・動画、字幕、キーボード操作に対応するメディアプレーヤー。React 専用エントリでは HLS/DASH/FLV、画質選択、プレイリスト、A–B リピート、波形、スクリーンショット、録画も利用できます。",
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.22.3",
-    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
-    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
-    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+    "sourceCommit": "05d8029dbc66b57df26a3da7707f0fa0e4a02bde",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:98c68657ee3e6708d0ba87e44b497d1aba974e208ad5676dbbb9902bc229d648"
   },
-  "content": {},
+  "content": {
+    "advanced": {
+      "advancedTitle": "プレーヤーパッケージ",
+      "advancedText": "完全な React プレーヤーは専用エントリから利用します。従来の minerva-design MediaPlayer は既存の props とイベント形式を維持し、同じ再生実装を使用します。",
+      "boundary": "ストリーミングはブラウザーのコーデック、CORS、自動再生、安全なコンテキストの制約を受けます。以下の高度な例は React DOM 向けです。他のフレームワークやネイティブのタブは各 API を参照してください。React Native とミニプログラムは対応するメディアホストが必要です。",
+      "assets": "例はローカル配信の短い FFmpeg テストパターンと合成音を使用し、外部サービスに依存しません。スクリーンショットと録画は利用可能な環境だけに表示され、録画終了時にファイルをダウンロードします。",
+      "capabilitiesTitle": "高度な React API",
+      "capabilities": {
+        "sources": {
+          "title": "ソースとエンジン",
+          "text": "src は URL または type、mimeType、qualities、defaultQuality を含む PlayerSource を受け取ります。HLS/DASH の自動画質に対応し、createHlsEngine / createDashEngine / createFlvEngine と engines で構成できます。ライブラリは必要時に読み込みます。"
+        },
+        "playback": {
+          "title": "プレイリストと音声",
+          "text": "playlist は src / title / poster を持つ項目です。defaultPlaylistIndex と onPlaylistIndexChange で現在の項目を扱います。waveform は auto、decorative、ピーク配列に対応し、A–B リピートと Media Session も利用できます。"
+        },
+        "controls": {
+          "title": "コントロールと操作",
+          "text": "controls=false は操作部のないメディアを表示します。オブジェクトでは play、progress、volume、quality、speed、captions、skip、abRepeat、playlist、screenshot、record、pip、fullscreen を設定します。actions と renderTooltip でホストに統合できます。"
+        },
+        "events": {
+          "title": "イベントとエラー",
+          "text": "専用エントリは onTimeUpdate(currentTime, duration)、onMetadata({ width, height, duration })、onQualityChange(id)、onError(PlayerError) を使います。minerva-design のルートは従来のオブジェクト形式の時刻イベントと MediaError を維持します。"
+        },
+        "handle": {
+          "title": "命令型ハンドル",
+          "text": "ref は play / pause / seek、element / video、setPlaybackRate、setQuality、next / previous、setAbRepeat / clearAbRepeat、screenshot、startRecording / stopRecording、toggleFullscreen を公開します。play の Promise で再生拒否を処理できます。"
+        },
+        "appearance": {
+          "title": "外観と機能の境界",
+          "text": "locale は英中日仏、messages は操作文言、theme はライト / ダークを設定します。CSS は一度読み込みます。PiP、録画、キャプチャー、音量、全画面はホスト次第です。クロスオリジンのキャプチャーには CORS が必要で、DRM ライセンスは設定されません。"
+        }
+      }
+    },
+    "data": {
+      "pattern": "合成テストパターン",
+      "tone": "440 Hz テスト音"
+    }
+  },
   "components": [
     {
       "name": "MediaControls",
@@ -782,7 +820,7 @@
       ],
       "contextImports": [],
       "title": "音声",
-      "description": "種類は mimeType またはファイル拡張子から推定されます（それ以外は動画）。音声はタイトル付きのサーフェスバーで表示されます。skipSeconds={0} でスキップボタンを非表示にします。"
+      "description": "MIME または URL から種類を判定します。音声はカバーと波形を表示し、再生コントロールを共有します。skipSeconds={0} はスキップボタンを非表示にします。"
     },
     {
       "id": "captions",
@@ -797,7 +835,52 @@
       ],
       "contextImports": [],
       "title": "字幕",
-      "description": "tracks は WebVTT または SRT ファイル（{ src, srclang, label, kind, default }。ここでは data: URL）を受け取ります。<track> 子要素として描画されますが、現在の字幕はプレーヤー自身が描画するため（動画では映像の上、音声ではタイトルの下）、どのブラウザでも同じ見た目になります。CC ボタンでメニュー（オフと各トラック）が開き、フォーカス中のプレーヤーでは C キーで字幕を切り替えます。選択は記憶され（localStorage）、ユーザーが選ぶまでは default のトラックを表示します。onTrackChange が選択を通知します。クロスオリジンの字幕ファイルには、プレーヤーの crossOrigin=\"anonymous\"（または \"use-credentials\"）とサーバーの CORS ヘッダーが必要です。"
+      "description": "tracks は WebVTT/SRT（src、srclang、label、kind、default）を受け取ります。字幕は安全なテキストとして動画上または音声の下に表示されます。設定 → 字幕、または C キーで切り替え、言語を記憶し onTrackChange で通知します。クロスオリジンには CORS が必要で、use-credentials は認証情報を送信します。"
+    },
+    {
+      "id": "capture",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/capture.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/capture.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nexport default function CaptureDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}\n        title={t(\"docs.media-player.data.pattern\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        controls={{ screenshot: true, record: true }}\n        maxRecordingSeconds={15}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "スクリーンショットと録画",
+      "description": "内蔵アイコンまたは S / R キーを使います。この例の録画は最大 15 秒です。Canvas キャプチャーと MediaRecorder が必要で、クロスオリジン素材は Canvas からの読み取りを許可する必要があります。"
+    },
+    {
+      "id": "playlist",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/playlist.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/playlist.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nexport default function PlaylistDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        title={t(\"docs.media-player.demos.playlist.title\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        playlist={[\n          {\n            src: `${base}sample.mp4`,\n            title: t(\"docs.media-player.data.pattern\"),\n          },\n          { src: `${base}sample.m4a`, title: t(\"docs.media-player.data.tone\") },\n        ]}\n        controls={{ skip: true, abRepeat: true }}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "プレイリストと A–B リピート",
+      "description": "動画と音声は同じプレーヤーを共有します。前・次の項目、終了時の自動切り替え、音声波形、A–B 区間リピートを備えます。専用エントリの時刻コールバックは (currentTime, duration) を受け取ります。"
+    },
+    {
+      "id": "quality",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/quality.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/quality.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer, type PlayerSource } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nconst source: PlayerSource = {\n  src: `${base}sample.mp4`,\n  type: \"mp4\",\n  defaultQuality: \"144p\",\n  qualities: [\n    { id: \"144p\", label: \"144p\", height: 144, src: `${base}sample.mp4` },\n    { id: \"72p\", label: \"72p\", height: 72, src: `${base}sample-small.mp4` },\n  ],\n};\nexport default function QualityDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        src={source}\n        title={t(\"docs.media-player.data.pattern\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "画質選択",
+      "description": "設定 → 画質で 144p と 72p を選択します。異なる解像度のファイルを使い、再生位置と再生状態を維持します。HLS/DASH の自動画質にも対応します。"
     },
     {
       "id": "rates-skip",
@@ -812,7 +895,7 @@
       ],
       "contextImports": [],
       "title": "再生速度とスキップ幅",
-      "description": "playbackRates は速度ボタンで切り替える速度の一覧です（onRateChange が新しい速度を通知）。skipSeconds は戻る / 進むボタンの幅を設定し、aspectRatio（または height）で動画のサイズを決めます。"
+      "description": "playbackRates は設定 → 再生速度を構成し、onRateChange は変更を通知します。skipSeconds はスキップ量、aspectRatio または height は動画サイズを設定します。"
     },
     {
       "id": "resume",
@@ -828,6 +911,22 @@
       "contextImports": [],
       "title": "再開と進捗",
       "description": "startTime はメタデータの読み込み後に一度だけ適用されます（学習者が止めた位置から再開）。onTimeUpdate / onLoadedMetadata / onPause / onEnded で進捗を通知し、ref は play()、pause()、seek(seconds) とメディア要素を公開します。"
+    },
+    {
+      "id": "streams",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/streams.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/streams.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nconst sources = {\n  hls: { src: `${base}hls/index.m3u8`, type: \"hls\" as const },\n  dash: { src: `${base}dash/index.mpd`, type: \"dash\" as const },\n  flv: { src: `${base}sample.flv`, type: \"flv\" as const },\n};\n\nexport default function StreamsDemo() {\n  const [format, setFormat] = useState<keyof typeof sources>(\"hls\");\n  const { i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 640 }}>\n      <div style={{ display: \"flex\", gap: 8, flexWrap: \"wrap\" }}>\n        {(Object.keys(sources) as (keyof typeof sources)[]).map((name) => (\n          <Button\n            key={name}\n            size=\"small\"\n            variant=\"outline\"\n            active={format === name}\n            onClick={() => setFormat(name)}\n          >\n            {name.toUpperCase()}\n          </Button>\n        ))}\n      </div>\n      <MediaPlayer\n        title={format.toUpperCase()}\n        src={sources[format]}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "ストリーミングエンジン",
+      "description": "ローカルの実際の HLS、DASH、FLV サンプルを切り替えます。選択したアダプターを必要時に読み込み、対応環境ではネイティブ再生や HLS も利用できます。"
     },
     {
       "id": "video",
@@ -846,12 +945,17 @@
   ],
   "recipes": [],
   "installation": "./setup.md",
-  "snippets": [],
+  "snippets": [
+    {
+      "source": "import { MediaPlayer } from \"minerva-design/media-player\";\nimport \"minerva-design/media-player/style.css\";",
+      "language": "tsx"
+    }
+  ],
   "typeGraph": "/minerva-design/reference/1.22.3/types.json",
   "documentationContext": {
     "translationResources": {
       "title": "MediaPlayer メディアプレーヤー",
-      "description": "テーマに沿ったカスタムコントロールを備えた音声 / 動画プレーヤー。再生 / 一時停止、スキップ、バッファ範囲付きのシークバー、時間、音量、再生速度、全画面表示に対応し、キーボードで操作できます。",
+      "description": "音声・動画、字幕、キーボード操作に対応するメディアプレーヤー。React 専用エントリでは HLS/DASH/FLV、画質選択、プレイリスト、A–B リピート、波形、スクリーンショット、録画も利用できます。",
       "demos": {
         "video": {
           "title": "動画",
@@ -859,7 +963,7 @@
         },
         "audio": {
           "title": "音声",
-          "description": "種類は mimeType またはファイル拡張子から推定されます（それ以外は動画）。音声はタイトル付きのサーフェスバーで表示されます。skipSeconds={0} でスキップボタンを非表示にします。"
+          "description": "MIME または URL から種類を判定します。音声はカバーと波形を表示し、再生コントロールを共有します。skipSeconds={0} はスキップボタンを非表示にします。"
         },
         "resume": {
           "title": "再開と進捗",
@@ -867,11 +971,27 @@
         },
         "rates-skip": {
           "title": "再生速度とスキップ幅",
-          "description": "playbackRates は速度ボタンで切り替える速度の一覧です（onRateChange が新しい速度を通知）。skipSeconds は戻る / 進むボタンの幅を設定し、aspectRatio（または height）で動画のサイズを決めます。"
+          "description": "playbackRates は設定 → 再生速度を構成し、onRateChange は変更を通知します。skipSeconds はスキップ量、aspectRatio または height は動画サイズを設定します。"
         },
         "captions": {
           "title": "字幕",
-          "description": "tracks は WebVTT または SRT ファイル（{ src, srclang, label, kind, default }。ここでは data: URL）を受け取ります。<track> 子要素として描画されますが、現在の字幕はプレーヤー自身が描画するため（動画では映像の上、音声ではタイトルの下）、どのブラウザでも同じ見た目になります。CC ボタンでメニュー（オフと各トラック）が開き、フォーカス中のプレーヤーでは C キーで字幕を切り替えます。選択は記憶され（localStorage）、ユーザーが選ぶまでは default のトラックを表示します。onTrackChange が選択を通知します。クロスオリジンの字幕ファイルには、プレーヤーの crossOrigin=\"anonymous\"（または \"use-credentials\"）とサーバーの CORS ヘッダーが必要です。"
+          "description": "tracks は WebVTT/SRT（src、srclang、label、kind、default）を受け取ります。字幕は安全なテキストとして動画上または音声の下に表示されます。設定 → 字幕、または C キーで切り替え、言語を記憶し onTrackChange で通知します。クロスオリジンには CORS が必要で、use-credentials は認証情報を送信します。"
+        },
+        "streams": {
+          "title": "ストリーミングエンジン",
+          "description": "ローカルの実際の HLS、DASH、FLV サンプルを切り替えます。選択したアダプターを必要時に読み込み、対応環境ではネイティブ再生や HLS も利用できます。"
+        },
+        "quality": {
+          "title": "画質選択",
+          "description": "設定 → 画質で 144p と 72p を選択します。異なる解像度のファイルを使い、再生位置と再生状態を維持します。HLS/DASH の自動画質にも対応します。"
+        },
+        "playlist": {
+          "title": "プレイリストと A–B リピート",
+          "description": "動画と音声は同じプレーヤーを共有します。前・次の項目、終了時の自動切り替え、音声波形、A–B 区間リピートを備えます。専用エントリの時刻コールバックは (currentTime, duration) を受け取ります。"
+        },
+        "capture": {
+          "title": "スクリーンショットと録画",
+          "description": "内蔵アイコンまたは S / R キーを使います。この例の録画は最大 15 秒です。Canvas キャプチャーと MediaRecorder が必要で、クロスオリジン素材は Canvas からの読み取りを許可する必要があります。"
         }
       },
       "api": {
@@ -910,7 +1030,7 @@
           "ref": "命令型ハンドル：play()、pause()、seek(seconds)、element"
         },
         "MediaPlayerHandle": {
-          "play": "再生を開始（HTMLMediaElement.play() の Promise。自動再生の拒否は無視されます）",
+          "play": "再生を開始してネイティブ play Promise を返します。呼び出し側で自動再生拒否を処理できます。",
           "pause": "再生を一時停止",
           "seek": "再生位置を指定秒へ移動（長さの範囲内に制限）",
           "element": "描画された <audio> / <video> 要素（マウント前は null）"
@@ -998,6 +1118,43 @@
             "description": "React Native のプレーヤーにはテキストトラックがありません。tracks を指定すると、MediaControls が WebVTT / SRT ファイル（data: URL も可）を取得・解析し、currentTime の字幕をシークバーの上に描画します。CC ボタンでオフ / 各トラックを選べます。trackIndex は制御可能で、onTrackChange が選択を通知します。"
           }
         }
+      },
+      "advanced": {
+        "advancedTitle": "プレーヤーパッケージ",
+        "advancedText": "完全な React プレーヤーは専用エントリから利用します。従来の minerva-design MediaPlayer は既存の props とイベント形式を維持し、同じ再生実装を使用します。",
+        "boundary": "ストリーミングはブラウザーのコーデック、CORS、自動再生、安全なコンテキストの制約を受けます。以下の高度な例は React DOM 向けです。他のフレームワークやネイティブのタブは各 API を参照してください。React Native とミニプログラムは対応するメディアホストが必要です。",
+        "assets": "例はローカル配信の短い FFmpeg テストパターンと合成音を使用し、外部サービスに依存しません。スクリーンショットと録画は利用可能な環境だけに表示され、録画終了時にファイルをダウンロードします。",
+        "capabilitiesTitle": "高度な React API",
+        "capabilities": {
+          "sources": {
+            "title": "ソースとエンジン",
+            "text": "src は URL または type、mimeType、qualities、defaultQuality を含む PlayerSource を受け取ります。HLS/DASH の自動画質に対応し、createHlsEngine / createDashEngine / createFlvEngine と engines で構成できます。ライブラリは必要時に読み込みます。"
+          },
+          "playback": {
+            "title": "プレイリストと音声",
+            "text": "playlist は src / title / poster を持つ項目です。defaultPlaylistIndex と onPlaylistIndexChange で現在の項目を扱います。waveform は auto、decorative、ピーク配列に対応し、A–B リピートと Media Session も利用できます。"
+          },
+          "controls": {
+            "title": "コントロールと操作",
+            "text": "controls=false は操作部のないメディアを表示します。オブジェクトでは play、progress、volume、quality、speed、captions、skip、abRepeat、playlist、screenshot、record、pip、fullscreen を設定します。actions と renderTooltip でホストに統合できます。"
+          },
+          "events": {
+            "title": "イベントとエラー",
+            "text": "専用エントリは onTimeUpdate(currentTime, duration)、onMetadata({ width, height, duration })、onQualityChange(id)、onError(PlayerError) を使います。minerva-design のルートは従来のオブジェクト形式の時刻イベントと MediaError を維持します。"
+          },
+          "handle": {
+            "title": "命令型ハンドル",
+            "text": "ref は play / pause / seek、element / video、setPlaybackRate、setQuality、next / previous、setAbRepeat / clearAbRepeat、screenshot、startRecording / stopRecording、toggleFullscreen を公開します。play の Promise で再生拒否を処理できます。"
+          },
+          "appearance": {
+            "title": "外観と機能の境界",
+            "text": "locale は英中日仏、messages は操作文言、theme はライト / ダークを設定します。CSS は一度読み込みます。PiP、録画、キャプチャー、音量、全画面はホスト次第です。クロスオリジンのキャプチャーには CORS が必要で、DRM ライセンスは設定されません。"
+          }
+        }
+      },
+      "data": {
+        "pattern": "合成テストパターン",
+        "tone": "440 Hz テスト音"
       }
     }
   }

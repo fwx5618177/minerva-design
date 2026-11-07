@@ -1,6 +1,6 @@
 # MediaPlayer
 
-An audio or video player with themed custom controls: play / pause, skip, a seek bar with the buffered range, time, volume, playback speed and fullscreen, operable from the keyboard.
+A media player with audio/video playback, captions and keyboard controls. The React player package adds HLS/DASH/FLV engines, source quality selection, playlists, A–B repeat, waveforms, screenshots and recording.
 
 Package: minerva-design@1.22.3
 
@@ -14,15 +14,58 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.22.3",
-  "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
-  "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
-  "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  "sourceCommit": "05d8029dbc66b57df26a3da7707f0fa0e4a02bde",
+  "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+  "referenceSourceDigest": "sha256:98c68657ee3e6708d0ba87e44b497d1aba974e208ad5676dbbb9902bc229d648"
 }
 ```
 
 Type references resolve through the [type graph](/minerva-design/reference/1.22.3/types.json) or getType() from minerva-design/contracts.
 
 ## Documentation
+
+Player package
+
+Use the dedicated entry for the full React player. The original minerva-design MediaPlayer export remains available with its existing props and event payloads; both use the same playback implementation.
+
+Streaming engines are browser adapters: codecs, CORS, autoplay and secure-context capabilities still apply. The advanced demos below are React DOM examples. Other framework and native tabs document their own supported APIs; React Native and mini-programs require their media hosts.
+
+These examples use short, locally hosted FFmpeg test patterns and a synthetic tone. They work without third-party stream services. Screenshot and recording buttons appear only where supported; recording downloads a file on completion.
+
+Advanced React API
+
+##### Sources and engines
+
+src accepts a URL or PlayerSource with type, mimeType, qualities and defaultQuality. HLS/DASH expose adaptive levels; createHlsEngine/createDashEngine/createFlvEngine and engines let you configure or replace adapters. Stream libraries load only when needed.
+
+##### Playback and audio
+
+playlist holds source/title/poster entries; defaultPlaylistIndex and onPlaylistIndexChange observe the current item. Audio and video share one engine. waveform accepts auto, decorative or peak values; A–B repeat and Media Session are optional.
+
+##### Controls and custom actions
+
+controls can be false for bare media or an object that enables play, progress, volume, quality, speed, captions, skip, abRepeat, playlist, screenshot, record, pip and fullscreen. actions and renderTooltip integrate host actions and tooltips without application dependencies.
+
+##### Events and errors
+
+The advanced entry calls onTimeUpdate(currentTime, duration), onMetadata({ width, height, duration }), onQualityChange(id) and onError(PlayerError). The root minerva-design export retains its object-shaped time callback and native MediaError callback.
+
+##### Imperative handle
+
+The ref exposes play/pause/seek and element/video, plus setPlaybackRate, setQuality, next/previous, setAbRepeat/clearAbRepeat, screenshot, startRecording/stopRecording and toggleFullscreen. play returns its promise so the host can handle browser playback rejection.
+
+##### Appearance and capability boundaries
+
+locale supports en/zh/ja/fr and messages overrides control text; theme selects light/dark. Import the player CSS once. PiP, recording, screenshot, volume and fullscreen depend on the host; cross-origin capture requires suitable CORS headers. DRM licensing is not configured by the built-in adapters.
+
+Synthetic test pattern
+
+440 Hz test tone
+
+```tsx
+import { MediaPlayer } from "minerva-design/media-player";
+import "minerva-design/media-player/style.css";
+```
 
 ## MediaControls
 
@@ -796,7 +839,7 @@ See [installation](./setup.md). Styles and root providers belong in the applicat
 
 ## Example: Audio
 
-The type is inferred from mimeType or the file extension (video otherwise); audio renders a surface bar with the title. skipSeconds={0} hides the skip buttons.
+Media type is inferred from MIME type or the URL; audio uses a compact cover/waveform interface with shared playback controls. skipSeconds={0} hides the skip buttons.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -825,7 +868,7 @@ export default function AudioDemo() {
 
 ## Example: Captions
 
-tracks takes WebVTT or SRT files ({ src, srclang, label, kind, default }; data: URLs here). They are rendered as <track> children, but the player draws the active cue itself (over the video, below the title for audio) so captions look the same in every browser. The CC button opens a menu (Off and one item per track); C toggles captions on the focused player. The choice is remembered (localStorage) and a default track shows until the user chooses; onTrackChange reports it. Cross-origin caption files need crossOrigin="anonymous" (or "use-credentials") on the player and CORS headers on their server.
+tracks accepts WebVTT or SRT files ({ src, srclang, label, kind, default }; data: URLs here). The player draws safe caption text over video and below audio. Select a track in Settings → Captions, or press C to toggle it. Language choice is remembered; onTrackChange reports selection. Cross-origin files require CORS; use-credentials includes credentials.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -911,9 +954,131 @@ export default function CaptionsDemo() {
 
 ```
 
+## Example: Screenshot and recording
+
+Use the built-in screenshot and recording icons, or S/R shortcuts. Recording is limited to 15 seconds here. Browsers must support canvas capture/MediaRecorder and cross-origin media must allow canvas access.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/capture.tsx
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { useTheme } from "minerva-design";
+import { MediaPlayer } from "minerva-design/media-player";
+
+export default function CaptureDemo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ maxWidth: 640 }}>
+      <MediaPlayer
+        src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}
+        title={t("docs.media-player.data.pattern")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+        controls={{ screenshot: true, record: true }}
+        maxRecordingSeconds={15}
+      />
+    </div>
+  );
+}
+
+```
+
+## Example: Playlist and A–B repeat
+
+The playlist shares one player across video and audio. Previous/next and automatic advance are built in. Audio displays a waveform; use A–B to repeat a passage. The main entry time callback receives (currentTime, duration).
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/playlist.tsx
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { useTheme } from "minerva-design";
+import { MediaPlayer } from "minerva-design/media-player";
+
+const base = `${import.meta.env.BASE_URL}media-player/`;
+export default function PlaylistDemo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ maxWidth: 640 }}>
+      <MediaPlayer
+        title={t("docs.media-player.demos.playlist.title")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+        playlist={[
+          {
+            src: `${base}sample.mp4`,
+            title: t("docs.media-player.data.pattern"),
+          },
+          { src: `${base}sample.m4a`, title: t("docs.media-player.data.tone") },
+        ]}
+        controls={{ skip: true, abRepeat: true }}
+      />
+    </div>
+  );
+}
+
+```
+
+## Example: Quality selection
+
+Choose 144p or 72p in Settings → Quality. These are different video renditions; switching keeps the playback position and playing state. HLS/DASH sources can additionally expose adaptive quality levels.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/quality.tsx
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { useTheme } from "minerva-design";
+import { MediaPlayer, type PlayerSource } from "minerva-design/media-player";
+
+const base = `${import.meta.env.BASE_URL}media-player/`;
+const source: PlayerSource = {
+  src: `${base}sample.mp4`,
+  type: "mp4",
+  defaultQuality: "144p",
+  qualities: [
+    { id: "144p", label: "144p", height: 144, src: `${base}sample.mp4` },
+    { id: "72p", label: "72p", height: 72, src: `${base}sample-small.mp4` },
+  ],
+};
+export default function QualityDemo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ maxWidth: 640 }}>
+      <MediaPlayer
+        src={source}
+        title={t("docs.media-player.data.pattern")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+      />
+    </div>
+  );
+}
+
+```
+
 ## Example: Speeds and skip step
 
-playbackRates lists the speeds the speed button cycles through (onRateChange reports the new one); skipSeconds sets the step of the back / forward buttons; aspectRatio (or height) sizes a video.
+playbackRates configures Settings → Playback speed; onRateChange reports changes. skipSeconds sets the skip buttons; aspectRatio or height sizes the video.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -1009,6 +1174,62 @@ export default function ResumeDemo() {
       <output aria-live="polite">
         {progress} · saved position: {saved}s
       </output>
+    </div>
+  );
+}
+
+```
+
+## Example: Streaming engines
+
+Switch between real, locally hosted HLS, DASH and FLV samples. The selected adapter loads on demand; progressive files and native HLS remain available where supported.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/streams.tsx
+
+```tsx
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, useTheme } from "minerva-design";
+import { MediaPlayer } from "minerva-design/media-player";
+
+const base = `${import.meta.env.BASE_URL}media-player/`;
+const sources = {
+  hls: { src: `${base}hls/index.m3u8`, type: "hls" as const },
+  dash: { src: `${base}dash/index.mpd`, type: "dash" as const },
+  flv: { src: `${base}sample.flv`, type: "flv" as const },
+};
+
+export default function StreamsDemo() {
+  const [format, setFormat] = useState<keyof typeof sources>("hls");
+  const { i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ display: "grid", gap: 12, maxWidth: 640 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {(Object.keys(sources) as (keyof typeof sources)[]).map((name) => (
+          <Button
+            key={name}
+            size="small"
+            variant="outline"
+            active={format === name}
+            onClick={() => setFormat(name)}
+          >
+            {name.toUpperCase()}
+          </Button>
+        ))}
+      </div>
+      <MediaPlayer
+        title={format.toUpperCase()}
+        src={sources[format]}
+        locale={i18n.language}
+        theme={resolvedTheme}
+      />
     </div>
   );
 }

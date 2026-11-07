@@ -5,15 +5,53 @@
   "renderer": "react",
   "page": "media-player",
   "title": "MediaPlayer 媒体播放器",
-  "description": "带主题化自定义控件的音频 / 视频播放器：播放 / 暂停、快进快退、显示缓冲范围的进度条、时间、音量、播放速度与全屏，并支持键盘操作。",
+  "description": "支持音频 / 视频、字幕和键盘控制的媒体播放器。React 播放器入口还提供 HLS/DASH/FLV 引擎、清晰度、播放列表、A–B 循环、波形、截图和录制。",
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.22.3",
-    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
-    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
-    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+    "sourceCommit": "05d8029dbc66b57df26a3da7707f0fa0e4a02bde",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:98c68657ee3e6708d0ba87e44b497d1aba974e208ad5676dbbb9902bc229d648"
   },
-  "content": {},
+  "content": {
+    "advanced": {
+      "advancedTitle": "播放器入口",
+      "advancedText": "完整 React 播放器通过独立入口使用。原 minerva-design 的 MediaPlayer 导出继续兼容原有属性和事件参数，两者共用同一套播放实现。",
+      "boundary": "流媒体引擎受浏览器编码、CORS、自动播放及安全上下文能力限制。下方高级示例面向 React DOM；其他框架和原生标签页以各自 API 为准，React Native、小程序需要对应的媒体宿主。",
+      "assets": "示例使用本地托管的短 FFmpeg 测试图案与合成音，不依赖外部流服务。截图、录制按钮按能力显示；录制完成会下载文件。",
+      "capabilitiesTitle": "高级 React API",
+      "capabilities": {
+        "sources": {
+          "title": "播放源与引擎",
+          "text": "src 可传地址或 PlayerSource，包含 type、mimeType、qualities、defaultQuality。HLS/DASH 可提供自适应档位；createHlsEngine / createDashEngine / createFlvEngine 与 engines 用于配置或替换引擎，流媒体库按需加载。"
+        },
+        "playback": {
+          "title": "播放列表与音频",
+          "text": "playlist 保存 src / title / poster 等条目；defaultPlaylistIndex 与 onPlaylistIndexChange 管理当前项。音视频共用引擎。waveform 支持 auto、decorative 或峰值数组，另有 A–B 循环与可选 Media Session。"
+        },
+        "controls": {
+          "title": "控件与自定义操作",
+          "text": "controls=false 显示无控件媒体，或通过对象配置 play、progress、volume、quality、speed、captions、skip、abRepeat、playlist、screenshot、record、pip、fullscreen。actions 和 renderTooltip 可接入宿主操作与提示，不引入业务依赖。"
+        },
+        "events": {
+          "title": "事件与错误",
+          "text": "独立入口使用 onTimeUpdate(currentTime, duration)、onMetadata({ width, height, duration })、onQualityChange(id)、onError(PlayerError)。根入口 minerva-design 仍保留对象形式的时间事件和原生 MediaError 回调。"
+        },
+        "handle": {
+          "title": "命令式控制",
+          "text": "ref 提供 play / pause / seek、element / video，以及 setPlaybackRate、setQuality、next / previous、setAbRepeat / clearAbRepeat、screenshot、startRecording / stopRecording、toggleFullscreen。play 返回 Promise，可由宿主处理浏览器拒绝播放。"
+        },
+        "appearance": {
+          "title": "外观与能力边界",
+          "text": "locale 支持中英日法，messages 覆盖控件文案，theme 选择浅色 / 深色；样式导入一次即可。画中画、录制、截图、音量、全屏取决于宿主能力，跨域捕获需正确的 CORS 头；内置引擎不配置 DRM 许可证。"
+        }
+      }
+    },
+    "data": {
+      "pattern": "合成测试图案",
+      "tone": "440 Hz 测试音"
+    }
+  },
   "components": [
     {
       "name": "MediaControls",
@@ -782,7 +820,7 @@
       ],
       "contextImports": [],
       "title": "音频",
-      "description": "类型由 mimeType 或文件扩展名推断（否则为视频）；音频渲染为带标题的表面色控制条。skipSeconds={0} 隐藏快进快退按钮。"
+      "description": "类型由 MIME 或地址推断；音频显示封面与波形，并复用同一套控制。skipSeconds={0} 隐藏快进快退按钮。"
     },
     {
       "id": "captions",
@@ -797,7 +835,52 @@
       ],
       "contextImports": [],
       "title": "字幕",
-      "description": "tracks 接收 WebVTT 或 SRT 文件（{ src, srclang, label, kind, default }；此处使用 data: URL）。它们会渲染为 <track> 子元素，但当前字幕由播放器自行绘制（视频上方叠加，音频则显示在标题下方），因此在各浏览器中外观一致。CC 按钮打开菜单（关闭及每条字幕轨道）；聚焦播放器时按 C 可开关字幕。选择会被记住（localStorage），用户选择前显示 default 轨道；onTrackChange 上报选择。跨域字幕文件需要在播放器上设置 crossOrigin=\"anonymous\"（或 \"use-credentials\"），并在其服务器上返回 CORS 头。"
+      "description": "tracks 接收 WebVTT 或 SRT（{ src, srclang, label, kind, default }；此处使用 data: URL）。播放器安全地自绘字幕，视频叠加显示，音频在下方显示。在“设置 → 字幕”选择，或按 C 开关；记住语言选择，onTrackChange 上报变化。跨域文件需返回 CORS 头，use-credentials 会携带凭据。"
+    },
+    {
+      "id": "capture",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/capture.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/capture.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nexport default function CaptureDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}\n        title={t(\"docs.media-player.data.pattern\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        controls={{ screenshot: true, record: true }}\n        maxRecordingSeconds={15}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "截图与录制",
+      "description": "使用内置截图、录制图标，或 S / R 快捷键。此处录制最多 15 秒。浏览器需支持 Canvas 捕获 / MediaRecorder；跨域素材需允许 Canvas 读取。"
+    },
+    {
+      "id": "playlist",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/playlist.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/playlist.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nexport default function PlaylistDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        title={t(\"docs.media-player.demos.playlist.title\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        playlist={[\n          {\n            src: `${base}sample.mp4`,\n            title: t(\"docs.media-player.data.pattern\"),\n          },\n          { src: `${base}sample.m4a`, title: t(\"docs.media-player.data.tone\") },\n        ]}\n        controls={{ skip: true, abRepeat: true }}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "播放列表与 A–B 循环",
+      "description": "视频与音频共用一个播放器。内置上一首 / 下一首及播完自动切换，音频显示波形；用 A–B 重复播放片段。独立入口的时间回调接收 (currentTime, duration)。"
+    },
+    {
+      "id": "quality",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/quality.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/quality.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer, type PlayerSource } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nconst source: PlayerSource = {\n  src: `${base}sample.mp4`,\n  type: \"mp4\",\n  defaultQuality: \"144p\",\n  qualities: [\n    { id: \"144p\", label: \"144p\", height: 144, src: `${base}sample.mp4` },\n    { id: \"72p\", label: \"72p\", height: 72, src: `${base}sample-small.mp4` },\n  ],\n};\nexport default function QualityDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        src={source}\n        title={t(\"docs.media-player.data.pattern\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "清晰度切换",
+      "description": "在“设置 → 清晰度”选择 144p 或 72p，实际使用两份不同分辨率的素材，并保留播放位置与播放状态。HLS/DASH 还可显示流中的自适应档位。"
     },
     {
       "id": "rates-skip",
@@ -812,7 +895,7 @@
       ],
       "contextImports": [],
       "title": "播放速度与跳转步长",
-      "description": "playbackRates 列出速度按钮循环切换的速度（onRateChange 上报新速度）；skipSeconds 设置快退 / 快进按钮的步长；aspectRatio（或 height）设置视频尺寸。"
+      "description": "playbackRates 配置“设置 → 播放速度”，onRateChange 上报变化；skipSeconds 设置跳转步长，aspectRatio 或 height 设置视频尺寸。"
     },
     {
       "id": "resume",
@@ -828,6 +911,22 @@
       "contextImports": [],
       "title": "续播与进度",
       "description": "startTime 在元数据加载后应用一次（从学习者上次停止的位置继续）。onTimeUpdate / onLoadedMetadata / onPause / onEnded 上报进度；ref 提供 play()、pause()、seek(seconds) 和媒体元素。"
+    },
+    {
+      "id": "streams",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/streams.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/streams.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nconst sources = {\n  hls: { src: `${base}hls/index.m3u8`, type: \"hls\" as const },\n  dash: { src: `${base}dash/index.mpd`, type: \"dash\" as const },\n  flv: { src: `${base}sample.flv`, type: \"flv\" as const },\n};\n\nexport default function StreamsDemo() {\n  const [format, setFormat] = useState<keyof typeof sources>(\"hls\");\n  const { i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 640 }}>\n      <div style={{ display: \"flex\", gap: 8, flexWrap: \"wrap\" }}>\n        {(Object.keys(sources) as (keyof typeof sources)[]).map((name) => (\n          <Button\n            key={name}\n            size=\"small\"\n            variant=\"outline\"\n            active={format === name}\n            onClick={() => setFormat(name)}\n          >\n            {name.toUpperCase()}\n          </Button>\n        ))}\n      </div>\n      <MediaPlayer\n        title={format.toUpperCase()}\n        src={sources[format]}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "流媒体引擎",
+      "description": "切换真实的本地 HLS、DASH 和 FLV 样本。选中格式后按需加载对应引擎；浏览器支持时仍可使用原生文件播放与原生 HLS。"
     },
     {
       "id": "video",
@@ -846,12 +945,17 @@
   ],
   "recipes": [],
   "installation": "./setup.md",
-  "snippets": [],
+  "snippets": [
+    {
+      "source": "import { MediaPlayer } from \"minerva-design/media-player\";\nimport \"minerva-design/media-player/style.css\";",
+      "language": "tsx"
+    }
+  ],
   "typeGraph": "/minerva-design/reference/1.22.3/types.json",
   "documentationContext": {
     "translationResources": {
       "title": "MediaPlayer 媒体播放器",
-      "description": "带主题化自定义控件的音频 / 视频播放器：播放 / 暂停、快进快退、显示缓冲范围的进度条、时间、音量、播放速度与全屏，并支持键盘操作。",
+      "description": "支持音频 / 视频、字幕和键盘控制的媒体播放器。React 播放器入口还提供 HLS/DASH/FLV 引擎、清晰度、播放列表、A–B 循环、波形、截图和录制。",
       "demos": {
         "video": {
           "title": "视频",
@@ -859,7 +963,7 @@
         },
         "audio": {
           "title": "音频",
-          "description": "类型由 mimeType 或文件扩展名推断（否则为视频）；音频渲染为带标题的表面色控制条。skipSeconds={0} 隐藏快进快退按钮。"
+          "description": "类型由 MIME 或地址推断；音频显示封面与波形，并复用同一套控制。skipSeconds={0} 隐藏快进快退按钮。"
         },
         "resume": {
           "title": "续播与进度",
@@ -867,11 +971,27 @@
         },
         "rates-skip": {
           "title": "播放速度与跳转步长",
-          "description": "playbackRates 列出速度按钮循环切换的速度（onRateChange 上报新速度）；skipSeconds 设置快退 / 快进按钮的步长；aspectRatio（或 height）设置视频尺寸。"
+          "description": "playbackRates 配置“设置 → 播放速度”，onRateChange 上报变化；skipSeconds 设置跳转步长，aspectRatio 或 height 设置视频尺寸。"
         },
         "captions": {
           "title": "字幕",
-          "description": "tracks 接收 WebVTT 或 SRT 文件（{ src, srclang, label, kind, default }；此处使用 data: URL）。它们会渲染为 <track> 子元素，但当前字幕由播放器自行绘制（视频上方叠加，音频则显示在标题下方），因此在各浏览器中外观一致。CC 按钮打开菜单（关闭及每条字幕轨道）；聚焦播放器时按 C 可开关字幕。选择会被记住（localStorage），用户选择前显示 default 轨道；onTrackChange 上报选择。跨域字幕文件需要在播放器上设置 crossOrigin=\"anonymous\"（或 \"use-credentials\"），并在其服务器上返回 CORS 头。"
+          "description": "tracks 接收 WebVTT 或 SRT（{ src, srclang, label, kind, default }；此处使用 data: URL）。播放器安全地自绘字幕，视频叠加显示，音频在下方显示。在“设置 → 字幕”选择，或按 C 开关；记住语言选择，onTrackChange 上报变化。跨域文件需返回 CORS 头，use-credentials 会携带凭据。"
+        },
+        "streams": {
+          "title": "流媒体引擎",
+          "description": "切换真实的本地 HLS、DASH 和 FLV 样本。选中格式后按需加载对应引擎；浏览器支持时仍可使用原生文件播放与原生 HLS。"
+        },
+        "quality": {
+          "title": "清晰度切换",
+          "description": "在“设置 → 清晰度”选择 144p 或 72p，实际使用两份不同分辨率的素材，并保留播放位置与播放状态。HLS/DASH 还可显示流中的自适应档位。"
+        },
+        "playlist": {
+          "title": "播放列表与 A–B 循环",
+          "description": "视频与音频共用一个播放器。内置上一首 / 下一首及播完自动切换，音频显示波形；用 A–B 重复播放片段。独立入口的时间回调接收 (currentTime, duration)。"
+        },
+        "capture": {
+          "title": "截图与录制",
+          "description": "使用内置截图、录制图标，或 S / R 快捷键。此处录制最多 15 秒。浏览器需支持 Canvas 捕获 / MediaRecorder；跨域素材需允许 Canvas 读取。"
         }
       },
       "api": {
@@ -910,7 +1030,7 @@
           "ref": "命令式句柄：play()、pause()、seek(seconds)、element"
         },
         "MediaPlayerHandle": {
-          "play": "开始播放（HTMLMediaElement.play() 的 Promise；自动播放被拒绝时不会抛出）",
+          "play": "开始播放并返回原生 play Promise，调用方可处理自动播放被拒绝的错误。",
           "pause": "暂停播放",
           "seek": "将播放位置移动到指定秒数（限制在时长范围内）",
           "element": "渲染的 <audio> / <video> 元素（挂载前为 null）"
@@ -998,6 +1118,43 @@
             "description": "React Native 播放器没有文本轨道：设置 tracks 后，MediaControls 会获取 WebVTT / SRT 文件（支持 data: URL）并解析，在进度条上方绘制 currentTime 对应的字幕。CC 按钮显示「关闭 / 各字幕轨道」选项；trackIndex 可受控，onTrackChange 上报选择。"
           }
         }
+      },
+      "advanced": {
+        "advancedTitle": "播放器入口",
+        "advancedText": "完整 React 播放器通过独立入口使用。原 minerva-design 的 MediaPlayer 导出继续兼容原有属性和事件参数，两者共用同一套播放实现。",
+        "boundary": "流媒体引擎受浏览器编码、CORS、自动播放及安全上下文能力限制。下方高级示例面向 React DOM；其他框架和原生标签页以各自 API 为准，React Native、小程序需要对应的媒体宿主。",
+        "assets": "示例使用本地托管的短 FFmpeg 测试图案与合成音，不依赖外部流服务。截图、录制按钮按能力显示；录制完成会下载文件。",
+        "capabilitiesTitle": "高级 React API",
+        "capabilities": {
+          "sources": {
+            "title": "播放源与引擎",
+            "text": "src 可传地址或 PlayerSource，包含 type、mimeType、qualities、defaultQuality。HLS/DASH 可提供自适应档位；createHlsEngine / createDashEngine / createFlvEngine 与 engines 用于配置或替换引擎，流媒体库按需加载。"
+          },
+          "playback": {
+            "title": "播放列表与音频",
+            "text": "playlist 保存 src / title / poster 等条目；defaultPlaylistIndex 与 onPlaylistIndexChange 管理当前项。音视频共用引擎。waveform 支持 auto、decorative 或峰值数组，另有 A–B 循环与可选 Media Session。"
+          },
+          "controls": {
+            "title": "控件与自定义操作",
+            "text": "controls=false 显示无控件媒体，或通过对象配置 play、progress、volume、quality、speed、captions、skip、abRepeat、playlist、screenshot、record、pip、fullscreen。actions 和 renderTooltip 可接入宿主操作与提示，不引入业务依赖。"
+          },
+          "events": {
+            "title": "事件与错误",
+            "text": "独立入口使用 onTimeUpdate(currentTime, duration)、onMetadata({ width, height, duration })、onQualityChange(id)、onError(PlayerError)。根入口 minerva-design 仍保留对象形式的时间事件和原生 MediaError 回调。"
+          },
+          "handle": {
+            "title": "命令式控制",
+            "text": "ref 提供 play / pause / seek、element / video，以及 setPlaybackRate、setQuality、next / previous、setAbRepeat / clearAbRepeat、screenshot、startRecording / stopRecording、toggleFullscreen。play 返回 Promise，可由宿主处理浏览器拒绝播放。"
+          },
+          "appearance": {
+            "title": "外观与能力边界",
+            "text": "locale 支持中英日法，messages 覆盖控件文案，theme 选择浅色 / 深色；样式导入一次即可。画中画、录制、截图、音量、全屏取决于宿主能力，跨域捕获需正确的 CORS 头；内置引擎不配置 DRM 许可证。"
+          }
+        }
+      },
+      "data": {
+        "pattern": "合成测试图案",
+        "tone": "440 Hz 测试音"
       }
     }
   }

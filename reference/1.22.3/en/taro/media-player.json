@@ -5,15 +5,53 @@
   "renderer": "taro",
   "page": "media-player",
   "title": "MediaPlayer",
-  "description": "An audio or video player with themed custom controls: play / pause, skip, a seek bar with the buffered range, time, volume, playback speed and fullscreen, operable from the keyboard.",
+  "description": "A media player with audio/video playback, captions and keyboard controls. The React player package adds HLS/DASH/FLV engines, source quality selection, playlists, A–B repeat, waveforms, screenshots and recording.",
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.22.3",
-    "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
-    "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
-    "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+    "sourceCommit": "05d8029dbc66b57df26a3da7707f0fa0e4a02bde",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:98c68657ee3e6708d0ba87e44b497d1aba974e208ad5676dbbb9902bc229d648"
   },
-  "content": {},
+  "content": {
+    "advanced": {
+      "advancedTitle": "Player package",
+      "advancedText": "Use the dedicated entry for the full React player. The original minerva-design MediaPlayer export remains available with its existing props and event payloads; both use the same playback implementation.",
+      "boundary": "Streaming engines are browser adapters: codecs, CORS, autoplay and secure-context capabilities still apply. The advanced demos below are React DOM examples. Other framework and native tabs document their own supported APIs; React Native and mini-programs require their media hosts.",
+      "assets": "These examples use short, locally hosted FFmpeg test patterns and a synthetic tone. They work without third-party stream services. Screenshot and recording buttons appear only where supported; recording downloads a file on completion.",
+      "capabilitiesTitle": "Advanced React API",
+      "capabilities": {
+        "sources": {
+          "title": "Sources and engines",
+          "text": "src accepts a URL or PlayerSource with type, mimeType, qualities and defaultQuality. HLS/DASH expose adaptive levels; createHlsEngine/createDashEngine/createFlvEngine and engines let you configure or replace adapters. Stream libraries load only when needed."
+        },
+        "playback": {
+          "title": "Playback and audio",
+          "text": "playlist holds source/title/poster entries; defaultPlaylistIndex and onPlaylistIndexChange observe the current item. Audio and video share one engine. waveform accepts auto, decorative or peak values; A–B repeat and Media Session are optional."
+        },
+        "controls": {
+          "title": "Controls and custom actions",
+          "text": "controls can be false for bare media or an object that enables play, progress, volume, quality, speed, captions, skip, abRepeat, playlist, screenshot, record, pip and fullscreen. actions and renderTooltip integrate host actions and tooltips without application dependencies."
+        },
+        "events": {
+          "title": "Events and errors",
+          "text": "The advanced entry calls onTimeUpdate(currentTime, duration), onMetadata({ width, height, duration }), onQualityChange(id) and onError(PlayerError). The root minerva-design export retains its object-shaped time callback and native MediaError callback."
+        },
+        "handle": {
+          "title": "Imperative handle",
+          "text": "The ref exposes play/pause/seek and element/video, plus setPlaybackRate, setQuality, next/previous, setAbRepeat/clearAbRepeat, screenshot, startRecording/stopRecording and toggleFullscreen. play returns its promise so the host can handle browser playback rejection."
+        },
+        "appearance": {
+          "title": "Appearance and capability boundaries",
+          "text": "locale supports en/zh/ja/fr and messages overrides control text; theme selects light/dark. Import the player CSS once. PiP, recording, screenshot, volume and fullscreen depend on the host; cross-origin capture requires suitable CORS headers. DRM licensing is not configured by the built-in adapters."
+        }
+      }
+    },
+    "data": {
+      "pattern": "Synthetic test pattern",
+      "tone": "440 Hz test tone"
+    }
+  },
   "components": [
     {
       "name": "MediaControls",
@@ -471,12 +509,17 @@
   "examples": [],
   "recipes": [],
   "installation": "./setup.md",
-  "snippets": [],
+  "snippets": [
+    {
+      "source": "import { MediaPlayer } from \"minerva-design/media-player\";\nimport \"minerva-design/media-player/style.css\";",
+      "language": "tsx"
+    }
+  ],
   "typeGraph": "/minerva-design/reference/1.22.3/types.json",
   "documentationContext": {
     "translationResources": {
       "title": "MediaPlayer",
-      "description": "An audio or video player with themed custom controls: play / pause, skip, a seek bar with the buffered range, time, volume, playback speed and fullscreen, operable from the keyboard.",
+      "description": "A media player with audio/video playback, captions and keyboard controls. The React player package adds HLS/DASH/FLV engines, source quality selection, playlists, A–B repeat, waveforms, screenshots and recording.",
       "demos": {
         "video": {
           "title": "Video",
@@ -484,7 +527,7 @@
         },
         "audio": {
           "title": "Audio",
-          "description": "The type is inferred from mimeType or the file extension (video otherwise); audio renders a surface bar with the title. skipSeconds={0} hides the skip buttons."
+          "description": "Media type is inferred from MIME type or the URL; audio uses a compact cover/waveform interface with shared playback controls. skipSeconds={0} hides the skip buttons."
         },
         "resume": {
           "title": "Resume and progress",
@@ -492,11 +535,27 @@
         },
         "rates-skip": {
           "title": "Speeds and skip step",
-          "description": "playbackRates lists the speeds the speed button cycles through (onRateChange reports the new one); skipSeconds sets the step of the back / forward buttons; aspectRatio (or height) sizes a video."
+          "description": "playbackRates configures Settings → Playback speed; onRateChange reports changes. skipSeconds sets the skip buttons; aspectRatio or height sizes the video."
         },
         "captions": {
           "title": "Captions",
-          "description": "tracks takes WebVTT or SRT files ({ src, srclang, label, kind, default }; data: URLs here). They are rendered as <track> children, but the player draws the active cue itself (over the video, below the title for audio) so captions look the same in every browser. The CC button opens a menu (Off and one item per track); C toggles captions on the focused player. The choice is remembered (localStorage) and a default track shows until the user chooses; onTrackChange reports it. Cross-origin caption files need crossOrigin=\"anonymous\" (or \"use-credentials\") on the player and CORS headers on their server."
+          "description": "tracks accepts WebVTT or SRT files ({ src, srclang, label, kind, default }; data: URLs here). The player draws safe caption text over video and below audio. Select a track in Settings → Captions, or press C to toggle it. Language choice is remembered; onTrackChange reports selection. Cross-origin files require CORS; use-credentials includes credentials."
+        },
+        "streams": {
+          "title": "Streaming engines",
+          "description": "Switch between real, locally hosted HLS, DASH and FLV samples. The selected adapter loads on demand; progressive files and native HLS remain available where supported."
+        },
+        "quality": {
+          "title": "Quality selection",
+          "description": "Choose 144p or 72p in Settings → Quality. These are different video renditions; switching keeps the playback position and playing state. HLS/DASH sources can additionally expose adaptive quality levels."
+        },
+        "playlist": {
+          "title": "Playlist and A–B repeat",
+          "description": "The playlist shares one player across video and audio. Previous/next and automatic advance are built in. Audio displays a waveform; use A–B to repeat a passage. The main entry time callback receives (currentTime, duration)."
+        },
+        "capture": {
+          "title": "Screenshot and recording",
+          "description": "Use the built-in screenshot and recording icons, or S/R shortcuts. Recording is limited to 15 seconds here. Browsers must support canvas capture/MediaRecorder and cross-origin media must allow canvas access."
         }
       },
       "api": {
@@ -535,7 +594,7 @@
           "ref": "Imperative handle: play(), pause(), seek(seconds), element"
         },
         "MediaPlayerHandle": {
-          "play": "Starts playback (the promise of HTMLMediaElement.play(); autoplay rejections are swallowed)",
+          "play": "Starts playback and returns the native play promise; callers can handle autoplay rejections.",
           "pause": "Pauses playback",
           "seek": "Moves the playhead to seconds (clamped to the duration)",
           "element": "The rendered <audio> / <video> element (null before mount)"
@@ -623,6 +682,43 @@
             "description": "React Native players have no text tracks: with tracks, MediaControls fetches the WebVTT / SRT file (data: URLs work), parses it and draws the cue at currentTime above the seek bar. The CC button shows an Off / per-track choice; trackIndex can be controlled and onTrackChange reports the choice."
           }
         }
+      },
+      "advanced": {
+        "advancedTitle": "Player package",
+        "advancedText": "Use the dedicated entry for the full React player. The original minerva-design MediaPlayer export remains available with its existing props and event payloads; both use the same playback implementation.",
+        "boundary": "Streaming engines are browser adapters: codecs, CORS, autoplay and secure-context capabilities still apply. The advanced demos below are React DOM examples. Other framework and native tabs document their own supported APIs; React Native and mini-programs require their media hosts.",
+        "assets": "These examples use short, locally hosted FFmpeg test patterns and a synthetic tone. They work without third-party stream services. Screenshot and recording buttons appear only where supported; recording downloads a file on completion.",
+        "capabilitiesTitle": "Advanced React API",
+        "capabilities": {
+          "sources": {
+            "title": "Sources and engines",
+            "text": "src accepts a URL or PlayerSource with type, mimeType, qualities and defaultQuality. HLS/DASH expose adaptive levels; createHlsEngine/createDashEngine/createFlvEngine and engines let you configure or replace adapters. Stream libraries load only when needed."
+          },
+          "playback": {
+            "title": "Playback and audio",
+            "text": "playlist holds source/title/poster entries; defaultPlaylistIndex and onPlaylistIndexChange observe the current item. Audio and video share one engine. waveform accepts auto, decorative or peak values; A–B repeat and Media Session are optional."
+          },
+          "controls": {
+            "title": "Controls and custom actions",
+            "text": "controls can be false for bare media or an object that enables play, progress, volume, quality, speed, captions, skip, abRepeat, playlist, screenshot, record, pip and fullscreen. actions and renderTooltip integrate host actions and tooltips without application dependencies."
+          },
+          "events": {
+            "title": "Events and errors",
+            "text": "The advanced entry calls onTimeUpdate(currentTime, duration), onMetadata({ width, height, duration }), onQualityChange(id) and onError(PlayerError). The root minerva-design export retains its object-shaped time callback and native MediaError callback."
+          },
+          "handle": {
+            "title": "Imperative handle",
+            "text": "The ref exposes play/pause/seek and element/video, plus setPlaybackRate, setQuality, next/previous, setAbRepeat/clearAbRepeat, screenshot, startRecording/stopRecording and toggleFullscreen. play returns its promise so the host can handle browser playback rejection."
+          },
+          "appearance": {
+            "title": "Appearance and capability boundaries",
+            "text": "locale supports en/zh/ja/fr and messages overrides control text; theme selects light/dark. Import the player CSS once. PiP, recording, screenshot, volume and fullscreen depend on the host; cross-origin capture requires suitable CORS headers. DRM licensing is not configured by the built-in adapters."
+          }
+        }
+      },
+      "data": {
+        "pattern": "Synthetic test pattern",
+        "tone": "440 Hz test tone"
       }
     }
   }

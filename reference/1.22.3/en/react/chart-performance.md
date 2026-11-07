@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.22.3",
-  "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
-  "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
-  "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  "sourceCommit": "05d8029dbc66b57df26a3da7707f0fa0e4a02bde",
+  "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+  "referenceSourceDigest": "sha256:98c68657ee3e6708d0ba87e44b497d1aba974e208ad5676dbbb9902bc229d648"
 }
 ```
 
@@ -2739,6 +2739,7 @@ export type DocCategory =
   | "graphCharts"
   | "chartEngine"
   | "icons"
+  | "player"
   | "mobile"
   | "webComponents";
 
@@ -2824,10 +2825,11 @@ export const categories: DocCategory[] = [
   "graphCharts",
   "chartEngine",
   "icons",
+  "player",
 ];
 
 /** Top-level parts of the site, each with its own sidebar */
-export type DocSection = "docs" | "components" | "charts" | "icons";
+export type DocSection = "docs" | "components" | "charts" | "icons" | "player";
 
 export interface DocSectionMeta {
   id: DocSection;
@@ -2873,6 +2875,7 @@ export const sections: readonly DocSectionMeta[] = [
     home: "icons",
     categories: ["icons"],
   },
+  { id: "player", home: "media-player", categories: ["player"] },
 ];
 
 /** Section of a category (every category belongs to exactly one) */
@@ -4591,10 +4594,20 @@ export const docPages: DocPageMeta[] = [
   {
     id: "media-player",
     cssVars: ["MediaPlayer"],
-    category: "dataDisplay",
+    category: "player",
     exports: ["MediaPlayer"],
     api: ["MediaPlayerProps", "MediaPlayerHandle", "MediaPlayerTrack"],
-    demos: ["video", "audio", "resume", "rates-skip", "captions"],
+    demos: [
+      "streams",
+      "quality",
+      "playlist",
+      "capture",
+      "video",
+      "audio",
+      "resume",
+      "rates-skip",
+      "captions",
+    ],
     wc: {
       entry: "media-player",
       tags: ["minerva-media-player"],
@@ -9126,6 +9139,7 @@ export type DocCategory =
   | "graphCharts"
   | "chartEngine"
   | "icons"
+  | "player"
   | "mobile"
   | "webComponents";
 
@@ -9211,10 +9225,11 @@ export const categories: DocCategory[] = [
   "graphCharts",
   "chartEngine",
   "icons",
+  "player",
 ];
 
 /** Top-level parts of the site, each with its own sidebar */
-export type DocSection = "docs" | "components" | "charts" | "icons";
+export type DocSection = "docs" | "components" | "charts" | "icons" | "player";
 
 export interface DocSectionMeta {
   id: DocSection;
@@ -9260,6 +9275,7 @@ export const sections: readonly DocSectionMeta[] = [
     home: "icons",
     categories: ["icons"],
   },
+  { id: "player", home: "media-player", categories: ["player"] },
 ];
 
 /** Section of a category (every category belongs to exactly one) */
@@ -10978,10 +10994,20 @@ export const docPages: DocPageMeta[] = [
   {
     id: "media-player",
     cssVars: ["MediaPlayer"],
-    category: "dataDisplay",
+    category: "player",
     exports: ["MediaPlayer"],
     api: ["MediaPlayerProps", "MediaPlayerHandle", "MediaPlayerTrack"],
-    demos: ["video", "audio", "resume", "rates-skip", "captions"],
+    demos: [
+      "streams",
+      "quality",
+      "playlist",
+      "capture",
+      "video",
+      "audio",
+      "resume",
+      "rates-skip",
+      "captions",
+    ],
     wc: {
       entry: "media-player",
       tags: ["minerva-media-player"],
@@ -14328,6 +14354,7 @@ export type DocCategory =
   | "graphCharts"
   | "chartEngine"
   | "icons"
+  | "player"
   | "mobile"
   | "webComponents";
 
@@ -14413,10 +14440,11 @@ export const categories: DocCategory[] = [
   "graphCharts",
   "chartEngine",
   "icons",
+  "player",
 ];
 
 /** Top-level parts of the site, each with its own sidebar */
-export type DocSection = "docs" | "components" | "charts" | "icons";
+export type DocSection = "docs" | "components" | "charts" | "icons" | "player";
 
 export interface DocSectionMeta {
   id: DocSection;
@@ -14462,6 +14490,7 @@ export const sections: readonly DocSectionMeta[] = [
     home: "icons",
     categories: ["icons"],
   },
+  { id: "player", home: "media-player", categories: ["player"] },
 ];
 
 /** Section of a category (every category belongs to exactly one) */
@@ -16180,10 +16209,20 @@ export const docPages: DocPageMeta[] = [
   {
     id: "media-player",
     cssVars: ["MediaPlayer"],
-    category: "dataDisplay",
+    category: "player",
     exports: ["MediaPlayer"],
     api: ["MediaPlayerProps", "MediaPlayerHandle", "MediaPlayerTrack"],
-    demos: ["video", "audio", "resume", "rates-skip", "captions"],
+    demos: [
+      "streams",
+      "quality",
+      "playlist",
+      "capture",
+      "video",
+      "audio",
+      "resume",
+      "rates-skip",
+      "captions",
+    ],
     wc: {
       entry: "media-player",
       tags: ["minerva-media-player"],
@@ -19380,6 +19419,7 @@ export type DocCategory =
   | "graphCharts"
   | "chartEngine"
   | "icons"
+  | "player"
   | "mobile"
   | "webComponents";
 
@@ -19465,10 +19505,11 @@ export const categories: DocCategory[] = [
   "graphCharts",
   "chartEngine",
   "icons",
+  "player",
 ];
 
 /** Top-level parts of the site, each with its own sidebar */
-export type DocSection = "docs" | "components" | "charts" | "icons";
+export type DocSection = "docs" | "components" | "charts" | "icons" | "player";
 
 export interface DocSectionMeta {
   id: DocSection;
@@ -19514,6 +19555,7 @@ export const sections: readonly DocSectionMeta[] = [
     home: "icons",
     categories: ["icons"],
   },
+  { id: "player", home: "media-player", categories: ["player"] },
 ];
 
 /** Section of a category (every category belongs to exactly one) */
@@ -21232,10 +21274,20 @@ export const docPages: DocPageMeta[] = [
   {
     id: "media-player",
     cssVars: ["MediaPlayer"],
-    category: "dataDisplay",
+    category: "player",
     exports: ["MediaPlayer"],
     api: ["MediaPlayerProps", "MediaPlayerHandle", "MediaPlayerTrack"],
-    demos: ["video", "audio", "resume", "rates-skip", "captions"],
+    demos: [
+      "streams",
+      "quality",
+      "playlist",
+      "capture",
+      "video",
+      "audio",
+      "resume",
+      "rates-skip",
+      "captions",
+    ],
     wc: {
       entry: "media-player",
       tags: ["minerva-media-player"],
@@ -24187,6 +24239,7 @@ export type DocCategory =
   | "graphCharts"
   | "chartEngine"
   | "icons"
+  | "player"
   | "mobile"
   | "webComponents";
 
@@ -24272,10 +24325,11 @@ export const categories: DocCategory[] = [
   "graphCharts",
   "chartEngine",
   "icons",
+  "player",
 ];
 
 /** Top-level parts of the site, each with its own sidebar */
-export type DocSection = "docs" | "components" | "charts" | "icons";
+export type DocSection = "docs" | "components" | "charts" | "icons" | "player";
 
 export interface DocSectionMeta {
   id: DocSection;
@@ -24321,6 +24375,7 @@ export const sections: readonly DocSectionMeta[] = [
     home: "icons",
     categories: ["icons"],
   },
+  { id: "player", home: "media-player", categories: ["player"] },
 ];
 
 /** Section of a category (every category belongs to exactly one) */
@@ -26039,10 +26094,20 @@ export const docPages: DocPageMeta[] = [
   {
     id: "media-player",
     cssVars: ["MediaPlayer"],
-    category: "dataDisplay",
+    category: "player",
     exports: ["MediaPlayer"],
     api: ["MediaPlayerProps", "MediaPlayerHandle", "MediaPlayerTrack"],
-    demos: ["video", "audio", "resume", "rates-skip", "captions"],
+    demos: [
+      "streams",
+      "quality",
+      "playlist",
+      "capture",
+      "video",
+      "audio",
+      "resume",
+      "rates-skip",
+      "captions",
+    ],
     wc: {
       entry: "media-player",
       tags: ["minerva-media-player"],

@@ -1,6 +1,6 @@
 # MediaPlayer 媒体播放器
 
-带主题化自定义控件的音频 / 视频播放器：播放 / 暂停、快进快退、显示缓冲范围的进度条、时间、音量、播放速度与全屏，并支持键盘操作。
+支持音频 / 视频、字幕和键盘控制的媒体播放器。React 播放器入口还提供 HLS/DASH/FLV 引擎、清晰度、播放列表、A–B 循环、波形、截图和录制。
 
 Package: minerva-design@1.22.3
 
@@ -14,15 +14,58 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.22.3",
-  "sourceCommit": "29f678e6c83b155a4b25bb6ba161bd1343a30a05",
-  "sourceDigest": "sha256:62e49d8be55ca2bb85e8afd17b7862d068358e8ea94178c66288911996ed036e",
-  "referenceSourceDigest": "sha256:0412dc239078e986227cd3204e2571665b3114a1b01c61132429483ed5a82f88"
+  "sourceCommit": "05d8029dbc66b57df26a3da7707f0fa0e4a02bde",
+  "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+  "referenceSourceDigest": "sha256:98c68657ee3e6708d0ba87e44b497d1aba974e208ad5676dbbb9902bc229d648"
 }
 ```
 
 Type references resolve through the [type graph](/minerva-design/reference/1.22.3/types.json) or getType() from minerva-design/contracts.
 
 ## Documentation
+
+播放器入口
+
+完整 React 播放器通过独立入口使用。原 minerva-design 的 MediaPlayer 导出继续兼容原有属性和事件参数，两者共用同一套播放实现。
+
+流媒体引擎受浏览器编码、CORS、自动播放及安全上下文能力限制。下方高级示例面向 React DOM；其他框架和原生标签页以各自 API 为准，React Native、小程序需要对应的媒体宿主。
+
+示例使用本地托管的短 FFmpeg 测试图案与合成音，不依赖外部流服务。截图、录制按钮按能力显示；录制完成会下载文件。
+
+高级 React API
+
+##### 播放源与引擎
+
+src 可传地址或 PlayerSource，包含 type、mimeType、qualities、defaultQuality。HLS/DASH 可提供自适应档位；createHlsEngine / createDashEngine / createFlvEngine 与 engines 用于配置或替换引擎，流媒体库按需加载。
+
+##### 播放列表与音频
+
+playlist 保存 src / title / poster 等条目；defaultPlaylistIndex 与 onPlaylistIndexChange 管理当前项。音视频共用引擎。waveform 支持 auto、decorative 或峰值数组，另有 A–B 循环与可选 Media Session。
+
+##### 控件与自定义操作
+
+controls=false 显示无控件媒体，或通过对象配置 play、progress、volume、quality、speed、captions、skip、abRepeat、playlist、screenshot、record、pip、fullscreen。actions 和 renderTooltip 可接入宿主操作与提示，不引入业务依赖。
+
+##### 事件与错误
+
+独立入口使用 onTimeUpdate(currentTime, duration)、onMetadata({ width, height, duration })、onQualityChange(id)、onError(PlayerError)。根入口 minerva-design 仍保留对象形式的时间事件和原生 MediaError 回调。
+
+##### 命令式控制
+
+ref 提供 play / pause / seek、element / video，以及 setPlaybackRate、setQuality、next / previous、setAbRepeat / clearAbRepeat、screenshot、startRecording / stopRecording、toggleFullscreen。play 返回 Promise，可由宿主处理浏览器拒绝播放。
+
+##### 外观与能力边界
+
+locale 支持中英日法，messages 覆盖控件文案，theme 选择浅色 / 深色；样式导入一次即可。画中画、录制、截图、音量、全屏取决于宿主能力，跨域捕获需正确的 CORS 头；内置引擎不配置 DRM 许可证。
+
+合成测试图案
+
+440 Hz 测试音
+
+```tsx
+import { MediaPlayer } from "minerva-design/media-player";
+import "minerva-design/media-player/style.css";
+```
 
 ## MediaControls
 
@@ -796,7 +839,7 @@ See [installation](./setup.md). Styles and root providers belong in the applicat
 
 ## Example: 音频
 
-类型由 mimeType 或文件扩展名推断（否则为视频）；音频渲染为带标题的表面色控制条。skipSeconds={0} 隐藏快进快退按钮。
+类型由 MIME 或地址推断；音频显示封面与波形，并复用同一套控制。skipSeconds={0} 隐藏快进快退按钮。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -825,7 +868,7 @@ export default function AudioDemo() {
 
 ## Example: 字幕
 
-tracks 接收 WebVTT 或 SRT 文件（{ src, srclang, label, kind, default }；此处使用 data: URL）。它们会渲染为 <track> 子元素，但当前字幕由播放器自行绘制（视频上方叠加，音频则显示在标题下方），因此在各浏览器中外观一致。CC 按钮打开菜单（关闭及每条字幕轨道）；聚焦播放器时按 C 可开关字幕。选择会被记住（localStorage），用户选择前显示 default 轨道；onTrackChange 上报选择。跨域字幕文件需要在播放器上设置 crossOrigin="anonymous"（或 "use-credentials"），并在其服务器上返回 CORS 头。
+tracks 接收 WebVTT 或 SRT（{ src, srclang, label, kind, default }；此处使用 data: URL）。播放器安全地自绘字幕，视频叠加显示，音频在下方显示。在“设置 → 字幕”选择，或按 C 开关；记住语言选择，onTrackChange 上报变化。跨域文件需返回 CORS 头，use-credentials 会携带凭据。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -911,9 +954,131 @@ export default function CaptionsDemo() {
 
 ```
 
+## Example: 截图与录制
+
+使用内置截图、录制图标，或 S / R 快捷键。此处录制最多 15 秒。浏览器需支持 Canvas 捕获 / MediaRecorder；跨域素材需允许 Canvas 读取。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/capture.tsx
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { useTheme } from "minerva-design";
+import { MediaPlayer } from "minerva-design/media-player";
+
+export default function CaptureDemo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ maxWidth: 640 }}>
+      <MediaPlayer
+        src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}
+        title={t("docs.media-player.data.pattern")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+        controls={{ screenshot: true, record: true }}
+        maxRecordingSeconds={15}
+      />
+    </div>
+  );
+}
+
+```
+
+## Example: 播放列表与 A–B 循环
+
+视频与音频共用一个播放器。内置上一首 / 下一首及播完自动切换，音频显示波形；用 A–B 重复播放片段。独立入口的时间回调接收 (currentTime, duration)。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/playlist.tsx
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { useTheme } from "minerva-design";
+import { MediaPlayer } from "minerva-design/media-player";
+
+const base = `${import.meta.env.BASE_URL}media-player/`;
+export default function PlaylistDemo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ maxWidth: 640 }}>
+      <MediaPlayer
+        title={t("docs.media-player.demos.playlist.title")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+        playlist={[
+          {
+            src: `${base}sample.mp4`,
+            title: t("docs.media-player.data.pattern"),
+          },
+          { src: `${base}sample.m4a`, title: t("docs.media-player.data.tone") },
+        ]}
+        controls={{ skip: true, abRepeat: true }}
+      />
+    </div>
+  );
+}
+
+```
+
+## Example: 清晰度切换
+
+在“设置 → 清晰度”选择 144p 或 72p，实际使用两份不同分辨率的素材，并保留播放位置与播放状态。HLS/DASH 还可显示流中的自适应档位。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/quality.tsx
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { useTheme } from "minerva-design";
+import { MediaPlayer, type PlayerSource } from "minerva-design/media-player";
+
+const base = `${import.meta.env.BASE_URL}media-player/`;
+const source: PlayerSource = {
+  src: `${base}sample.mp4`,
+  type: "mp4",
+  defaultQuality: "144p",
+  qualities: [
+    { id: "144p", label: "144p", height: 144, src: `${base}sample.mp4` },
+    { id: "72p", label: "72p", height: 72, src: `${base}sample-small.mp4` },
+  ],
+};
+export default function QualityDemo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ maxWidth: 640 }}>
+      <MediaPlayer
+        src={source}
+        title={t("docs.media-player.data.pattern")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+      />
+    </div>
+  );
+}
+
+```
+
 ## Example: 播放速度与跳转步长
 
-playbackRates 列出速度按钮循环切换的速度（onRateChange 上报新速度）；skipSeconds 设置快退 / 快进按钮的步长；aspectRatio（或 height）设置视频尺寸。
+playbackRates 配置“设置 → 播放速度”，onRateChange 上报变化；skipSeconds 设置跳转步长，aspectRatio 或 height 设置视频尺寸。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -1009,6 +1174,62 @@ export default function ResumeDemo() {
       <output aria-live="polite">
         {progress} · saved position: {saved}s
       </output>
+    </div>
+  );
+}
+
+```
+
+## Example: 流媒体引擎
+
+切换真实的本地 HLS、DASH 和 FLV 样本。选中格式后按需加载对应引擎；浏览器支持时仍可使用原生文件播放与原生 HLS。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/streams.tsx
+
+```tsx
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, useTheme } from "minerva-design";
+import { MediaPlayer } from "minerva-design/media-player";
+
+const base = `${import.meta.env.BASE_URL}media-player/`;
+const sources = {
+  hls: { src: `${base}hls/index.m3u8`, type: "hls" as const },
+  dash: { src: `${base}dash/index.mpd`, type: "dash" as const },
+  flv: { src: `${base}sample.flv`, type: "flv" as const },
+};
+
+export default function StreamsDemo() {
+  const [format, setFormat] = useState<keyof typeof sources>("hls");
+  const { i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ display: "grid", gap: 12, maxWidth: 640 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {(Object.keys(sources) as (keyof typeof sources)[]).map((name) => (
+          <Button
+            key={name}
+            size="small"
+            variant="outline"
+            active={format === name}
+            onClick={() => setFormat(name)}
+          >
+            {name.toUpperCase()}
+          </Button>
+        ))}
+      </div>
+      <MediaPlayer
+        title={format.toUpperCase()}
+        src={sources[format]}
+        locale={i18n.language}
+        theme={resolvedTheme}
+      />
     </div>
   );
 }
