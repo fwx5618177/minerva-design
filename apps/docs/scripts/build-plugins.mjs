@@ -73,7 +73,26 @@ export const overBudget = (chunks) => {
   for (const chunk of chunks) {
     const size = Buffer.byteLength(chunk.code, "utf8");
     const locale = chunk.moduleIds.some(isLocaleModule);
-    const budget = locale ? LOCALE_BUDGET : DEFAULT_BUDGET;
+    // Vendor distributions cannot be split internally; allow only isolated,
+    // lazy engine chunks. Initial/application chunks retain the normal cap.
+    const vendorOnly =
+      chunk.moduleIds.length > 0 &&
+      chunk.moduleIds.every(
+        (id) => id.includes("node_modules") || id.startsWith("\0"),
+      );
+    const engine =
+      chunk.isDynamicEntry && vendorOnly
+        ? chunk.moduleIds.some((id) =>
+            id.replaceAll("\\", "/").includes("/node_modules/dashjs/"),
+          )
+          ? 850 * KB
+          : chunk.moduleIds.some((id) =>
+                id.replaceAll("\\", "/").includes("/node_modules/hls.js/"),
+              )
+            ? 600 * KB
+            : DEFAULT_BUDGET
+        : DEFAULT_BUDGET;
+    const budget = locale ? LOCALE_BUDGET : engine;
     if (size > budget) {
       errors.push(
         `${chunk.fileName}: ${(size / KB).toFixed(1)} kB > ${budget / KB} kB` +

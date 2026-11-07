@@ -1,6 +1,6 @@
 {
   "title": "MediaPlayer",
-  "description": "Un lecteur audio ou vidéo aux commandes personnalisées et thématisées : lecture / pause, sauts, barre de progression avec la plage mise en mémoire tampon, durée, volume, vitesse de lecture et plein écran, utilisable au clavier.",
+  "description": "Lecteur audio/vidéo avec sous-titres et clavier. L’entrée React dédiée ajoute HLS/DASH/FLV, le choix de qualité, les listes de lecture, la boucle A–B, la forme d’onde, les captures et l’enregistrement.",
   "demos": {
     "video": {
       "title": "Vidéo",
@@ -8,7 +8,7 @@
     },
     "audio": {
       "title": "Audio",
-      "description": "Le type est déduit de mimeType ou de l’extension du fichier (vidéo sinon) ; l’audio affiche une barre de surface avec le titre. skipSeconds={0} masque les boutons de saut."
+      "description": "Le type est déduit du MIME ou de l’URL. L’audio affiche une pochette et une forme d’onde avec les mêmes contrôles. skipSeconds={0} masque les boutons de saut."
     },
     "resume": {
       "title": "Reprise et progression",
@@ -16,11 +16,27 @@
     },
     "rates-skip": {
       "title": "Vitesses et pas de saut",
-      "description": "playbackRates liste les vitesses parcourues par le bouton de vitesse (onRateChange signale la nouvelle) ; skipSeconds fixe le pas des boutons reculer / avancer ; aspectRatio (ou height) dimensionne une vidéo."
+      "description": "playbackRates configure Paramètres → Vitesse de lecture ; onRateChange signale les changements. skipSeconds règle le saut ; aspectRatio ou height définit la taille vidéo."
     },
     "captions": {
       "title": "Sous-titres",
-      "description": "tracks accepte des fichiers WebVTT ou SRT ({ src, srclang, label, kind, default } ; ici des URL data:). Ils sont rendus comme enfants <track>, mais le lecteur dessine lui-même la réplique active (sur la vidéo, sous le titre pour l’audio) : les sous-titres ont le même aspect dans tous les navigateurs. Le bouton CC ouvre un menu (Désactivés et une entrée par piste) ; C les active / désactive sur le lecteur focalisé. Le choix est mémorisé (localStorage) et une piste default s’affiche tant que l’utilisateur n’a pas choisi ; onTrackChange le signale. Les fichiers d’une autre origine demandent crossOrigin=\"anonymous\" (ou \"use-credentials\") sur le lecteur et des en-têtes CORS sur leur serveur."
+      "description": "tracks accepte WebVTT/SRT (src, srclang, label, kind, default). Les sous-titres sont du texte sûr sur la vidéo ou sous l’audio. Choisissez Paramètres → Sous-titres ou C ; le choix de langue est mémorisé et onTrackChange le signale. CORS est requis pour les fichiers externes ; use-credentials envoie les identifiants."
+    },
+    "streams": {
+      "title": "Moteurs de streaming",
+      "description": "Basculez entre de vrais exemples locaux HLS, DASH et FLV. L’adaptateur sélectionné est chargé à la demande ; la lecture native et HLS natif restent disponibles si pris en charge."
+    },
+    "quality": {
+      "title": "Choix de qualité",
+      "description": "Choisissez 144p ou 72p dans Paramètres → Qualité. Les fichiers ont des résolutions différentes ; la position et l’état de lecture sont conservés. HLS/DASH peuvent aussi exposer des niveaux adaptatifs."
+    },
+    "playlist": {
+      "title": "Liste de lecture et boucle A–B",
+      "description": "Vidéo et audio partagent le lecteur : précédent/suivant, passage automatique, forme d’onde audio et répétition A–B. Le rappel temporel de l’entrée dédiée reçoit (currentTime, duration)."
+    },
+    "capture": {
+      "title": "Capture et enregistrement",
+      "description": "Utilisez les icônes intégrées ou S / R. Ici, l’enregistrement est limité à 15 secondes. Canvas et MediaRecorder doivent être disponibles ; les médias externes doivent autoriser la lecture par Canvas."
     }
   },
   "api": {
@@ -59,7 +75,7 @@
       "ref": "Poignée impérative : play(), pause(), seek(secondes), element"
     },
     "MediaPlayerHandle": {
-      "play": "Démarre la lecture (la promesse de HTMLMediaElement.play() ; les refus de lecture automatique sont ignorés)",
+      "play": "Démarre la lecture et renvoie la promesse play native ; l’appelant peut gérer le refus de lecture automatique.",
       "pause": "Met la lecture en pause",
       "seek": "Déplace la position de lecture à secondes (limitée à la durée)",
       "element": "L’élément <audio> / <video> rendu (null avant le montage)"
@@ -147,5 +163,42 @@
         "description": "Les lecteurs React Native n’ont pas de pistes texte : avec tracks, MediaControls récupère le fichier WebVTT / SRT (les URL data: fonctionnent), l’analyse et dessine la réplique de currentTime au-dessus de la barre de progression. Le bouton CC propose Désactivés / une piste ; trackIndex peut être contrôlé et onTrackChange signale le choix."
       }
     }
+  },
+  "advanced": {
+    "advancedTitle": "Paquet du lecteur",
+    "advancedText": "Utilisez l’entrée dédiée pour le lecteur React complet. MediaPlayer de minerva-design conserve ses propriétés et formats d’événements existants ; les deux utilisent la même implémentation.",
+    "boundary": "Les moteurs dépendent des codecs, de CORS, de la lecture automatique et du contexte sécurisé du navigateur. Les exemples avancés sont pour React DOM. Les autres onglets décrivent leurs propres API ; React Native et les mini-programmes nécessitent leurs hôtes multimédias.",
+    "assets": "Ces exemples utilisent des motifs FFmpeg courts et un son synthétique hébergés localement, sans service externe. Les captures et l’enregistrement apparaissent selon les capacités ; le fichier est téléchargé à la fin.",
+    "capabilitiesTitle": "API React avancée",
+    "capabilities": {
+      "sources": {
+        "title": "Sources et moteurs",
+        "text": "src accepte une URL ou PlayerSource avec type, mimeType, qualities et defaultQuality. HLS/DASH exposent les niveaux adaptatifs ; createHlsEngine/createDashEngine/createFlvEngine et engines configurent les adaptateurs, chargés à la demande."
+      },
+      "playback": {
+        "title": "Liste de lecture et audio",
+        "text": "playlist contient src/title/poster ; defaultPlaylistIndex et onPlaylistIndexChange suivent l’élément courant. waveform accepte auto, decorative ou des valeurs de crête. La boucle A–B et Media Session sont aussi disponibles."
+      },
+      "controls": {
+        "title": "Contrôles et actions",
+        "text": "controls=false affiche le média seul. Un objet règle play, progress, volume, quality, speed, captions, skip, abRepeat, playlist, screenshot, record, pip et fullscreen. actions et renderTooltip intègrent les actions et infobulles de l’hôte."
+      },
+      "events": {
+        "title": "Événements et erreurs",
+        "text": "L’entrée dédiée appelle onTimeUpdate(currentTime, duration), onMetadata({ width, height, duration }), onQualityChange(id) et onError(PlayerError). L’entrée racine minerva-design conserve les événements temporels objet et MediaError."
+      },
+      "handle": {
+        "title": "Handle impératif",
+        "text": "La ref expose play/pause/seek, element/video, setPlaybackRate, setQuality, next/previous, setAbRepeat/clearAbRepeat, screenshot, startRecording/stopRecording et toggleFullscreen. La promesse de play permet de gérer le refus de lecture."
+      },
+      "appearance": {
+        "title": "Apparence et capacités",
+        "text": "locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM."
+      }
+    }
+  },
+  "data": {
+    "pattern": "Motif de test synthétique",
+    "tone": "Son de test à 440 Hz"
   }
 }

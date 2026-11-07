@@ -4,6 +4,7 @@ import { createRef } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "../../config/i18n";
 import { MediaPlayer, type MediaPlayerHandle } from ".";
+import { ConfigProvider } from "../../contexts/ConfigProvider";
 
 // jsdom has no media pipeline: play / pause are stubbed to dispatch the
 // events a browser would, and duration / currentTime are plain values.
@@ -517,3 +518,139 @@ describe("MediaPlayer captions", () => {
     ).toBeInTheDocument();
   });
 });
+
+it("keeps scoped Minerva locale and consumer tokens while using the shared native engine", () => {
+  render(
+    <ConfigProvider locale={{ language: "en" }}>
+      <ConfigProvider locale={{ language: "fr" }} theme="light">
+        <MediaPlayer
+          src="/clip.mp4"
+          title="Scoped preview"
+          style={{ "--media-player-accent": "#ab1234" } as React.CSSProperties}
+        />
+      </ConfigProvider>
+    </ConfigProvider>,
+  );
+  const root = screen.getByRole("group", { name: "Scoped preview" });
+  expect(root).toHaveAttribute("data-engine", "native");
+  expect(root.style.getPropertyValue("--media-player-accent")).toBe("#ab1234");
+  expect(screen.getByRole("button", { name: "Lecture" })).toBeInTheDocument();
+});
+
+it("shows only the contiguous buffered range containing the playhead", () => {
+  render(<MediaPlayer src="/clip.mp4" />);
+  loadMetadata(100);
+  tick(5);
+  Object.defineProperty(media(), "buffered", {
+    configurable: true,
+    value: {
+      length: 2,
+      start: (index: number) => [0, 90][index],
+      end: (index: number) => [10, 100][index],
+    },
+  });
+  fireEvent(media(), new Event("progress"));
+  expect(
+    screen
+      .getByRole("slider", { name: "Seek" })
+      .style.getPropertyValue("--_mp-buffered"),
+  ).toBe("10%");
+});
+
+it("keeps the component presentation isolated from standalone advanced-player classes", () => {
+  const { container, rerender } = render(
+    <MediaPlayer src="/clip.mp4" title="Isolated" />,
+  );
+  const root = screen.getByRole("group", { name: "Isolated" });
+  expect(root.classList.contains("mediaPlayer")).toBe(true);
+  expect(root.classList.contains("player")).toBe(false);
+  expect(media().classList.contains("media")).toBe(true);
+  expect(media().classList.contains("video")).toBe(false);
+  rerender(<MediaPlayer src="/clip.mp4" controls={false} />);
+  expect(
+    container.querySelector('[data-part="root"]')?.classList.contains("player"),
+  ).toBe(false);
+});
+
+it("preserves the bare native-audio API, events, ref, preload and mutable sound props", () => {
+  const ref = createRef<MediaPlayerHandle>();
+  const onTimeUpdate = vi.fn();
+  const onLoadedMetadata = vi.fn();
+  const view = render(
+    <MediaPlayer
+      ref={ref}
+      src="/track.mp3"
+      type="audio"
+      title="Track"
+      controls={false}
+      muted
+      preload="none"
+      onTimeUpdate={onTimeUpdate}
+      onLoadedMetadata={onLoadedMetadata}
+    />,
+  );
+  const element = media();
+  expect(element.localName).toBe("audio");
+  Object.defineProperty(element, "duration", { configurable: true, value: 20 });
+  element.currentTime = 4;
+  fireEvent.timeUpdate(element);
+  fireEvent.loadedMetadata(element);
+  expect(onTimeUpdate).toHaveBeenLastCalledWith({
+    currentTime: 4,
+    duration: 20,
+  });
+  expect(onLoadedMetadata).toHaveBeenLastCalledWith({ duration: 20 });
+  expect(ref.current?.element).toBe(element);
+  expect(element.preload).toBe("none");
+  expect(element.muted).toBe(true);
+  expect(view.container.querySelector("button")).toBeNull();
+  expect(screen.queryByRole("group")).toBeNull();
+});
+
+it("preserves existing Minerva subtitle preferences across language casing and subtags", () => {
+  localStorage.setItem("minerva-media-player-captions", "EN-us");
+  try {
+    render(
+      <MediaPlayer
+        src="/clip.mp4"
+        tracks={[
+          { src: "data:text/vtt,WEBVTT", label: "English", srclang: "en" },
+        ]}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Captions" }));
+    expect(
+      screen.getByRole("menuitemradio", { name: "English" }),
+    ).toHaveAttribute("aria-checked", "true");
+  } finally {
+    localStorage.removeItem("minerva-media-player-captions");
+  }
+});
+
+it.each([Number.NaN, Number.POSITIVE_INFINITY, -1])(
+  "normalizes unknown or live duration %s through the real public adapter",
+  (duration) => {
+    const onTimeUpdate = vi.fn();
+    const onLoadedMetadata = vi.fn();
+    render(
+      <MediaPlayer
+        src="/clip.mp4"
+        controls={false}
+        onTimeUpdate={onTimeUpdate}
+        onLoadedMetadata={onLoadedMetadata}
+      />,
+    );
+    const element = media();
+    Object.defineProperty(element, "duration", {
+      configurable: true,
+      value: duration,
+    });
+    fireEvent.timeUpdate(element);
+    fireEvent.loadedMetadata(element);
+    expect(onTimeUpdate).toHaveBeenLastCalledWith({
+      currentTime: 0,
+      duration: 0,
+    });
+    expect(onLoadedMetadata).toHaveBeenLastCalledWith({ duration: 0 });
+  },
+);

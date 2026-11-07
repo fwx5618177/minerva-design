@@ -21,6 +21,7 @@ export const PUBLISHED = {
 export const PRIVATE: Record<string, string> = {
   "packages/core": "@minerva/core",
   "packages/dom": "@minerva/dom",
+  "packages/media-player": "@minerva/media-player",
   // GPU charts (minerva-design/charts, minerva-design/charts/core)
   "packages/charts": "@minerva/charts",
   // icons (minerva-design/icons, minerva-design/icons/core): scaffold only

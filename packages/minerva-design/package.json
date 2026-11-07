@@ -54,6 +54,66 @@
         "default": "./dist/react/index.cjs"
       }
     },
+    "./media-player": {
+      "import": {
+        "types": "./dist/media-player/index.d.ts",
+        "default": "./dist/media-player/index.js"
+      },
+      "require": {
+        "types": "./dist/media-player/index.d.cts",
+        "default": "./dist/media-player/index.cjs"
+      }
+    },
+    "./media-player/engines": {
+      "import": {
+        "types": "./dist/media-player/engines/index.d.ts",
+        "default": "./dist/media-player/engines.js"
+      },
+      "require": {
+        "types": "./dist/media-player/engines/index.d.cts",
+        "default": "./dist/media-player/engines.cjs"
+      }
+    },
+    "./media-player/engines/hls": {
+      "import": {
+        "types": "./dist/media-player/engines/hls.d.ts",
+        "default": "./dist/media-player/engines/hls.js"
+      },
+      "require": {
+        "types": "./dist/media-player/engines/hls.d.cts",
+        "default": "./dist/media-player/engines/hls.cjs"
+      }
+    },
+    "./media-player/engines/dash": {
+      "import": {
+        "types": "./dist/media-player/engines/dash.d.ts",
+        "default": "./dist/media-player/engines/dash.js"
+      },
+      "require": {
+        "types": "./dist/media-player/engines/dash.d.cts",
+        "default": "./dist/media-player/engines/dash.cjs"
+      }
+    },
+    "./media-player/engines/flv": {
+      "import": {
+        "types": "./dist/media-player/engines/flv.d.ts",
+        "default": "./dist/media-player/engines/flv.js"
+      },
+      "require": {
+        "types": "./dist/media-player/engines/flv.d.cts",
+        "default": "./dist/media-player/engines/flv.cjs"
+      }
+    },
+    "./media-player/engines/native": {
+      "import": {
+        "types": "./dist/media-player/engines/native.d.ts",
+        "default": "./dist/media-player/engines/native.js"
+      },
+      "require": {
+        "types": "./dist/media-player/engines/native.d.cts",
+        "default": "./dist/media-player/engines/native.cjs"
+      }
+    },
     "./utils": {
       "import": {
         "types": "./dist/react/utils-entry.d.ts",
@@ -878,6 +938,7 @@
     "./taro/style.css": "./dist/taro/style.css",
     "./uni/style.css": "./dist/uni/style.css",
     "./tokens.mini.css": "./dist/core/tokens.mini.css",
+    "./media-player/style.css": "./dist/media-player/style.css",
     "./style.css": "./dist/react/style.css",
     "./styles/*.css": "./dist/react/styles/*.css",
     "./prose.scss": "./dist/react/prose.scss",
@@ -1234,6 +1295,24 @@
   },
   "typesVersions": {
     "*": {
+      "media-player": [
+        "./dist/media-player/index.d.ts"
+      ],
+      "media-player/engines": [
+        "./dist/media-player/engines/index.d.ts"
+      ],
+      "media-player/engines/hls": [
+        "./dist/media-player/engines/hls.d.ts"
+      ],
+      "media-player/engines/dash": [
+        "./dist/media-player/engines/dash.d.ts"
+      ],
+      "media-player/engines/flv": [
+        "./dist/media-player/engines/flv.d.ts"
+      ],
+      "media-player/engines/native": [
+        "./dist/media-player/engines/native.d.ts"
+      ],
       "utils": [
         "./dist/react/utils-entry.d.ts"
       ],
@@ -1291,7 +1370,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "node ../../tools/generate-contracts.mjs && pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/charts build && pnpm --filter @minerva/icons build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build && pnpm --filter @minerva/native build && pnpm --filter @minerva/angular build && pnpm --filter @minerva/taro build && pnpm --filter @minerva/uni build && pnpm --filter @minerva/weapp build",
+    "build": "node ../../tools/generate-contracts.mjs && pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/charts build && pnpm --filter @minerva/icons build && pnpm --filter @minerva/media-player build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build && pnpm --filter @minerva/native build && pnpm --filter @minerva/angular build && pnpm --filter @minerva/taro build && pnpm --filter @minerva/uni build && pnpm --filter @minerva/weapp build",
     "sync:package": "node scripts/sync-package.mjs",
     "test:dist": "vitest run",
     "check:package": "node scripts/check-package.mjs",
@@ -1302,7 +1381,11 @@
     "@floating-ui/dom": "^1.8.0",
     "dompurify": "^3.4.16",
     "jsonc-parser": "^3.3.1",
-    "lit": "^3.3.0"
+    "lit": "^3.3.0",
+    "react-icons": "^5.5.0",
+    "hls.js": "^1.7.3",
+    "dashjs": "^5.2.1",
+    "mpegts.js": "^1.8.2"
   },
   "peerDependencies": {
     "@monaco-editor/react": "^4.7.0",

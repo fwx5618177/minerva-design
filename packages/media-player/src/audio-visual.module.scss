@@ -1,0 +1,194 @@
+// 纯音频的画面：封面 + 标题 + 波形进度（与播放器同一套柔和配色）
+$accent: var(--media-player-accent, rgba(156, 196, 232, 0.95));
+
+.visual {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px 12px 4px;
+}
+
+.cover {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0 0 0 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--media-player-foreground, rgba(255, 255, 255, 0.82));
+  font-size: 18px;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--media-player-foreground, rgba(255, 255, 255, 0.9));
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.wave {
+  position: relative;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  touch-action: none;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--media-player-focus-ring, var(--ui-interaction-focus-ring, rgba(156, 196, 232, 0.6)));
+  }
+}
+
+.waveStatic {
+  cursor: default;
+}
+
+.bars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+  pointer-events: none;
+}
+
+.bar {
+  flex: 1;
+  min-width: 1px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 0.15s ease;
+}
+
+.played {
+  background: $accent;
+}
+
+// 已缓冲：底部细线
+.buffered {
+  position: absolute;
+  bottom: -3px;
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+}
+
+// A-B 循环区间与标记
+.abRange {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  border-radius: 3px;
+  background: rgba(156, 196, 232, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(156, 196, 232, 0.35);
+  pointer-events: none;
+}
+
+.abMarker {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 0;
+  border-left: 1px solid $accent;
+  pointer-events: none;
+
+  b {
+    position: absolute;
+    top: -12px;
+    left: 0;
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1;
+    color: $accent;
+    transform: translateX(-50%);
+  }
+}
+
+.hoverTime {
+  position: absolute;
+  bottom: 100%;
+  z-index: 1;
+  margin-bottom: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(20, 20, 22, 0.82);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+// 播放中：已播放部分轻微呼吸
+.playing .played {
+  animation: audioVisualBreath 1.6s ease-in-out infinite;
+}
+
+.compact {
+  padding: 8px;
+
+  .cover {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .wave {
+    height: 22px;
+  }
+}
+
+@keyframes audioVisualBreath {
+  50% {
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
+
+  .playing .played {
+    animation: none;
+  }
+}

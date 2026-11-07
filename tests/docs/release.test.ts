@@ -121,9 +121,13 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
     }
     expect(Object.keys(pkg.dependencies ?? {}).sort()).toEqual([
       "@floating-ui/dom",
+      "dashjs",
       "dompurify",
+      "hls.js",
       "jsonc-parser",
       "lit",
+      "mpegts.js",
+      "react-icons",
     ]);
   });
 

@@ -56,6 +56,17 @@ export const DEPRECATED_UNI_SFCS = {
 
 /** Entries with a `typesVersions` mapping (node10 type resolution) */
 export const DUAL_SUBPATHS = {
+  "media-player": ["media-player/index"],
+  "media-player/engines": [
+    "media-player/engines",
+    "media-player/engines/index",
+  ],
+  ...Object.fromEntries(
+    ["hls", "dash", "flv", "native"].map((name) => [
+      `media-player/engines/${name}`,
+      [`media-player/engines/${name}`],
+    ]),
+  ),
   utils: ["react/utils-entry"],
   "theme-utils": ["react/theme-utils"],
   monaco: ["react/monaco"],
@@ -165,6 +176,7 @@ export function expectedExports() {
   exports["./uni/style.css"] = "./dist/uni/style.css";
   exports["./tokens.mini.css"] = "./dist/core/tokens.mini.css";
   Object.assign(exports, {
+    "./media-player/style.css": "./dist/media-player/style.css",
     "./style.css": "./dist/react/style.css",
     "./styles/*.css": "./dist/react/styles/*.css",
     "./prose.scss": "./dist/react/prose.scss",

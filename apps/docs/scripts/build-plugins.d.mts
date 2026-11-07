@@ -14,6 +14,11 @@ export declare const KB: number;
 export declare const LOCALE_BUDGET: number;
 export declare const DEFAULT_BUDGET: number;
 export declare const overBudget: (
-  chunks: { fileName: string; code: string; moduleIds: string[] }[],
+  chunks: {
+    fileName: string;
+    code: string;
+    moduleIds: string[];
+    isDynamicEntry?: boolean;
+  }[],
 ) => string[];
 export declare const bundleBudgetPlugin: () => Plugin;

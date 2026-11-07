@@ -80,7 +80,10 @@ function problems(text: string): string[] {
       args.splice(0, 2);
     }
     if (args[0] === "exec") {
-      if (!rootPackage.devDependencies?.[args[1]])
+      if (
+        !pkg.devDependencies?.[args[1]] &&
+        !rootPackage.devDependencies?.[args[1]]
+      )
         errors.push(`unknown executable: ${args[1]}`);
       for (let i = 0; i < args.length; i++) {
         if (args[i] === "--project" && !projects.has(args[i + 1]))
@@ -107,6 +110,11 @@ function problems(text: string): string[] {
 describe("agent maintenance navigation", () => {
   it("links to real sources and executable workspace commands", () => {
     expect(problems(read("AGENTS.md"))).toEqual([]);
+    expect(
+      problems(
+        "`pnpm --filter @minerva/media-player exec playwright install chromium`",
+      ),
+    ).toEqual([]);
   });
 
   it("covers the pnpm checks actually required by the CI verify job", () => {

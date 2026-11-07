@@ -38,7 +38,13 @@ const JS_ENTRIES = Object.keys(exportsMap).filter((key) => {
   const files = targets(exportsMap[key]);
   return files.some((f) => /\.c?js$/.test(f));
 });
-const CLIENT_ENTRIES = new Set([".", "./monaco", "./charts", "./icons"]);
+const CLIENT_ENTRIES = new Set([
+  ".",
+  "./monaco",
+  "./charts",
+  "./icons",
+  "./media-player",
+]);
 /** Entries requiring native hosts or the mini/H5 framework compiler.
  * Optional H5 entries are browser-compiled in mini.test.ts. */
 const NATIVE_ENTRIES = new Set([
@@ -93,6 +99,10 @@ describe("exports map", () => {
               // Data entries emit declarations from their source index folder
               /core\/(styling-hooks|contracts)\.d\.(c?)ts$/,
               "core/$1/index.d.$2ts",
+            )
+            .replace(
+              /media-player\/engines\.d\.(c?)ts$/,
+              "media-player/engines/index.d.$1ts",
             ),
         );
         expect(existsSync(join(root, types)), types).toBe(true);

@@ -114,3 +114,47 @@ describe("bundle budget", () => {
     expect(error).toHaveBeenCalledWith(expect.stringMatching(/big\.js/));
   });
 });
+
+it("allows bounded lazy streaming engines but keeps initial and application budgets", () => {
+  const engine = (fileName: string, size: number, moduleId: string) => ({
+    fileName,
+    code: "x".repeat(size),
+    moduleIds: [moduleId],
+    isDynamicEntry: true,
+  });
+  expect(
+    overBudget([
+      engine(
+        "dash.js",
+        810 * KB,
+        "/node_modules/dashjs/dist/modern/esm/dash.all.min.js",
+      ),
+      engine("hls.js", 570 * KB, "/node_modules/hls.js/dist/hls.mjs"),
+    ]),
+  ).toEqual([]);
+  expect(
+    overBudget([
+      {
+        ...engine("initial.js", 570 * KB, "/node_modules/hls.js/dist/hls.mjs"),
+        isDynamicEntry: false,
+      },
+    ]),
+  ).toHaveLength(1);
+  expect(
+    overBudget([
+      {
+        ...engine("mixed.js", 570 * KB, "/node_modules/hls.js/dist/hls.mjs"),
+        moduleIds: ["/src/app.ts", "/node_modules/hls.js/dist/hls.mjs"],
+      },
+    ]),
+  ).toHaveLength(1);
+  expect(
+    overBudget([
+      engine(
+        "huge.js",
+        900 * KB,
+        "/node_modules/dashjs/dist/modern/esm/dash.all.min.js",
+      ),
+    ]),
+  ).toHaveLength(1);
+});

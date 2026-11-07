@@ -69,6 +69,9 @@ jobs:
       - name: Test source migration transforms
         run: pnpm test:migration
 
+      - name: Install media playback browser engines
+        run: pnpm --filter @minerva/media-player exec playwright install --with-deps chromium firefox webkit
+
       - name: Test with coverage
         run: pnpm test:coverage
 

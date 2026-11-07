@@ -26,3 +26,5 @@ export const VUE_DIST = `${DIST_DIR}vue`;
 export const NATIVE_DIST = `${DIST_DIR}native`;
 export const CHARTS_DIST = `${DIST_DIR}charts`;
 export const ICONS_DIST = `${DIST_DIR}icons`;
+
+export const MEDIA_PLAYER_DIST = `${DIST_DIR}media-player`;

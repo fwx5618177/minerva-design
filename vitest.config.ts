@@ -14,6 +14,19 @@ export default defineConfig({
       // GPU charts (minerva-design/charts); not in the coverage percentage:
       // happy-dom has no GPU, so the GPU backends themselves are not exercised
       "packages/charts",
+      "packages/media-player",
+      {
+        root: "./packages/media-player",
+        extends: false,
+        test: {
+          name: "media-player-product",
+          environment: "node",
+          include: ["test/product/**/*.test.ts"],
+          exclude: [],
+          testTimeout: 180000,
+          hookTimeout: 180000,
+        },
+      },
       // icon set (minerva-design/icons); tested on the faked Canvas2D backend
       "packages/icons",
       "packages/react",

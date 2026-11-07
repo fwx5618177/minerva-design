@@ -25,6 +25,12 @@ Only [minerva-design](packages/minerva-design/package.json) is published. `@mine
 
 Treat exported props, events, CSS tokens, public parts / states and entry points as compatibility surfaces. Preserve existing consumers or document a deliberate breaking migration. Public package API, style and runtime changes in any renderer need a `minerva-design` changeset via `pnpm changeset`; do not manually bump versions. See [release policy](docs/releasing.md).
 
+## Media playback
+
+The shared web implementation lives in [packages/media-player](packages/media-player). The React [MediaPlayer adapter](packages/react/src/components/MediaPlayer) owns only Minerva presentation/API compatibility; playback state and engines have one implementation. Advanced consumers import `minerva-design/media-player` and its CSS subpath. Framework/native hosts keep their declared limitations.
+
+Run `pnpm test:media-player` after the aggregate build for unit tests and real installed-tarball browser playback. On a fresh machine install browsers with `pnpm --filter @minerva/media-player exec playwright install --with-deps chromium firefox webkit`. This product project also runs under the CI coverage command. It checks browser/device emulation, not physical native devices.
+
 ## Before merging
 
 Focused checks above shorten iteration; they do not replace the [CI verify job](.github/workflows/ci.yml). Run `pnpm lint`, `pnpm build`, inspect generated drift (`git diff --exit-code` after generated changes are committed), `pnpm typecheck`, `pnpm format:check`, `pnpm test:release`, `pnpm test:tools`, `pnpm test:migration`, `pnpm test:coverage`, `pnpm --filter @minerva/docs check:mini-api`, `pnpm --filter @minerva/docs check:reference`, `pnpm test:browser:ui`, `pnpm test:dist`, `pnpm check:package`. Use `pnpm test` for the complete source suite without coverage. Report any unavailable environment or failing check accurately.

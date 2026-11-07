@@ -63,8 +63,37 @@ describe("docs sections", () => {
     const nav = screen.getByRole("navigation", { name: "Documentation" });
     expect(within(nav).getByRole("link", { name: title("nav-bar") }));
     expect(
+      within(nav).queryByRole("link", { name: title("media-player") }),
+    ).toBeNull();
+    expect(
       within(nav).queryByRole("link", { name: title("line-chart") }),
     ).toBeNull();
+  });
+
+  it("gives the player its own navigation section and stable deep link", () => {
+    renderAt(
+      "/media-player",
+      <>
+        <TopNav onSearch={vi.fn()} withMenu={false} />
+        <SidebarNav />
+      </>,
+    );
+    const sidebar = screen.getByRole("navigation", { name: "Documentation" });
+    expect(sidebar).toHaveAttribute("data-section", "player");
+    expect(
+      within(sidebar).getByRole("link", { name: title("media-player") }),
+    ).toHaveAttribute("aria-current", "page");
+    expect(
+      within(sidebar).queryByRole("link", { name: title("button") }),
+    ).toBeNull();
+    const top = screen.getByRole("navigation", { name: "Main" });
+    expect(within(top).getByRole("link", { name: "Player" })).toHaveAttribute(
+      "href",
+      "/media-player",
+    );
+    expect(within(top).getByRole("link", { name: "Player" })).toHaveAttribute(
+      "data-active",
+    );
   });
 
   it("keeps the Web Components guides with the docs", () => {
@@ -83,6 +112,7 @@ describe("docs sections", () => {
       "Components",
       "Charts",
       "Icons",
+      "Player",
     ]);
     expect(
       links.filter((link) => link.hasAttribute("data-active")),
@@ -109,6 +139,13 @@ describe("docs sections", () => {
     ).toHaveAttribute("aria-pressed", "true");
     expect(
       within(dialog).queryByRole("link", { name: title("line-chart") }),
+    ).toBeNull();
+    await user.click(within(dialog).getByRole("button", { name: "Player" }));
+    expect(
+      within(dialog).getByRole("link", { name: title("media-player") }),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).queryByRole("link", { name: title("button") }),
     ).toBeNull();
     await user.click(within(dialog).getByRole("button", { name: "Charts" }));
     expect(

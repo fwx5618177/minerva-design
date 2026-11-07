@@ -231,6 +231,12 @@ export default defineConfig({
     // library build keeps it external like every other dependency.
     alias: [
       {
+        find: /^@minerva\/media-player$/,
+        replacement: fileURLToPath(
+          new URL("../media-player/src/index.ts", import.meta.url),
+        ),
+      },
+      {
         find: /^@minerva\/charts\/core$/,
         replacement: fileURLToPath(
           new URL("../charts/src/core.ts", import.meta.url),
