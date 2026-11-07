@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, TextLink } from "minerva-design";
+import { SegmentedControl, TextLink } from "minerva-design";
 import styles from "./promo-film.module.scss";
 
 type Format = "landscape" | "portrait";
@@ -25,21 +25,17 @@ export default function PromoFilm() {
     <section className={styles.section} aria-labelledby="home-film-title">
       <h2 id="home-film-title">{t("home.film.title")}</h2>
       <p className={styles.description}>{t("home.film.description")}</p>
-      <div
-        className={styles.formats}
-        role="group"
-        aria-label={t("home.film.formats")}
-      >
-        {(["landscape", "portrait"] as const).map((value) => (
-          <Button
-            key={value}
-            variant={format === value ? "solid" : "outline"}
-            aria-pressed={format === value}
-            onClick={() => setFormat(value)}
-          >
-            {t(`home.film.${value}`)}
-          </Button>
-        ))}
+      <div className={styles.formats}>
+        <SegmentedControl<Format>
+          aria-label={t("home.film.formats")}
+          size="small"
+          value={format}
+          onChange={setFormat}
+          options={(["landscape", "portrait"] as const).map((value) => ({
+            value,
+            label: t(`home.film.${value}`),
+          }))}
+        />
       </div>
       <FilmPlayer
         key={base}
@@ -86,19 +82,16 @@ function FilmPlayer({
           label={language === "zh" ? "中文" : "English"}
         />
       </video>
-      <div className={styles.footer}>
-        <span>{t("home.film.audio")}</span>
-        <TextLink
-          href={`${base}-1080p.mp4`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t("home.film.download")}
-        </TextLink>
-      </div>
       {failed && (
         <p role="alert" className={styles.error}>
-          {t("home.film.error")}
+          {t("home.film.error")}{" "}
+          <TextLink
+            href={`${base}-1080p.mp4`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("home.film.download")}
+          </TextLink>
         </p>
       )}
     </div>

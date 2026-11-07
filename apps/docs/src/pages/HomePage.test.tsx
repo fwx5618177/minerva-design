@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-// Landing page: the supported-frameworks pills of the hero and the live
+// Landing page: the framework guides grouped by renderer, the live
 // component playground (real Minerva components, driven with user-event).
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -32,10 +32,8 @@ describe("home page", () => {
     const group = screen.getByRole("group", { name: "Supported frameworks" });
     expect(group).toHaveTextContent(/^Native:/);
     expect(within(group).getByText("Web Components:")).toBeInTheDocument();
-    const pills = within(group)
-      .getAllByRole("listitem")
-      .map((li) => li.textContent);
-    expect(pills).toEqual([
+    const items = within(group).getAllByRole("listitem");
+    expect(items.map((li) => li.textContent)).toEqual([
       "React",
       "Vue",
       "React Native",
@@ -47,10 +45,24 @@ describe("home page", () => {
       "Solid",
       "HTML",
     ]);
-    for (const item of within(group).getAllByRole("listitem")) {
-      expect(item.querySelector('[data-minerva="tag"]')).not.toBeNull();
+    for (const item of items) {
+      expect(item.querySelector("a")).toHaveAttribute(
+        "data-minerva",
+        "text-link",
+      );
     }
     expect(screen.queryByText("React + Web Components")).toBeNull();
+  });
+
+  it("keeps the hero free of framework pills and links the support matrix", () => {
+    renderHome();
+    const hero = document.querySelector(
+      'section[aria-labelledby="home-title"]',
+    )!;
+    expect(hero.querySelector("[data-framework-icon]")).toBeNull();
+    expect(
+      screen.getByRole("link", { name: "support matrix" }),
+    ).toHaveAttribute("href", "/platform-support");
   });
 
   it("uses library links for the hero navigation without nesting buttons", () => {
@@ -138,7 +150,7 @@ it("switches the film with the site language and selected format", async () => {
   expect(video().getAttribute("src")).toContain("Film-en-landscape-1080p.mp4");
   expect(video()).toHaveAttribute("preload", "none");
   expect(video()).not.toHaveAttribute("autoplay");
-  await user.click(screen.getByRole("button", { name: "Portrait · 30s" }));
+  await user.click(screen.getByRole("radio", { name: "Portrait · 30s" }));
   expect(video().getAttribute("src")).toContain("Film-en-portrait-1080p.mp4");
   try {
     await i18n.changeLanguage("zh");
@@ -151,7 +163,8 @@ it("switches the film with the site language and selected format", async () => {
       "src",
       expect.stringContaining("captions-zh.vtt"),
     );
-    expect(screen.getByText("配乐 · 中文画面文字")).toBeInTheDocument();
+    // no caption bar under the film
+    expect(screen.queryByText(/配乐/)).toBeNull();
     expect(video().getAttribute("poster")).toContain(
       "Film-zh-portrait-poster.jpg",
     );

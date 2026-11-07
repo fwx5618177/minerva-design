@@ -1,20 +1,11 @@
 import { FrameworkIcon } from "@/site/FrameworkIcon";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { useTranslation } from "react-i18next";
-import {
-  IoAccessibilityOutline,
-  IoArrowForward,
-  IoColorPaletteOutline,
-  IoCubeOutline,
-  IoGlobeOutline,
-  IoLayersOutline,
-  IoLogoNpm,
-} from "react-icons/io5";
+import { Trans, useTranslation } from "react-i18next";
+import { IoArrowForward } from "react-icons/io5";
 import { Tab, TabList, TabPanel, Tabs, Tag, TextLink } from "minerva-design";
 import { docPages } from "@/docs/registry";
 import { LATEST_VERSION } from "@/docs/releases";
-import Logo from "@/site/Logo";
 import CodeBlock from "@layout/CodeBlock";
 import styles from "./home.module.scss";
 import PromoFilm from "./PromoFilm";
@@ -33,22 +24,20 @@ const INSTALL = {
 } as const;
 type Manager = keyof typeof INSTALL;
 
-const FRAMEWORKS = [...nativeFrameworks, ...wcFrameworks];
-
-/** Feature cards: strings under `home.features.<key>` (common.json) */
+/** Feature list: strings under `home.features.<key>` (common.json) */
 const FEATURES = [
-  { key: "themes", Icon: IoColorPaletteOutline },
-  { key: "a11y", Icon: IoAccessibilityOutline },
-  { key: "i18n", Icon: IoGlobeOutline },
-  { key: "webComponents", Icon: IoCubeOutline },
-  { key: "typescript", Icon: IoLayersOutline },
-  { key: "modules", Icon: IoLogoNpm },
+  "themes",
+  "a11y",
+  "i18n",
+  "webComponents",
+  "typescript",
+  "modules",
 ] as const;
 
 const QUICK_LINKS = ["installation", "theming", "button", "web-components"];
 
-/** Hero pills distinguish native renderers from Web Component adapters */
-const FrameworkSupport: React.FC = () => {
+/** Framework guides, grouped by native renderers and Web Component adapters */
+const FrameworkGuides: React.FC = () => {
   const { t } = useTranslation();
   return (
     <div
@@ -62,17 +51,19 @@ const FrameworkSupport: React.FC = () => {
       ].map(({ label, ids }) => (
         <div className={styles.supportGroup} key={label}>
           <span className={styles.supportLabel}>{label}</span>
-          <ul className={styles.pills}>
+          <ul className={styles.frameworks}>
             {ids.map((id) => (
               <li key={id} style={frameworkStyle(id)}>
-                <Tag
-                  variant="outline"
-                  shape="circle"
-                  className={styles.frameworkTag}
-                  icon={<FrameworkIcon id={id} />}
+                <TextLink
+                  asChild
+                  variant="action"
+                  className={styles.frameworkLink}
                 >
-                  {frameworkBrands[id].name}
-                </Tag>
+                  <Link to={`/${frameworkBrands[id].guide}`}>
+                    <FrameworkIcon id={id} size={24} />
+                    <span>{frameworkBrands[id].name}</span>
+                  </Link>
+                </TextLink>
               </li>
             ))}
           </ul>
@@ -82,7 +73,7 @@ const FrameworkSupport: React.FC = () => {
   );
 };
 
-/** Landing page: hero, install command, live preview, features, frameworks */
+/** Landing page: hero with install command, live playground, film, details */
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const [manager, setManager] = useState<Manager>("pnpm");
@@ -91,17 +82,9 @@ const HomePage: React.FC = () => {
     document.title = "Minerva UI";
   }, []);
 
-  const features = FEATURES.map(({ key, Icon }) => ({
-    key,
-    Icon,
-    title: t(`home.features.${key}.title`),
-    text: t(`home.features.${key}.text`),
-  }));
-
   return (
     <div className={styles.home}>
       <section className={styles.hero} aria-labelledby="home-title">
-        <div className={styles.heroGrid} aria-hidden />
         {/* newest version (the upcoming one while changesets are pending) */}
         <Link to="/changelog" className={styles.release}>
           <Tag size="small" shape="circle" variant="solid">
@@ -110,7 +93,6 @@ const HomePage: React.FC = () => {
           <span>{t("docs.changelog.title")}</span>
           <IoArrowForward aria-hidden />
         </Link>
-        <FrameworkSupport />
         <h1 id="home-title" className={styles.title}>
           {t("home.title")}
         </h1>
@@ -150,8 +132,6 @@ const HomePage: React.FC = () => {
         </Tabs>
       </section>
 
-      <PromoFilm />
-
       {/* Live components, rendered with the library's own theme */}
       <section
         className={styles.showcase}
@@ -160,39 +140,30 @@ const HomePage: React.FC = () => {
         <ComponentPlayground />
       </section>
 
-      <section className={styles.section} aria-labelledby="home-features">
-        <h2 id="home-features" className={styles.sectionTitle}>
-          {t("home.featuresTitle")}
-        </h2>
-        <ul className={styles.features}>
-          {features.map(({ key, Icon, title, text }) => (
-            <li key={key} className={styles.feature}>
-              <Icon aria-hidden className={styles.featureIcon} />
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <PromoFilm />
 
       <section className={styles.section} aria-labelledby="home-frameworks">
         <h2 id="home-frameworks" className={styles.sectionTitle}>
           {t("home.frameworksTitle")}
         </h2>
-        <p className={styles.sectionText}>{t("home.frameworksText")}</p>
-        <ul className={styles.frameworks}>
-          {FRAMEWORKS.map((id) => (
-            <li key={id} style={frameworkStyle(id)}>
-              <TextLink
-                asChild
-                variant="action"
-                className={styles.frameworkLink}
-              >
-                <Link to={`/${frameworkBrands[id].guide}`}>
-                  <FrameworkIcon id={id} size={30} />
-                  <span>{frameworkBrands[id].name}</span>
-                </Link>
-              </TextLink>
+        <p className={styles.sectionText}>
+          <Trans
+            i18nKey="home.frameworksText"
+            components={{ matrix: <Link to="/platform-support" /> }}
+          />
+        </p>
+        <FrameworkGuides />
+      </section>
+
+      <section className={styles.section} aria-labelledby="home-features">
+        <h2 id="home-features" className={styles.sectionTitle}>
+          {t("home.featuresTitle")}
+        </h2>
+        <ul className={styles.features}>
+          {FEATURES.map((key) => (
+            <li key={key} className={styles.feature}>
+              <h3>{t(`home.features.${key}.title`)}</h3>
+              <p>{t(`home.features.${key}.text`)}</p>
             </li>
           ))}
         </ul>
@@ -221,10 +192,6 @@ const HomePage: React.FC = () => {
           ))}
         </ul>
       </section>
-
-      <div className={styles.closing} aria-hidden>
-        <Logo size={28} />
-      </div>
     </div>
   );
 };

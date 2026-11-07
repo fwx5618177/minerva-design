@@ -2,7 +2,7 @@
 // Landing-page flows that used to run in a browser: copying the install
 // command, editing the playground preview, the framework grid and the film
 // format chosen from the viewport.
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { beforeAll, describe, expect, it, vi } from "vitest";
@@ -83,22 +83,18 @@ it("lists ten framework guides with distinct brand-coloured icons", () => {
   const grid = document.querySelector<HTMLElement>(
     'section[aria-labelledby="home-frameworks"]',
   )!;
-  const links = within(grid).getAllByRole("link");
+  const group = within(grid).getByRole("group", {
+    name: "Supported frameworks",
+  });
+  const links = within(group).getAllByRole("link");
   expect(links).toHaveLength(10);
-  for (const container of [
-    grid,
-    screen.getByRole("group", { name: "Supported frameworks" }),
-  ]) {
-    const icons = [
-      ...container.querySelectorAll<SVGElement>("[data-framework-icon]"),
-    ];
-    expect(icons).toHaveLength(10);
-    const colors = icons.map((icon) => icon.style.color);
-    expect(new Set(colors).size).toBeGreaterThanOrEqual(7);
-    for (const color of colors) {
-      const [r, g, b] = color.match(/\d+/g)!.map(Number);
-      expect(r === g && g === b).toBe(false);
-    }
+  const icons = [...grid.querySelectorAll<SVGElement>("[data-framework-icon]")];
+  expect(icons).toHaveLength(10);
+  const colors = icons.map((icon) => icon.style.color);
+  expect(new Set(colors).size).toBeGreaterThanOrEqual(7);
+  for (const color of colors) {
+    const [r, g, b] = color.match(/\d+/g)!.map(Number);
+    expect(r === g && g === b).toBe(false);
   }
   for (const link of links) {
     const id = link
@@ -109,18 +105,10 @@ it("lists ten framework guides with distinct brand-coloured icons", () => {
   }
 });
 
-it("shows the canonical favicon as the logo", () => {
-  renderHome();
-  const logo = document.querySelector<HTMLImageElement>("[data-minerva-logo]");
-  expect(logo?.getAttribute("src")).toBe(
-    `${import.meta.env.BASE_URL}favicon.svg`,
-  );
-});
-
 describe("promo film", () => {
   const video = () => document.querySelector("video")!;
 
-  it("defaults to portrait on narrow viewports and links the same file", () => {
+  it("defaults to portrait on narrow viewports", () => {
     vi.spyOn(window, "matchMedia").mockImplementation(
       (query: string) =>
         ({
@@ -131,14 +119,22 @@ describe("promo film", () => {
         }) as unknown as MediaQueryList,
     );
     renderHome();
-    const src = video().getAttribute("src")!;
-    expect(src).toMatch(/Film-en-portrait-1080p\.mp4$/);
+    expect(video().getAttribute("src")).toMatch(/Film-en-portrait-1080p\.mp4$/);
     expect(
-      screen.getByRole("button", { name: "Portrait · 30s" }),
-    ).toHaveAttribute("aria-pressed", "true");
+      screen.getByRole("radio", { name: "Portrait · 30s" }),
+    ).toHaveAttribute("aria-checked", "true");
+  });
+
+  it("links the same file when the video fails to load", () => {
+    renderHome();
+    expect(screen.queryByRole("link", { name: "Open video" })).toBeNull();
+    fireEvent.error(video());
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "The video could not be loaded.",
+    );
     expect(screen.getByRole("link", { name: "Open video" })).toHaveAttribute(
       "href",
-      src,
+      video().getAttribute("src"),
     );
   });
 
@@ -155,13 +151,9 @@ describe("promo film", () => {
       );
       // a fresh element starts paused at 0 instead of continuing playback
       expect(video()).not.toBe(playing);
-      await user.click(screen.getByRole("button", { name: "竖版 · 30 秒" }));
+      await user.click(screen.getByRole("radio", { name: "竖版 · 30 秒" }));
       expect(video().getAttribute("src")).toMatch(
         /Film-zh-portrait-1080p\.mp4$/,
-      );
-      expect(screen.getByRole("link", { name: "打开视频" })).toHaveAttribute(
-        "href",
-        expect.stringMatching(/Film-zh-portrait-1080p\.mp4$/),
       );
     } finally {
       await i18n.changeLanguage("en");
