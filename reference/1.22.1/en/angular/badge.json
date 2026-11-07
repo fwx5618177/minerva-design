@@ -1,0 +1,289 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "badge",
+  "title": "Badge",
+  "description": "A small count or status indicator attached to the corner of another element.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Badge",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnBadge. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnBadge. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnBadge"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-badge",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string | number",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "max",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "icon",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "attached",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "variant",
+            "typeText": "\"subtle\" | \"outline\" | \"solid\"",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "color",
+            "typeText": "\"primary\" | \"success\" | \"warning\" | \"danger\" | \"info\" | \"neutral\"",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Badge": {
+      "kind": "cssVars",
+      "source": "react/src/components/Badge",
+      "vars": [
+        {
+          "name": "--badge-bg",
+          "description": "Background color (overrides the color and variant)"
+        },
+        {
+          "name": "--badge-fg",
+          "description": "Text color (overrides the color and variant)"
+        },
+        {
+          "name": "--badge-border",
+          "description": "Border color of the subtle and outline variants"
+        },
+        {
+          "name": "--badge-radius",
+          "description": "Corner radius (defaults to --radius-sm)"
+        },
+        {
+          "name": "--badge-padding-y",
+          "description": "Vertical padding (every size)"
+        },
+        {
+          "name": "--badge-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--badge-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--badge-dot-size",
+          "description": "Diameter of the dot badge"
+        },
+        {
+          "name": "--badge-ring-color",
+          "description": "Color of the ring separating an attached (corner) badge from its content (defaults to --surface-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "counts-and-status",
+      "title": "Counts and status",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBadge, MnStack } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBadge, MnStack],\n  template: `\n<mn-stack direction=\"row\" wrap gap=\"3\" align=\"center\"><mn-badge [value]=\"12\"/><mn-badge value=\"Active\" color=\"success\"/><mn-badge [value]=\"120\" color=\"danger\" attached><span style=\"padding:20px\">Inbox</span></mn-badge></mn-stack>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "subtle-and-outlined",
+      "title": "Subtle and outlined",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBadge, MnStack } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBadge, MnStack],\n  template: `\n<mn-stack direction=\"row\" wrap gap=\"3\" align=\"center\"><mn-badge value=\"New\" variant=\"subtle\"/><mn-badge value=\"Review\" variant=\"outline\" color=\"warning\"/></mn-stack>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Badge",
+      "description": "A small count or status indicator attached to the corner of another element.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Notification and message badges show 5 and 99+; inline badges mark Inbox 12 and a New changelog."
+        },
+        "colors": {
+          "title": "Colors",
+          "description": "color sets the semantic color: primary (default), neutral, success, warning, danger and info."
+        },
+        "variants": {
+          "title": "Variants",
+          "description": "variant sets the visual style: solid (default), subtle (tinted background) or outline (bordered). Every variant works with every color."
+        },
+        "positions": {
+          "title": "Positions",
+          "description": "Attach the badge to any corner with position."
+        },
+        "sizes": {
+          "title": "Sizes",
+          "description": "Three sizes: small, medium (default) and large."
+        },
+        "dot": {
+          "title": "Dot",
+          "description": "dot replaces the content with a small dot, for \"something new\" indicators."
+        },
+        "with-icon": {
+          "title": "With icon",
+          "description": "icon is displayed before the content."
+        },
+        "custom-style": {
+          "title": "Custom styles",
+          "description": "borderRadius and borderWidth adjust the shape. To change the colors, set the CSS custom properties --badge-bg, --badge-fg and --badge-border (inline, in a class or on a parent element)."
+        },
+        "status": {
+          "title": "Status dot",
+          "description": "A standalone dot next to a text label shows the status of an item or the presence of a user. Give the dot role=\"presentation\" when the text already names the status, or an aria-label otherwise."
+        }
+      },
+      "api": {
+        "BadgeProps": {
+          "children": "Element the badge is attached to. Without children (or with plain text / number children, used as the content) the badge renders inline in the normal flow instead of being positioned on a corner",
+          "className": "Additional class name of the badge",
+          "color": "Semantic color of the badge",
+          "variant": "Visual style: solid (filled), subtle (tinted background) or outline (bordered)",
+          "size": "Badge size",
+          "content": "Content displayed inside the badge (count, short text, icon + text...). Use it instead of children for rich content of a standalone badge",
+          "position": "Corner of the children the badge is placed on (ignored by standalone badges)",
+          "dot": "Renders a small dot instead of content",
+          "borderRadius": "Custom border radius (CSS value)",
+          "borderWidth": "Custom border width (CSS value)",
+          "aria-label": "Accessible label of the badge, e.g. \"5 unread messages\"",
+          "icon": "Icon displayed before the content",
+          "ref": "Ref to the root element: the wrapper when attached to children, otherwise the badge itself",
+          "role": "ARIA role of the badge element; set it to \"presentation\" or \"none\" when the badge must not be announced as a live status"
+        }
+      },
+      "cssVars": {
+        "--badge-bg": "Background color (overrides the color and variant)",
+        "--badge-fg": "Text color (overrides the color and variant)",
+        "--badge-border": "Border color of the subtle and outline variants",
+        "--badge-radius": "Corner radius (defaults to --radius-sm)",
+        "--badge-padding-y": "Vertical padding (every size)",
+        "--badge-padding-x": "Horizontal padding (every size)",
+        "--badge-font-size": "Font size (every size)",
+        "--badge-dot-size": "Diameter of the dot badge",
+        "--badge-ring-color": "Color of the ring separating an attached (corner) badge from its content (defaults to --surface-color)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "With an element child the badge is attached to its corner and shows content; with text only it is a standalone badge."
+          },
+          "colors-variants": {
+            "title": "Colors, variants and sizes",
+            "description": "Six colors, three variants and three sizes; border-radius and border-width customize the shape."
+          },
+          "positions": {
+            "title": "Positions and dots",
+            "description": "position picks the corner of the child. A dot badge has no text: give it an aria-label, or badge-role=\"presentation\" when it must not be announced."
+          },
+          "slots": {
+            "title": "Icons, rich content and updates",
+            "description": "The icon slot adds an icon, the content slot rich content. content is a property: click the button to update the count."
+          }
+        },
+        "minerva-badge": {
+          "props": {
+            "badgeRole": "ARIA role of the badge (default \"status\"; \"presentation\" or \"none\" stops announcing it)."
+          },
+          "slots": {
+            "default": "Element the badge is attached to, or the text of a standalone badge.",
+            "content": "Rich content of the badge (instead of content).",
+            "icon": "Icon displayed before the content."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Notification and message badges show 5 and 99+; inline badges mark Inbox 12 and a New changelog."
+          },
+          "colors-variants": {
+            "title": "Colors and variants",
+            "description": "Colors and variants using Badge; the preview follows the selected site theme and palette."
+          },
+          "dot-max": {
+            "title": "Dots and count limits",
+            "description": "Dots and count limits using Badge; the preview follows the selected site theme and palette."
+          }
+        }
+      }
+    }
+  }
+}

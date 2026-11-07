@@ -1,0 +1,798 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "chord-chart",
+  "title": "Diagramme d’accords",
+  "description": "Flux entre des groupes disposés en cercle : chaque groupe est un arc dimensionné par ses flux, chaque flux un ruban entre deux arcs. Non orienté, un ruban relie une paire de groupes et sa largeur est la somme des flux dans les deux sens (une matrice symétrique compte chaque relation une seule fois), si bien qu’un groupe qui ne fait que recevoir garde son arc ; orienté, chaque sens a son propre ruban, terminé par une flèche. Survolez un groupe pour mettre ses rubans en avant, un ruban pour lire les deux sens ; la légende masque / affiche les groupes et les flèches du clavier parcourent les groupes puis les rubans.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "data": {
+      "teams": {
+        "design": "Design",
+        "engineering": "Ingénierie",
+        "product": "Produit",
+        "marketing": "Marketing"
+      },
+      "teamsAria": "Messages échangés entre quatre équipes en une semaine",
+      "regions": {
+        "northAmerica": "Amérique du Nord",
+        "latinAmerica": "Amérique latine",
+        "europe": "Europe",
+        "africa": "Afrique",
+        "westAsia": "Asie occidentale",
+        "southAsia": "Asie du Sud",
+        "eastAsia": "Asie de l’Est",
+        "oceania": "Océanie"
+      },
+      "migrationValue": "{{value}} M de personnes",
+      "migrationAria": "Flux migratoires entre les régions du monde sur cinq ans",
+      "modules": {
+        "app": "app",
+        "router": "router",
+        "store": "store",
+        "uiKit": "ui-kit",
+        "apiClient": "api-client",
+        "auth": "auth",
+        "i18n": "i18n",
+        "utils": "utils"
+      },
+      "modulesAria": "Imports entre les modules d’une base de code",
+      "economies": {
+        "us": "États-Unis",
+        "china": "Chine",
+        "eu": "Union européenne",
+        "mexico": "Mexique",
+        "canada": "Canada",
+        "japan": "Japon",
+        "korea": "Corée du Sud"
+      },
+      "tradeAria": "Commerce de marchandises entre grandes économies sur un an",
+      "pages": {
+        "home": "Accueil",
+        "search": "Recherche",
+        "category": "Catégorie",
+        "product": "Produit",
+        "cart": "Panier",
+        "checkout": "Paiement"
+      },
+      "visits": "{{value}} k visites",
+      "navHint": "Survolez une page ou un ruban",
+      "navFlow": "{{source}} → {{target}} : {{value}} (dans l’autre sens : {{reverse}})",
+      "navPage": "{{name}} : {{value}} en entrée et en sortie",
+      "navAria": "Navigation entre les pages d’une application de boutique en une journée",
+      "datacenters": {
+        "usEast": "États-Unis Est",
+        "usWest": "États-Unis Ouest",
+        "euCentral": "Europe centrale",
+        "apSoutheast": "Asie-Pacifique SE",
+        "apNortheast": "Asie-Pacifique NE",
+        "saEast": "Amérique du Sud"
+      },
+      "gbps": "{{value}} Gbit/s",
+      "datacentersAria": "Trafic de réplication entre centres de données",
+      "labelsLabel": "Libellés",
+      "labels": {
+        "auto": "Auto",
+        "tangential": "Tangentiels",
+        "radial": "Radiaux",
+        "none": "Aucun"
+      },
+      "sortLabel": "Ordre des groupes",
+      "sort": {
+        "none": "Ordre des données",
+        "descending": "Du plus grand",
+        "ascending": "Du plus petit"
+      },
+      "ribbonColorLabel": "Couleur des rubans",
+      "ribbonColor": {
+        "gradient": "Dégradé",
+        "source": "Source",
+        "target": "Cible",
+        "neutral": "Neutre"
+      },
+      "directed": "Orienté",
+      "ticks": "Graduations",
+      "switching": {
+        "other": "Autres opérateurs",
+        "yearLabel": "Année",
+        "year": "{{year}}",
+        "net": "{{name}} {{value}}",
+        "summary": "{{name}} a gagné le plus d'abonnés ({{value}} en net). Solde net : {{list}}.",
+        "aria": "Abonnés changeant d'opérateur mobile en {{year}}"
+      },
+      "research": {
+        "faculties": {
+          "physics": "Physique",
+          "chemistry": "Chimie",
+          "biology": "Biologie",
+          "medicine": "Médecine",
+          "computing": "Informatique",
+          "mathematics": "Mathématiques",
+          "economics": "Économie",
+          "engineering": "Ingénierie"
+        },
+        "hint": "Cliquez sur une faculté pour voir ses collaborations, ou sur un ruban pour voir une paire",
+        "focus": "{{name}} : {{total}} articles co-écrits, surtout avec {{partners}}",
+        "partner": "{{name}} ({{value}})",
+        "pair": "{{a}} et {{b}} : {{value}} articles co-écrits",
+        "clear": "Effacer",
+        "aria": "Articles co-écrits par les facultés d'une université sur cinq ans"
+      },
+      "basket": {
+        "categories": {
+          "coffee": "Café",
+          "milk": "Lait",
+          "bread": "Pain",
+          "pastries": "Viennoiseries",
+          "fruit": "Fruits",
+          "cereal": "Céréales",
+          "yogurt": "Yaourts",
+          "juice": "Jus"
+        },
+        "pair": "{{a}} + {{b}}",
+        "together": "Achetés ensemble dans {{value}} paniers ({{share}} de tous les paniers)",
+        "withOthers": "{{value}} associations avec d'autres catégories",
+        "aria": "Catégories de produits achetées ensemble dans un même panier sur un mois"
+      },
+      "calls": {
+        "services": {
+          "gateway": "Passerelle",
+          "users": "Utilisateurs",
+          "orders": "Commandes",
+          "inventory": "Stocks",
+          "payments": "Paiements",
+          "notifications": "Notifications"
+        },
+        "perSecond": "{{value}} appels/s",
+        "summary": "Total : {{total}}. Le plus chargé : {{from}} → {{to}} ({{value}})",
+        "pause": "Pause",
+        "resume": "Reprendre",
+        "aria": "Appels par seconde entre microservices, en direct"
+      },
+      "hubs": {
+        "london": "Londres",
+        "paris": "Paris",
+        "frankfurt": "Francfort",
+        "istanbul": "Istanbul",
+        "dubai": "Dubaï",
+        "singapore": "Singapour",
+        "tokyo": "Tokyo",
+        "newYork": "New York",
+        "millions": "{{value}} M de passagers",
+        "showAll": "Afficher toutes les plateformes",
+        "eastOnly": "Plateformes de l'Est",
+        "westOnly": "Plateformes de l'Ouest",
+        "tooFew": "Affichez au moins deux plateformes pour voir les liaisons entre elles",
+        "summary": "{{shown}} plateformes sur {{total}} affichées : {{routes}} liaisons, {{passengers}} par an",
+        "aria": "Passagers annuels entre les grandes plateformes aéroportuaires"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "ChordChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ChordChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "animation",
+            "type": "boolean",
+            "required": false,
+            "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ShapeLegendOptions",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)",
+            "typeText": "boolean | ShapeLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ShapeTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it (default `true`)",
+            "typeText": "boolean | ShapeTooltipOptions"
+          },
+          {
+            "name": "ticks",
+            "type": "number | boolean",
+            "required": false,
+            "description": "Value ticks outside the arcs; a number sets the step between ticks (default `true` when large enough)",
+            "typeText": "number | boolean"
+          },
+          {
+            "name": "directed",
+            "type": "boolean",
+            "required": false,
+            "description": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows (default `false`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "arrows",
+            "type": "boolean",
+            "required": false,
+            "description": "Arrowheads at the target end of the ribbons (default `true` when `directed`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "groups",
+            "type": "readonly (string | ChordGroup)[]",
+            "required": false,
+            "description": "Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended",
+            "typeText": "readonly (string | ChordGroup)[]"
+          },
+          {
+            "name": "labels",
+            "type": "\"auto\" | \"none\" | \"tangential\" | \"radial\"",
+            "required": false,
+            "description": "Group labels along the arc (`tangential`) or the radius (`radial`); `auto` picks the one that fits (default `auto`)",
+            "typeText": "\"auto\" | \"none\" | \"tangential\" | \"radial\""
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D (default `auto`, see `setDefaultChartRenderer`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the drawing, in pixels (default 8 on every side)",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "hidden",
+            "type": "readonly number[]",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back.",
+            "typeText": "readonly number[]"
+          },
+          {
+            "name": "texts",
+            "type": "Partial<ShapeChartLabels>",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")",
+            "typeText": "Partial<ShapeChartLabels>"
+          },
+          {
+            "name": "format",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)",
+            "typeText": "((value: number) => string)"
+          },
+          {
+            "name": "percentFormat",
+            "type": "((share: number) => string)",
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")",
+            "typeText": "((share: number) => string)"
+          },
+          {
+            "name": "padAngle",
+            "type": "number",
+            "required": false,
+            "description": "Gap between the groups, in degrees (default 2)",
+            "typeText": "number"
+          },
+          {
+            "name": "startAngle",
+            "type": "number",
+            "required": false,
+            "description": "Angle of the first group, degrees clockwise from 12 o'clock (default 0)",
+            "typeText": "number"
+          },
+          {
+            "name": "ribbonOpacity",
+            "type": "number",
+            "required": false,
+            "description": "Opacity of the ribbons, 0-1 (default 0.65)",
+            "typeText": "number"
+          },
+          {
+            "name": "arcWidth",
+            "type": "number",
+            "required": false,
+            "description": "Thickness of the group arcs, in pixels (default 6% of the radius)",
+            "typeText": "number"
+          },
+          {
+            "name": "matrix",
+            "type": "readonly (readonly number[])[]",
+            "required": false,
+            "description": "Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent)",
+            "typeText": "readonly (readonly number[])[]"
+          },
+          {
+            "name": "links",
+            "type": "readonly ChordLink[]",
+            "required": false,
+            "description": "Flows as a list (by group name or index); takes precedence over `matrix`",
+            "typeText": "readonly ChordLink[]"
+          },
+          {
+            "name": "sortGroups",
+            "type": "\"none\" | \"ascending\" | \"descending\"",
+            "required": false,
+            "description": "Order of the groups around the circle (default `none`: data order)",
+            "typeText": "\"none\" | \"ascending\" | \"descending\""
+          },
+          {
+            "name": "sortSubgroups",
+            "type": "\"auto\" | \"none\" | \"ascending\" | \"descending\"",
+            "required": false,
+            "description": "Order of the ribbon ends along an arc: `auto` minimizes the crossings (default `auto`)",
+            "typeText": "\"auto\" | \"none\" | \"ascending\" | \"descending\""
+          },
+          {
+            "name": "ribbonColor",
+            "type": "\"neutral\" | \"target\" | \"gradient\" | \"source\"",
+            "required": false,
+            "description": "Color of the ribbons without `color` (default `gradient`)",
+            "typeText": "\"neutral\" | \"target\" | \"gradient\" | \"source\""
+          },
+          {
+            "name": "tickFormat",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats the tick labels (default: compact numbers of the `locale`)",
+            "typeText": "((value: number) => string)"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "type": "[event: ShapeHoverEvent | null]",
+            "typeText": "[event: ShapeHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "click",
+            "type": "[event: ShapeHoverEvent]",
+            "typeText": "[event: ShapeHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "toggle",
+            "type": "[event: ShapeToggleEvent]",
+            "typeText": "[event: ShapeToggleEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "migration",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/chord-chart/vue/migration.vue",
+      "files": {
+        "apps/docs/src/docs/pages/chord-chart/vue/migration.vue": "<script setup lang=\"ts\">\n// Moves between regions in a year (thousands of people), one ribbon per\n// direction with arrowheads; @hover reads both directions of a ribbon\n// (`value` and `reverseValue`).\nimport { computed, ref } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { ChordChart, type ShapeHoverEvent } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: {\n    regions: [\"North\", \"South\", \"East\", \"West\", \"Center\"],\n    hint: \"Hover a ribbon to compare both directions\",\n    flow: \"{source} → {target}: {value}k · back: {reverse}k\",\n    group: \"{name}: {value}k\",\n  },\n  zh: {\n    regions: [\"北部\", \"南部\", \"东部\", \"西部\", \"中部\"],\n    hint: \"悬停在流带上以比较两个方向\",\n    flow: \"{source} → {target}：{value} 千人 · 反向：{reverse} 千人\",\n    group: \"{name}：{value} 千人\",\n  },\n  ja: {\n    regions: [\"北部\", \"南部\", \"東部\", \"西部\", \"中部\"],\n    hint: \"リボンにカーソルを合わせると両方向を比較できます\",\n    flow: \"{source} → {target}: {value} 千人 · 逆方向: {reverse} 千人\",\n    group: \"{name}: {value} 千人\",\n  },\n  fr: {\n    regions: [\"Nord\", \"Sud\", \"Est\", \"Ouest\", \"Centre\"],\n    hint: \"Survolez un ruban pour comparer les deux sens\",\n    flow: \"{source} → {target} : {value} k · retour : {reverse} k\",\n    group: \"{name} : {value} k\",\n  },\n};\n// from, to (indexes in TEXT.regions), thousands of people\nconst MOVES = [\n  [0, 1, 32],\n  [1, 0, 18],\n  [0, 4, 45],\n  [4, 0, 22],\n  [1, 4, 38],\n  [4, 1, 30],\n  [2, 4, 51],\n  [4, 2, 26],\n  [3, 4, 29],\n  [4, 3, 35],\n  [2, 3, 14],\n  [3, 2, 21],\n  [1, 2, 12],\n  [2, 1, 9],\n];\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\nconst links = MOVES.map(([from, to, value]) => ({\n  source: from,\n  target: to,\n  value,\n}));\nconst hovered = ref<ShapeHoverEvent | null>(null);\nconst status = computed(() => {\n  const event = hovered.value;\n  if (!event) return text.value.hint;\n  if (event.source === undefined)\n    return text.value.group\n      .replace(\"{name}\", event.name)\n      .replace(\"{value}\", String(event.value));\n  return text.value.flow\n    .replace(\"{source}\", event.source)\n    .replace(\"{target}\", event.target ?? \"\")\n    .replace(\"{value}\", String(event.value))\n    .replace(\"{reverse}\", String(event.reverseValue ?? 0));\n});\n</script>\n\n<template>\n  <div style=\"display: grid; gap: 8px; width: 100%\">\n    <ChordChart\n      :groups=\"text.regions\"\n      :links=\"links\"\n      directed\n      ribbon-color=\"source\"\n      @hover=\"hovered = $event\"\n    />\n    <output aria-live=\"polite\">{{ status }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "migration",
+      "description": ""
+    },
+    {
+      "id": "teams",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/chord-chart/vue/teams.vue",
+      "files": {
+        "apps/docs/src/docs/pages/chord-chart/vue/teams.vue": "<script setup lang=\"ts\">\n// Messages sent between teams in a week, from a square matrix (row: the\n// sender, column: the recipient); hovering a team highlights its ribbons.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { ChordChart } from \"minerva-design/vue/charts\";\n\nconst TEAMS = {\n  en: [\"Design\", \"Engineering\", \"Product\", \"Marketing\"],\n  zh: [\"设计\", \"研发\", \"产品\", \"市场\"],\n  ja: [\"デザイン\", \"エンジニアリング\", \"プロダクト\", \"マーケティング\"],\n  fr: [\"Design\", \"Ingénierie\", \"Produit\", \"Marketing\"],\n};\nconst MATRIX = [\n  [0, 42, 28, 14],\n  [36, 0, 54, 8],\n  [30, 48, 0, 22],\n  [12, 6, 26, 0],\n];\n\nconst { language } = useI18n();\nconst groups = computed(() => TEAMS[language.value] ?? TEAMS.en);\n</script>\n\n<template>\n  <ChordChart :groups=\"groups\" :matrix=\"MATRIX\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "teams",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Diagramme d’accords",
+      "description": "Flux entre des groupes disposés en cercle : chaque groupe est un arc dimensionné par ses flux, chaque flux un ruban entre deux arcs. Non orienté, un ruban relie une paire de groupes et sa largeur est la somme des flux dans les deux sens (une matrice symétrique compte chaque relation une seule fois), si bien qu’un groupe qui ne fait que recevoir garde son arc ; orienté, chaque sens a son propre ruban, terminé par une flèche. Survolez un groupe pour mettre ses rubans en avant, un ruban pour lire les deux sens ; la légende masque / affiche les groupes et les flèches du clavier parcourent les groupes puis les rubans.",
+      "demos": {
+        "basic": {
+          "title": "Exemple simple",
+          "description": "Une matrice carrée et le nom de ses lignes : matrix[i][j] va du groupe i au groupe j, ici les messages que les équipes s’envoient en une semaine. Des graduations indiquent les valeurs autour des arcs quand le diagramme est assez grand."
+        },
+        "migration": {
+          "title": "Migrations entre régions",
+          "description": "L’arc de chaque région additionne les départs et les arrivées ; un ruban est aussi large que les migrations entre deux régions dans les deux sens, et son infobulle les distingue (Valeur, Sens inverse). La diagonale (migrations internes à une région) est dessinée en boucle. groups fixe les couleurs, format l’unité, padAngle élargit les espaces."
+        },
+        "dependencies": {
+          "title": "Matrice de dépendances entre modules",
+          "description": "Les imports entre les modules d’une base de code. directed dessine un ruban par sens avec une flèche vers le module importé ; ribbonColor=\"source\" les colore selon l’importateur, si bien que les cycles d’imports (deux flèches entre les mêmes modules) ressortent. labels=\"radial\" écrit les noms le long du rayon."
+        },
+        "trade": {
+          "title": "Commerce entre économies",
+          "description": "Le commerce bilatéral de marchandises, fourni sous forme de liste links ({ source, target, value }) plutôt que de matrice. sortGroups=\"descending\" place les plus gros échangeurs en premier ; l’infobulle d’un ruban donne les exportations dans un sens (Valeur) et dans l’autre (Sens inverse), en dollars US compacts."
+        },
+        "directed": {
+          "title": "Flux orientés avec flèches",
+          "description": "La navigation entre les pages d’une application de boutique. Les arcs cumulent les visites qui quittent et rejoignent chaque page ; onHover fournit la source, la cible, value et reverseValue du ruban survolé, affichés dans la légende sous le graphique."
+        },
+        "dark": {
+          "title": "Console sombre",
+          "description": "Le graphique lit ses couleurs dans les variables CSS de son conteneur, ici une console d’exploitation sombre, avec une palette néon, des arcs plus fins (arcWidth) et des rubans plus légers (ribbonOpacity)."
+        },
+        "options": {
+          "title": "Options",
+          "description": "Essayez les modes de libellés (auto choisit des libellés tangentiels quand chaque nom tient dans son arc, radiaux sinon), l’ordre des groupes, la couleur des rubans, les rubans orientés et les graduations."
+        },
+        "brand-switching": {
+          "title": "Changements d'opérateur",
+          "description": "Les abonnés qui passent d'un opérateur mobile à l'autre, une matrice par année. directed trace un ruban par sens et ribbonColor=\"target\" le colore selon l'opérateur qui gagne les abonnés ; les gains nets sont calculés à partir de la même matrice."
+        },
+        "focus": {
+          "title": "Focus sur un groupe",
+          "description": "Articles co-écrits entre facultés. onClick sur un arc garde les rubans de cette faculté et donne une couleur neutre aux autres via la color des liens, puis liste ses principaux partenaires ; un clic sur un ruban affiche la paire."
+        },
+        "co-purchase": {
+          "title": "Analyse du panier",
+          "description": "Les catégories achetées ensemble dans un même panier. sortGroups et sortSubgroups=\"descending\" placent en premier les plus grosses catégories et associations, ticks={1000} fixe le pas des graduations avec un tickFormat compact, et renderTooltip présente une association comme une part de tous les paniers."
+        },
+        "live": {
+          "title": "Appels de services en direct",
+          "description": "Appels par seconde entre microservices, actualisés toutes les 2 secondes avec une transition animée. directed avec ribbonColor=\"source\" montre qui appelle qui ; la légende donne le total et l'appel le plus chargé."
+        },
+        "legend": {
+          "title": "Légende contrôlée",
+          "description": "Passagers entre plateformes aéroportuaires. legend={{ position: \"top\" }} masque ou affiche les plateformes, et avec hidden + onToggle la liste des éléments masqués vit dans la page : les boutons appliquent des préréglages et le texte additionne les liaisons encore visibles."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Base",
+            "description": "Messages échangés entre quatre équipes en une semaine, dessinés avec des vues ; appuyez sur une équipe ou un ruban pour le mettre en évidence, un tap appelle onClick."
+          }
+        },
+        "data": {
+          "tapHint": "Touchez une équipe ou un ruban pour le sélectionner",
+          "flow": "{{source}} → {{target}} : {{value}} messages ({{reverse}} en retour)",
+          "team": "{{name}} : {{value}} messages"
+        }
+      },
+      "api": {
+        "ChordChartProps": {
+          "groups": "Groupes (noms ou { name, color }) dans leur ordre autour du cercle ; les groupes seulement nommés par links sont ajoutés à la fin, les lignes de matrice sans nom sont numérotées à partir de 1",
+          "matrix": "Matrice carrée des flux : matrix[i][j] va du groupe i au groupe j (utilisée en l’absence de links)",
+          "links": "Flux sous forme de liste de { source, target, value, color } (par nom ou indice de groupe) ; prioritaire sur matrix",
+          "directed": "Un ruban par sens, arcs dimensionnés par les flux sortants plus entrants (flux d’un groupe vers lui-même ignorés) ; sinon un ruban par paire, aussi large que les flux des deux sens (une matrice symétrique compte chaque relation une seule fois)",
+          "arrows": "Flèches à l’extrémité cible des rubans (true par défaut si orienté)",
+          "padAngle": "Espace entre les groupes, en degrés",
+          "startAngle": "Angle du premier groupe, en degrés dans le sens horaire depuis midi",
+          "sortGroups": "Ordre des groupes autour du cercle : ordre des données, total croissant ou décroissant",
+          "sortSubgroups": "Ordre des extrémités de rubans le long d’un arc : auto minimise les croisements, sinon l’ordre des groupes ou par valeur",
+          "ribbonColor": "Couleur des rubans sans color : un dégradé de la couleur source à la couleur cible, l’une des deux, ou un gris neutre",
+          "ribbonOpacity": "Opacité des rubans, 0-1 (les rubans survolés sont plus opaques)",
+          "arcWidth": "Épaisseur des arcs des groupes, en pixels (par défaut 6 % du rayon, 8-18 px)",
+          "ticks": "Graduations de valeurs à l’extérieur des arcs, libellées quand la place le permet ; un nombre fixe le pas entre graduations libellées",
+          "tickFormat": "Formate les libellés des graduations (par défaut des nombres compacts de la langue, et non format, dont les unités encombreraient les graduations)",
+          "labels": "Libellés des groupes le long de l’arc (tangential), le long du rayon (radial), automatiques (auto) ou aucun (none) ; les libellés qui se chevaucheraient sont raccourcis ou omis"
+        },
+        "native_ChordChartProps": {
+          "groups": "Groupes (noms ou { name, color }) dans leur ordre autour du cercle ; les groupes seulement nommés par links sont ajoutés à la fin, les lignes de matrice sans nom sont numérotées à partir de 1",
+          "matrix": "Matrice carrée des flux : matrix[i][j] va du groupe i au groupe j (utilisée en l’absence de links)",
+          "links": "Flux sous forme de liste de { source, target, value, color } (par nom ou indice de groupe) ; prioritaire sur matrix",
+          "directed": "Un ruban par sens, arcs dimensionnés par les flux sortants plus entrants (flux d’un groupe vers lui-même ignorés) ; sinon un ruban par paire, aussi large que les flux des deux sens (une matrice symétrique compte chaque relation une seule fois)",
+          "arrows": "Flèches à l’extrémité cible des rubans (true par défaut si orienté)",
+          "padAngle": "Espace entre les groupes, en degrés",
+          "startAngle": "Angle du premier groupe, en degrés dans le sens horaire depuis midi",
+          "sortGroups": "Ordre des groupes autour du cercle : ordre des données, total croissant ou décroissant",
+          "sortSubgroups": "Ordre des extrémités de rubans le long d’un arc : auto minimise les croisements, sinon l’ordre des groupes ou par valeur",
+          "ribbonColor": "Couleur des rubans sans color : un dégradé de la couleur source à la couleur cible, l’une des deux, ou un gris neutre",
+          "ribbonOpacity": "Opacité des rubans, 0-1 (les rubans survolés sont plus opaques)",
+          "arcWidth": "Épaisseur des arcs des groupes, en pixels (par défaut 6 % du rayon, 8-18 px)",
+          "ticks": "Graduations de valeurs à l’extérieur des arcs, libellées quand la place le permet ; un nombre fixe le pas entre graduations libellées",
+          "tickFormat": "Formate les libellés des graduations (par défaut des nombres compacts de la langue, et non format, dont les unités encombreraient les graduations)",
+          "labels": "Libellés des groupes le long de l’arc (tangential), le long du rayon (radial), automatiques (auto) ou aucun (none) ; les libellés qui se chevaucheraient sont raccourcis ou omis"
+        },
+        "ChordGroup": {
+          "name": "Nom affiché dans le libellé, la légende et l’infobulle ; links désigne le groupe par ce nom (ou par son indice)",
+          "color": "Couleur de l’arc et des extrémités de ses rubans ; prise dans la palette si absente"
+        },
+        "ChordLink": {
+          "source": "Groupe source : son nom, ou son indice dans groups",
+          "target": "Groupe cible : son nom, ou son indice dans groups",
+          "value": "Taille du flux (les valeurs négatives comptent pour 0 ; les flux entre les mêmes extrémités s’additionnent)",
+          "color": "Couleur du ruban ; suit ribbonColor si absente"
+        }
+      },
+      "data": {
+        "teams": {
+          "design": "Design",
+          "engineering": "Ingénierie",
+          "product": "Produit",
+          "marketing": "Marketing"
+        },
+        "teamsAria": "Messages échangés entre quatre équipes en une semaine",
+        "regions": {
+          "northAmerica": "Amérique du Nord",
+          "latinAmerica": "Amérique latine",
+          "europe": "Europe",
+          "africa": "Afrique",
+          "westAsia": "Asie occidentale",
+          "southAsia": "Asie du Sud",
+          "eastAsia": "Asie de l’Est",
+          "oceania": "Océanie"
+        },
+        "migrationValue": "{{value}} M de personnes",
+        "migrationAria": "Flux migratoires entre les régions du monde sur cinq ans",
+        "modules": {
+          "app": "app",
+          "router": "router",
+          "store": "store",
+          "uiKit": "ui-kit",
+          "apiClient": "api-client",
+          "auth": "auth",
+          "i18n": "i18n",
+          "utils": "utils"
+        },
+        "modulesAria": "Imports entre les modules d’une base de code",
+        "economies": {
+          "us": "États-Unis",
+          "china": "Chine",
+          "eu": "Union européenne",
+          "mexico": "Mexique",
+          "canada": "Canada",
+          "japan": "Japon",
+          "korea": "Corée du Sud"
+        },
+        "tradeAria": "Commerce de marchandises entre grandes économies sur un an",
+        "pages": {
+          "home": "Accueil",
+          "search": "Recherche",
+          "category": "Catégorie",
+          "product": "Produit",
+          "cart": "Panier",
+          "checkout": "Paiement"
+        },
+        "visits": "{{value}} k visites",
+        "navHint": "Survolez une page ou un ruban",
+        "navFlow": "{{source}} → {{target}} : {{value}} (dans l’autre sens : {{reverse}})",
+        "navPage": "{{name}} : {{value}} en entrée et en sortie",
+        "navAria": "Navigation entre les pages d’une application de boutique en une journée",
+        "datacenters": {
+          "usEast": "États-Unis Est",
+          "usWest": "États-Unis Ouest",
+          "euCentral": "Europe centrale",
+          "apSoutheast": "Asie-Pacifique SE",
+          "apNortheast": "Asie-Pacifique NE",
+          "saEast": "Amérique du Sud"
+        },
+        "gbps": "{{value}} Gbit/s",
+        "datacentersAria": "Trafic de réplication entre centres de données",
+        "labelsLabel": "Libellés",
+        "labels": {
+          "auto": "Auto",
+          "tangential": "Tangentiels",
+          "radial": "Radiaux",
+          "none": "Aucun"
+        },
+        "sortLabel": "Ordre des groupes",
+        "sort": {
+          "none": "Ordre des données",
+          "descending": "Du plus grand",
+          "ascending": "Du plus petit"
+        },
+        "ribbonColorLabel": "Couleur des rubans",
+        "ribbonColor": {
+          "gradient": "Dégradé",
+          "source": "Source",
+          "target": "Cible",
+          "neutral": "Neutre"
+        },
+        "directed": "Orienté",
+        "ticks": "Graduations",
+        "switching": {
+          "other": "Autres opérateurs",
+          "yearLabel": "Année",
+          "year": "{{year}}",
+          "net": "{{name}} {{value}}",
+          "summary": "{{name}} a gagné le plus d'abonnés ({{value}} en net). Solde net : {{list}}.",
+          "aria": "Abonnés changeant d'opérateur mobile en {{year}}"
+        },
+        "research": {
+          "faculties": {
+            "physics": "Physique",
+            "chemistry": "Chimie",
+            "biology": "Biologie",
+            "medicine": "Médecine",
+            "computing": "Informatique",
+            "mathematics": "Mathématiques",
+            "economics": "Économie",
+            "engineering": "Ingénierie"
+          },
+          "hint": "Cliquez sur une faculté pour voir ses collaborations, ou sur un ruban pour voir une paire",
+          "focus": "{{name}} : {{total}} articles co-écrits, surtout avec {{partners}}",
+          "partner": "{{name}} ({{value}})",
+          "pair": "{{a}} et {{b}} : {{value}} articles co-écrits",
+          "clear": "Effacer",
+          "aria": "Articles co-écrits par les facultés d'une université sur cinq ans"
+        },
+        "basket": {
+          "categories": {
+            "coffee": "Café",
+            "milk": "Lait",
+            "bread": "Pain",
+            "pastries": "Viennoiseries",
+            "fruit": "Fruits",
+            "cereal": "Céréales",
+            "yogurt": "Yaourts",
+            "juice": "Jus"
+          },
+          "pair": "{{a}} + {{b}}",
+          "together": "Achetés ensemble dans {{value}} paniers ({{share}} de tous les paniers)",
+          "withOthers": "{{value}} associations avec d'autres catégories",
+          "aria": "Catégories de produits achetées ensemble dans un même panier sur un mois"
+        },
+        "calls": {
+          "services": {
+            "gateway": "Passerelle",
+            "users": "Utilisateurs",
+            "orders": "Commandes",
+            "inventory": "Stocks",
+            "payments": "Paiements",
+            "notifications": "Notifications"
+          },
+          "perSecond": "{{value}} appels/s",
+          "summary": "Total : {{total}}. Le plus chargé : {{from}} → {{to}} ({{value}})",
+          "pause": "Pause",
+          "resume": "Reprendre",
+          "aria": "Appels par seconde entre microservices, en direct"
+        },
+        "hubs": {
+          "london": "Londres",
+          "paris": "Paris",
+          "frankfurt": "Francfort",
+          "istanbul": "Istanbul",
+          "dubai": "Dubaï",
+          "singapore": "Singapour",
+          "tokyo": "Tokyo",
+          "newYork": "New York",
+          "millions": "{{value}} M de passagers",
+          "showAll": "Afficher toutes les plateformes",
+          "eastOnly": "Plateformes de l'Est",
+          "westOnly": "Plateformes de l'Ouest",
+          "tooFew": "Affichez au moins deux plateformes pour voir les liaisons entre elles",
+          "summary": "{{shown}} plateformes sur {{total}} affichées : {{routes}} liaisons, {{passengers}} par an",
+          "aria": "Passagers annuels entre les grandes plateformes aéroportuaires"
+        }
+      },
+      "wc": {
+        "demos": {
+          "teams": {
+            "title": "Messages entre équipes",
+            "description": "Une matrice carrée des messages envoyés en une semaine (ligne : l'expéditeur, colonne : le destinataire) ; survoler une équipe met en évidence ses rubans."
+          },
+          "migration": {
+            "title": "Flux orientés dans les deux sens",
+            "description": "Les déménagements entre régions sous forme de liens, un ruban par sens avec des flèches ; l'événement de survol donne les deux sens d'un ruban (value et reverseValue)."
+          }
+        },
+        "minerva-chord-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (ChordChartOptions : padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat…) ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Le groupe ou ruban survolé (ou focalisé au clavier) a changé ; detail : { index, name, value, percent, color, source, target, reverseValue }, null quand rien n'est survolé",
+            "minerva-click": "Un groupe ou un ruban a été cliqué, touché ou activé avec Entrée ; detail : { index, name, value, percent, color, source, target, reverseValue }",
+            "minerva-toggle": "Un élément de légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Masque / affiche un groupe par index",
+            "getRenderer": "Moteur de rendu des formes (webgpu, webgl2, webgl, canvas2d), null tant qu’il n’est pas prêt ; à choisir avec l’option renderer du moteur"
+          }
+        }
+      }
+    }
+  }
+}

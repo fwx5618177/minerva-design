@@ -1,0 +1,335 @@
+# AutoComplete
+
+Champ de saisie qui suggère des options correspondantes pendant la frappe.
+
+Package: minerva-design@1.22.1
+
+Renderer: uni
+
+Locale: fr
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.22.1",
+  "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+  "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+  "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.22.1/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+### Clavier et accessibilité
+
+Flèche bas / haut parcourent les options visibles (en boucle).
+
+Entrée sélectionne l'option active (les options désactivées sont ignorées) sans soumettre le formulaire englobant.
+
+Échap ferme la liste et laisse le focus dans le champ ; liste déjà fermée, il efface le texte (onChange reçoit ""). Dans une Modal ou un Popover, seule la liste se ferme.
+
+Le champ expose le rôle combobox avec aria-expanded, aria-controls et aria-activedescendant pointant vers les options de la listbox.
+
+## AutoComplete
+
+Support: beta
+
+Controlled/model/default text and owner rejection; numeric option identities; selection returns the option and fills its label; fillOnSelect, filter/sort, first/adjacent groups, loading/empty/option slots, autoHighlight, native confirm, H5 keys, IME guards and dropdown visibility events. Reuses Input for field props. Custom content uses native scoped slots instead of React renderOption/renderEmpty functions. Measured native fixed dropdown flips/shifts within the viewport and can animate; it does not use a DOM portal. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/uni",
+  "exports": [
+    "AutoComplete"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "value",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "modelValue",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "defaultValue",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "options",
+    "typeText": "Option[] | undefined",
+    "required": false
+  },
+  {
+    "name": "disabled",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "readOnly",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "placeholder",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "name",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "label",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "loading",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "autoHighlight",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "fillOnSelect",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "filterOption",
+    "typeText": "((input: string, option: Option) => boolean) | undefined",
+    "required": false
+  },
+  {
+    "name": "sortOption",
+    "typeText": "((a: Option, b: Option) => number) | undefined",
+    "required": false
+  },
+  {
+    "name": "groupBy",
+    "typeText": "((option: Option) => string) | undefined",
+    "required": false
+  },
+  {
+    "name": "groupMode",
+    "typeText": "\"first\" | \"adjacent\" | undefined",
+    "required": false
+  },
+  {
+    "name": "inputProps",
+    "typeText": "Record<string, any> | undefined",
+    "required": false
+  },
+  {
+    "name": "emptyText",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "dropdownClassName",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "animation",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "placement",
+    "typeText": "\"bottom\" | \"top\" | \"left\" | \"right\" | undefined",
+    "required": false
+  },
+  {
+    "name": "offset",
+    "typeText": "{ x: number; y: number; } | undefined",
+    "required": false
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "change",
+    "typeText": "[value: string]",
+    "parameters": [
+      {
+        "name": "value",
+        "position": 0,
+        "typeText": "string",
+        "required": true,
+        "rest": false
+      }
+    ]
+  },
+  {
+    "name": "update:modelValue",
+    "typeText": "[value: string]",
+    "parameters": [
+      {
+        "name": "value",
+        "position": 0,
+        "typeText": "string",
+        "required": true,
+        "rest": false
+      }
+    ]
+  },
+  {
+    "name": "select",
+    "typeText": "[option: Option]",
+    "parameters": [
+      {
+        "name": "option",
+        "position": 0,
+        "typeText": "Option",
+        "required": true,
+        "rest": false
+      }
+    ]
+  },
+  {
+    "name": "optionClick",
+    "typeText": "[option: Option]",
+    "parameters": [
+      {
+        "name": "option",
+        "position": 0,
+        "typeText": "Option",
+        "required": true,
+        "rest": false
+      }
+    ]
+  },
+  {
+    "name": "dropdownVisibleChange",
+    "typeText": "[open: boolean]",
+    "parameters": [
+      {
+        "name": "open",
+        "position": 0,
+        "typeText": "boolean",
+        "required": true,
+        "rest": false
+      }
+    ]
+  },
+  {
+    "name": "submit",
+    "typeText": "[value: string]",
+    "parameters": [
+      {
+        "name": "value",
+        "position": 0,
+        "typeText": "string",
+        "required": true,
+        "rest": false
+      }
+    ]
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "loading",
+    "typeText": "{}"
+  },
+  {
+    "name": "empty",
+    "typeText": "{}"
+  },
+  {
+    "name": "option",
+    "typeText": "{ option: Option; }"
+  }
+]
+```
+
+### bindings
+
+```json
+[
+  {
+    "prop": "modelValue",
+    "event": "update:modelValue",
+    "syntax": "v-model"
+  }
+]
+```
+
+## CSS variables
+
+```json
+{
+  "css:AutoComplete": {
+    "kind": "cssVars",
+    "source": "react/src/components/AutoComplete",
+    "vars": [
+      {
+        "name": "--auto-complete-dropdown-background",
+        "description": "Background of the dropdown"
+      },
+      {
+        "name": "--auto-complete-dropdown-radius",
+        "description": "Corner radius of the dropdown (defaults to --radius-lg)"
+      },
+      {
+        "name": "--auto-complete-dropdown-max-height",
+        "description": "Maximum height of the option list before it scrolls"
+      },
+      {
+        "name": "--auto-complete-font-size",
+        "description": "Font size of the dropdown"
+      },
+      {
+        "name": "--auto-complete-option-padding-y",
+        "description": "Vertical padding of an option (follows the density's row padding)"
+      },
+      {
+        "name": "--auto-complete-option-padding-x",
+        "description": "Horizontal padding of an option and of a group label"
+      },
+      {
+        "name": "--auto-complete-option-hover-background",
+        "description": "Background of the hovered / keyboard-focused option"
+      },
+      {
+        "name": "--auto-complete-option-highlight-background",
+        "description": "Background of options with `highlight: true`"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

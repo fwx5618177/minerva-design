@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "text-link",
+  "title": "TextLink",
+  "description": "A styled native anchor for inline links, quiet navigation and settings rows; asChild styles a router link without nesting anchors.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TextLink",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TextLink"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Merges the link styling onto its single child element (e.g. a\n`<RouterLink>`) instead of rendering an extra `<a>`",
+            "typeText": "boolean"
+          },
+          {
+            "name": "variant",
+            "type": "TextLinkVariant",
+            "default": "\"default\"",
+            "required": false,
+            "description": "default: underlined inline link; subtle: quiet link with a trailing chevron;\naction: full-width row link with a bottom rule (settings lists, menus)",
+            "typeText": "TextLinkVariant"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Link content (with `asChild`: the single link element)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:TextLink": {
+      "kind": "cssVars",
+      "source": "react/src/components/TextLink",
+      "vars": [
+        {
+          "name": "--text-link-color",
+          "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+        },
+        {
+          "name": "--text-link-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--text-link-text-decoration",
+          "description": "Text decoration of the default variant (default: underline)"
+        },
+        {
+          "name": "--text-link-underline-offset",
+          "description": "Distance between the text and its underline"
+        },
+        {
+          "name": "--text-link-action-min-height",
+          "description": "Minimum height of the action variant"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/vue/basic.vue": "<script setup lang=\"ts\">\nimport { TextLink } from \"minerva-design/vue\";\n</script>\n<template>\n  <TextLink href=\"https://example.com\">Visit example.com</TextLink>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "styling",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/vue/styling.vue",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/vue/styling.vue": "<script setup lang=\"ts\">\nimport { TextLink, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><TextLink href=\"#accent\" style=\"font-weight: 700\">Emphasized link</TextLink\n    ><TextLink\n      href=\"https://example.com\"\n      target=\"_blank\"\n      rel=\"noopener noreferrer\"\n      >External page ↗</TextLink\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "styling",
+      "description": ""
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/vue/variants.vue",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/vue/variants.vue": "<script setup lang=\"ts\">\nimport { TextLink, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><TextLink href=\"#default\">Default link</TextLink\n    ><TextLink variant=\"subtle\" href=\"#subtle\">Subtle link</TextLink\n    ><TextLink variant=\"action\" href=\"#action\">View all →</TextLink></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TextLink",
+      "description": "A styled native anchor for inline links, quiet navigation and settings rows; asChild styles a router link without nesting anchors.",
+      "demos": {
+        "variants": {
+          "title": "Variants",
+          "description": "default is underlined, subtle adds a chevron as a non-color cue, action is a full-width row."
+        },
+        "as-child": {
+          "title": "Router links",
+          "description": "asChild merges the styling onto its single child element."
+        }
+      },
+      "api": {
+        "TextLinkProps": {
+          "asChild": "Merges the link styling onto its single child element",
+          "variant": "Visual style: default, subtle or action",
+          "ref": "Ref to the anchor element"
+        }
+      },
+      "cssVars": {
+        "--text-link-color": "Color of the default variant (falls back to --link-color, then --primary-color)",
+        "--text-link-font-weight": "Font weight",
+        "--text-link-text-decoration": "Text decoration of the default variant (default: underline)",
+        "--text-link-underline-offset": "Distance between the text and its underline",
+        "--text-link-action-min-height": "Minimum height of the action variant"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "A native <a> in a shadow root: href, target, rel, hreflang and download are forwarded to it."
+          },
+          "variants": {
+            "title": "Variants and routing",
+            "description": "default is underlined, subtle adds a chevron, action is a settings row. Clicks are intercepted on the host, like a client-side router would."
+          },
+          "styling": {
+            "title": "CSS variables",
+            "description": "Color, weight, underline and its offset are tuned per link with CSS variables."
+          }
+        },
+        "minerva-text-link": {
+          "props": {
+            "href": "URL of the link.",
+            "target": "Browsing context where the link opens (_blank...).",
+            "rel": "Relationship of the linked resource (noopener...).",
+            "download": "Downloads the target instead of navigating (optional file name).",
+            "hreflang": "Language of the linked resource."
+          },
+          "slots": {
+            "default": "Link text (and icons)."
+          },
+          "methods": {
+            "focus": "Focuses the inner link.",
+            "blur": "Removes focus from the inner link.",
+            "click": "Clicks the inner link."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "bubble-chart",
+  "title": "Bubble chart",
+  "description": "Scatter charts with a third value drawn as the size of the dots: the area of a bubble is proportional to its value.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "data": {
+      "continents": {
+        "asia": "Asia",
+        "europe": "Europe",
+        "americas": "Americas",
+        "africa": "Africa"
+      },
+      "population": "Population",
+      "gdp": "GDP per capita",
+      "lifeExpectancy": "Life expectancy (years)",
+      "countriesAria": "GDP per capita, life expectancy and population of countries",
+      "products": "Products",
+      "revenue": "Revenue",
+      "portfolio": {
+        "cloudStorage": "Cloud storage",
+        "analytics": "Analytics",
+        "mobileSdk": "Mobile SDK",
+        "payments": "Payments",
+        "desktop": "Desktop app",
+        "hardware": "Hardware",
+        "consulting": "Consulting"
+      },
+      "marketShare": "Relative market share",
+      "marketGrowth": "Market growth",
+      "leader": "Market leader",
+      "highGrowth": "High growth",
+      "portfolioAria": "Market share, growth and revenue of the products",
+      "stages": {
+        "qualified": "Qualified",
+        "proposal": "Proposal",
+        "negotiation": "Negotiation"
+      },
+      "amount": "Amount",
+      "deal": "Deal #{{id}}",
+      "daysInPipeline": "Days in the pipeline",
+      "winProbability": "Win probability",
+      "dealStatus": "{{deal}} ({{stage}}): {{amount}}",
+      "clickBubble": "Click a bubble",
+      "pipelineAria": "Open deals by age, win probability and amount",
+      "gdpLog": "GDP per capita (log scale)",
+      "highIncome": "High income",
+      "logAria": "Life expectancy against GDP per capita on a log scale, sized by population",
+      "visibleIncomes": "Visible incomes: {{from}} – {{to}}",
+      "zoomHint": "Zoom to see the visible range in dollars",
+      "teams": {
+        "infrastructure": "Infrastructure",
+        "security": "Security",
+        "people": "People",
+        "budget": "Budget"
+      },
+      "exposure": "Exposure",
+      "risks": {
+        "powerOutage": "Power outage",
+        "hardwareDelay": "Hardware delivery delay",
+        "networkCutover": "Network cutover",
+        "dataLeak": "Data leak",
+        "accessReview": "Access review backlog",
+        "keyPerson": "Key person leaves",
+        "vendorSkills": "Vendor skills shortage",
+        "trainingGap": "Training gap",
+        "licenseCost": "License cost increase",
+        "exchangeRate": "Exchange rate"
+      },
+      "zones": {
+        "low": "Acceptable",
+        "high": "Critical"
+      },
+      "riskScore": "Likelihood {{likelihood}} × impact {{impact}} = {{score}}",
+      "exposureRow": "Exposure: {{value}}",
+      "likelihood": "Likelihood",
+      "impact": "Impact",
+      "riskAria": "Project risks by likelihood, impact and cost exposure",
+      "channels": {
+        "search": "Search",
+        "social": "Social",
+        "video": "Video",
+        "email": "Email"
+      },
+      "budget": "Budget",
+      "launchedOn": "Launched on {{date}}",
+      "launch": "Launch date",
+      "roas": "Return on ad spend",
+      "breakEven": "Break-even",
+      "campaignsAria": "Marketing campaigns by launch date, return on ad spend and budget",
+      "regions": {
+        "north": "North",
+        "south": "South",
+        "east": "East",
+        "west": "West",
+        "center": "Center"
+      },
+      "sharedScale": "Same size scale in both charts",
+      "sharedScaleOn": "Both charts draw {{value}} with the largest bubble.",
+      "sharedScaleOff": "Each chart draws its own largest revenue with the largest bubble.",
+      "salesPerMeter": "Sales per m²",
+      "margin": "Margin",
+      "sharedScaleAria": "Sales per square meter, margin and revenue of the store regions in {{year}}",
+      "play": "Play",
+      "pause": "Pause",
+      "replay": "Replay",
+      "restart": "Restart",
+      "yearStatus": "Year: {{year}}",
+      "fertility": "Fertility (children per woman)",
+      "playbackAria": "Fertility, life expectancy and population of countries from 1990 to 2025"
+    }
+  },
+  "components": [
+    {
+      "name": "BubbleChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnBubbleChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnBubbleChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnBubbleChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-bubble-chart",
+        "props": [
+          {
+            "name": "series",
+            "typeText": "readonly ChartSeries[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "minSize",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "maxSize",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "maxValue",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "countries",
+      "title": "Countries",
+      "description": "GDP per capita against life expectancy, the bubbles sized by population and colored by continent; valueName and format name and format the value in the tooltip.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBubbleChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBubbleChart],\n  template: `\n@let t = labels[language()];\n<mn-bubble-chart\n  [series]=\"[{ name: t.life, showLabels: true, data: [\n    { x: 34, y: 84.5, value: 124, label: t.names[0] },\n    { x: 44, y: 82.5, value: 68, label: t.names[1] },\n    { x: 12.6, y: 78.6, value: 1410, label: t.names[2] },\n    { x: 9, y: 75.9, value: 216, label: t.names[3] },\n    { x: 2.5, y: 70.8, value: 1430, label: t.names[4] },\n    { x: 2.2, y: 53.6, value: 224, label: t.names[5] },\n    { x: 52, y: 81.2, value: 84, label: t.names[6] },\n    { x: 11.5, y: 75, value: 128, label: t.names[7] }\n  ] }]\"\n  [xAxis]=\"{ title: t.gdp }\"\n  [yAxis]=\"{ title: t.life, min: 50 }\"\n  [maxSize]=\"64\"\n  [height]=\"320\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": {\n    \"gdp\": \"GDP per capita (k$)\",\n    \"life\": \"Life expectancy\",\n    \"names\": [\"Japan\", \"France\", \"China\", \"Brazil\", \"India\", \"Nigeria\", \"Germany\", \"Mexico\"]\n  },\n  \"zh\": {\n    \"gdp\": \"人均 GDP（千美元）\",\n    \"life\": \"预期寿命\",\n    \"names\": [\"日本\", \"法国\", \"中国\", \"巴西\", \"印度\", \"尼日利亚\", \"德国\", \"墨西哥\"]\n  },\n  \"ja\": {\n    \"gdp\": \"1 人あたり GDP（千ドル）\",\n    \"life\": \"平均寿命\",\n    \"names\": [\"日本\", \"フランス\", \"中国\", \"ブラジル\", \"インド\", \"ナイジェリア\", \"ドイツ\", \"メキシコ\"]\n  },\n  \"fr\": {\n    \"gdp\": \"PIB par habitant (k$)\",\n    \"life\": \"Espérance de vie\",\n    \"names\": [\"Japon\", \"France\", \"Chine\", \"Brésil\", \"Inde\", \"Nigeria\", \"Allemagne\", \"Mexique\"]\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "portfolio",
+      "title": "Product portfolio",
+      "description": "Market share, market growth and revenue of the products, split in four quadrants by two reference lines; showLabels writes the names around the bubbles.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBubbleChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBubbleChart],\n  template: `\n@let t = labels[language()];\n<mn-bubble-chart\n  [series]=\"[\n    { name: t.assets[0], data: [{ x: 4, y: 3, value: 30 }] },\n    { name: t.assets[1], data: [{ x: 15, y: 7, value: 25 }] },\n    { name: t.assets[2], data: [{ x: 12, y: 6, value: 20 }] },\n    { name: t.assets[3], data: [{ x: 28, y: 12, value: 15 }] },\n    { name: t.assets[4], data: [{ x: 16, y: 4, value: 5 }] },\n    { name: t.assets[5], data: [{ x: 45, y: 18, value: 5 }] }\n  ]\"\n  [xAxis]=\"{ title: t.risk }\"\n  [yAxis]=\"{ title: t.return }\"\n  [height]=\"300\"\n  (pointClick)=\"selected = $event.items[0] ? $event.items[0].seriesName + ': ' + $event.items[0].value + ' %' : selected\"\n/>\n<output aria-live=\"polite\">{{ selected || t.hint }}</output>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  selected = \"\";\n  labels = {\n  \"en\": {\n    \"risk\": \"Risk (volatility %)\",\n    \"return\": \"Expected return %\",\n    \"hint\": \"Click a bubble\",\n    \"assets\": [\"Bonds\", \"Index fund\", \"Real estate\", \"Tech stocks\", \"Gold\", \"Start-ups\"]\n  },\n  \"zh\": {\n    \"risk\": \"风险（波动率 %）\",\n    \"return\": \"预期收益 %\",\n    \"hint\": \"点击一个气泡\",\n    \"assets\": [\"债券\", \"指数基金\", \"房地产\", \"科技股\", \"黄金\", \"初创企业\"]\n  },\n  \"ja\": {\n    \"risk\": \"リスク（ボラティリティ %）\",\n    \"return\": \"期待リターン %\",\n    \"hint\": \"バブルをクリックします\",\n    \"assets\": [\"債券\", \"インデックスファンド\", \"不動産\", \"ハイテク株\", \"金\", \"スタートアップ\"]\n  },\n  \"fr\": {\n    \"risk\": \"Risque (volatilité %)\",\n    \"return\": \"Rendement attendu %\",\n    \"hint\": \"Cliquez sur une bulle\",\n    \"assets\": [\"Obligations\", \"Fonds indiciel\", \"Immobilier\", \"Actions tech\", \"Or\", \"Start-up\"]\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Bubble chart",
+      "description": "Scatter charts with a third value drawn as the size of the dots: the area of a bubble is proportional to its value.",
+      "demos": {
+        "countries": {
+          "title": "Countries",
+          "description": "GDP per capita against life expectancy, the bubbles sized by population and colored by continent; valueName and format name and format the value in the tooltip."
+        },
+        "log-scale": {
+          "title": "Log scale",
+          "description": "Incomes from $900 to $140k: xAxis.type: \"log\" spreads them evenly (×10 is the same distance anywhere) with ticks at 1, 2 and 5 of each decade. The default range snaps to the closest 1, 2 or 5 × 10^k bounds around the data ($500 to $200k) instead of whole decades; xAxis.min / max override it. Annotations and the tooltip use dollars, and onZoom reports the visible range in dollars, not in logarithms (Ctrl / ⌘ + wheel or a pinch zooms)."
+        },
+        "portfolio": {
+          "title": "Product portfolio",
+          "description": "Market share, market growth and revenue of the products, split in four quadrants by two reference lines; showLabels writes the names around the bubbles."
+        },
+        "pipeline": {
+          "title": "Sales pipeline",
+          "description": "Open deals by days in the pipeline and win probability, sized by amount; onPointClick receives the value of the clicked bubble."
+        },
+        "risk-matrix": {
+          "title": "Risk matrix",
+          "description": "Project risks placed by likelihood and impact on a 5 × 5 grid, sized by their cost exposure; open-ended rect annotations shade the low and high zones and renderTooltip computes the risk score."
+        },
+        "campaigns": {
+          "title": "Marketing campaigns",
+          "description": "Campaigns by launch date (xAxis.type: \"time\") and return on ad spend, sized by budget, one series per channel; a line annotation marks the break-even and the legend items toggle the channels."
+        },
+        "shared-scale": {
+          "title": "Shared size scale",
+          "description": "Two charts compare the store regions of two years. With the same maxValue, a given revenue gets the same area in both charts; without it, each chart sizes its bubbles from its own largest value."
+        },
+        "playback": {
+          "title": "Animated years",
+          "description": "Fertility against life expectancy from 1990 to 2025, played one year at a time with setInterval (cleared on pause and unmount). Fixed axis ranges and a constant maxValue keep the frames comparable, and a text annotation writes the year."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "GDP per capita, life expectancy and population: the bubble areas are proportional to the populations, written with the compact units of the locale in the tooltip."
+          }
+        }
+      },
+      "data": {
+        "continents": {
+          "asia": "Asia",
+          "europe": "Europe",
+          "americas": "Americas",
+          "africa": "Africa"
+        },
+        "population": "Population",
+        "gdp": "GDP per capita",
+        "lifeExpectancy": "Life expectancy (years)",
+        "countriesAria": "GDP per capita, life expectancy and population of countries",
+        "products": "Products",
+        "revenue": "Revenue",
+        "portfolio": {
+          "cloudStorage": "Cloud storage",
+          "analytics": "Analytics",
+          "mobileSdk": "Mobile SDK",
+          "payments": "Payments",
+          "desktop": "Desktop app",
+          "hardware": "Hardware",
+          "consulting": "Consulting"
+        },
+        "marketShare": "Relative market share",
+        "marketGrowth": "Market growth",
+        "leader": "Market leader",
+        "highGrowth": "High growth",
+        "portfolioAria": "Market share, growth and revenue of the products",
+        "stages": {
+          "qualified": "Qualified",
+          "proposal": "Proposal",
+          "negotiation": "Negotiation"
+        },
+        "amount": "Amount",
+        "deal": "Deal #{{id}}",
+        "daysInPipeline": "Days in the pipeline",
+        "winProbability": "Win probability",
+        "dealStatus": "{{deal}} ({{stage}}): {{amount}}",
+        "clickBubble": "Click a bubble",
+        "pipelineAria": "Open deals by age, win probability and amount",
+        "gdpLog": "GDP per capita (log scale)",
+        "highIncome": "High income",
+        "logAria": "Life expectancy against GDP per capita on a log scale, sized by population",
+        "visibleIncomes": "Visible incomes: {{from}} – {{to}}",
+        "zoomHint": "Zoom to see the visible range in dollars",
+        "teams": {
+          "infrastructure": "Infrastructure",
+          "security": "Security",
+          "people": "People",
+          "budget": "Budget"
+        },
+        "exposure": "Exposure",
+        "risks": {
+          "powerOutage": "Power outage",
+          "hardwareDelay": "Hardware delivery delay",
+          "networkCutover": "Network cutover",
+          "dataLeak": "Data leak",
+          "accessReview": "Access review backlog",
+          "keyPerson": "Key person leaves",
+          "vendorSkills": "Vendor skills shortage",
+          "trainingGap": "Training gap",
+          "licenseCost": "License cost increase",
+          "exchangeRate": "Exchange rate"
+        },
+        "zones": {
+          "low": "Acceptable",
+          "high": "Critical"
+        },
+        "riskScore": "Likelihood {{likelihood}} × impact {{impact}} = {{score}}",
+        "exposureRow": "Exposure: {{value}}",
+        "likelihood": "Likelihood",
+        "impact": "Impact",
+        "riskAria": "Project risks by likelihood, impact and cost exposure",
+        "channels": {
+          "search": "Search",
+          "social": "Social",
+          "video": "Video",
+          "email": "Email"
+        },
+        "budget": "Budget",
+        "launchedOn": "Launched on {{date}}",
+        "launch": "Launch date",
+        "roas": "Return on ad spend",
+        "breakEven": "Break-even",
+        "campaignsAria": "Marketing campaigns by launch date, return on ad spend and budget",
+        "regions": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West",
+          "center": "Center"
+        },
+        "sharedScale": "Same size scale in both charts",
+        "sharedScaleOn": "Both charts draw {{value}} with the largest bubble.",
+        "sharedScaleOff": "Each chart draws its own largest revenue with the largest bubble.",
+        "salesPerMeter": "Sales per m²",
+        "margin": "Margin",
+        "sharedScaleAria": "Sales per square meter, margin and revenue of the store regions in {{year}}",
+        "play": "Play",
+        "pause": "Pause",
+        "replay": "Replay",
+        "restart": "Restart",
+        "yearStatus": "Year: {{year}}",
+        "fertility": "Fertility (children per woman)",
+        "playbackAria": "Fertility, life expectancy and population of countries from 1990 to 2025"
+      },
+      "api": {
+        "BubbleChartProps": {
+          "series": "Series of points with a value sizing their bubble (area proportional to the value)"
+        },
+        "BubbleOptions": {
+          "minSize": "Diameter in pixels of the smallest bubbles",
+          "maxSize": "Diameter in pixels of the largest value",
+          "maxValue": "Value drawn with maxSize, to share a scale between charts; the largest value by default"
+        }
+      },
+      "wc": {
+        "demos": {
+          "countries": {
+            "title": "Wealth, health and population",
+            "description": "GDP per capita against life expectancy, bubbles sized by population (area proportional to the value)."
+          },
+          "portfolio": {
+            "title": "Portfolio risk and return",
+            "description": "One series per asset, sized by its share of the portfolio; clicking a bubble reports the asset."
+          }
+        },
+        "minerva-bubble-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

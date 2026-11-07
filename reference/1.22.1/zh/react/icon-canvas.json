@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "icon-canvas",
+  "title": "IconCanvas 图标画布",
+  "description": "在一块画布上绘制大量图标，由 WebGPU、WebGL2 或 WebGL 通过少量实例化绘制调用完成，或由 Canvas2D 绘制：适用于密集图形、地图、粒子以及包含成千上万个图标的动画。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "intro": {
+      "title": "绘制原理",
+      "text": "IconCanvas 以 CSS 像素为单位，按位置、尺寸、旋转、颜色和不透明度摆放图标，并用可用的最佳后端（WebGPU -> WebGL2 -> WebGL -> Canvas2D）将它们全部绘制在一块画布上。",
+      "tessellate": "几何：每个图标以四分之一设备像素的精度展平，其描边被转换为三角形（每段一个四边形，连接处和线帽使用圆形扇面），每种图标、描边宽度和细节级别只处理一次。",
+      "batch": "批处理：所有网格存放在同一个顶点缓冲区中，每个图标都是一个实例（位置、尺寸、旋转、颜色）；连续的相同图标合并为一次实例化绘制调用。",
+      "depth": "质量：4× MSAA 平滑边缘，逐图标的深度测试让图标的每个像素只绘制一次，因此半透明图标的混合效果与 SVG 描边完全一致。",
+      "fallback": "健壮性：auto 会跳过软件 GPU，GPU 上下文丢失时会重启后端（丢失两次的后端会被跳过），画布根元素通过 data-renderer 报告当前后端。",
+      "when": "界面中的图标请使用 Icon：SVG 更轻量、可访问，并支持服务端渲染。当图标本身就是画面时，再使用 IconCanvas。"
+    },
+    "data": {
+      "count": "图标数量",
+      "pause": "暂停",
+      "play": "播放",
+      "paused": "已暂停",
+      "fps": "每秒 {{fps}} 帧",
+      "status": "由 {{backend}} 绘制",
+      "starting": "正在启动渲染器…",
+      "aria": "{{n}} 个动画图标",
+      "panelAria": "由 {{backend}} 绘制的 40 个图标",
+      "drawnBy": "由 {{backend}} 绘制",
+      "fellBack": "已回退到 {{backend}}"
+    }
+  },
+  "components": [
+    {
+      "name": "IconCanvas",
+      "support": {
+        "status": "n/a",
+        "notes": "React component IconCanvas of minerva-design/icons (separate entry, outside this contract scan)."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React component IconCanvas of minerva-design/icons (separate entry, outside this contract scan)."
+      }
+    }
+  ],
+  "api": {
+    "IconCanvasProps": {
+      "source": "icons/src/react/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLDivElement>, \"children\" | \"title\">"
+      ],
+      "props": [
+        {
+          "name": "items",
+          "type": "readonly IconCanvasItem[]",
+          "required": true,
+          "description": "Icons to draw, in painting order (later ones on top), positions in CSS pixels"
+        },
+        {
+          "name": "renderer",
+          "type": "IconRendererPreference",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Backend preference; \"auto\" follows the global default"
+        },
+        {
+          "name": "width",
+          "type": "number | string",
+          "required": false,
+          "default": "\"100%\"",
+          "description": "Width (a number is in pixels)"
+        },
+        {
+          "name": "height",
+          "type": "number | string",
+          "required": false,
+          "default": "240",
+          "description": "Height (a number is in pixels)"
+        },
+        {
+          "name": "pixelRatio",
+          "type": "number",
+          "required": false,
+          "default": "window.devicePixelRatio",
+          "description": "Device pixel ratio"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name of the whole picture (`role=\"img\"`); without it the canvas is hidden from assistive technologies"
+        },
+        {
+          "name": "onRendererChange",
+          "type": "(kind: IconRendererKind) => void",
+          "required": false,
+          "description": "Called with the backend once it started, and again after a fallback"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<IconCanvasHandle>",
+          "required": false,
+          "description": "Imperative handle"
+        }
+      ]
+    },
+    "IconCanvasItem": {
+      "source": "icons/src/engine/types.ts",
+      "description": "One icon drawn by an icon canvas",
+      "kind": "interface",
+      "extends": [
+        "IconStyle"
+      ],
+      "props": [
+        {
+          "name": "icon",
+          "type": "IconDefinition",
+          "required": true,
+          "description": "The icon to draw"
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "required": true,
+          "description": "Left edge in CSS pixels, from the canvas' top-left corner"
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "required": true,
+          "description": "Top edge in CSS pixels, from the canvas' top-left corner"
+        }
+      ]
+    },
+    "IconStyle": {
+      "source": "icons/src/engine/types.ts",
+      "description": "Shared drawing options (sizes in CSS pixels)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "size",
+          "type": "number",
+          "required": false,
+          "default": "24",
+          "description": "Width and height in CSS pixels"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "default": "\"currentColor\"",
+          "description": "Any CSS color; `currentColor` reads the color of the host element"
+        },
+        {
+          "name": "strokeWidth",
+          "type": "number",
+          "required": false,
+          "default": "2",
+          "description": "Stroke width on the 24×24 grid (scales with the size)"
+        },
+        {
+          "name": "rotation",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Clockwise rotation in degrees, around the center"
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Opacity between 0 and 1"
+        }
+      ]
+    },
+    "IconCanvasHandle": {
+      "source": "icons/src/react/types.ts",
+      "description": "Imperative handle of `IconCanvas`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "getRenderer",
+          "type": "() => IconRendererKind | null",
+          "required": true,
+          "description": "The backend drawing (null until it started)"
+        },
+        {
+          "name": "getCanvas",
+          "type": "() => HTMLCanvasElement | null",
+          "required": true,
+          "description": "The `<canvas>` element (null before mount)"
+        },
+        {
+          "name": "ready",
+          "type": "() => Promise<IconRendererKind>",
+          "required": true,
+          "description": "Resolves once the backend started and the current items are drawn"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-canvas/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-canvas/demos/basic.tsx": "import {\n  IconCanvas,\n  bellIcon,\n  homeIcon,\n  mailIcon,\n  searchIcon,\n  settingsIcon,\n  userIcon,\n  type IconCanvasItem,\n} from \"minerva-design/icons\";\n\nconst ICONS = [\n  homeIcon,\n  searchIcon,\n  mailIcon,\n  bellIcon,\n  userIcon,\n  settingsIcon,\n];\n\n// one canvas, one GPU draw per run of identical icons; positions in CSS px\nconst items: IconCanvasItem[] = [\n  ...ICONS.map((icon, i) => ({ icon, x: 16 + i * 48, y: 16 })),\n  ...ICONS.map((icon, i) => ({\n    icon,\n    x: 16 + i * 48,\n    y: 64,\n    size: 32,\n    color: \"var(--primary-color)\",\n    rotation: i * 15,\n  })),\n  ...ICONS.map((icon, i) => ({\n    icon,\n    x: 16 + i * 48,\n    y: 112,\n    strokeWidth: 1.5,\n    opacity: 0.35 + i * 0.13,\n  })),\n];\n\nexport default function BasicDemo() {\n  return (\n    <IconCanvas items={items} height={160} title=\"Six icons, three ways\" />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "以 CSS 像素摆放的图标，各自拥有尺寸、颜色（包括主题变量）、旋转、描边宽度和不透明度。"
+    },
+    {
+      "id": "renderers",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-canvas/demos/renderers.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-canvas/demos/renderers.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  IconCanvas,\n  icons,\n  type IconCanvasItem,\n  type IconRendererKind,\n  type IconRendererPreference,\n} from \"minerva-design/icons\";\nimport styles from \"../../icons/icons.module.scss\";\n\nconst BACKENDS: IconRendererPreference[] = [\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\n\n// the same 40 icons on every backend: the geometry is shared, only the\n// rasterizer differs (MSAA triangles on the GPU, native strokes on Canvas2D)\nconst items: IconCanvasItem[] = icons.slice(0, 40).map((icon, i) => ({\n  icon,\n  x: 8 + (i % 8) * 30,\n  y: 8 + Math.floor(i / 8) * 30,\n  size: 24,\n}));\n\nfunction Panel({ renderer }: { renderer: IconRendererPreference }) {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.icon-canvas.data\",\n  });\n  const [drawn, setDrawn] = useState<IconRendererKind | null>(null);\n  return (\n    <figure style={{ margin: 0 }}>\n      <IconCanvas\n        className={styles.canvasFrame}\n        items={items}\n        renderer={renderer}\n        width={256}\n        height={160}\n        onRendererChange={setDrawn}\n        title={t(\"panelAria\", { backend: renderer })}\n      />\n      <figcaption className={styles.cell} style={{ marginTop: 6 }}>\n        <code>renderer=&quot;{renderer}&quot;</code>\n        <span className={styles.kind}>\n          {drawn === null\n            ? t(\"starting\")\n            : drawn === renderer\n              ? t(\"drawnBy\", { backend: drawn })\n              : t(\"fellBack\", { backend: drawn })}\n        </span>\n      </figcaption>\n    </figure>\n  );\n}\n\nexport default function RenderersDemo() {\n  return (\n    <div className={styles.row}>\n      {BACKENDS.map((renderer) => (\n        <Panel key={renderer} renderer={renderer} />\n      ))}\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/icons/icons.module.scss": "// Shared by the demos of the icon pages (icons, icon, icon-canvas, icons-core)\n\n.stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  background: var(--surface-subtle-color);\n}\n\n.search {\n  flex: 1 1 220px;\n  min-width: 180px;\n}\n\n.body {\n  padding: 12px 14px;\n}\n\n.grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));\n  gap: 6px;\n  padding: 2px;\n}\n\n.categoryGroup + .categoryGroup {\n  margin-top: 20px;\n}\n\n.categoryTitle {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin: 0 0 8px;\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--text-color);\n}\n\n.categoryCount {\n  padding: 0 6px;\n  border-radius: var(--radius-sm);\n  background: var(--surface-muted-color);\n  font-size: 12px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n  color: var(--text-secondary-color);\n}\n\n.tile {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  min-height: 92px;\n  padding: 12px 6px 8px;\n  border: 1px solid transparent;\n  border-radius: var(--radius-md);\n  background: transparent;\n  color: var(--text-color);\n  font: inherit;\n  cursor: pointer;\n\n  &:hover {\n    border-color: var(--border-color);\n    background: var(--hover-color);\n  }\n\n  &:focus-visible {\n    outline: 2px solid var(--focus-ring-color);\n    outline-offset: 1px;\n  }\n}\n\n.tileName {\n  max-width: 100%;\n  overflow: hidden;\n  font-size: 11px;\n  line-height: 1.3;\n  color: var(--text-secondary-color);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  background: var(--surface-subtle-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.row {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 16px 24px;\n}\n\n.cell {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 6px;\n  min-width: 72px;\n  font-size: 12px;\n  color: var(--text-secondary-color);\n}\n\n.code {\n  margin: 0;\n  padding: 10px 12px;\n  border-radius: var(--radius-md);\n  background: var(--surface-muted-color);\n  font-family: var(--font-family-mono, monospace);\n  font-size: 12px;\n  line-height: 1.5;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\n\n.canvasFrame {\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--canvas-color);\n}\n\n.kind {\n  font-variant-numeric: tabular-nums;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "所有后端",
+      "description": "在每个后端上强制绘制相同的图标；每块画布下方显示绘制它的后端（此浏览器不支持的后端会回退到下一个）。"
+    },
+    {
+      "id": "thousands",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-canvas/demos/thousands.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-canvas/demos/thousands.tsx": "import { useEffect, useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, Radio, RadioGroup } from \"minerva-design\";\nimport {\n  IconCanvas,\n  icons,\n  type IconCanvasItem,\n  type IconRendererKind,\n} from \"minerva-design/icons\";\nimport styles from \"../../icons/icons.module.scss\";\n\nconst COUNTS = [1000, 5000, 20000];\nconst HEIGHT = 360;\nconst PICKED = icons.filter((_, i) => i % 8 === 0);\n// a few dozen distinct colors: resolved once each, not once per icon\nconst HUES = Array.from({ length: 36 }, (_, i) => `hsl(${i * 10} 70% 55%)`);\n\n/** Icons grouped by kind so each kind is one instanced draw */\nconst layout = (count: number, width: number, time: number) => {\n  const cell = Math.max(6, Math.sqrt((width * HEIGHT) / count));\n  const columns = Math.max(1, Math.floor(width / cell));\n  const size = cell * 0.8;\n  const items: IconCanvasItem[] = [];\n  const perKind = Math.ceil(count / PICKED.length);\n  for (let i = 0; i < count; i++) {\n    const kind = Math.floor(i / perKind);\n    const slot = (i % perKind) * PICKED.length + kind;\n    const column = slot % columns;\n    const row = Math.floor(slot / columns);\n    const wave = Math.sin(time * 2 + column * 0.25 + row * 0.35);\n    items.push({\n      icon: PICKED[kind]!,\n      x: column * cell + (cell - size) / 2,\n      y: row * cell + (cell - size) / 2,\n      size: size * (0.85 + 0.15 * wave),\n      rotation: wave * 25,\n      color: HUES[(column + row) % HUES.length],\n      opacity: 0.55 + 0.45 * wave * wave,\n    });\n  }\n  return items;\n};\n\nexport default function ThousandsDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.icon-canvas.data\",\n  });\n  const host = useRef<HTMLDivElement>(null);\n  const [count, setCount] = useState(5000);\n  const [running, setRunning] = useState(true);\n  const [width, setWidth] = useState(640);\n  const [time, setTime] = useState(0);\n  const [fps, setFps] = useState<number | null>(null);\n  const [drawn, setDrawn] = useState<IconRendererKind | null>(null);\n\n  useEffect(() => {\n    const element = host.current;\n    if (!element) return;\n    const observer = new ResizeObserver(() =>\n      setWidth(element.clientWidth || 640),\n    );\n    observer.observe(element);\n    return () => observer.disconnect();\n  }, []);\n\n  useEffect(() => {\n    if (!running) return;\n    let frame = 0;\n    let frames = 0;\n    let since = performance.now();\n    const tick = (now: number) => {\n      setTime(now / 1000);\n      frames++;\n      if (now - since >= 500) {\n        setFps(Math.round((frames * 1000) / (now - since)));\n        frames = 0;\n        since = now;\n      }\n      frame = requestAnimationFrame(tick);\n    };\n    frame = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(frame);\n  }, [running]);\n\n  const items = useMemo(() => layout(count, width, time), [count, width, time]);\n\n  return (\n    <div className={styles.stage}>\n      <div className={styles.toolbar}>\n        <RadioGroup\n          aria-label={t(\"count\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={String(count)}\n          onChange={(value) => setCount(Number(value))}\n        >\n          {COUNTS.map((value) => (\n            <Radio\n              key={value}\n              value={String(value)}\n              label={value.toLocaleString()}\n            />\n          ))}\n        </RadioGroup>\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          color=\"neutral\"\n          onClick={() => setRunning((value) => !value)}\n        >\n          {running ? t(\"pause\") : t(\"play\")}\n        </Button>\n      </div>\n      <div ref={host}>\n        <IconCanvas\n          items={items}\n          height={HEIGHT}\n          onRendererChange={setDrawn}\n          title={t(\"aria\", { n: count.toLocaleString() })}\n        />\n      </div>\n      <div className={styles.footer}>\n        <p role=\"status\">\n          {drawn ? t(\"status\", { backend: drawn }) : t(\"starting\")}\n        </p>\n        <p className={styles.kind}>\n          {running && fps !== null ? t(\"fps\", { fps }) : t(\"paused\")}\n        </p>\n      </div>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/icons/icons.module.scss": "// Shared by the demos of the icon pages (icons, icon, icon-canvas, icons-core)\n\n.stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  background: var(--surface-subtle-color);\n}\n\n.search {\n  flex: 1 1 220px;\n  min-width: 180px;\n}\n\n.body {\n  padding: 12px 14px;\n}\n\n.grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));\n  gap: 6px;\n  padding: 2px;\n}\n\n.categoryGroup + .categoryGroup {\n  margin-top: 20px;\n}\n\n.categoryTitle {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin: 0 0 8px;\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--text-color);\n}\n\n.categoryCount {\n  padding: 0 6px;\n  border-radius: var(--radius-sm);\n  background: var(--surface-muted-color);\n  font-size: 12px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n  color: var(--text-secondary-color);\n}\n\n.tile {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  min-height: 92px;\n  padding: 12px 6px 8px;\n  border: 1px solid transparent;\n  border-radius: var(--radius-md);\n  background: transparent;\n  color: var(--text-color);\n  font: inherit;\n  cursor: pointer;\n\n  &:hover {\n    border-color: var(--border-color);\n    background: var(--hover-color);\n  }\n\n  &:focus-visible {\n    outline: 2px solid var(--focus-ring-color);\n    outline-offset: 1px;\n  }\n}\n\n.tileName {\n  max-width: 100%;\n  overflow: hidden;\n  font-size: 11px;\n  line-height: 1.3;\n  color: var(--text-secondary-color);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  background: var(--surface-subtle-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.row {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 16px 24px;\n}\n\n.cell {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 6px;\n  min-width: 72px;\n  font-size: 12px;\n  color: var(--text-secondary-color);\n}\n\n.code {\n  margin: 0;\n  padding: 10px 12px;\n  border-radius: var(--radius-md);\n  background: var(--surface-muted-color);\n  font-family: var(--font-family-mono, monospace);\n  font-size: 12px;\n  line-height: 1.5;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\n\n.canvasFrame {\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--canvas-color);\n}\n\n.kind {\n  font-variant-numeric: tabular-nums;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "成千上万个图标",
+      "description": "最多 20,000 个动画图标，每帧重建，用几十次实例化绘制调用完成（每种图标一次）。后端跟随渲染器栏；可以比较不同后端之间的帧率。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "IconCanvas 图标画布",
+      "description": "在一块画布上绘制大量图标，由 WebGPU、WebGL2 或 WebGL 通过少量实例化绘制调用完成，或由 Canvas2D 绘制：适用于密集图形、地图、粒子以及包含成千上万个图标的动画。",
+      "intro": {
+        "title": "绘制原理",
+        "text": "IconCanvas 以 CSS 像素为单位，按位置、尺寸、旋转、颜色和不透明度摆放图标，并用可用的最佳后端（WebGPU -> WebGL2 -> WebGL -> Canvas2D）将它们全部绘制在一块画布上。",
+        "tessellate": "几何：每个图标以四分之一设备像素的精度展平，其描边被转换为三角形（每段一个四边形，连接处和线帽使用圆形扇面），每种图标、描边宽度和细节级别只处理一次。",
+        "batch": "批处理：所有网格存放在同一个顶点缓冲区中，每个图标都是一个实例（位置、尺寸、旋转、颜色）；连续的相同图标合并为一次实例化绘制调用。",
+        "depth": "质量：4× MSAA 平滑边缘，逐图标的深度测试让图标的每个像素只绘制一次，因此半透明图标的混合效果与 SVG 描边完全一致。",
+        "fallback": "健壮性：auto 会跳过软件 GPU，GPU 上下文丢失时会重启后端（丢失两次的后端会被跳过），画布根元素通过 data-renderer 报告当前后端。",
+        "when": "界面中的图标请使用 Icon：SVG 更轻量、可访问，并支持服务端渲染。当图标本身就是画面时，再使用 IconCanvas。"
+      },
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "以 CSS 像素摆放的图标，各自拥有尺寸、颜色（包括主题变量）、旋转、描边宽度和不透明度。"
+        },
+        "thousands": {
+          "title": "成千上万个图标",
+          "description": "最多 20,000 个动画图标，每帧重建，用几十次实例化绘制调用完成（每种图标一次）。后端跟随渲染器栏；可以比较不同后端之间的帧率。"
+        },
+        "renderers": {
+          "title": "所有后端",
+          "description": "在每个后端上强制绘制相同的图标；每块画布下方显示绘制它的后端（此浏览器不支持的后端会回退到下一个）。"
+        }
+      },
+      "data": {
+        "count": "图标数量",
+        "pause": "暂停",
+        "play": "播放",
+        "paused": "已暂停",
+        "fps": "每秒 {{fps}} 帧",
+        "status": "由 {{backend}} 绘制",
+        "starting": "正在启动渲染器…",
+        "aria": "{{n}} 个动画图标",
+        "panelAria": "由 {{backend}} 绘制的 40 个图标",
+        "drawnBy": "由 {{backend}} 绘制",
+        "fellBack": "已回退到 {{backend}}"
+      },
+      "api": {
+        "IconCanvasProps": {
+          "items": "要绘制的图标，按绘制顺序排列（后面的在上层），位置以 CSS 像素为单位",
+          "renderer": "后端偏好；\"auto\" 跟随全局默认值",
+          "width": "宽度；数字表示像素",
+          "height": "高度；数字表示像素",
+          "pixelRatio": "设备像素比",
+          "title": "整幅画面的无障碍名称（role=\"img\"）；未设置时，画布对辅助技术隐藏",
+          "onRendererChange": "后端启动后以其为参数调用，回退后会再次调用",
+          "ref": "命令式句柄"
+        },
+        "IconCanvasItem": {
+          "icon": "要绘制的图标",
+          "x": "左边缘，以 CSS 像素为单位，从画布左上角起算",
+          "y": "上边缘，以 CSS 像素为单位，从画布左上角起算"
+        },
+        "IconStyle": {
+          "size": "宽度和高度，以 CSS 像素为单位",
+          "color": "任意 CSS 颜色；currentColor 读取宿主元素的颜色",
+          "strokeWidth": "基于 24×24 网格的描边宽度（随尺寸缩放）",
+          "rotation": "绕中心顺时针旋转的角度，单位为度",
+          "opacity": "不透明度，介于 0 和 1 之间"
+        },
+        "IconCanvasHandle": {
+          "getRenderer": "正在绘制的后端（启动前为 null）",
+          "getCanvas": "<canvas> 元素（挂载前为 null）",
+          "ready": "后端启动且当前 items 绘制完成后 resolve"
+        }
+      },
+      "wc": {
+        "minerva-icon-canvas": {
+          "props": {
+            "label": "整幅画面的无障碍名称（role=\"img\"）；不设置时，画布对辅助技术隐藏",
+            "canvas": "绘制图标的 <canvas> 元素；连接到文档前为 null"
+          },
+          "events": {
+            "minerva-renderer-change": "后端已启动，或在 GPU 丢失后完成回退；detail: { renderer }"
+          },
+          "methods": {
+            "getRenderer": "正在使用的后端（webgpu、webgl2、webgl、canvas2d）；启动前为 null",
+            "ready": "后端启动且当前 items 绘制完成后，以该后端 resolve"
+          }
+        },
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "items 是 JavaScript 属性：图标按 CSS 像素定位，各自设置尺寸、颜色、旋转、描边宽度和不透明度，绘制在同一个画布上。minerva-renderer-change 会报告所用的后端。"
+          }
+        }
+      }
+    }
+  }
+}

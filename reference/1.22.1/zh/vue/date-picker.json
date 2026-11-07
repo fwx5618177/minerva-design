@@ -1,0 +1,464 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "date-picker",
+  "title": "DatePicker 日期选择器",
+  "description": "从弹出式周一始月历网格中选择日期，或直接输入 YYYY-MM-DD 格式日期。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "keyboard": {
+      "title": "键盘与无障碍",
+      "open": "在输入框上按向下箭头可打开弹出日历并将焦点移至当前活动日期单元格；点击外部关闭日历。",
+      "navigate": "方向键、Home / End 与 PageUp / PageDown（按住 Shift 为一年）在日历网格中移动焦点。",
+      "select": "Enter 或 Space 选择当前聚焦的日期并关闭弹出层。",
+      "close": "Escape 关闭弹出日历并把焦点还给输入框。",
+      "typing": "输入的文本在构成完整且在范围内的 YYYY-MM-DD 日期时会立即提交；失焦时会自动规范化 YYYY/M/D 等宽松格式。"
+    }
+  },
+  "components": [
+    {
+      "name": "DatePicker",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DatePicker"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "string | null",
+            "required": false,
+            "typeText": "string | null"
+          },
+          {
+            "name": "defaultValue",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "ariaLabelledby",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "ariaDescribedby",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "invalid",
+            "type": "boolean",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "default": "\"date-picker\"",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "clearable",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "size",
+            "type": "\"medium\" | \"small\" | \"large\"",
+            "default": "\"medium\"",
+            "required": false,
+            "typeText": "\"medium\" | \"small\" | \"large\""
+          },
+          {
+            "name": "minDate",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "maxDate",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:DatePicker": {
+      "kind": "cssVars",
+      "source": "react/src/components/DatePicker",
+      "vars": [
+        {
+          "name": "--date-picker-width",
+          "description": "Width of the field"
+        },
+        {
+          "name": "--date-picker-panel-width",
+          "description": "Width of the popup calendar panel"
+        },
+        {
+          "name": "--date-picker-panel-radius",
+          "description": "Corner radius of the popup panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--date-picker-panel-padding",
+          "description": "Inner padding of the popup panel"
+        },
+        {
+          "name": "--date-picker-cell-size",
+          "description": "Width and height of a day cell in the popup grid"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { DatePicker, VStack } from \"minerva-design/vue\";\nconst date = ref<string | null>(null);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\">\n    <DatePicker v-model=\"date\" label=\"Meeting date\" />\n    <output>{{ date || \"No date selected\" }}</output>\n  </VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "使用 v-model 绑定 YYYY-MM-DD 字符串或 null，可选择、输入或清空日期。"
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/vue/form.vue",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/vue/form.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  DatePicker,\n  FormControl,\n  FormLabel,\n  FormHelperText,\n} from \"minerva-design/vue\";\nconst date = ref<string | null>(null);\n</script>\n<template>\n  <FormControl id=\"vue-date-picker-birthday\" required>\n    <FormLabel>Birthday</FormLabel>\n    <DatePicker v-model=\"date\" />\n    <FormHelperText\n      >Type YYYY-MM-DD or choose a day from the calendar.</FormHelperText\n    >\n  </FormControl>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "表单字段",
+      "description": "继承 FormControl 的标签、必填状态和辅助文本。"
+    },
+    {
+      "id": "range",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/vue/range.vue",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/vue/range.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { DatePicker, VStack } from \"minerva-design/vue\";\nconst date = ref(\"2026-10-15\");\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\">\n    <DatePicker\n      v-model=\"date\"\n      label=\"October booking\"\n      min-date=\"2026-10-10\"\n      max-date=\"2026-10-20\"\n    />\n    <output>{{ date || \"Choose a date between October 10 and 20\" }}</output>\n  </VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "日期范围",
+      "description": "仅允许选择 10 月 10 日至 10 月 20 日的日期。"
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/vue/states.vue",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/vue/states.vue": "<script setup lang=\"ts\">\nimport { DatePicker, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\">\n    <DatePicker label=\"Small date\" size=\"small\" default-value=\"2026-10-15\" />\n    <DatePicker label=\"Read-only date\" default-value=\"2026-10-15\" read-only />\n    <DatePicker label=\"Disabled date\" default-value=\"2026-10-15\" disabled />\n    <DatePicker\n      label=\"Date without clear button\"\n      default-value=\"2026-10-15\"\n      :clearable=\"false\"\n    />\n  </VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "尺寸与状态",
+      "description": "展示小尺寸、只读、禁用及不可清空的日期字段。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DatePicker 日期选择器",
+      "description": "从弹出式周一始月历网格中选择日期，或直接输入 YYYY-MM-DD 格式日期。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "点击输入框（或按向下箭头）打开弹出日历。onChange 接收 \"YYYY-MM-DD\" 字符串，清除时接收 \"\"。未设置 label 时，输入框的无障碍名称为 \"Date\"（日期）。"
+        },
+        "default-value": {
+          "title": "默认值与清除",
+          "description": "defaultValue 设置初始日期。清除按钮的标签为 \"Clear date\"（清除日期）；设置 clearable={false} 可隐藏该按钮。"
+        },
+        "controlled": {
+          "title": "受控",
+          "description": "传入 value 并在 onChange 中更新。\"\" 或 null 保持受控但为空，undefined 则让组件变为非受控。"
+        },
+        "min-max": {
+          "title": "日期范围限制",
+          "description": "minDate 和 maxDate（\"YYYY-MM-DD\"）会禁用允许范围之外的日期。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "提供 small、medium（默认）和 large 三种尺寸。"
+        },
+        "disabled": {
+          "title": "禁用与只读",
+          "description": "禁用或只读状态下无法打开面板或修改日期。"
+        },
+        "form-control": {
+          "title": "配合 FormField",
+          "description": "在 FormControl / FormField 中，DatePicker 会自动继承 id、label、帮助/错误文本以及 required、disabled、readOnly、invalid 状态。"
+        }
+      },
+      "api": {
+        "DatePickerProps": {
+          "ref": "<input> 元素的 ref",
+          "value": "选中的日期 \"YYYY-MM-DD\"（受控；与 onChange 搭配使用）。\"\" 或 null 表示\"无日期\"但保持受控；undefined 让选择器变为非受控",
+          "defaultValue": "初始选中的日期 \"YYYY-MM-DD\"（非受控）",
+          "onChange": "以选中的日期（\"YYYY-MM-DD\"）调用，清除时传入 \"\"",
+          "placeholder": "输入框占位文字；默认为本地化的 \"Select date\"（选择日期）",
+          "label": "输入框的可见标签；未设置时输入框标签为本地化的 \"Date\"（日期）",
+          "aria-label": "未显示可见标签时输入框的无障碍标签",
+          "aria-labelledby": "为输入框提供标签的元素 id（可多个）；在 FormControl 中默认指向 FormLabel（除非设置了 label / aria-label）",
+          "aria-describedby": "描述输入框的元素 id（可多个）；会与外层 FormControl 的帮助/错误文本合并",
+          "id": "输入框的 id；默认使用外层 FormControl 的 id",
+          "required": "将输入框标记为必填；默认继承外层 FormControl 的状态",
+          "readOnly": "只显示值而不允许修改（输入、面板、清除均不可用）；默认继承外层 FormControl 的状态",
+          "invalid": "将输入框标记为无效（aria-invalid）；默认继承外层 FormControl 的状态",
+          "name": "输入框的 name",
+          "onOpenChange": "弹出日历打开或关闭时调用",
+          "disabled": "禁用选择器；默认继承外层 FormControl 的状态",
+          "clearable": "允许通过后缀按钮清除值",
+          "size": "输入框尺寸",
+          "minDate": "可选的最早日期（\"YYYY-MM-DD\"）；更早的日期会被禁用",
+          "maxDate": "可选的最晚日期（\"YYYY-MM-DD\"）；更晚的日期会被禁用",
+          "locale": "月份标题的语言区域（Intl.DateTimeFormat）",
+          "className": "额外的类名",
+          "style": "根元素的内联样式"
+        }
+      },
+      "keyboard": {
+        "title": "键盘与无障碍",
+        "open": "在输入框上按向下箭头可打开弹出日历并将焦点移至当前活动日期单元格；点击外部关闭日历。",
+        "navigate": "方向键、Home / End 与 PageUp / PageDown（按住 Shift 为一年）在日历网格中移动焦点。",
+        "select": "Enter 或 Space 选择当前聚焦的日期并关闭弹出层。",
+        "close": "Escape 关闭弹出日历并把焦点还给输入框。",
+        "typing": "输入的文本在构成完整且在范围内的 YYYY-MM-DD 日期时会立即提交；失焦时会自动规范化 YYYY/M/D 等宽松格式。"
+      },
+      "cssVars": {
+        "--date-picker-width": "输入框宽度",
+        "--date-picker-panel-width": "弹出日历面板宽度",
+        "--date-picker-panel-radius": "弹出面板圆角（默认 --radius-lg）",
+        "--date-picker-panel-padding": "弹出面板内边距",
+        "--date-picker-cell-size": "弹出网格中日期单元格的宽高"
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生日历",
+            "description": "点击字段打开日历。选择日期会立即提交本地 YYYY-MM-DD 字符串；清空时返回空字符串。minDate 和 maxDate 限制可选范围。原生字段使用触摸日期按钮，不提供文本输入或 DOM 网格键盘导航。"
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "日期选择与范围",
+            "description": "输入 YYYY-MM-DD 或选择 10 月 10 日至 20 日的日期。minerva-change 返回 { value }，清空时为空字符串。value 属性设置初始值，表单重置恢复该值。"
+          }
+        },
+        "minerva-date-picker": {
+          "props": {
+            "open": "面板是否打开。",
+            "readOnly": "只显示值而不允许修改（不能输入、打开面板或清除）。",
+            "hideClearButton": "隐藏清除按钮（相当于 React 中的 clearable={false}）。",
+            "isDisabled": "控件是否被禁用（自身禁用或位于禁用的 <fieldset> 中）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与该元素关联的 <label> 元素。",
+            "validity": "有效性状态（与 <input>.validity 相同）。",
+            "validationMessage": "描述当前校验错误的消息（有效时为空）。",
+            "willValidate": "该元素是否参与约束校验。",
+            "valueAsDate": "当前值对应的本地 Date；为空或无效时返回 null。"
+          },
+          "events": {
+            "change": "与 minerva-change 相同（类似原生事件，会冒泡）。",
+            "minerva-change": "提交日期时触发，detail: { value }，格式为 YYYY-MM-DD；清空时为空字符串。",
+            "minerva-input": "输入草稿变化时触发，detail: { value }。",
+            "minerva-open-change": "用户打开或关闭了面板，detail: { open }；可取消：preventDefault() 会保持当前状态。",
+            "minerva-clear": "日期被清空时触发。"
+          },
+          "cssVars": {
+            "--input-height": "输入框的最小高度（默认取当前密度下对应尺寸的控件高度）。",
+            "--input-padding-x": "文本的水平内边距。",
+            "--input-radius": "输入框圆角（默认 --radius-lg）。",
+            "--input-font-size": "输入框字号。",
+            "--input-background": "输入框背景色。",
+            "--input-border-color": "默认状态下的边框颜色。",
+            "--input-focus-color": "悬停或聚焦时的边框颜色。",
+            "--icon-button-color": "清除按钮图标的颜色。",
+            "--icon-button-hover-bg": "清除按钮悬停时的背景。",
+            "--icon-button-pressed-color": "清除按钮按下时的图标颜色。",
+            "--icon-button-pressed-bg": "清除按钮按下时的背景。",
+            "--icon-button-size": "清除按钮的宽高（默认随密度的控件高度变化）。",
+            "--icon-button-icon-size": "清除按钮图标的尺寸。",
+            "--icon-button-radius": "清除按钮的圆角（默认 --radius-lg）。"
+          },
+          "methods": {
+            "focus": "聚焦内部输入框。",
+            "blur": "使内部输入框失去焦点。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误（传入空字符串则清除）。",
+            "formResetCallback": "表单 reset() 时由浏览器调用：恢复 value 属性中的值。",
+            "formDisabledCallback": "祖先 <fieldset> 被禁用或启用时由浏览器调用。",
+            "formStateRestoreCallback": "由浏览器调用以恢复值（往返缓存、自动填充）。"
+          }
+        }
+      },
+      "vue": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "使用 v-model 绑定 YYYY-MM-DD 字符串或 null，可选择、输入或清空日期。"
+          },
+          "range": {
+            "title": "日期范围",
+            "description": "仅允许选择 10 月 10 日至 10 月 20 日的日期。"
+          },
+          "form": {
+            "title": "表单字段",
+            "description": "继承 FormControl 的标签、必填状态和辅助文本。"
+          },
+          "states": {
+            "title": "尺寸与状态",
+            "description": "展示小尺寸、只读、禁用及不可清空的日期字段。"
+          }
+        }
+      }
+    }
+  }
+}

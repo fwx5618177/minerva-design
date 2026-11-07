@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "icon-button",
+  "title": "IconButton アイコンボタン",
+  "description": "アイコンのみを表示するコンパクトなボタン。pressed / defaultPressed を指定するとトグルボタン（お気に入り、いいね、ミュートなど）になります。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "IconButton",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "IconButton"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the button. Takes precedence over aria-label",
+            "typeText": "string"
+          },
+          {
+            "name": "tooltip",
+            "type": "Partial<TooltipProps>",
+            "required": false,
+            "description": "Tooltip options; defaults to the accessible label.",
+            "typeText": "Partial<TooltipProps>"
+          },
+          {
+            "name": "showTooltip",
+            "type": "boolean",
+            "required": false,
+            "description": "Show the tooltip (defaults to true when a label is supplied).",
+            "typeText": "boolean"
+          },
+          {
+            "name": "color",
+            "type": "ColorScheme",
+            "default": "\"neutral\"",
+            "required": false,
+            "description": "Semantic color of the button",
+            "typeText": "ColorScheme"
+          },
+          {
+            "name": "variant",
+            "type": "\"outline\" | \"solid\" | \"ghost\"",
+            "default": "\"ghost\"",
+            "required": false,
+            "description": "Visual style: `ghost` (transparent until hovered), `solid` (filled with\nthe color) or `outline` (bordered)",
+            "typeText": "\"outline\" | \"solid\" | \"ghost\""
+          },
+          {
+            "name": "size",
+            "type": "\"medium\" | \"small\" | \"large\" | \"xsmall\"",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Button size",
+            "typeText": "\"medium\" | \"small\" | \"large\" | \"xsmall\""
+          },
+          {
+            "name": "shape",
+            "type": "\"circle\" | \"square\"",
+            "default": "\"circle\"",
+            "required": false,
+            "description": "Button shape",
+            "typeText": "\"circle\" | \"square\""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the button and removes it from the tab order",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Replaces the icon with a spinner and ignores activation (click, Enter,\nSpace, form submission) while staying focusable: exposed as\naria-busy + aria-disabled instead of the native disabled attribute",
+            "typeText": "boolean"
+          },
+          {
+            "name": "pressed",
+            "type": "boolean",
+            "required": false,
+            "description": "Pressed state of a toggle button (controlled, `v-model:pressed`).\nSetting pressed, defaultPressed or a `pressedChange` / `update:pressed`\nlistener makes the button a toggle: clicking flips the state and it is\nexposed as aria-pressed",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultPressed",
+            "type": "boolean",
+            "required": false,
+            "description": "Initial pressed state of an uncontrolled toggle button",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "click",
+            "type": "[event: MouseEvent]",
+            "typeText": "[event: MouseEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "MouseEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:pressed",
+            "type": "[pressed: boolean]",
+            "typeText": "[pressed: boolean]",
+            "parameters": [
+              {
+                "name": "pressed",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pressedChange",
+            "type": "[pressed: boolean]",
+            "typeText": "[pressed: boolean]",
+            "parameters": [
+              {
+                "name": "pressed",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "The icon",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "pressed",
+            "event": "update:pressed",
+            "syntax": "v-model:pressed"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:IconButton": {
+      "kind": "cssVars",
+      "source": "react/src/components/IconButton",
+      "vars": [
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { HStack, IconButton } from \"minerva-design/vue\";\nconst count = ref(0);\n</script>\n<template>\n  <HStack :gap=\"3\" align=\"center\" wrap\n    ><IconButton label=\"Add\" @click=\"count++\"\n      ><template #icon>+</template></IconButton\n    ><IconButton label=\"Settings\"><template #icon>⚙</template></IconButton\n    ><IconButton label=\"Delete\"><template #icon>⌫</template></IconButton\n    ><output aria-live=\"polite\">{{\n      count === 0 ? \"Nothing added yet\" : `Added ${count} item(s)`\n    }}</output></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "sizes-shapes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/vue/sizes-shapes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/vue/sizes-shapes.vue": "<script setup lang=\"ts\">\nimport { IconButton, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><IconButton label=\"Small add\" size=\"small\" shape=\"circle\">+</IconButton\n    ><IconButton label=\"Medium edit\" size=\"medium\" shape=\"square\">✎</IconButton\n    ><IconButton label=\"Large favorite\" size=\"large\" variant=\"solid\"\n      >★</IconButton\n    ></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes-shapes",
+      "description": ""
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/vue/states.vue",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/vue/states.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { IconButton, HStack } from \"minerva-design/vue\";\nconst pinned = ref(false);\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><IconButton label=\"Saving\" loading>✓</IconButton\n    ><IconButton label=\"Unavailable\" disabled>×</IconButton\n    ><IconButton v-model:pressed=\"pinned\" label=\"Pin item\">★</IconButton\n    ><output>{{ pinned ? \"Pinned\" : \"Unpinned\" }}</output></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "states",
+      "description": ""
+    },
+    {
+      "id": "toggle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/vue/toggle.vue",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/vue/toggle.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { HStack, IconButton } from \"minerva-design/vue\";\nconst liked = ref(false);\n</script>\n<template>\n  <HStack :gap=\"3\" align=\"center\" wrap\n    ><IconButton v-model:pressed=\"liked\" label=\"Like\" color=\"danger\"\n      ><template #icon>♥</template></IconButton\n    ><span>{{ liked ? \"Liked\" : \"Not liked yet\" }}</span\n    ><IconButton label=\"Bookmark\" default-pressed\n      ><template #icon>◆</template></IconButton\n    ><IconButton label=\"Mute\" shape=\"square\" :default-pressed=\"false\"\n      ><template #icon>♩</template></IconButton\n    ></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "toggle",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "IconButton アイコンボタン",
+      "description": "アイコンのみを表示するコンパクトなボタン。pressed / defaultPressed を指定するとトグルボタン（お気に入り、いいね、ミュートなど）になります。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "Add は件数を増やします。Settings と Delete は読み上げ名を持つアイコン操作の例です。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でセマンティックカラーを指定します：neutral（デフォルト）、primary、success、warning、danger、info。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを指定します：ghost（デフォルト、ホバーまで透明）、solid（色で塗りつぶし）、outline（枠線）。"
+        },
+        "sizes-and-shapes": {
+          "title": "サイズと形状",
+          "description": "3 つのサイズ（small、medium、large）と 2 つの形状（circle、square）。"
+        },
+        "states": {
+          "title": "状態",
+          "description": "loading はアイコンをスピナーに置き換え、操作を無視しつつボタンをフォーカス可能なままにします（aria-busy + aria-disabled）。pressed はトグルがオンであることを示し、disabled はネイティブの disabled 属性を設定してボタンをタブ順序から外します。"
+        },
+        "toggle": {
+          "title": "トグルボタン",
+          "description": "Like はオフから開始し結果を表示します。Bookmark はオン、Mute はオフから開始します。"
+        },
+        "search": {
+          "title": "検索ボタン",
+          "description": "検索操作は検索アイコンとラベルを持つ IconButton です。type=\"submit\" でフォームを送信し、loading で検索中の再実行を防ぎます。表示テキストが必要な場合は Button を使います。"
+        },
+        "custom-colors": {
+          "title": "カスタムカラー",
+          "description": "CSS カスタムプロパティで色を上書きします：--icon-button-color（アイコン）、--icon-button-hover-bg（ホバー時の背景）、--icon-button-pressed-color と --icon-button-pressed-bg（トグルの押下状態）。インラインスタイル、クラス、祖先要素のいずれでも指定できます。"
+        },
+        "tooltip": {
+          "title": "ツールチップ",
+          "description": "showTooltip と tooltip を設定すると、ホバー時とキーボードフォーカス時に操作内容を表示します。"
+        },
+        "label": {
+          "title": "ラベルとツールチップ",
+          "description": "label はボタンのアクセシブルな名前になり、ツールチップとしても表示されます。アイコンは children で渡せます。variant で見た目のスタイル、color でセマンティックカラーを指定します。"
+        }
+      },
+      "api": {
+        "IconButtonProps": {
+          "icon": "表示するアイコン要素",
+          "color": "ボタンのセマンティックカラー",
+          "variant": "見た目のスタイル：ghost（ホバーまで透明）、solid（色で塗りつぶし）、outline（枠線）",
+          "size": "ボタンのサイズ",
+          "shape": "ボタンの形状",
+          "disabled": "ネイティブボタンを無効にし、タブ順序から外します",
+          "loading": "アイコンをスピナーに置き換え、フォーカス可能なまま操作（クリック、Enter、Space、フォーム送信）を無視します。ネイティブの disabled 属性ではなく aria-busy と aria-disabled で示されます",
+          "pressed": "トグルボタンの押下状態（制御。onPressedChange と併用）。aria-pressed で公開されます",
+          "defaultPressed": "非制御のトグルボタンの初期押下状態",
+          "onPressedChange": "トグルボタンが操作されたときに新しい押下状態で呼ばれます",
+          "className": "追加のクラス名",
+          "tooltip": "ツールチップの設定（content、color、variant、shape、arrow）。showTooltip が必要",
+          "showTooltip": "ホバー時とフォーカス時にツールチップを表示する",
+          "aria-label": "アクセシブルなラベル。ボタンはアイコンのみなので必ず指定する",
+          "ref": "<button> 要素への ref",
+          "children": "アイコン要素（icon プロパティの代わり）",
+          "label": "ボタンのアクセシブルな名前。ツールチップとしても表示されます（showTooltip が false の場合を除く）。aria-label より優先されます"
+        }
+      },
+      "cssVars": {
+        "--icon-button-color": "アイコンの色",
+        "--icon-button-hover-bg": "ホバー時の背景色",
+        "--icon-button-pressed-color": "押下状態のトグルのアイコン色",
+        "--icon-button-pressed-bg": "押下状態のトグルの背景色",
+        "--icon-button-size": "ボタンの幅と高さ（全サイズ。既定は密度に応じたコントロール高さに従う）",
+        "--icon-button-icon-size": "アイコンのフォントサイズ（全サイズ）",
+        "--icon-button-radius": "square 形状の角丸（既定は --radius-lg）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "label はアイコンのみのボタンに名前を付け、ホバーやフォーカス時にツールチップとして表示されます（Escape で閉じる）。既定は ghost・neutral です。"
+          },
+          "sizes-shapes": {
+            "title": "サイズ・形状・色",
+            "description": "4 つのサイズ、円形または四角形、共通のセマンティックカラーと solid / outline / ghost のバリアント。"
+          },
+          "toggle": {
+            "title": "トグルボタン",
+            "description": "toggle は aria-pressed を公開し、操作すると pressed を反転してキャンセル可能な minerva-pressed-change を発火します。ピンはオフにできません（preventDefault）。"
+          },
+          "states": {
+            "title": "読み込み・無効・ツールチップ",
+            "description": "更新をクリックすると読み込み状態になります（フォーカス可能なまま操作は無視）。tooltip はテキストを上書きし、tooltip-placement は位置を変え、no-tooltip は非表示にします。"
+          }
+        },
+        "minerva-icon-button": {
+          "props": {
+            "toggle": "トグルボタンにします（aria-pressed を公開）。",
+            "tooltipPlacement": "ツールチップの優先配置。",
+            "noTooltip": "ツールチップを表示しません（label は引き続きボタンの名前になります）。",
+            "type": "フォーム内での動作：なし（button）、送信、リセット。",
+            "form": "ボタンが属するフォーム（読み取り専用）。"
+          },
+          "events": {
+            "minerva-pressed-change": "トグルボタンが操作されました（detail: { pressed } は新しい状態）。キャンセル可能：preventDefault() で現在の状態を維持します。"
+          },
+          "slots": {
+            "default": "アイコン（支援技術からは隠されます）。"
+          },
+          "cssVars": {
+            "--tooltip-max-width": "ツールチップの最大幅（ビューポートで制限）。",
+            "--tooltip-padding": "ツールチップのパディング。",
+            "--tooltip-radius": "ツールチップの角丸の半径。",
+            "--tooltip-font-size": "ツールチップのフォントサイズ。",
+            "--tooltip-bg": "ツールチップの背景（グラデーション可）。",
+            "--tooltip-color": "ツールチップの文字色。",
+            "--tooltip-shadow": "ツールチップの影（既定値は --shadow-md）。",
+            "--tooltip-z-index": "ツールチップの重なり順（既定値は --z-popover）。"
+          },
+          "methods": {
+            "focus": "内部のボタンにフォーカスします。",
+            "blur": "内部のボタンからフォーカスを外します。",
+            "click": "内部のボタンをクリックします（無効または読み込み中は無視）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "Add は件数を増やします。Settings と Delete は読み上げ名を持つアイコン操作の例です。"
+          },
+          "toggle": {
+            "title": "トグルボタン",
+            "description": "Like はオフから開始し結果を表示します。Bookmark はオン、Mute はオフから開始します。"
+          },
+          "variants-sizes": {
+            "title": "バリエーションとサイズ",
+            "description": "IconButton の「バリエーションとサイズ」の例。プレビューはサイトのテーマとパレットに追従します。"
+          }
+        }
+      }
+    }
+  }
+}

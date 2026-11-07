@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "number-input",
+  "title": "NumberInput",
+  "description": "Numeric field (spinbutton) with arrow-key stepping, an optional stepper, min / max clamping and fixed precision; values are committed on blur or Enter.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "NumberInput",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "NumberInput"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "number | null",
+            "required": false,
+            "description": "Current value (controlled, `v-model`); `null` is an empty field. Omit for an uncontrolled field",
+            "typeText": "number | null"
+          },
+          {
+            "name": "defaultValue",
+            "type": "number | null",
+            "required": false,
+            "description": "Initial value of an uncontrolled field",
+            "typeText": "number | null"
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "required": false,
+            "description": "Smallest allowed value; committed values are clamped to it",
+            "typeText": "number"
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "required": false,
+            "description": "Largest allowed value; committed values are clamped to it",
+            "typeText": "number"
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "default": "1",
+            "required": false,
+            "description": "Amount added / removed by ArrowUp / ArrowDown and the stepper",
+            "typeText": "number"
+          },
+          {
+            "name": "precision",
+            "type": "number",
+            "required": false,
+            "description": "Decimal places of the value; inferred from step when omitted (step 0.01 -> 2)",
+            "typeText": "number"
+          },
+          {
+            "name": "size",
+            "type": "NumberInputSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Field size",
+            "typeText": "NumberInputSize"
+          },
+          {
+            "name": "invalid",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Error state (also set by an invalid FormControl or an out-of-range draft)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the field (also set by FormControl)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Focusable and copyable, but typing and stepping do not change the value\n(also set by FormControl)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Marks the field as required.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "description": "id of the input (defaults to the enclosing FormControl's id)",
+            "typeText": "string"
+          },
+          {
+            "name": "showStepper",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows increment / decrement buttons; the arrow keys always work",
+            "typeText": "boolean"
+          },
+          {
+            "name": "allowEmpty",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Clearing the field commits `null`; otherwise it falls back to min (or 0)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "incrementLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the increment button",
+            "typeText": "string"
+          },
+          {
+            "name": "decrementLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the decrement button",
+            "typeText": "string"
+          },
+          {
+            "name": "notANumberMessage",
+            "type": "string",
+            "required": false,
+            "description": "Hint shown (as the wrapper title) while the draft is not a number",
+            "typeText": "string"
+          },
+          {
+            "name": "belowMinMessage",
+            "type": "string",
+            "required": false,
+            "description": "Hint shown while the draft is below min",
+            "typeText": "string"
+          },
+          {
+            "name": "aboveMaxMessage",
+            "type": "string",
+            "required": false,
+            "description": "Hint shown while the draft is above max",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: number | null]",
+            "typeText": "[value: number | null]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "number | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[value: number | null]",
+            "typeText": "[value: number | null]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "number | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:NumberInput": {
+      "kind": "cssVars",
+      "source": "react/src/components/NumberInput",
+      "vars": [
+        {
+          "name": "--number-input-height",
+          "description": "Height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--number-input-padding-x",
+          "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+        },
+        {
+          "name": "--number-input-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--number-input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--number-input-background",
+          "description": "Background color"
+        },
+        {
+          "name": "--number-input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--number-input-stepper-width",
+          "description": "Width of the increment / decrement column"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/number-input/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/number-input/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { NumberInput, VStack } from \"minerva-design/vue\";\nconst value = ref<number | null>(2);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><NumberInput\n      v-model=\"value\"\n      :min=\"0\"\n      :max=\"10\"\n      aria-label=\"Quantity\"\n    /><output>Quantity: {{ value }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/number-input/vue/form.vue",
+      "files": {
+        "apps/docs/src/docs/pages/number-input/vue/form.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { NumberInput, FormField } from \"minerva-design/vue\";\nconst value = ref<number | null>(null);\n</script>\n<template>\n  <FormField\n    label=\"Seats\"\n    required\n    :invalid=\"value === null\"\n    error-message=\"Enter a seat count\"\n    ><NumberInput v-model=\"value\" :min=\"1\" :max=\"100\"\n  /></FormField>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "form",
+      "description": ""
+    },
+    {
+      "id": "precision",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/number-input/vue/precision.vue",
+      "files": {
+        "apps/docs/src/docs/pages/number-input/vue/precision.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { NumberInput, FormField } from \"minerva-design/vue\";\nconst value = ref<number | null>(12.5);\n</script>\n<template>\n  <FormField label=\"Unit price\" helper-text=\"Steps of 0.25\"\n    ><NumberInput v-model=\"value\" :step=\"0.25\" :precision=\"2\" :min=\"0\"\n  /></FormField>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "precision",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "NumberInput",
+      "description": "Numeric field (spinbutton) with arrow-key stepping, an optional stepper, min / max clamping and fixed precision; values are committed on blur or Enter.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Out-of-range or non-numeric drafts are flagged and clamped / reverted when committed; clearing gives null."
+        },
+        "stepper-precision": {
+          "title": "Stepper and precision",
+          "description": "showStepper adds buttons; precision is inferred from step unless set; allowEmpty={false} falls back to min."
+        },
+        "form-control": {
+          "title": "With FormField",
+          "description": "The field provides the label, state and description; readOnly blocks typing and stepping."
+        }
+      },
+      "api": {
+        "NumberInputProps": {
+          "value": "Current value (controlled); `null` is an empty field. Omit for an uncontrolled field",
+          "defaultValue": "Initial value of an uncontrolled field",
+          "onChange": "Called with the committed value (on blur / Enter, stepping and stepper clicks), never while typing; `null` when the field is cleared",
+          "min": "Smallest allowed value; committed values are clamped to it",
+          "max": "Largest allowed value; committed values are clamped to it",
+          "step": "Amount added / removed by ArrowUp / ArrowDown and the stepper",
+          "precision": "Decimal places of the value; inferred from step when omitted (step 0.01 -> 2)",
+          "size": "Field size",
+          "invalid": "Error state (also set by an invalid FormControl or an out-of-range draft)",
+          "disabled": "Disables the field (also set by FormControl)",
+          "readOnly": "Focusable and copyable, but typing and stepping do not change the value (also set by FormControl)",
+          "showStepper": "Shows increment / decrement buttons; the arrow keys always work",
+          "allowEmpty": "Clearing the field commits `null`; otherwise it falls back to min (or 0)",
+          "className": "Class name of the wrapper",
+          "incrementLabel": "Accessible label of the increment button",
+          "decrementLabel": "Accessible label of the decrement button",
+          "notANumberMessage": "Hint shown (as the wrapper title) while the draft is not a number",
+          "belowMinMessage": "Hint shown while the draft is below min",
+          "aboveMaxMessage": "Hint shown while the draft is above max",
+          "ref": "Ref to the <input> element"
+        }
+      },
+      "cssVars": {
+        "--number-input-height": "Height (every size; defaults to the density's control height of the size)",
+        "--number-input-padding-x": "Horizontal padding of the text (defaults to the density's small control padding)",
+        "--number-input-radius": "Corner radius (defaults to --radius-md)",
+        "--number-input-font-size": "Font size (every size)",
+        "--number-input-background": "Background color",
+        "--number-input-border-color": "Border color at rest (also the stepper separators)",
+        "--number-input-stepper-width": "Width of the increment / decrement column"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "min / max with the stepper. ArrowUp / ArrowDown step, PageUp / PageDown step by 10, Home / End jump to the bounds; minerva-change reports each committed value."
+          },
+          "precision": {
+            "title": "Step, precision and methods",
+            "description": "A decimal step with two fixed decimals and no-empty; the external buttons call stepUp() / stepDown(). Also read-only, disabled and sizes."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "required and out-of-range values block submission with localized or custom messages (below-min-message, above-max-message); reset restores the value attribute."
+          }
+        },
+        "minerva-number-input": {
+          "props": {
+            "readOnly": "Focusable and submitted, but typing and stepping do not change the value.",
+            "noEmpty": "Clearing the field falls back to min (or 0) instead of committing null.",
+            "placeholder": "Placeholder text shown while the field is empty.",
+            "name": "Name under which the value is submitted with the form.",
+            "required": "The control must have a value for the form to be submitted.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only)."
+          },
+          "events": {
+            "change": "A value was committed (blur, Enter or stepping).",
+            "input": "The draft text changed (native, composed).",
+            "minerva-input": "The draft text changed; detail: { value } is the parsed draft (null when it is not a number).",
+            "minerva-change": "A new value was committed; detail: { value } (null when cleared)."
+          },
+          "methods": {
+            "focus": "Focuses the inner control.",
+            "blur": "Removes focus from the inner control.",
+            "stepUp": "Adds step to the value (clamped to max); does not emit events.",
+            "stepDown": "Subtracts step from the value (clamped to min); does not emit events.",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

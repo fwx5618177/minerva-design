@@ -1,0 +1,1190 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "sankey-chart",
+  "title": "Diagramme de Sankey",
+  "description": "Des flux entre étapes : bilans énergétiques, parcours utilisateurs, répartitions budgétaires. Les nœuds sont rangés en colonnes, l'épaisseur d'un lien est proportionnelle à son flux, et l'ordre des nœuds est relaxé pour redresser les flux et limiter les croisements. Survolez un nœud pour mettre en avant tous ses flux, ou un lien pour voir sa part dans sa source ; les flèches du clavier parcourent les nœuds et les liens.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "data": {
+      "energy": {
+        "solar": "Solaire",
+        "wind": "Éolien",
+        "hydro": "Hydraulique",
+        "nuclear": "Nucléaire",
+        "gas": "Gaz naturel",
+        "coal": "Charbon",
+        "oil": "Pétrole",
+        "electricity": "Électricité",
+        "heat": "Réseaux de chaleur",
+        "fuels": "Carburants",
+        "homes": "Résidentiel",
+        "industry": "Industrie",
+        "services": "Tertiaire",
+        "transport": "Transports",
+        "losses": "Pertes"
+      },
+      "twh": "{{value}} TWh",
+      "energyAria": "Bilan énergétique : sources primaires, vecteurs et usages finaux, en térawattheures par an",
+      "journey": {
+        "searchAds": "Annonces",
+        "organic": "Recherche naturelle",
+        "newsletter": "Newsletter",
+        "social": "Réseaux sociaux",
+        "home": "Accueil",
+        "pricing": "Page tarifs",
+        "blog": "Blog",
+        "signup": "Inscription",
+        "left": "Départ du site",
+        "trial": "Essai démarré",
+        "abandoned": "Abandon",
+        "paid": "Offre payante",
+        "expired": "Essai expiré"
+      },
+      "journeyAria": "Sessions d'une semaine, du canal d'acquisition à l'abonnement",
+      "journeyLink": "{{source}} → {{target}} : {{value}} sessions ({{share}} % de {{source}})",
+      "journeyNode": "{{name}} : {{value}} sessions",
+      "journeyHint": "Cliquez sur une étape ou un chemin (ou donnez le focus au graphique et appuyez sur Entrée) pour le sélectionner",
+      "budget": {
+        "licenses": "Licences",
+        "subscriptions": "Abonnements",
+        "services": "Services",
+        "grants": "Subventions",
+        "budget": "Budget annuel",
+        "rnd": "R&D",
+        "sales": "Ventes et marketing",
+        "operations": "Opérations",
+        "admin": "Administration",
+        "platform": "Plateforme",
+        "mobile": "Applications mobiles",
+        "ai": "Recherche en IA",
+        "campaigns": "Campagnes",
+        "salesTeam": "Équipe commerciale",
+        "infrastructure": "Infrastructure",
+        "support": "Support client",
+        "finance": "Finance et juridique",
+        "offices": "Bureaux"
+      },
+      "budgetAria": "Budget annuel : sources de revenus, départements et programmes",
+      "support": {
+        "email": "E-mail",
+        "chat": "Chat",
+        "phone": "Téléphone",
+        "bot": "Chatbot",
+        "tier1": "Niveau 1",
+        "tier2": "Niveau 2",
+        "engineering": "Ingénierie",
+        "solved": "Résolu",
+        "refunded": "Remboursé",
+        "escalated": "Bug signalé"
+      },
+      "supportAria": "Tickets de support d'un mois, du canal au résultat",
+      "alignLabel": "Alignement des nœuds",
+      "align": {
+        "justify": "Justifié",
+        "left": "Gauche",
+        "right": "Droite",
+        "center": "Centré"
+      },
+      "linkColorLabel": "Couleur des liens",
+      "linkColor": {
+        "gradient": "Dégradé",
+        "source": "Source",
+        "target": "Cible",
+        "neutral": "Neutre"
+      },
+      "labelValues": "Valeurs dans les étiquettes",
+      "pnl": {
+        "cloud": "Cloud",
+        "licenses": "Licences",
+        "hardware": "Matériel",
+        "services": "Services",
+        "revenue": "Chiffre d'affaires",
+        "cogs": "Coût des ventes",
+        "gross": "Marge brute",
+        "rnd": "R&D",
+        "sales": "Ventes et marketing",
+        "admin": "Frais généraux",
+        "operating": "Résultat d'exploitation",
+        "tax": "Impôt sur les sociétés",
+        "net": "Résultat net",
+        "aria": "Compte de résultat trimestriel : segments de chiffre d'affaires, coûts et marges",
+        "margins": "Marge brute {{gross}} · marge d'exploitation {{operating}} · marge nette {{net}}"
+      },
+      "supply": {
+        "brazil": "Brésil",
+        "colombia": "Colombie",
+        "ethiopia": "Éthiopie",
+        "vietnam": "Viêt Nam",
+        "hamburg": "Torréfaction de Hambourg",
+        "rotterdam": "Torréfaction de Rotterdam",
+        "north": "Entrepôt Nord",
+        "central": "Entrepôt Centre",
+        "south": "Entrepôt Sud",
+        "cafes": "Cafés",
+        "supermarkets": "Supermarchés",
+        "online": "Boutique en ligne",
+        "tonnes": "{{value}} t",
+        "aria": "Café expédié en un mois, des pays d'origine aux canaux de vente en passant par les torréfactions et les entrepôts",
+        "hint": "Cliquez sur un site pour suivre tout ce qui le traverse, ou sur une expédition pour la sélectionner",
+        "node": "{{name}} : {{inbound}} reçues de {{from}} sites, {{outbound}} envoyées vers {{to}} sites",
+        "link": "{{source}} → {{target}} : {{value}} ({{share}} des envois de {{source}})",
+        "clear": "Effacer la sélection"
+      },
+      "hiring": {
+        "referrals": "Cooptation",
+        "jobBoards": "Sites d'emploi",
+        "linkedin": "Réseaux professionnels",
+        "agencies": "Cabinets",
+        "campus": "Écoles",
+        "applied": "Candidatures",
+        "cvRejected": "Refusés sur CV",
+        "screen": "Entretien téléphonique",
+        "screenOut": "Non retenus après l'appel",
+        "interview": "Entretiens",
+        "interviewOut": "Non retenus après les entretiens",
+        "offer": "Offres",
+        "declined": "Offre déclinée",
+        "hired": "Embauchés",
+        "showDropOffs": "Afficher les abandons",
+        "aria": "Entonnoir de recrutement d'une année, de la source du candidat à l'embauche",
+        "summary": "{{applied}} candidatures, {{hired}} embauches ({{rate}}). {{interview}} des candidats appelés passent les entretiens et {{accepted}} des offres sont acceptées."
+      },
+      "traffic": {
+        "client": {
+          "web": "Application web",
+          "ios": "Application iOS",
+          "android": "Application Android",
+          "partners": "API partenaires"
+        },
+        "gateway": "Passerelle API",
+        "service": {
+          "auth": "Authentification",
+          "catalog": "Catalogue",
+          "search": "Recherche",
+          "checkout": "Paiement"
+        },
+        "status": {
+          "ok": "2xx succès",
+          "clientError": "4xx erreur client",
+          "serverError": "5xx erreur serveur"
+        },
+        "rps": "{{value}} req/s",
+        "summary": "Total : {{total}}.",
+        "healthy": "Erreurs serveur : {{rate}}",
+        "incident": "Erreurs serveur : {{rate}}, incident sur le paiement",
+        "pause": "Pause",
+        "resume": "Reprendre",
+        "aria": "Trafic d'API en direct, en requêtes par seconde, des clients vers les services et leurs codes de statut"
+      },
+      "plastic": {
+        "pet": "Bouteilles et barquettes PET",
+        "hdpe": "Flacons PEHD",
+        "pp": "Pots et bouchons PP",
+        "film": "Films PEBD",
+        "other": "Autres polymères",
+        "market": "Emballages mis sur le marché",
+        "collected": "Collectés pour recyclage",
+        "incinerated": "Incinérés",
+        "landfill": "Mis en décharge",
+        "leaked": "Rejetés dans la nature",
+        "recycled": "Recyclés",
+        "rejected": "Refus de tri",
+        "closedLoop": "Nouveaux emballages",
+        "downcycled": "Produits de moindre qualité",
+        "mt": "{{value}} Mt",
+        "shareOfSource": "{{share}} de « {{source}} »",
+        "shareOfTotal": "{{share}} de l'ensemble des emballages",
+        "aria": "Emballages plastiques d'une année en mégatonnes : polymères, filières de fin de vie et recyclage"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "SankeyChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "SankeyChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "nodes",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly SankeyNode[] | undefined",
+            "typeRef": "type:abbae3a275f8cae80221",
+            "required": false,
+            "description": "Nodes, in their initial order; nodes only named by a link are appended"
+          },
+          {
+            "name": "links",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly SankeyLink[]",
+            "typeRef": "type:9b7445fd57ca5be620e0",
+            "required": true,
+            "description": "Flows between the nodes (by name or index); links closing a cycle are ignored"
+          },
+          {
+            "name": "nodeWidth",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 12,
+            "required": false,
+            "description": "Width of the node bars, in pixels"
+          },
+          {
+            "name": "nodePadding",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 12,
+            "required": false,
+            "description": "Vertical gap between the nodes of a column, in pixels (reduced when space is short)"
+          },
+          {
+            "name": "align",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "center",
+              "justify",
+              "left",
+              "right"
+            ],
+            "typeText": "\"center\" | \"left\" | \"right\" | \"justify\" | undefined",
+            "typeRef": "type:57f0ccb646e05fa470d8",
+            "default": "justify",
+            "required": false,
+            "description": "Column of the nodes without a `column`: `justify` puts the sinks in the last column, `left` / `right` align on the sources / sinks, `center` puts the sources next to their first target"
+          },
+          {
+            "name": "iterations",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 32,
+            "required": false,
+            "description": "Relaxation passes that straighten the flows and reduce crossings"
+          },
+          {
+            "name": "linkColor",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "gradient",
+              "neutral",
+              "source",
+              "target"
+            ],
+            "typeText": "\"neutral\" | \"target\" | \"source\" | \"gradient\" | undefined",
+            "typeRef": "type:455388a12bfe376d2148",
+            "default": "gradient",
+            "required": false,
+            "description": "Color of the links without `color`: a gradient from the source to the target color, one of the two, or a neutral gray"
+          },
+          {
+            "name": "linkOpacity",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.4,
+            "required": false,
+            "description": "Opacity of the links, 0-1 (hovered flows are more opaque)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Node labels (name and value); overlapping labels are skipped"
+          },
+          {
+            "name": "labelValues",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Shows the value after the name in the labels"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:f12d9d0b7c053d4d65a6",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:5bfc1184b082171dcbfd",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the chart writes (tooltip rows, accessible names, number and percent formats, calendar dates); built-in texts in English, Chinese, Japanese and French (English otherwise)"
+          },
+          {
+            "name": "texts",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend clicks then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back. Leave undefined to let the legend hide / show entries by itself."
+          },
+          {
+            "name": "animation",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations (skipped when the user prefers reduced motion)"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "node",
+            "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:599537a71f6aca3767b8",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onToggle",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:c5e11f23fbce8c1aa9a2",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is clicked (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          },
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:4d7c0df4667f26938fe6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) mark changes"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:e40dbbb538ff7cd7dda5",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is clicked, tapped or activated with Enter"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "SankeyChartProps": {
+      "source": "charts/src/react/shapes.tsx",
+      "description": "Props of SankeyChart",
+      "kind": "interface",
+      "extends": [
+        "ShapeChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "nodes",
+          "type": "readonly SankeyNode[]",
+          "required": false,
+          "description": "Nodes, in their initial order; nodes only named by a link are appended"
+        },
+        {
+          "name": "links",
+          "type": "readonly SankeyLink[]",
+          "required": true,
+          "description": "Flows between the nodes (by name or index); links closing a cycle are ignored"
+        },
+        {
+          "name": "nodeWidth",
+          "type": "number",
+          "required": false,
+          "default": "12",
+          "description": "Width of the node bars, in pixels"
+        },
+        {
+          "name": "nodePadding",
+          "type": "number",
+          "required": false,
+          "default": "12",
+          "description": "Vertical gap between the nodes of a column, in pixels (reduced when space is short)"
+        },
+        {
+          "name": "align",
+          "type": "\"justify\" | \"left\" | \"right\" | \"center\"",
+          "required": false,
+          "default": "\"justify\"",
+          "description": "Column of the nodes without a `column`: `justify` puts the sinks in the last column, `left` / `right` align on the sources / sinks, `center` puts the sources next to their first target"
+        },
+        {
+          "name": "iterations",
+          "type": "number",
+          "required": false,
+          "default": "32",
+          "description": "Relaxation passes that straighten the flows and reduce crossings"
+        },
+        {
+          "name": "linkColor",
+          "type": "\"gradient\" | \"source\" | \"target\" | \"neutral\"",
+          "required": false,
+          "default": "\"gradient\"",
+          "description": "Color of the links without `color`: a gradient from the source to the target color, one of the two, or a neutral gray"
+        },
+        {
+          "name": "linkOpacity",
+          "type": "number",
+          "required": false,
+          "default": "0.4",
+          "description": "Opacity of the links, 0-1 (hovered flows are more opaque)"
+        },
+        {
+          "name": "labels",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Node labels (name and value); overlapping labels are skipped"
+        },
+        {
+          "name": "labelValues",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Shows the value after the name in the labels"
+        }
+      ]
+    },
+    "SankeyNode": {
+      "source": "charts/src/engine/shapes/types.ts",
+      "description": "A node of a sankey diagram",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Name shown in the label and the tooltip; links refer to the node by this name (or by index)"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Color of the node (and of the ends of its links); the palette when omitted"
+        },
+        {
+          "name": "column",
+          "type": "number",
+          "required": false,
+          "description": "Column of the node, 0 = leftmost; computed from the links when omitted"
+        }
+      ]
+    },
+    "SankeyLink": {
+      "source": "charts/src/engine/shapes/types.ts",
+      "description": "A flow between two nodes of a sankey diagram",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "source",
+          "type": "string | number",
+          "required": true,
+          "description": "Source node: its `name`, or its index in `nodes`"
+        },
+        {
+          "name": "target",
+          "type": "string | number",
+          "required": true,
+          "description": "Target node: its `name`, or its index in `nodes`"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": true,
+          "description": "Size of the flow (negative values count as 0)"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Color of the flow; follows `linkColor` when omitted"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "budget",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/budget.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/budget.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  SankeyChart,\n  type SankeyLink,\n  type SankeyNode,\n} from \"minerva-design/charts\";\n\ntype Item =\n  | \"licenses\"\n  | \"subscriptions\"\n  | \"services\"\n  | \"grants\"\n  | \"budget\"\n  | \"rnd\"\n  | \"sales\"\n  | \"operations\"\n  | \"admin\"\n  | \"platform\"\n  | \"mobile\"\n  | \"ai\"\n  | \"campaigns\"\n  | \"salesTeam\"\n  | \"infrastructure\"\n  | \"support\"\n  | \"finance\"\n  | \"offices\";\n\n// Yearly budget of a software company, in millions of dollars: where the\n// money comes from, then how it is split between departments and programs\nconst ITEMS: { key: Item; color?: string }[] = [\n  { key: \"licenses\" },\n  { key: \"subscriptions\" },\n  { key: \"services\" },\n  { key: \"grants\" },\n  { key: \"budget\", color: \"#64748b\" },\n  { key: \"rnd\", color: \"#6366f1\" },\n  { key: \"sales\", color: \"#f59e0b\" },\n  { key: \"operations\", color: \"#10b981\" },\n  { key: \"admin\", color: \"#ec4899\" },\n  { key: \"platform\", color: \"#818cf8\" },\n  { key: \"mobile\", color: \"#818cf8\" },\n  { key: \"ai\", color: \"#818cf8\" },\n  { key: \"campaigns\", color: \"#fbbf24\" },\n  { key: \"salesTeam\", color: \"#fbbf24\" },\n  { key: \"infrastructure\", color: \"#34d399\" },\n  { key: \"support\", color: \"#34d399\" },\n  { key: \"finance\", color: \"#f472b6\" },\n  { key: \"offices\", color: \"#f472b6\" },\n];\n\nconst ALLOCATIONS: [Item, Item, number][] = [\n  [\"licenses\", \"budget\", 18.4],\n  [\"subscriptions\", \"budget\", 42.6],\n  [\"services\", \"budget\", 9.2],\n  [\"grants\", \"budget\", 2.8],\n  [\"budget\", \"rnd\", 29.5],\n  [\"budget\", \"sales\", 21.3],\n  [\"budget\", \"operations\", 13.7],\n  [\"budget\", \"admin\", 8.5],\n  [\"rnd\", \"platform\", 12.8],\n  [\"rnd\", \"mobile\", 7.9],\n  [\"rnd\", \"ai\", 8.8],\n  [\"sales\", \"campaigns\", 9.6],\n  [\"sales\", \"salesTeam\", 11.7],\n  [\"operations\", \"infrastructure\", 8.1],\n  [\"operations\", \"support\", 5.6],\n  [\"admin\", \"finance\", 4.4],\n  [\"admin\", \"offices\", 4.1],\n];\n\nconst keys = ITEMS.map((item) => item.key);\n\nexport default function BudgetDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const nodes = useMemo(\n    (): SankeyNode[] =>\n      ITEMS.map(({ key, color }) => ({\n        name: t(`budget.${key}`),\n        ...(color ? { color } : {}),\n      })),\n    [t],\n  );\n  const links = useMemo(\n    (): SankeyLink[] =>\n      ALLOCATIONS.map(([from, to, value]) => ({\n        source: keys.indexOf(from),\n        target: keys.indexOf(to),\n        value,\n      })),\n    [],\n  );\n  // millions of dollars, in the reader's number format\n  const format = useMemo(() => {\n    const money = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"USD\",\n      notation: \"compact\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => money.format(value * 1e6);\n  }, [locale]);\n\n  return (\n    <SankeyChart\n      nodes={nodes}\n      links={links}\n      format={format}\n      linkColor=\"target\"\n      linkOpacity={0.35}\n      nodeWidth={10}\n      height={440}\n      ariaLabel={t(\"budgetAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Répartition du budget",
+      "description": "Les sources de revenus financent un budget réparti entre départements et programmes. linkColor=\"target\" colore chaque flux selon sa destination ; un format monétaire compact dans la langue du lecteur raccourcit les montants."
+    },
+    {
+      "id": "energy",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/energy.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/energy.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  SankeyChart,\n  type SankeyLink,\n  type SankeyNode,\n} from \"minerva-design/charts\";\n\ntype Key =\n  | \"solar\"\n  | \"wind\"\n  | \"hydro\"\n  | \"nuclear\"\n  | \"gas\"\n  | \"coal\"\n  | \"oil\"\n  | \"electricity\"\n  | \"heat\"\n  | \"fuels\"\n  | \"homes\"\n  | \"industry\"\n  | \"services\"\n  | \"transport\"\n  | \"losses\";\n\n// A national energy balance, in TWh per year (rounded): primary sources,\n// carriers, then end uses. Every carrier gives out what it receives.\nconst NODES: { key: Key; color: string }[] = [\n  { key: \"solar\", color: \"#f59e0b\" },\n  { key: \"wind\", color: \"#38bdf8\" },\n  { key: \"hydro\", color: \"#0284c7\" },\n  { key: \"nuclear\", color: \"#a855f7\" },\n  { key: \"gas\", color: \"#f97316\" },\n  { key: \"coal\", color: \"#64748b\" },\n  { key: \"oil\", color: \"#92400e\" },\n  { key: \"electricity\", color: \"#eab308\" },\n  { key: \"heat\", color: \"#ef4444\" },\n  { key: \"fuels\", color: \"#b45309\" },\n  { key: \"homes\", color: \"#10b981\" },\n  { key: \"industry\", color: \"#6366f1\" },\n  { key: \"services\", color: \"#14b8a6\" },\n  { key: \"transport\", color: \"#ec4899\" },\n  { key: \"losses\", color: \"#94a3b8\" },\n];\n\nconst FLOWS: [Key, Key, number][] = [\n  [\"solar\", \"electricity\", 62],\n  [\"wind\", \"electricity\", 138],\n  [\"hydro\", \"electricity\", 54],\n  [\"nuclear\", \"electricity\", 182],\n  [\"gas\", \"electricity\", 96],\n  [\"coal\", \"electricity\", 48],\n  [\"gas\", \"heat\", 58],\n  [\"gas\", \"homes\", 142],\n  [\"gas\", \"industry\", 104],\n  [\"coal\", \"industry\", 36],\n  [\"oil\", \"fuels\", 420],\n  [\"electricity\", \"homes\", 168],\n  [\"electricity\", \"industry\", 152],\n  [\"electricity\", \"services\", 124],\n  [\"electricity\", \"transport\", 22],\n  [\"electricity\", \"losses\", 114],\n  [\"heat\", \"homes\", 36],\n  [\"heat\", \"services\", 22],\n  [\"fuels\", \"transport\", 348],\n  [\"fuels\", \"industry\", 42],\n  [\"fuels\", \"losses\", 30],\n];\n\nconst index = (key: Key) => NODES.findIndex((n) => n.key === key);\n\nexport default function EnergyDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const locale = i18n.language;\n\n  // translated names; the links refer to the nodes by index\n  const nodes = useMemo(\n    (): SankeyNode[] =>\n      NODES.map(({ key, color }) => ({ name: t(`energy.${key}`), color })),\n    [t],\n  );\n  const links = useMemo(\n    (): SankeyLink[] =>\n      FLOWS.map(([source, target, value]) => ({\n        source: index(source),\n        target: index(target),\n        value,\n      })),\n    [],\n  );\n  const format = useMemo(() => {\n    const number = new Intl.NumberFormat(locale);\n    return (value: number) => t(\"twh\", { value: number.format(value) });\n  }, [locale, t]);\n\n  return (\n    <SankeyChart\n      nodes={nodes}\n      links={links}\n      format={format}\n      height={420}\n      ariaLabel={t(\"energyAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Flux d'énergie",
+      "description": "Sources primaires, vecteurs et usages finaux d'un bilan énergétique national. Chaque nœud a sa couleur et les liens passent en dégradé de la couleur de la source à celle de la cible ; format ajoute l'unité aux étiquettes et à l'infobulle."
+    },
+    {
+      "id": "hiring-funnel",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/hiring-funnel.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/hiring-funnel.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport { SankeyChart, type SankeyLink } from \"minerva-design/charts\";\n\ntype Stage =\n  | \"referrals\"\n  | \"jobBoards\"\n  | \"linkedin\"\n  | \"agencies\"\n  | \"campus\"\n  | \"applied\"\n  | \"cvRejected\"\n  | \"screen\"\n  | \"screenOut\"\n  | \"interview\"\n  | \"interviewOut\"\n  | \"offer\"\n  | \"declined\"\n  | \"hired\";\n\nconst DROP_OFFS = new Set<Stage>([\n  \"cvRejected\",\n  \"screenOut\",\n  \"interviewOut\",\n  \"declined\",\n]);\nconst SOURCES: Stage[] = [\n  \"referrals\",\n  \"jobBoards\",\n  \"linkedin\",\n  \"agencies\",\n  \"campus\",\n];\n\n// Candidates of one hiring year, from the source to the outcome\nconst MOVES: [Stage, Stage, number][] = [\n  [\"referrals\", \"applied\", 210],\n  [\"jobBoards\", \"applied\", 1480],\n  [\"linkedin\", \"applied\", 860],\n  [\"agencies\", \"applied\", 190],\n  [\"campus\", \"applied\", 540],\n  [\"applied\", \"cvRejected\", 2150],\n  [\"applied\", \"screen\", 1130],\n  [\"screen\", \"screenOut\", 690],\n  [\"screen\", \"interview\", 440],\n  [\"interview\", \"interviewOut\", 362],\n  [\"interview\", \"offer\", 78],\n  [\"offer\", \"declined\", 14],\n  [\"offer\", \"hired\", 64],\n];\n\nconst STAGE_COLOR: Partial<Record<Stage, string>> = {\n  hired: \"var(--success-color)\",\n  cvRejected: \"var(--text-muted-color)\",\n  screenOut: \"var(--text-muted-color)\",\n  interviewOut: \"var(--text-muted-color)\",\n  declined: \"var(--text-muted-color)\",\n};\n\nconst total = (from: Stage) =>\n  MOVES.filter(([source]) => source === from).reduce(\n    (sum, [, , value]) => sum + value,\n    0,\n  );\n\nexport default function HiringFunnelDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const [dropOffs, setDropOffs] = useState(true);\n  const number = useMemo(\n    () => new Intl.NumberFormat(i18n.language),\n    [i18n.language],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(i18n.language, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n    [i18n.language],\n  );\n  const format = useMemo(\n    () => (value: number) => number.format(value),\n    [number],\n  );\n\n  // nodes and links refer to each other by name, so hiding the drop-offs\n  // only means leaving them out of both lists\n  const visible = useMemo(\n    () => MOVES.filter(([, to]) => dropOffs || !DROP_OFFS.has(to)),\n    [dropOffs],\n  );\n  const nodes = useMemo(() => {\n    const stages = [...new Set(visible.flatMap(([from, to]) => [from, to]))];\n    return stages.map((stage) => ({\n      name: t(`hiring.${stage}`),\n      ...(STAGE_COLOR[stage] ? { color: STAGE_COLOR[stage] } : {}),\n    }));\n  }, [visible, t]);\n  const links = useMemo(\n    (): SankeyLink[] =>\n      visible.map(([from, to, value]) => ({\n        source: t(`hiring.${from}`),\n        target: t(`hiring.${to}`),\n        value,\n      })),\n    [visible, t],\n  );\n\n  const applied = SOURCES.reduce((sum, source) => sum + total(source), 0);\n  const hired = MOVES.find(([, to]) => to === \"hired\")![2];\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch\n        checked={dropOffs}\n        onChange={setDropOffs}\n        label={t(\"hiring.showDropOffs\")}\n      />\n      <SankeyChart\n        nodes={nodes}\n        links={links}\n        format={format}\n        align=\"left\"\n        linkColor={dropOffs ? \"target\" : \"source\"}\n        labelValues\n        height={400}\n        ariaLabel={t(\"hiring.aria\")}\n      />\n      <output aria-live=\"polite\">\n        {t(\"hiring.summary\", {\n          applied: number.format(applied),\n          hired: number.format(hired),\n          rate: percent.format(hired / applied),\n          interview: percent.format(total(\"interview\") / total(\"screen\")),\n          accepted: percent.format(hired / total(\"offer\")),\n        })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Entonnoir de recrutement",
+      "description": "Les candidats, de leur source jusqu'à l'embauche, avec les abandons à chaque étape. Les liens désignent les nœuds par leur nom : l'interrupteur se contente d'exclure les nœuds et liens d'abandon ; align=\"left\" garde chaque abandon à côté de son étape."
+    },
+    {
+      "id": "income-statement",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/income-statement.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/income-statement.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  SankeyChart,\n  type SankeyLink,\n  type SankeyNode,\n} from \"minerva-design/charts\";\n\ntype Line =\n  | \"cloud\"\n  | \"licenses\"\n  | \"hardware\"\n  | \"services\"\n  | \"revenue\"\n  | \"cogs\"\n  | \"gross\"\n  | \"rnd\"\n  | \"sales\"\n  | \"admin\"\n  | \"operating\"\n  | \"tax\"\n  | \"net\";\n\nconst PROFIT = \"var(--success-color)\";\nconst COST = \"var(--danger-color)\";\n\n// Quarterly income statement, in millions of dollars\nconst LINES: { key: Line; color?: string }[] = [\n  { key: \"cloud\", color: \"var(--chart-series-1)\" },\n  { key: \"licenses\", color: \"var(--chart-series-2)\" },\n  { key: \"hardware\", color: \"var(--chart-series-3)\" },\n  { key: \"services\", color: \"var(--chart-series-4)\" },\n  { key: \"revenue\", color: \"var(--text-secondary-color)\" },\n  { key: \"cogs\", color: COST },\n  { key: \"gross\", color: PROFIT },\n  { key: \"rnd\", color: COST },\n  { key: \"sales\", color: COST },\n  { key: \"admin\", color: COST },\n  { key: \"operating\", color: PROFIT },\n  { key: \"tax\", color: COST },\n  { key: \"net\", color: PROFIT },\n];\n\nconst SEGMENTS: [Line, number][] = [\n  [\"cloud\", 412],\n  [\"licenses\", 186],\n  [\"hardware\", 94],\n  [\"services\", 58],\n];\nconst COGS = 268;\nconst OPEX: [Line, number][] = [\n  [\"rnd\", 141],\n  [\"sales\", 98],\n  [\"admin\", 47],\n];\nconst TAX_RATE = 0.21;\n\nconst keys = LINES.map((line) => line.key);\n\nfunction statement() {\n  const revenue = SEGMENTS.reduce((sum, [, value]) => sum + value, 0);\n  const gross = revenue - COGS;\n  const operating = gross - OPEX.reduce((sum, [, value]) => sum + value, 0);\n  const tax = Math.round(operating * TAX_RATE);\n  const flows: [Line, Line, number, \"profit\" | \"cost\" | \"in\"][] = [\n    ...SEGMENTS.map(\n      ([key, value]) =>\n        [key, \"revenue\", value, \"in\"] as [Line, Line, number, \"in\"],\n    ),\n    [\"revenue\", \"cogs\", COGS, \"cost\"],\n    [\"revenue\", \"gross\", gross, \"profit\"],\n    ...OPEX.map(\n      ([key, value]) =>\n        [\"gross\", key, value, \"cost\"] as [Line, Line, number, \"cost\"],\n    ),\n    [\"gross\", \"operating\", operating, \"profit\"],\n    [\"operating\", \"tax\", tax, \"cost\"],\n    [\"operating\", \"net\", operating - tax, \"profit\"],\n  ];\n  return { revenue, gross, operating, net: operating - tax, flows };\n}\nconst STATEMENT = statement();\n\nexport default function IncomeStatementDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const locale = i18n.language;\n  const { revenue, gross, operating, net, flows } = STATEMENT;\n\n  const nodes = useMemo(\n    (): SankeyNode[] =>\n      LINES.map(({ key, color }) => ({ name: t(`pnl.${key}`), color })),\n    [t],\n  );\n  // profits are green and costs red; revenue streams keep their own color\n  const links = useMemo(\n    (): SankeyLink[] =>\n      flows.map(([from, to, value, kind]) => ({\n        source: keys.indexOf(from),\n        target: keys.indexOf(to),\n        value,\n        ...(kind === \"profit\" ? { color: PROFIT } : {}),\n        ...(kind === \"cost\" ? { color: COST } : {}),\n      })),\n    [flows],\n  );\n  const money = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"USD\",\n        notation: \"compact\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const format = useMemo(\n    () => (value: number) => money.format(value * 1e6),\n    [money],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <SankeyChart\n        nodes={nodes}\n        links={links}\n        format={format}\n        linkColor=\"source\"\n        linkOpacity={0.4}\n        nodeWidth={14}\n        height={420}\n        ariaLabel={t(\"pnl.aria\")}\n      />\n      <p\n        style={{\n          margin: 0,\n          color: \"var(--text-secondary-color)\",\n          fontSize: 14,\n        }}\n      >\n        {t(\"pnl.margins\", {\n          gross: percent.format(gross / revenue),\n          operating: percent.format(operating / revenue),\n          net: percent.format(net / revenue),\n        })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Compte de résultat",
+      "description": "Les segments d'activité alimentent le chiffre d'affaires, qui se divise ensuite en coûts et en marges jusqu'au résultat net. Chaque lien fixe sa propre color (vert pour les marges, rouge pour les coûts) tandis que les segments gardent linkColor=\"source\" ; un format monétaire compact abrège les montants."
+    },
+    {
+      "id": "journey",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/journey.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/journey.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  SankeyChart,\n  type SankeyLink,\n  type SankeyNode,\n  type ShapeHoverEvent,\n} from \"minerva-design/charts\";\n\ntype Step =\n  | \"searchAds\"\n  | \"organic\"\n  | \"newsletter\"\n  | \"social\"\n  | \"home\"\n  | \"pricing\"\n  | \"blog\"\n  | \"signup\"\n  | \"left\"\n  | \"trial\"\n  | \"abandoned\"\n  | \"paid\"\n  | \"expired\";\n\nconst STEPS: Step[] = [\n  \"searchAds\",\n  \"organic\",\n  \"newsletter\",\n  \"social\",\n  \"home\",\n  \"pricing\",\n  \"blog\",\n  \"signup\",\n  \"left\",\n  \"trial\",\n  \"abandoned\",\n  \"paid\",\n  \"expired\",\n];\n\n// Sessions of one week, from the acquisition channel to the subscription\nconst PATHS: [Step, Step, number][] = [\n  [\"searchAds\", \"home\", 4200],\n  [\"searchAds\", \"pricing\", 2600],\n  [\"organic\", \"home\", 3800],\n  [\"organic\", \"blog\", 5200],\n  [\"newsletter\", \"blog\", 1900],\n  [\"newsletter\", \"pricing\", 900],\n  [\"social\", \"blog\", 2400],\n  [\"social\", \"home\", 1100],\n  [\"home\", \"signup\", 3100],\n  [\"home\", \"left\", 6000],\n  [\"pricing\", \"signup\", 2100],\n  [\"pricing\", \"left\", 1400],\n  [\"blog\", \"signup\", 1300],\n  [\"blog\", \"left\", 8200],\n  [\"signup\", \"trial\", 4700],\n  [\"signup\", \"abandoned\", 1800],\n  [\"trial\", \"paid\", 1300],\n  [\"trial\", \"expired\", 3400],\n];\n\nexport default function JourneyDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const [selected, setSelected] = useState<ShapeHoverEvent | null>(null);\n  const number = useMemo(\n    () => new Intl.NumberFormat(i18n.language),\n    [i18n.language],\n  );\n  const format = useMemo(\n    () => (value: number) => number.format(value),\n    [number],\n  );\n\n  const nodes = useMemo(\n    (): SankeyNode[] => STEPS.map((step) => ({ name: t(`journey.${step}`) })),\n    [t],\n  );\n  const links = useMemo(\n    (): SankeyLink[] =>\n      PATHS.map(([from, to, value]) => ({\n        source: STEPS.indexOf(from),\n        target: STEPS.indexOf(to),\n        value,\n      })),\n    [],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <SankeyChart\n        nodes={nodes}\n        links={links}\n        align=\"left\"\n        linkColor=\"source\"\n        format={format}\n        onClick={setSelected}\n        height={400}\n        ariaLabel={t(\"journeyAria\")}\n      />\n      <p role=\"status\" style={{ margin: 0 }}>\n        {selected\n          ? selected.source && selected.target\n            ? t(\"journeyLink\", {\n                source: selected.source,\n                target: selected.target,\n                value: number.format(selected.value),\n                share: (selected.percent * 100).toFixed(1),\n              })\n            : t(\"journeyNode\", {\n                name: selected.name,\n                value: number.format(selected.value),\n              })\n          : t(\"journeyHint\")}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Parcours utilisateur",
+      "description": "D'où viennent les sessions d'une semaine et où elles s'arrêtent. align=\"left\" garde les visiteurs qui partent à côté de la page qu'ils quittent, linkColor=\"source\" colore chaque chemin selon son canal et onClick renvoie le nœud ou le lien cliqué (avec sa source et sa cible)."
+    },
+    {
+      "id": "live-traffic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/live-traffic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/live-traffic.tsx": "import { useEffect, useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, HStack } from \"minerva-design\";\nimport {\n  SankeyChart,\n  type SankeyLink,\n  type SankeyNode,\n} from \"minerva-design/charts\";\n\ntype Client = \"web\" | \"ios\" | \"android\" | \"partners\";\ntype Service = \"auth\" | \"catalog\" | \"search\" | \"checkout\";\ntype Status = \"ok\" | \"clientError\" | \"serverError\";\n\nconst CLIENTS: [Client, number][] = [\n  [\"web\", 620],\n  [\"ios\", 380],\n  [\"android\", 310],\n  [\"partners\", 140],\n];\nconst SERVICES: [Service, number][] = [\n  [\"auth\", 0.18],\n  [\"catalog\", 0.38],\n  [\"search\", 0.29],\n  [\"checkout\", 0.15],\n];\nconst STATUSES: [Status, string][] = [\n  [\"ok\", \"var(--success-color)\"],\n  [\"clientError\", \"var(--warning-color)\"],\n  [\"serverError\", \"var(--danger-color)\"],\n];\n\nfunction mulberry32(seed: number) {\n  let a = seed >>> 0;\n  return () => {\n    a = (a + 0x6d2b79f5) >>> 0;\n    let r = Math.imul(a ^ (a >>> 15), 1 | a);\n    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;\n    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Requests per second at a given tick: a slow wave plus seeded noise, then\n// split downstream so every node receives exactly what it sends\nfunction traffic(tick: number) {\n  const random = mulberry32(tick * 7919 + 17);\n  const flows: [string, string, number][] = [];\n  let total = 0;\n  for (const [client, base] of CLIENTS) {\n    const rps =\n      base * (1 + 0.15 * Math.sin(tick / 6 + base) + 0.08 * (random() - 0.5));\n    flows.push([`client.${client}`, \"gateway\", rps]);\n    total += rps;\n  }\n  let serverErrors = 0;\n  for (const [service, share] of SERVICES) {\n    const rps = total * share * (1 + 0.1 * (random() - 0.5));\n    flows.push([\"gateway\", `service.${service}`, rps]);\n    // checkout has an incident every 20 ticks\n    const incident = service === \"checkout\" && tick % 20 >= 14;\n    const server = rps * (incident ? 0.12 : 0.004 + 0.006 * random());\n    const client = rps * (0.02 + 0.03 * random());\n    flows.push([`service.${service}`, \"status.ok\", rps - server - client]);\n    flows.push([`service.${service}`, \"status.clientError\", client]);\n    flows.push([`service.${service}`, \"status.serverError\", server]);\n    serverErrors += server;\n  }\n  const routed = flows\n    .filter(([from]) => from === \"gateway\")\n    .reduce((sum, [, , value]) => sum + value, 0);\n  return { flows, total: routed, serverErrors };\n}\n\nexport default function LiveTrafficDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const [tick, setTick] = useState(0);\n  const [running, setRunning] = useState(true);\n\n  useEffect(() => {\n    if (!running) return;\n    const id = setInterval(() => setTick((n) => n + 1), 1500);\n    return () => clearInterval(id);\n  }, [running]);\n\n  const { flows, total, serverErrors } = useMemo(() => traffic(tick), [tick]);\n  const rps = useMemo(() => {\n    const number = new Intl.NumberFormat(i18n.language, {\n      maximumFractionDigits: 0,\n    });\n    return (value: number) => t(\"traffic.rps\", { value: number.format(value) });\n  }, [i18n.language, t]);\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(i18n.language, {\n        style: \"percent\",\n        maximumFractionDigits: 2,\n      }),\n    [i18n.language],\n  );\n\n  const nodes = useMemo(\n    (): SankeyNode[] => [\n      ...CLIENTS.map(([client]) => ({ name: t(`traffic.client.${client}`) })),\n      { name: t(\"traffic.gateway\"), color: \"var(--text-secondary-color)\" },\n      ...SERVICES.map(([service]) => ({\n        name: t(`traffic.service.${service}`),\n      })),\n      ...STATUSES.map(([status, color]) => ({\n        name: t(`traffic.status.${status}`),\n        color,\n      })),\n    ],\n    [t],\n  );\n  const links = useMemo(\n    (): SankeyLink[] =>\n      flows.map(([from, to, value]) => ({\n        source: t(`traffic.${from}`),\n        target: t(`traffic.${to}`),\n        value,\n      })),\n    [flows, t],\n  );\n  const errorRate = serverErrors / total;\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <HStack gap={12} wrap align=\"center\" justify=\"between\">\n        <output aria-live=\"polite\">\n          {t(\"traffic.summary\", { total: rps(total) })}{\" \"}\n          <span\n            style={{\n              color:\n                errorRate > 0.01\n                  ? \"var(--danger-color)\"\n                  : \"var(--success-color)\",\n            }}\n          >\n            {t(errorRate > 0.01 ? \"traffic.incident\" : \"traffic.healthy\", {\n              rate: percent.format(errorRate),\n            })}\n          </span>\n        </output>\n        <Button\n          variant=\"outline\"\n          size=\"small\"\n          onClick={() => setRunning((value) => !value)}\n        >\n          {running ? t(\"traffic.pause\") : t(\"traffic.resume\")}\n        </Button>\n      </HStack>\n      <SankeyChart\n        nodes={nodes}\n        links={links}\n        format={rps}\n        linkColor=\"target\"\n        linkOpacity={0.35}\n        // no relaxation: the nodes keep their order between updates\n        iterations={0}\n        height={380}\n        ariaLabel={t(\"traffic.aria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Trafic d'API en direct",
+      "description": "Requêtes par seconde des clients vers les services et leurs codes de statut, actualisées toutes les 1,5 s. Les flux sont calculés de l'amont vers l'aval pour que chaque nœud reçoive ce qu'il envoie, et iterations={0} garde les nœuds en place entre deux mises à jour."
+    },
+    {
+      "id": "options",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/options.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/options.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HStack, Radio, RadioGroup, Switch } from \"minerva-design\";\nimport {\n  SankeyChart,\n  type SankeyChartProps,\n  type SankeyLink,\n  type SankeyNode,\n} from \"minerva-design/charts\";\n\ntype Align = NonNullable<SankeyChartProps[\"align\"]>;\ntype LinkColor = NonNullable<SankeyChartProps[\"linkColor\"]>;\ntype Stage =\n  | \"email\"\n  | \"chat\"\n  | \"phone\"\n  | \"bot\"\n  | \"tier1\"\n  | \"tier2\"\n  | \"engineering\"\n  | \"solved\"\n  | \"refunded\"\n  | \"escalated\";\n\nconst STAGES: Stage[] = [\n  \"email\",\n  \"chat\",\n  \"phone\",\n  \"bot\",\n  \"tier1\",\n  \"tier2\",\n  \"engineering\",\n  \"solved\",\n  \"refunded\",\n  \"escalated\",\n];\n\n// Support tickets of a month: the chatbot solves some directly, which skips\n// a column; that is where `align` makes a difference\nconst ROUTES: [Stage, Stage, number][] = [\n  [\"email\", \"tier1\", 820],\n  [\"chat\", \"bot\", 1400],\n  [\"phone\", \"tier1\", 520],\n  [\"bot\", \"solved\", 760],\n  [\"bot\", \"tier1\", 640],\n  [\"tier1\", \"solved\", 1310],\n  [\"tier1\", \"refunded\", 210],\n  [\"tier1\", \"tier2\", 460],\n  [\"tier2\", \"solved\", 280],\n  [\"tier2\", \"engineering\", 180],\n  [\"engineering\", \"escalated\", 180],\n];\n\nconst ALIGNS: Align[] = [\"justify\", \"left\", \"right\", \"center\"];\nconst COLORS: LinkColor[] = [\"gradient\", \"source\", \"target\", \"neutral\"];\n\nexport default function OptionsDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const [align, setAlign] = useState<Align>(\"justify\");\n  const [linkColor, setLinkColor] = useState<LinkColor>(\"gradient\");\n  const [labelValues, setLabelValues] = useState(true);\n\n  const nodes = useMemo(\n    (): SankeyNode[] =>\n      STAGES.map((stage) => ({ name: t(`support.${stage}`) })),\n    [t],\n  );\n  const links = useMemo(\n    (): SankeyLink[] =>\n      ROUTES.map(([from, to, value]) => ({\n        source: STAGES.indexOf(from),\n        target: STAGES.indexOf(to),\n        value,\n      })),\n    [],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"alignLabel\")}\n        direction=\"horizontal\"\n        value={align}\n        onChange={(value) => setAlign(value as Align)}\n      >\n        {ALIGNS.map((value) => (\n          <Radio key={value} value={value} label={t(`align.${value}`)} />\n        ))}\n      </RadioGroup>\n      <HStack gap={16} wrap align=\"center\">\n        <RadioGroup\n          aria-label={t(\"linkColorLabel\")}\n          direction=\"horizontal\"\n          value={linkColor}\n          onChange={(value) => setLinkColor(value as LinkColor)}\n        >\n          {COLORS.map((value) => (\n            <Radio key={value} value={value} label={t(`linkColor.${value}`)} />\n          ))}\n        </RadioGroup>\n        <Switch\n          checked={labelValues}\n          onChange={setLabelValues}\n          label={t(\"labelValues\")}\n        />\n      </HStack>\n      <SankeyChart\n        nodes={nodes}\n        links={links}\n        align={align}\n        linkColor={linkColor}\n        labelValues={labelValues}\n        height={340}\n        ariaLabel={t(\"supportAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Alignement et couleurs",
+      "description": "Le chatbot résout des tickets sans passer par le support, ses flux sautent donc une colonne. align place les nœuds sans colonne explicite, linkColor choisit la couleur des liens et labelValues affiche ou non les valeurs dans les étiquettes."
+    },
+    {
+      "id": "plastic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/plastic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/plastic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  SankeyChart,\n  type SankeyLink,\n  type SankeyNode,\n  type ShapeHoverEvent,\n} from \"minerva-design/charts\";\n\ntype Stage =\n  | \"pet\"\n  | \"hdpe\"\n  | \"pp\"\n  | \"film\"\n  | \"other\"\n  | \"market\"\n  | \"collected\"\n  | \"incinerated\"\n  | \"landfill\"\n  | \"leaked\"\n  | \"recycled\"\n  | \"rejected\"\n  | \"closedLoop\"\n  | \"downcycled\";\n\nconst STAGES: { key: Stage; color?: string }[] = [\n  { key: \"pet\" },\n  { key: \"hdpe\" },\n  { key: \"pp\" },\n  { key: \"film\" },\n  { key: \"other\" },\n  { key: \"market\", color: \"var(--text-secondary-color)\" },\n  { key: \"collected\", color: \"var(--chart-series-1)\" },\n  { key: \"incinerated\", color: \"var(--warning-color)\" },\n  { key: \"landfill\", color: \"var(--text-muted-color)\" },\n  { key: \"leaked\", color: \"var(--danger-color)\" },\n  { key: \"recycled\", color: \"var(--success-color)\" },\n  { key: \"rejected\", color: \"var(--text-muted-color)\" },\n  { key: \"closedLoop\", color: \"var(--success-color)\" },\n  { key: \"downcycled\", color: \"var(--chart-series-3)\" },\n];\n\n// Plastic packaging of a region over a year, in megatonnes\nconst FLOWS: [Stage, Stage, number][] = [\n  [\"pet\", \"market\", 4.1],\n  [\"hdpe\", \"market\", 2.6],\n  [\"pp\", \"market\", 3.4],\n  [\"film\", \"market\", 5.2],\n  [\"other\", \"market\", 1.7],\n  [\"market\", \"collected\", 6.8],\n  [\"market\", \"incinerated\", 5.1],\n  [\"market\", \"landfill\", 4.4],\n  [\"market\", \"leaked\", 0.7],\n  [\"collected\", \"recycled\", 4.6],\n  [\"collected\", \"rejected\", 2.2],\n  [\"rejected\", \"incinerated\", 2.2],\n  [\"recycled\", \"closedLoop\", 1.3],\n  [\"recycled\", \"downcycled\", 3.3],\n];\n\nconst keys = STAGES.map((stage) => stage.key);\n\nexport default function PlasticDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const number = useMemo(\n    () =>\n      new Intl.NumberFormat(i18n.language, {\n        minimumFractionDigits: 1,\n        maximumFractionDigits: 1,\n      }),\n    [i18n.language],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(i18n.language, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n    [i18n.language],\n  );\n  const format = useMemo(\n    () => (value: number) => t(\"plastic.mt\", { value: number.format(value) }),\n    [number, t],\n  );\n\n  const nodes = useMemo(\n    (): SankeyNode[] =>\n      STAGES.map(({ key, color }) => ({\n        name: t(`plastic.${key}`),\n        ...(color ? { color } : {}),\n      })),\n    [t],\n  );\n  const links = useMemo(\n    (): SankeyLink[] =>\n      FLOWS.map(([from, to, value]) => ({\n        source: keys.indexOf(from),\n        target: keys.indexOf(to),\n        value,\n      })),\n    [],\n  );\n\n  // links: percent is the share of the source node; nodes: of all the\n  // packaging entering the diagram\n  const tooltip = (event: ShapeHoverEvent) => (\n    <div style={{ display: \"grid\", gap: 2, maxWidth: 240 }}>\n      <strong>\n        {event.source && event.target\n          ? `${event.source} → ${event.target}`\n          : event.name}\n      </strong>\n      <span>{format(event.value)}</span>\n      <span style={{ color: \"var(--text-secondary-color)\" }}>\n        {event.source\n          ? t(\"plastic.shareOfSource\", {\n              share: percent.format(event.percent),\n              source: event.source,\n            })\n          : t(\"plastic.shareOfTotal\", { share: percent.format(event.percent) })}\n      </span>\n    </div>\n  );\n\n  return (\n    <SankeyChart\n      nodes={nodes}\n      links={links}\n      format={format}\n      renderTooltip={tooltip}\n      linkColor=\"target\"\n      nodePadding={16}\n      height={420}\n      ariaLabel={t(\"plastic.aria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Flux des emballages plastiques",
+      "description": "Les polymères mis sur le marché et le devenir des emballages. renderTooltip présente un lien comme une part de sa source (percent) et un nœud comme une part de l'ensemble des emballages."
+    },
+    {
+      "id": "supply-chain",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sankey-chart/demos/supply-chain.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sankey-chart/demos/supply-chain.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, HStack } from \"minerva-design\";\nimport {\n  SankeyChart,\n  type SankeyLink,\n  type SankeyNode,\n  type ShapeHoverEvent,\n} from \"minerva-design/charts\";\n\ntype Site =\n  | \"brazil\"\n  | \"colombia\"\n  | \"ethiopia\"\n  | \"vietnam\"\n  | \"hamburg\"\n  | \"rotterdam\"\n  | \"north\"\n  | \"central\"\n  | \"south\"\n  | \"cafes\"\n  | \"supermarkets\"\n  | \"online\";\n\nconst SITES: Site[] = [\n  \"brazil\",\n  \"colombia\",\n  \"ethiopia\",\n  \"vietnam\",\n  \"hamburg\",\n  \"rotterdam\",\n  \"north\",\n  \"central\",\n  \"south\",\n  \"cafes\",\n  \"supermarkets\",\n  \"online\",\n];\n\n// Green coffee shipped in a month, in tonnes: origins, roasteries,\n// warehouses and sales channels\nconst SHIPMENTS: [Site, Site, number][] = [\n  [\"brazil\", \"hamburg\", 180],\n  [\"brazil\", \"rotterdam\", 140],\n  [\"colombia\", \"hamburg\", 95],\n  [\"colombia\", \"rotterdam\", 70],\n  [\"ethiopia\", \"hamburg\", 60],\n  [\"vietnam\", \"rotterdam\", 125],\n  [\"hamburg\", \"north\", 160],\n  [\"hamburg\", \"central\", 120],\n  [\"hamburg\", \"south\", 55],\n  [\"rotterdam\", \"central\", 150],\n  [\"rotterdam\", \"south\", 185],\n  [\"north\", \"cafes\", 70],\n  [\"north\", \"supermarkets\", 60],\n  [\"north\", \"online\", 30],\n  [\"central\", \"cafes\", 85],\n  [\"central\", \"supermarkets\", 140],\n  [\"central\", \"online\", 45],\n  [\"south\", \"cafes\", 60],\n  [\"south\", \"supermarkets\", 155],\n  [\"south\", \"online\", 25],\n];\n\n// event.index of the selected mark: a node, or SITES.length + link index\ntype Selection = number;\n\n// Links on every path through a node: walks upstream and downstream\nfunction pathThrough(site: number) {\n  const on = new Set<number>();\n  const walk = (start: number, up: boolean) => {\n    const queue = [start];\n    while (queue.length) {\n      const current = queue.shift()!;\n      SHIPMENTS.forEach(([from, to], i) => {\n        const near = SITES.indexOf(up ? to : from);\n        if (near !== current || on.has(i)) return;\n        on.add(i);\n        queue.push(SITES.indexOf(up ? from : to));\n      });\n    }\n  };\n  walk(site, true);\n  walk(site, false);\n  return on;\n}\n\nexport default function SupplyChainDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sankey-chart.data\",\n  });\n  const [selection, setSelection] = useState<Selection | null>(null);\n  const number = useMemo(\n    () => new Intl.NumberFormat(i18n.language),\n    [i18n.language],\n  );\n  // tonnes are not an Intl unit: the number is localized, the unit translated\n  const format = useMemo(\n    () => (value: number) =>\n      t(\"supply.tonnes\", { value: number.format(value) }),\n    [t, number],\n  );\n\n  const highlighted = useMemo(() => {\n    if (selection === null) return null;\n    if (selection >= SITES.length) return new Set([selection - SITES.length]);\n    return pathThrough(selection);\n  }, [selection]);\n\n  const nodes = useMemo(\n    (): SankeyNode[] => SITES.map((site) => ({ name: t(`supply.${site}`) })),\n    [t],\n  );\n  const links = useMemo(\n    (): SankeyLink[] =>\n      SHIPMENTS.map(([from, to, value], i) => ({\n        source: SITES.indexOf(from),\n        target: SITES.indexOf(to),\n        value,\n        ...(highlighted && !highlighted.has(i)\n          ? { color: \"var(--border-color)\" }\n          : {}),\n      })),\n    [highlighted],\n  );\n\n  const onClick = (event: ShapeHoverEvent) =>\n    setSelection((current) => (current === event.index ? null : event.index));\n\n  let readout = t(\"supply.hint\");\n  if (selection !== null && selection < SITES.length) {\n    const site = SITES[selection]!;\n    const inbound = SHIPMENTS.filter(([, to]) => to === site);\n    const outbound = SHIPMENTS.filter(([from]) => from === site);\n    const sum = (list: typeof SHIPMENTS) =>\n      list.reduce((total, [, , value]) => total + value, 0);\n    readout = t(\"supply.node\", {\n      name: t(`supply.${site}`),\n      inbound: format(sum(inbound)),\n      from: number.format(inbound.length),\n      outbound: format(sum(outbound)),\n      to: number.format(outbound.length),\n    });\n  } else if (selection !== null) {\n    const [from, to, value] = SHIPMENTS[selection - SITES.length]!;\n    const sent = SHIPMENTS.filter(([source]) => source === from).reduce(\n      (total, [, , v]) => total + v,\n      0,\n    );\n    readout = t(\"supply.link\", {\n      source: t(`supply.${from}`),\n      target: t(`supply.${to}`),\n      value: format(value),\n      share: new Intl.NumberFormat(i18n.language, {\n        style: \"percent\",\n        maximumFractionDigits: 0,\n      }).format(value / sent),\n    });\n  }\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <SankeyChart\n        nodes={nodes}\n        links={links}\n        format={format}\n        linkColor=\"source\"\n        onClick={onClick}\n        height={420}\n        ariaLabel={t(\"supply.aria\")}\n      />\n      <HStack gap={12} wrap align=\"center\" justify=\"between\">\n        <output aria-live=\"polite\">{readout}</output>\n        <Button\n          variant=\"outline\"\n          size=\"small\"\n          disabled={selection === null}\n          onClick={() => setSelection(null)}\n        >\n          {t(\"supply.clear\")}\n        </Button>\n      </HStack>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Traçabilité de la chaîne d'approvisionnement",
+      "description": "Le café, des pays d'origine aux canaux de vente. onClick sur un nœud garde en couleur tous les chemins qui le traversent et grise les autres liens via leur color ; un lien se sélectionne seul, avec sa part de la source."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Diagramme de Sankey",
+      "description": "Des flux entre étapes : bilans énergétiques, parcours utilisateurs, répartitions budgétaires. Les nœuds sont rangés en colonnes, l'épaisseur d'un lien est proportionnelle à son flux, et l'ordre des nœuds est relaxé pour redresser les flux et limiter les croisements. Survolez un nœud pour mettre en avant tous ses flux, ou un lien pour voir sa part dans sa source ; les flèches du clavier parcourent les nœuds et les liens.",
+      "demos": {
+        "energy": {
+          "title": "Flux d'énergie",
+          "description": "Sources primaires, vecteurs et usages finaux d'un bilan énergétique national. Chaque nœud a sa couleur et les liens passent en dégradé de la couleur de la source à celle de la cible ; format ajoute l'unité aux étiquettes et à l'infobulle."
+        },
+        "journey": {
+          "title": "Parcours utilisateur",
+          "description": "D'où viennent les sessions d'une semaine et où elles s'arrêtent. align=\"left\" garde les visiteurs qui partent à côté de la page qu'ils quittent, linkColor=\"source\" colore chaque chemin selon son canal et onClick renvoie le nœud ou le lien cliqué (avec sa source et sa cible)."
+        },
+        "budget": {
+          "title": "Répartition du budget",
+          "description": "Les sources de revenus financent un budget réparti entre départements et programmes. linkColor=\"target\" colore chaque flux selon sa destination ; un format monétaire compact dans la langue du lecteur raccourcit les montants."
+        },
+        "options": {
+          "title": "Alignement et couleurs",
+          "description": "Le chatbot résout des tickets sans passer par le support, ses flux sautent donc une colonne. align place les nœuds sans colonne explicite, linkColor choisit la couleur des liens et labelValues affiche ou non les valeurs dans les étiquettes."
+        },
+        "income-statement": {
+          "title": "Compte de résultat",
+          "description": "Les segments d'activité alimentent le chiffre d'affaires, qui se divise ensuite en coûts et en marges jusqu'au résultat net. Chaque lien fixe sa propre color (vert pour les marges, rouge pour les coûts) tandis que les segments gardent linkColor=\"source\" ; un format monétaire compact abrège les montants."
+        },
+        "supply-chain": {
+          "title": "Traçabilité de la chaîne d'approvisionnement",
+          "description": "Le café, des pays d'origine aux canaux de vente. onClick sur un nœud garde en couleur tous les chemins qui le traversent et grise les autres liens via leur color ; un lien se sélectionne seul, avec sa part de la source."
+        },
+        "hiring-funnel": {
+          "title": "Entonnoir de recrutement",
+          "description": "Les candidats, de leur source jusqu'à l'embauche, avec les abandons à chaque étape. Les liens désignent les nœuds par leur nom : l'interrupteur se contente d'exclure les nœuds et liens d'abandon ; align=\"left\" garde chaque abandon à côté de son étape."
+        },
+        "live-traffic": {
+          "title": "Trafic d'API en direct",
+          "description": "Requêtes par seconde des clients vers les services et leurs codes de statut, actualisées toutes les 1,5 s. Les flux sont calculés de l'amont vers l'aval pour que chaque nœud reçoive ce qu'il envoie, et iterations={0} garde les nœuds en place entre deux mises à jour."
+        },
+        "plastic": {
+          "title": "Flux des emballages plastiques",
+          "description": "Les polymères mis sur le marché et le devenir des emballages. renderTooltip présente un lien comme une part de sa source (percent) et un nœud comme une part de l'ensemble des emballages."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Simple",
+            "description": "Les sources de revenus alimentent le budget annuel, réparti ensuite entre les départements ; appuyez sur un nœud ou un flux pour le mettre en évidence, un toucher appelle onClick."
+          }
+        },
+        "data": {
+          "tapHint": "Touchez un département ou un flux pour le sélectionner"
+        }
+      },
+      "api": {
+        "SankeyChartProps": {
+          "nodes": "Nœuds dans leur ordre initial (nom, couleur, colonne facultative) ; les nœuds seulement nommés par un lien sont ajoutés à la fin",
+          "links": "Flux entre deux nœuds, désignés par leur nom ou leur indice ; les liens qui fermeraient un cycle sont ignorés",
+          "nodeWidth": "Largeur des barres des nœuds, en pixels",
+          "nodePadding": "Espace vertical entre les nœuds d'une colonne, en pixels (réduit quand la place manque)",
+          "align": "Colonne des nœuds sans colonne : justify place les puits en dernier, left / right alignent sur les sources / les puits, center place les sources juste avant leur première cible",
+          "iterations": "Passes de relaxation qui rapprochent les nœuds de leurs voisins pour redresser les flux et limiter les croisements",
+          "linkColor": "Couleur des liens sans couleur : dégradé de la source à la cible, l'une des deux, ou un gris neutre",
+          "linkOpacity": "Opacité des liens, de 0 à 1 ; les flux survolés sont plus opaques",
+          "labels": "Affiche les étiquettes des nœuds (nom et valeur) ; celles qui se chevauchent sont omises",
+          "labelValues": "Affiche la valeur après le nom dans les étiquettes"
+        },
+        "SankeyNode": {
+          "name": "Nom affiché dans l'étiquette et l'infobulle ; les liens peuvent désigner le nœud par ce nom",
+          "color": "Couleur du nœud et des extrémités de ses liens ; prise dans la palette si absente",
+          "column": "Colonne du nœud (0 = la plus à gauche) ; calculée d'après les liens si absente"
+        },
+        "SankeyLink": {
+          "source": "Nœud source : son nom, ou son indice dans nodes",
+          "target": "Nœud cible : son nom, ou son indice dans nodes",
+          "value": "Taille du flux (les valeurs négatives comptent pour 0)",
+          "color": "Couleur du flux ; suit linkColor si absente"
+        }
+      },
+      "data": {
+        "energy": {
+          "solar": "Solaire",
+          "wind": "Éolien",
+          "hydro": "Hydraulique",
+          "nuclear": "Nucléaire",
+          "gas": "Gaz naturel",
+          "coal": "Charbon",
+          "oil": "Pétrole",
+          "electricity": "Électricité",
+          "heat": "Réseaux de chaleur",
+          "fuels": "Carburants",
+          "homes": "Résidentiel",
+          "industry": "Industrie",
+          "services": "Tertiaire",
+          "transport": "Transports",
+          "losses": "Pertes"
+        },
+        "twh": "{{value}} TWh",
+        "energyAria": "Bilan énergétique : sources primaires, vecteurs et usages finaux, en térawattheures par an",
+        "journey": {
+          "searchAds": "Annonces",
+          "organic": "Recherche naturelle",
+          "newsletter": "Newsletter",
+          "social": "Réseaux sociaux",
+          "home": "Accueil",
+          "pricing": "Page tarifs",
+          "blog": "Blog",
+          "signup": "Inscription",
+          "left": "Départ du site",
+          "trial": "Essai démarré",
+          "abandoned": "Abandon",
+          "paid": "Offre payante",
+          "expired": "Essai expiré"
+        },
+        "journeyAria": "Sessions d'une semaine, du canal d'acquisition à l'abonnement",
+        "journeyLink": "{{source}} → {{target}} : {{value}} sessions ({{share}} % de {{source}})",
+        "journeyNode": "{{name}} : {{value}} sessions",
+        "journeyHint": "Cliquez sur une étape ou un chemin (ou donnez le focus au graphique et appuyez sur Entrée) pour le sélectionner",
+        "budget": {
+          "licenses": "Licences",
+          "subscriptions": "Abonnements",
+          "services": "Services",
+          "grants": "Subventions",
+          "budget": "Budget annuel",
+          "rnd": "R&D",
+          "sales": "Ventes et marketing",
+          "operations": "Opérations",
+          "admin": "Administration",
+          "platform": "Plateforme",
+          "mobile": "Applications mobiles",
+          "ai": "Recherche en IA",
+          "campaigns": "Campagnes",
+          "salesTeam": "Équipe commerciale",
+          "infrastructure": "Infrastructure",
+          "support": "Support client",
+          "finance": "Finance et juridique",
+          "offices": "Bureaux"
+        },
+        "budgetAria": "Budget annuel : sources de revenus, départements et programmes",
+        "support": {
+          "email": "E-mail",
+          "chat": "Chat",
+          "phone": "Téléphone",
+          "bot": "Chatbot",
+          "tier1": "Niveau 1",
+          "tier2": "Niveau 2",
+          "engineering": "Ingénierie",
+          "solved": "Résolu",
+          "refunded": "Remboursé",
+          "escalated": "Bug signalé"
+        },
+        "supportAria": "Tickets de support d'un mois, du canal au résultat",
+        "alignLabel": "Alignement des nœuds",
+        "align": {
+          "justify": "Justifié",
+          "left": "Gauche",
+          "right": "Droite",
+          "center": "Centré"
+        },
+        "linkColorLabel": "Couleur des liens",
+        "linkColor": {
+          "gradient": "Dégradé",
+          "source": "Source",
+          "target": "Cible",
+          "neutral": "Neutre"
+        },
+        "labelValues": "Valeurs dans les étiquettes",
+        "pnl": {
+          "cloud": "Cloud",
+          "licenses": "Licences",
+          "hardware": "Matériel",
+          "services": "Services",
+          "revenue": "Chiffre d'affaires",
+          "cogs": "Coût des ventes",
+          "gross": "Marge brute",
+          "rnd": "R&D",
+          "sales": "Ventes et marketing",
+          "admin": "Frais généraux",
+          "operating": "Résultat d'exploitation",
+          "tax": "Impôt sur les sociétés",
+          "net": "Résultat net",
+          "aria": "Compte de résultat trimestriel : segments de chiffre d'affaires, coûts et marges",
+          "margins": "Marge brute {{gross}} · marge d'exploitation {{operating}} · marge nette {{net}}"
+        },
+        "supply": {
+          "brazil": "Brésil",
+          "colombia": "Colombie",
+          "ethiopia": "Éthiopie",
+          "vietnam": "Viêt Nam",
+          "hamburg": "Torréfaction de Hambourg",
+          "rotterdam": "Torréfaction de Rotterdam",
+          "north": "Entrepôt Nord",
+          "central": "Entrepôt Centre",
+          "south": "Entrepôt Sud",
+          "cafes": "Cafés",
+          "supermarkets": "Supermarchés",
+          "online": "Boutique en ligne",
+          "tonnes": "{{value}} t",
+          "aria": "Café expédié en un mois, des pays d'origine aux canaux de vente en passant par les torréfactions et les entrepôts",
+          "hint": "Cliquez sur un site pour suivre tout ce qui le traverse, ou sur une expédition pour la sélectionner",
+          "node": "{{name}} : {{inbound}} reçues de {{from}} sites, {{outbound}} envoyées vers {{to}} sites",
+          "link": "{{source}} → {{target}} : {{value}} ({{share}} des envois de {{source}})",
+          "clear": "Effacer la sélection"
+        },
+        "hiring": {
+          "referrals": "Cooptation",
+          "jobBoards": "Sites d'emploi",
+          "linkedin": "Réseaux professionnels",
+          "agencies": "Cabinets",
+          "campus": "Écoles",
+          "applied": "Candidatures",
+          "cvRejected": "Refusés sur CV",
+          "screen": "Entretien téléphonique",
+          "screenOut": "Non retenus après l'appel",
+          "interview": "Entretiens",
+          "interviewOut": "Non retenus après les entretiens",
+          "offer": "Offres",
+          "declined": "Offre déclinée",
+          "hired": "Embauchés",
+          "showDropOffs": "Afficher les abandons",
+          "aria": "Entonnoir de recrutement d'une année, de la source du candidat à l'embauche",
+          "summary": "{{applied}} candidatures, {{hired}} embauches ({{rate}}). {{interview}} des candidats appelés passent les entretiens et {{accepted}} des offres sont acceptées."
+        },
+        "traffic": {
+          "client": {
+            "web": "Application web",
+            "ios": "Application iOS",
+            "android": "Application Android",
+            "partners": "API partenaires"
+          },
+          "gateway": "Passerelle API",
+          "service": {
+            "auth": "Authentification",
+            "catalog": "Catalogue",
+            "search": "Recherche",
+            "checkout": "Paiement"
+          },
+          "status": {
+            "ok": "2xx succès",
+            "clientError": "4xx erreur client",
+            "serverError": "5xx erreur serveur"
+          },
+          "rps": "{{value}} req/s",
+          "summary": "Total : {{total}}.",
+          "healthy": "Erreurs serveur : {{rate}}",
+          "incident": "Erreurs serveur : {{rate}}, incident sur le paiement",
+          "pause": "Pause",
+          "resume": "Reprendre",
+          "aria": "Trafic d'API en direct, en requêtes par seconde, des clients vers les services et leurs codes de statut"
+        },
+        "plastic": {
+          "pet": "Bouteilles et barquettes PET",
+          "hdpe": "Flacons PEHD",
+          "pp": "Pots et bouchons PP",
+          "film": "Films PEBD",
+          "other": "Autres polymères",
+          "market": "Emballages mis sur le marché",
+          "collected": "Collectés pour recyclage",
+          "incinerated": "Incinérés",
+          "landfill": "Mis en décharge",
+          "leaked": "Rejetés dans la nature",
+          "recycled": "Recyclés",
+          "rejected": "Refus de tri",
+          "closedLoop": "Nouveaux emballages",
+          "downcycled": "Produits de moindre qualité",
+          "mt": "{{value}} Mt",
+          "shareOfSource": "{{share}} de « {{source}} »",
+          "shareOfTotal": "{{share}} de l'ensemble des emballages",
+          "aria": "Emballages plastiques d'une année en mégatonnes : polymères, filières de fin de vie et recyclage"
+        }
+      },
+      "wc": {
+        "demos": {
+          "energy": {
+            "title": "Flux d’énergie",
+            "description": "Des sources aux usages via le réseau ; l’épaisseur d’un lien est le flux, coloré de la source à la cible."
+          },
+          "journey": {
+            "title": "Parcours utilisateur et abandons",
+            "description": "Les visiteurs de page en page et ceux qui partent ; étapes alignées à gauche, flux colorés comme leur source."
+          }
+        },
+        "minerva-sankey-chart": {
+          "props": {
+            "hideLabels": "Masque les libellés des nœuds",
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "La marque survolée (ou ciblée au clavier) a changé ; detail : { index, name, value, share }, null quand rien n'est survolé",
+            "minerva-click": "Une marque a été cliquée, touchée ou activée avec Entrée ; detail : { index, name, value, share }",
+            "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index",
+            "getRenderer": "Moteur de rendu des formes (webgpu, webgl2, webgl, canvas2d), null tant qu’il n’est pas prêt ; à choisir avec l’option renderer du moteur"
+          }
+        }
+      }
+    }
+  }
+}

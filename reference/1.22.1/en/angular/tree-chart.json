@@ -1,0 +1,1020 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "tree-chart",
+  "title": "Tree chart",
+  "description": "Hierarchies drawn as tidy trees, radial trees, mind maps and org charts: organizations, file systems, taxonomies, plans. The tidy tree (Buchheim / Reingold–Tilford) never overlaps and centers every parent over its children; subtrees collapse and expand with an animation, from a click, the keyboard or the API.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "intro": {
+      "overview": {
+        "title": "Overview",
+        "text": "TreeChart takes nodes and parent → child edges; nodes without a parent are roots (tree.root picks one). Edges that would create a cycle or a second parent are ignored.",
+        "tidy": "The tidy tree runs in linear time and takes the size of every node into account: labels never overlap, parents are centered over their children and identical subtrees look the same.",
+        "layouts": "layout=\"tree\" (left to right by default, any direction), \"radial\" (rings around the root, labels along the radius), \"mindmap\" (branches balanced on both sides, colored per branch) and \"org\" (cards with a title and a subtitle, orthogonal connectors, leaf teams stacked in columns).",
+        "collapse": "Click a node with children, press Enter on it, or call expand / collapse / toggle: its subtree folds into it with an animation and a badge counts the hidden nodes. collapsed on a node starts it folded."
+      }
+    },
+    "data": {
+      "people": {
+        "ceo": "Olivia Bennett",
+        "cto": "Daniel Park",
+        "cfo": "Sophie Laurent",
+        "coo": "Marcus Reed",
+        "cmo": "Ava Thompson",
+        "frontend": "Liam Carter",
+        "backend": "Noah Kim",
+        "web1": "Mia Rossi",
+        "web2": "Lucas Silva",
+        "api1": "Ethan Brooks",
+        "api2": "Chloe Martin",
+        "api3": "Ryan Patel",
+        "controller": "Grace Hall",
+        "analyst": "Owen Price",
+        "support": "Zoe Turner",
+        "logistics": "Jack Evans",
+        "brand": "Lily Moore",
+        "growth": "Henry Ward"
+      },
+      "roles": {
+        "ceo": "Chief Executive Officer",
+        "cto": "Chief Technology Officer",
+        "cfo": "Chief Financial Officer",
+        "coo": "Chief Operating Officer",
+        "cmo": "Chief Marketing Officer",
+        "frontend": "Frontend Lead",
+        "backend": "Backend Lead",
+        "web1": "Frontend Engineer",
+        "web2": "Frontend Engineer",
+        "api1": "Backend Engineer",
+        "api2": "Backend Engineer",
+        "api3": "Site Reliability Engineer",
+        "controller": "Financial Controller",
+        "analyst": "Financial Analyst",
+        "support": "Support Manager",
+        "logistics": "Logistics Manager",
+        "brand": "Brand Manager",
+        "growth": "Growth Manager"
+      },
+      "departments": {
+        "executive": "Executive",
+        "engineering": "Engineering",
+        "finance": "Finance",
+        "operations": "Operations",
+        "marketing": "Marketing"
+      },
+      "orgAria": "Organization chart of the company",
+      "orgHint": "Click a manager to fold or unfold the team.",
+      "teamCollapsed": "{{name}}'s team collapsed",
+      "teamExpanded": "{{name}}'s team expanded",
+      "mind": {
+        "launch": "Product launch",
+        "goals": "Goals",
+        "revenue": "10k paying users",
+        "awareness": "Brand awareness",
+        "retention": "90% retention",
+        "audience": "Audience",
+        "teams": "Product teams",
+        "freelancers": "Freelancers",
+        "students": "Students",
+        "channels": "Channels",
+        "launchEvent": "Launch event",
+        "newsletter": "Newsletter",
+        "partners": "Partners",
+        "social": "Social media",
+        "timeline": "Timeline",
+        "beta": "Private beta",
+        "pressKit": "Press kit",
+        "launchDay": "Launch day",
+        "risks": "Risks",
+        "delays": "Delays",
+        "pricing": "Pricing feedback",
+        "budget": "Budget",
+        "ads": "Ads",
+        "events": "Events"
+      },
+      "mindAria": "Mind map of a product launch plan",
+      "categories": {
+        "inputs": "Inputs",
+        "navigation": "Navigation",
+        "feedback": "Feedback",
+        "display": "Data display",
+        "layout": "Layout",
+        "charts": "Charts"
+      },
+      "radialAria": "Components of the design system by category",
+      "fileKinds": {
+        "folder": "Folders",
+        "code": "Code",
+        "style": "Styles",
+        "data": "Data",
+        "doc": "Docs"
+      },
+      "expandAll": "Expand all",
+      "collapseAll": "Collapse all",
+      "fit": "Fit to view",
+      "filesAria": "Files of a project",
+      "decision": {
+        "credit": "Credit score",
+        "income": "Income ≥ 3 × payment?",
+        "employment": "Employed 2+ years?",
+        "debt": "Debt-to-income < 35%?",
+        "approved": "Approved",
+        "approvedLower": "Approved, lower amount",
+        "approvedRate": "Approved, higher rate",
+        "review": "Manual review",
+        "declined": "Declined"
+      },
+      "branches": {
+        "creditHigh": "700 or more",
+        "creditFair": "600–699",
+        "creditPoor": "Below 600",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "decisionKinds": {
+        "question": "Question",
+        "approved": "Approved",
+        "review": "Review",
+        "declined": "Declined"
+      },
+      "decisionAria": "Loan approval decision tree, with the path of the current applicant highlighted",
+      "decisionResult": "Outcome: {{outcome}} (questions asked: {{questions}}).",
+      "taxonomy": {
+        "catalog": "All products",
+        "electronics": "Electronics",
+        "home": "Home",
+        "fashion": "Fashion",
+        "sports": "Sports",
+        "computers": "Computers",
+        "phones": "Phones",
+        "audio": "Audio",
+        "laptops": "Laptops",
+        "desktops": "Desktops",
+        "tablets": "Tablets",
+        "smartphones": "Smartphones",
+        "phoneCases": "Phone cases",
+        "chargers": "Chargers",
+        "headphones": "Headphones",
+        "speakers": "Speakers",
+        "kitchen": "Kitchen",
+        "furniture": "Furniture",
+        "garden": "Garden",
+        "cookware": "Cookware",
+        "coffeeMachines": "Coffee machines",
+        "knives": "Knives",
+        "sofas": "Sofas",
+        "desks": "Desks",
+        "officeChairs": "Office chairs",
+        "gardenTools": "Garden tools",
+        "plants": "Plants",
+        "clothing": "Clothing",
+        "shoes": "Shoes",
+        "accessories": "Accessories",
+        "jackets": "Jackets",
+        "dresses": "Dresses",
+        "sneakers": "Sneakers",
+        "boots": "Boots",
+        "bags": "Bags",
+        "watches": "Watches",
+        "outdoor": "Outdoor",
+        "fitness": "Fitness",
+        "cycling": "Cycling",
+        "tents": "Tents",
+        "hikingBoots": "Hiking boots",
+        "yogaMats": "Yoga mats",
+        "dumbbells": "Dumbbells",
+        "bikes": "Bikes",
+        "helmets": "Helmets"
+      },
+      "breadcrumbSeparator": " › ",
+      "taxonomySearch": "Search categories",
+      "taxonomyAria": "Product category taxonomy of a store",
+      "taxonomyMatches": "Matching categories: {{total}}. Press Enter or pick a tag to reveal one.",
+      "taxonomyHint": "Search for a category, for example “boots” or “desk”.",
+      "diskRoot": "Macintosh HD",
+      "diskKinds": {
+        "system": "System",
+        "apps": "Applications",
+        "media": "Media",
+        "documents": "Documents",
+        "cache": "Caches and backups"
+      },
+      "diskLayout": "Layout",
+      "diskLayouts": {
+        "tree": "Tree",
+        "radial": "Radial"
+      },
+      "diskAria": "Disk usage by folder, sized by the bytes they hold",
+      "diskShare": "{{name}}: {{size}} — {{parentShare}} of {{parent}}, {{share}} of the disk.",
+      "diskTotal": "{{name}}: {{size}} in use.",
+      "wbsItems": {
+        "release": "App 2.0 release",
+        "onboarding": "Onboarding",
+        "signup": "Sign-up",
+        "emailVerify": "Email verification",
+        "socialLogin": "Social login",
+        "tour": "Product tour",
+        "tourScreens": "Tour screens",
+        "tourSkip": "Skip and resume",
+        "payments": "Payments",
+        "checkout": "Checkout",
+        "cardForm": "Card form",
+        "applePay": "Wallet payments",
+        "billing": "Billing",
+        "invoices": "Invoices",
+        "refunds": "Refunds",
+        "platform": "Platform",
+        "offline": "Offline mode",
+        "syncQueue": "Sync queue",
+        "conflicts": "Conflict resolution",
+        "quality": "Quality",
+        "crashReports": "Crash reports",
+        "perfBudget": "Performance budget"
+      },
+      "wbsPoints": "{{points}} pts",
+      "wbsRollup": "{{points}} pts · {{done}} done",
+      "wbsStatuses": {
+        "summary": "Summary",
+        "done": "Done",
+        "doing": "In progress",
+        "todo": "To do"
+      },
+      "wbsDepth": "Detail level",
+      "wbsLevels": {
+        "deliverables": "Deliverables",
+        "features": "Features",
+        "packages": "Work packages"
+      },
+      "wbsDepthStatus": "Showing the plan down to: {{level}}.",
+      "wbsAria": "Work breakdown structure of a mobile app release, with story points",
+      "wbsCollapsed": "{{name}} folded: {{points}} points, {{remaining}} remaining.",
+      "wbsExpanded": "{{name}} unfolded: {{points}} points, {{remaining}} remaining.",
+      "wbsSummary": "{{points}} story points in total, {{done}} done. Click an item to fold or unfold it.",
+      "rounds": {
+        "quarterFinal": "Quarter-final",
+        "semiFinal": "Semi-final",
+        "final": "Final"
+      },
+      "tbd": "To be played",
+      "score": "{{winner}}–{{loser}}",
+      "seed": "Seed {{n}}",
+      "bracketStates": {
+        "pending": "Not played",
+        "played": "Winner",
+        "alive": "Still in",
+        "out": "Eliminated",
+        "champion": "Champion"
+      },
+      "nextRound": "Next round",
+      "restart": "Restart",
+      "newSimulation": "New simulation",
+      "bracketAria": "Knockout tournament bracket from the quarter-finals to the final",
+      "championResult": "{{team}} wins the tournament!",
+      "roundResult": "{{round}} winners: {{teams}}.",
+      "bracketHint": "Eight teams, seeded by rating. Play the next round to reveal the results."
+    }
+  },
+  "components": [
+    {
+      "name": "TreeChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnTreeChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnTreeChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnTreeChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-tree-chart",
+        "props": [
+          {
+            "name": "layout",
+            "typeText": "\"radial\" | \"tree\" | \"mindmap\" | \"org\"",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "direction",
+            "typeText": "GraphDirection | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "tree",
+            "typeText": "GraphTreeOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "nodes",
+            "typeText": "readonly GraphNode[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "edges",
+            "typeText": "readonly GraphEdge[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "groups",
+            "typeText": "readonly GraphGroup[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "nodeShape",
+            "typeText": "GraphNodeShape | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "nodeSize",
+            "typeText": "number | readonly [number, number] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "edgeStyle",
+            "typeText": "GraphEdgeStyle | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "edgeWidth",
+            "typeText": "number | readonly [number, number] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "edgeColor",
+            "typeText": "\"neutral\" | \"source\" | \"target\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "arrows",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "arrowStyle",
+            "typeText": "\"open\" | \"filled\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "nodeLabels",
+            "typeText": "boolean | \"auto\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "edgeLabels",
+            "typeText": "boolean | \"auto\" | \"hover\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "highlight",
+            "typeText": "\"none\" | \"neighbors\" | \"lineage\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "selected",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "animation",
+            "typeText": "number | boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "fitPadding",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "controls",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "legend",
+            "typeText": "boolean | GraphLegendOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "tooltip",
+            "typeText": "boolean | GraphTooltipOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "interaction",
+            "typeText": "boolean | GraphInteractionOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "ChartRendererPreference | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "palette",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          },
+          {
+            "name": "labels",
+            "typeText": "Partial<GraphChartLabels> | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "GraphHoverEvent | null",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "GraphHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "itemClick",
+            "typeText": "GraphHoverEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "GraphHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "selectionChange",
+            "typeText": "string[]",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "string[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "nodeToggle",
+            "typeText": "GraphToggleEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "GraphToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "groupToggle",
+            "typeText": "GraphGroupToggleEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "GraphGroupToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "layoutEnd",
+            "typeText": "GraphLayoutEndEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "GraphLayoutEndEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "typeText": "ChartRendererKind",
+            "required": false,
+            "source": "packages/angular/src/components/charts/graph.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "org",
+      "title": "Org chart with collapsible teams",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component, signal, computed } from '@angular/core';\nimport { MnTreeChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTreeChart],\n  template: `\n<mn-tree-chart\n  [nodes]=\"nodes()\"\n  [edges]=\"edges\"\n  [groups]=\"groups()\"\n  layout=\"org\"\n  [locale]=\"language()\"\n  [height]=\"460\"\n  (nodeToggle)=\"toggled.set($event)\"\n/>\n<output aria-live=\"polite\">{{ status() }}</output>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  toggled = signal<{ id: string; collapsed: boolean } | null>(null);\n  text = {\n  \"en\": {\n    \"roles\": [\"Chief executive\", \"Technology\", \"Finance\", \"Operations\", \"Web team\", \"Mobile team\", \"Platform team\", \"Accounting\", \"Treasury\", \"Customer support\", \"Logistics\"],\n    \"departments\": [\"Executive\", \"Engineering\", \"Finance\", \"Operations\"],\n    \"hint\": \"Click a manager to collapse or expand the team\",\n    \"collapsed\": \"{name}: collapsed\",\n    \"expanded\": \"{name}: expanded\"\n  },\n  \"zh\": {\n    \"roles\": [\"首席执行官\", \"技术\", \"财务\", \"运营\", \"Web 团队\", \"移动团队\", \"平台团队\", \"会计\", \"资金管理\", \"客户支持\", \"物流\"],\n    \"departments\": [\"管理层\", \"研发\", \"财务\", \"运营\"],\n    \"hint\": \"点击管理者以折叠或展开团队\",\n    \"collapsed\": \"{name}：已折叠\",\n    \"expanded\": \"{name}：已展开\"\n  },\n  \"ja\": {\n    \"roles\": [\"最高経営責任者\", \"技術\", \"財務\", \"運営\", \"Web チーム\", \"モバイルチーム\", \"プラットフォームチーム\", \"経理\", \"資金管理\", \"カスタマーサポート\", \"物流\"],\n    \"departments\": [\"経営\", \"エンジニアリング\", \"財務\", \"運営\"],\n    \"hint\": \"マネージャーをクリックするとチームを折りたたみ / 展開します\",\n    \"collapsed\": \"{name}: 折りたたみ\",\n    \"expanded\": \"{name}: 展開\"\n  },\n  \"fr\": {\n    \"roles\": [\"Direction générale\", \"Technique\", \"Finance\", \"Opérations\", \"Équipe web\", \"Équipe mobile\", \"Équipe plateforme\", \"Comptabilité\", \"Trésorerie\", \"Support client\", \"Logistique\"],\n    \"departments\": [\"Direction\", \"Ingénierie\", \"Finance\", \"Opérations\"],\n    \"hint\": \"Cliquez sur un responsable pour replier ou déplier l'équipe\",\n    \"collapsed\": \"{name} : replié\",\n    \"expanded\": \"{name} : déplié\"\n  }\n};\n  people = [\n  [-1, 0],\n  [0, 1],\n  [0, 2],\n  [0, 3],\n  [1, 1],\n  [1, 1],\n  [1, 1],\n  [2, 2],\n  [2, 2],\n  [3, 3],\n  [3, 3]\n];\n  edges = [\n  {\n    \"source\": \"p0\",\n    \"target\": \"p1\"\n  },\n  {\n    \"source\": \"p0\",\n    \"target\": \"p2\"\n  },\n  {\n    \"source\": \"p0\",\n    \"target\": \"p3\"\n  },\n  {\n    \"source\": \"p1\",\n    \"target\": \"p4\"\n  },\n  {\n    \"source\": \"p1\",\n    \"target\": \"p5\"\n  },\n  {\n    \"source\": \"p1\",\n    \"target\": \"p6\"\n  },\n  {\n    \"source\": \"p2\",\n    \"target\": \"p7\"\n  },\n  {\n    \"source\": \"p2\",\n    \"target\": \"p8\"\n  },\n  {\n    \"source\": \"p3\",\n    \"target\": \"p9\"\n  },\n  {\n    \"source\": \"p3\",\n    \"target\": \"p10\"\n  }\n];\n  nodes = computed(() =>\n    this.text[this.language()].roles.map((label, i) => ({\n      id: `p${i}`,\n      label,\n      group: `d${this.people[i][1]}`,\n    })),\n  );\n  groups = computed(() =>\n    this.text[this.language()].departments.map((name, i) => ({ id: `d${i}`, name })),\n  );\n  status = computed(() => {\n    const t = this.text[this.language()];\n    const toggled = this.toggled();\n    return toggled\n      ? (toggled.collapsed ? t.collapsed : t.expanded).replace(\n          \"{name}\",\n          t.roles[Number(toggled.id.slice(1))],\n        )\n      : t.hint;\n  });\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "mind-map",
+      "title": "Mind map",
+      "description": "A launch plan around its central topic. The branches are balanced between the two sides by their number of ideas, every branch gets a color, and the lines get thinner away from the center.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component, computed } from '@angular/core';\nimport { MnTreeChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTreeChart],\n  template: `\n<mn-tree-chart\n  [nodes]=\"nodes()\"\n  [edges]=\"edges\"\n  layout=\"mindmap\"\n  [legend]=\"false\"\n  [locale]=\"language()\"\n  [height]=\"420\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  topics = {\n  \"en\": [\"Product launch\", \"Research\", \"User interviews\", \"Market analysis\", \"Design\", \"Prototype\", \"Usability tests\", \"Development\", \"Web app\", \"Mobile app\", \"Marketing\", \"Ad campaign\", \"Press release\"],\n  \"zh\": [\"产品发布\", \"调研\", \"用户访谈\", \"市场分析\", \"设计\", \"原型\", \"可用性测试\", \"开发\", \"网页应用\", \"移动应用\", \"市场营销\", \"广告投放\", \"新闻稿\"],\n  \"ja\": [\"製品ローンチ\", \"リサーチ\", \"ユーザーインタビュー\", \"市場分析\", \"デザイン\", \"プロトタイプ\", \"ユーザビリティテスト\", \"開発\", \"Web アプリ\", \"モバイルアプリ\", \"マーケティング\", \"広告キャンペーン\", \"プレスリリース\"],\n  \"fr\": [\"Lancement produit\", \"Recherche\", \"Entretiens utilisateurs\", \"Analyse du marché\", \"Conception\", \"Prototype\", \"Tests d'utilisabilité\", \"Développement\", \"Application web\", \"Application mobile\", \"Marketing\", \"Campagne publicitaire\", \"Communiqué de presse\"]\n};\n  branch = [0, 1, 1, 1, 4, 4, 4, 7, 7, 7, 10, 10, 10];\n  edges = [\n  {\n    \"source\": \"t0\",\n    \"target\": \"t1\"\n  },\n  {\n    \"source\": \"t1\",\n    \"target\": \"t2\"\n  },\n  {\n    \"source\": \"t1\",\n    \"target\": \"t3\"\n  },\n  {\n    \"source\": \"t0\",\n    \"target\": \"t4\"\n  },\n  {\n    \"source\": \"t4\",\n    \"target\": \"t5\"\n  },\n  {\n    \"source\": \"t4\",\n    \"target\": \"t6\"\n  },\n  {\n    \"source\": \"t0\",\n    \"target\": \"t7\"\n  },\n  {\n    \"source\": \"t7\",\n    \"target\": \"t8\"\n  },\n  {\n    \"source\": \"t7\",\n    \"target\": \"t9\"\n  },\n  {\n    \"source\": \"t0\",\n    \"target\": \"t10\"\n  },\n  {\n    \"source\": \"t10\",\n    \"target\": \"t11\"\n  },\n  {\n    \"source\": \"t10\",\n    \"target\": \"t12\"\n  }\n];\n  nodes = computed(() =>\n    this.topics[this.language()].map((label, i) => ({\n      id: `t${i}`,\n      label,\n      group: `b${this.branch[i]}`,\n    })),\n  );\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tree chart",
+      "description": "Hierarchies drawn as tidy trees, radial trees, mind maps and org charts: organizations, file systems, taxonomies, plans. The tidy tree (Buchheim / Reingold–Tilford) never overlaps and centers every parent over its children; subtrees collapse and expand with an animation, from a click, the keyboard or the API.",
+      "intro": {
+        "overview": {
+          "title": "Overview",
+          "text": "TreeChart takes nodes and parent → child edges; nodes without a parent are roots (tree.root picks one). Edges that would create a cycle or a second parent are ignored.",
+          "tidy": "The tidy tree runs in linear time and takes the size of every node into account: labels never overlap, parents are centered over their children and identical subtrees look the same.",
+          "layouts": "layout=\"tree\" (left to right by default, any direction), \"radial\" (rings around the root, labels along the radius), \"mindmap\" (branches balanced on both sides, colored per branch) and \"org\" (cards with a title and a subtitle, orthogonal connectors, leaf teams stacked in columns).",
+          "collapse": "Click a node with children, press Enter on it, or call expand / collapse / toggle: its subtree folds into it with an animation and a badge counts the hidden nodes. collapsed on a node starts it folded."
+        }
+      },
+      "demos": {
+        "org-chart": {
+          "title": "Org chart",
+          "description": "Cards with the name and the job title, colored by department, connected by orthogonal lines; teams without reports are stacked in columns to keep the chart narrow. The backend team starts collapsed: click a manager to fold or unfold the team."
+        },
+        "mind-map": {
+          "title": "Mind map",
+          "description": "A launch plan around its central topic. The branches are balanced between the two sides by their number of ideas, every branch gets a color, and the lines get thinner away from the center."
+        },
+        "radial": {
+          "title": "Radial tree",
+          "description": "The components of a design system around the library name, with the labels along the radius. The radius grows with the number of leaves so the labels never overlap."
+        },
+        "file-tree": {
+          "title": "Collapsible file tree",
+          "description": "A project tree from left to right, colored by file type. Deep folders start collapsed; click a folder to open it, or use the buttons, which call expand(), collapse() and fit() on the ref."
+        },
+        "decision-tree": {
+          "title": "Decision tree",
+          "description": "A loan approval policy as an org layout with labeled branches (edgeLabels). Answer the questions with the radio buttons: the reached outcome is passed as selected and highlight=\"lineage\" lights up the path from the root; tree.collapsible is off so clicks do not fold the questions."
+        },
+        "taxonomy-search": {
+          "title": "Category search",
+          "description": "The category taxonomy of a store, with the second level collapsed. Type to select every matching category; Enter or a tag calls focusNode() on the ref, which expands the collapsed ancestors before centering the node, and the breadcrumb of the category is shown below."
+        },
+        "disk-usage": {
+          "title": "Disk usage",
+          "description": "A file system where each node value is the size of the folder, so nodeSize as [min, max] scales the circles with the bytes. Sizes are formatted with Intl.NumberFormat units, the radio buttons switch between the tree and radial layouts, and a click reads the share of the parent folder and of the disk."
+        },
+        "wbs": {
+          "title": "Work breakdown structure",
+          "description": "The plan of a mobile app release: work packages carry story points and a status, and summary items roll the points and the progress up in their subtitles. The detail level calls expand() and collapse() on the ref, and onToggle reports the points of the folded or unfolded item."
+        },
+        "bracket": {
+          "title": "Tournament bracket",
+          "description": "A knockout bracket from right to left (direction=\"RL\") with box nodes and orthogonal edges: the final is the root and the teams are the leaves, named with Intl.DisplayNames. Next round reveals results simulated with a seeded generator, and the groups color the teams still in, the eliminated ones and the champion."
+        }
+      },
+      "api": {
+        "TreeChartProps": {
+          "layout": "Kind of tree: tidy tree, radial tree, mind map or org chart",
+          "direction": "Direction of layout=\"tree\": LR (default), RL, TB or BT",
+          "tree": "Tree settings: root, gaps, collapsing, compact columns, card size"
+        },
+        "GraphTreeOptions": {
+          "root": "Id of the root; the nodes without a parent are roots when omitted",
+          "levelGap": "Space between two levels, in layout units; depends on the layout and the labels when omitted",
+          "siblingGap": "Space between two neighboring nodes, in layout units",
+          "collapsible": "Clicking a node with children collapses or expands it",
+          "compact": "Org charts: the cards of the leaf children of a node form a column under it instead of a row",
+          "cardSize": "Width and height of the org chart cards, in layout units"
+        },
+        "GraphToggleEvent": {
+          "id": "Id of the node",
+          "collapsed": "Its new state: true when collapsed"
+        },
+        "GraphTreeLayoutOptions": {
+          "type": "Kind of tree: tree, radial, mindmap or org",
+          "direction": "Direction of the tidy tree",
+          "size": "Width and height of each node in layout units",
+          "collapsed": "Indices of the collapsed nodes; their descendants are hidden"
+        },
+        "GraphTreeLayoutResult": {
+          "parent": "Parent index of each node, -1 for the roots",
+          "depth": "Depth of each node, 0 for the roots",
+          "visible": "1 when the node is shown (not below a collapsed node)",
+          "side": "Mind maps: -1 on the left, 1 on the right; radial trees: angle of the node in radians",
+          "children": "Children of each node, in order",
+          "stacked": "1 when the node is a card of a compact column (org charts)"
+        }
+      },
+      "data": {
+        "people": {
+          "ceo": "Olivia Bennett",
+          "cto": "Daniel Park",
+          "cfo": "Sophie Laurent",
+          "coo": "Marcus Reed",
+          "cmo": "Ava Thompson",
+          "frontend": "Liam Carter",
+          "backend": "Noah Kim",
+          "web1": "Mia Rossi",
+          "web2": "Lucas Silva",
+          "api1": "Ethan Brooks",
+          "api2": "Chloe Martin",
+          "api3": "Ryan Patel",
+          "controller": "Grace Hall",
+          "analyst": "Owen Price",
+          "support": "Zoe Turner",
+          "logistics": "Jack Evans",
+          "brand": "Lily Moore",
+          "growth": "Henry Ward"
+        },
+        "roles": {
+          "ceo": "Chief Executive Officer",
+          "cto": "Chief Technology Officer",
+          "cfo": "Chief Financial Officer",
+          "coo": "Chief Operating Officer",
+          "cmo": "Chief Marketing Officer",
+          "frontend": "Frontend Lead",
+          "backend": "Backend Lead",
+          "web1": "Frontend Engineer",
+          "web2": "Frontend Engineer",
+          "api1": "Backend Engineer",
+          "api2": "Backend Engineer",
+          "api3": "Site Reliability Engineer",
+          "controller": "Financial Controller",
+          "analyst": "Financial Analyst",
+          "support": "Support Manager",
+          "logistics": "Logistics Manager",
+          "brand": "Brand Manager",
+          "growth": "Growth Manager"
+        },
+        "departments": {
+          "executive": "Executive",
+          "engineering": "Engineering",
+          "finance": "Finance",
+          "operations": "Operations",
+          "marketing": "Marketing"
+        },
+        "orgAria": "Organization chart of the company",
+        "orgHint": "Click a manager to fold or unfold the team.",
+        "teamCollapsed": "{{name}}'s team collapsed",
+        "teamExpanded": "{{name}}'s team expanded",
+        "mind": {
+          "launch": "Product launch",
+          "goals": "Goals",
+          "revenue": "10k paying users",
+          "awareness": "Brand awareness",
+          "retention": "90% retention",
+          "audience": "Audience",
+          "teams": "Product teams",
+          "freelancers": "Freelancers",
+          "students": "Students",
+          "channels": "Channels",
+          "launchEvent": "Launch event",
+          "newsletter": "Newsletter",
+          "partners": "Partners",
+          "social": "Social media",
+          "timeline": "Timeline",
+          "beta": "Private beta",
+          "pressKit": "Press kit",
+          "launchDay": "Launch day",
+          "risks": "Risks",
+          "delays": "Delays",
+          "pricing": "Pricing feedback",
+          "budget": "Budget",
+          "ads": "Ads",
+          "events": "Events"
+        },
+        "mindAria": "Mind map of a product launch plan",
+        "categories": {
+          "inputs": "Inputs",
+          "navigation": "Navigation",
+          "feedback": "Feedback",
+          "display": "Data display",
+          "layout": "Layout",
+          "charts": "Charts"
+        },
+        "radialAria": "Components of the design system by category",
+        "fileKinds": {
+          "folder": "Folders",
+          "code": "Code",
+          "style": "Styles",
+          "data": "Data",
+          "doc": "Docs"
+        },
+        "expandAll": "Expand all",
+        "collapseAll": "Collapse all",
+        "fit": "Fit to view",
+        "filesAria": "Files of a project",
+        "decision": {
+          "credit": "Credit score",
+          "income": "Income ≥ 3 × payment?",
+          "employment": "Employed 2+ years?",
+          "debt": "Debt-to-income < 35%?",
+          "approved": "Approved",
+          "approvedLower": "Approved, lower amount",
+          "approvedRate": "Approved, higher rate",
+          "review": "Manual review",
+          "declined": "Declined"
+        },
+        "branches": {
+          "creditHigh": "700 or more",
+          "creditFair": "600–699",
+          "creditPoor": "Below 600",
+          "yes": "Yes",
+          "no": "No"
+        },
+        "decisionKinds": {
+          "question": "Question",
+          "approved": "Approved",
+          "review": "Review",
+          "declined": "Declined"
+        },
+        "decisionAria": "Loan approval decision tree, with the path of the current applicant highlighted",
+        "decisionResult": "Outcome: {{outcome}} (questions asked: {{questions}}).",
+        "taxonomy": {
+          "catalog": "All products",
+          "electronics": "Electronics",
+          "home": "Home",
+          "fashion": "Fashion",
+          "sports": "Sports",
+          "computers": "Computers",
+          "phones": "Phones",
+          "audio": "Audio",
+          "laptops": "Laptops",
+          "desktops": "Desktops",
+          "tablets": "Tablets",
+          "smartphones": "Smartphones",
+          "phoneCases": "Phone cases",
+          "chargers": "Chargers",
+          "headphones": "Headphones",
+          "speakers": "Speakers",
+          "kitchen": "Kitchen",
+          "furniture": "Furniture",
+          "garden": "Garden",
+          "cookware": "Cookware",
+          "coffeeMachines": "Coffee machines",
+          "knives": "Knives",
+          "sofas": "Sofas",
+          "desks": "Desks",
+          "officeChairs": "Office chairs",
+          "gardenTools": "Garden tools",
+          "plants": "Plants",
+          "clothing": "Clothing",
+          "shoes": "Shoes",
+          "accessories": "Accessories",
+          "jackets": "Jackets",
+          "dresses": "Dresses",
+          "sneakers": "Sneakers",
+          "boots": "Boots",
+          "bags": "Bags",
+          "watches": "Watches",
+          "outdoor": "Outdoor",
+          "fitness": "Fitness",
+          "cycling": "Cycling",
+          "tents": "Tents",
+          "hikingBoots": "Hiking boots",
+          "yogaMats": "Yoga mats",
+          "dumbbells": "Dumbbells",
+          "bikes": "Bikes",
+          "helmets": "Helmets"
+        },
+        "breadcrumbSeparator": " › ",
+        "taxonomySearch": "Search categories",
+        "taxonomyAria": "Product category taxonomy of a store",
+        "taxonomyMatches": "Matching categories: {{total}}. Press Enter or pick a tag to reveal one.",
+        "taxonomyHint": "Search for a category, for example “boots” or “desk”.",
+        "diskRoot": "Macintosh HD",
+        "diskKinds": {
+          "system": "System",
+          "apps": "Applications",
+          "media": "Media",
+          "documents": "Documents",
+          "cache": "Caches and backups"
+        },
+        "diskLayout": "Layout",
+        "diskLayouts": {
+          "tree": "Tree",
+          "radial": "Radial"
+        },
+        "diskAria": "Disk usage by folder, sized by the bytes they hold",
+        "diskShare": "{{name}}: {{size}} — {{parentShare}} of {{parent}}, {{share}} of the disk.",
+        "diskTotal": "{{name}}: {{size}} in use.",
+        "wbsItems": {
+          "release": "App 2.0 release",
+          "onboarding": "Onboarding",
+          "signup": "Sign-up",
+          "emailVerify": "Email verification",
+          "socialLogin": "Social login",
+          "tour": "Product tour",
+          "tourScreens": "Tour screens",
+          "tourSkip": "Skip and resume",
+          "payments": "Payments",
+          "checkout": "Checkout",
+          "cardForm": "Card form",
+          "applePay": "Wallet payments",
+          "billing": "Billing",
+          "invoices": "Invoices",
+          "refunds": "Refunds",
+          "platform": "Platform",
+          "offline": "Offline mode",
+          "syncQueue": "Sync queue",
+          "conflicts": "Conflict resolution",
+          "quality": "Quality",
+          "crashReports": "Crash reports",
+          "perfBudget": "Performance budget"
+        },
+        "wbsPoints": "{{points}} pts",
+        "wbsRollup": "{{points}} pts · {{done}} done",
+        "wbsStatuses": {
+          "summary": "Summary",
+          "done": "Done",
+          "doing": "In progress",
+          "todo": "To do"
+        },
+        "wbsDepth": "Detail level",
+        "wbsLevels": {
+          "deliverables": "Deliverables",
+          "features": "Features",
+          "packages": "Work packages"
+        },
+        "wbsDepthStatus": "Showing the plan down to: {{level}}.",
+        "wbsAria": "Work breakdown structure of a mobile app release, with story points",
+        "wbsCollapsed": "{{name}} folded: {{points}} points, {{remaining}} remaining.",
+        "wbsExpanded": "{{name}} unfolded: {{points}} points, {{remaining}} remaining.",
+        "wbsSummary": "{{points}} story points in total, {{done}} done. Click an item to fold or unfold it.",
+        "rounds": {
+          "quarterFinal": "Quarter-final",
+          "semiFinal": "Semi-final",
+          "final": "Final"
+        },
+        "tbd": "To be played",
+        "score": "{{winner}}–{{loser}}",
+        "seed": "Seed {{n}}",
+        "bracketStates": {
+          "pending": "Not played",
+          "played": "Winner",
+          "alive": "Still in",
+          "out": "Eliminated",
+          "champion": "Champion"
+        },
+        "nextRound": "Next round",
+        "restart": "Restart",
+        "newSimulation": "New simulation",
+        "bracketAria": "Knockout tournament bracket from the quarter-finals to the final",
+        "championResult": "{{team}} wins the tournament!",
+        "roundResult": "{{round}} winners: {{teams}}.",
+        "bracketHint": "Eight teams, seeded by rating. Play the next round to reveal the results."
+      },
+      "wc": {
+        "demos": {
+          "org": {
+            "title": "Org chart with collapsible teams",
+            "description": "Cards grouped by department, the leaf teams stacked under their manager; clicking a manager collapses or expands the team, and the toggle event is reported below."
+          },
+          "mind-map": {
+            "title": "Mind map",
+            "description": "A product launch plan: the branches spread on both sides of the central topic, each branch in its own color; the topics follow the page language."
+          }
+        },
+        "minerva-tree-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "nodes": "Nodes { id, label, group, value… }; property only",
+            "edges": "Edges { source, target, value, label… }; property only",
+            "groups": "Groups { id, name, color }: legend order, names and colors; property only",
+            "nodeShape": "Shape of the nodes without shape (boxes for DAGs, org charts and mind maps, circles otherwise)",
+            "edgeStyle": "Edge shape; depends on the layout when omitted",
+            "edgeColor": "Edge colors: neutral or tinted with the source / target node",
+            "arrowStyle": "Shape of the arrowheads: open (a slim outlined head) or filled (a solid head in the edge color, following the theme and the highlight)",
+            "highlight": "What hovering / selecting a node highlights",
+            "locale": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default",
+            "selected": "Ids of the selected nodes (changing it updates the selection); property only",
+            "options": "Other engine options (GraphChartOptions: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels…); property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, null when nothing is hovered",
+            "minerva-item-click": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }",
+            "minerva-selection-change": "The selection changed; detail: { ids }",
+            "minerva-toggle": "A tree node was collapsed or expanded; detail: { id, collapsed }",
+            "minerva-group-toggle": "The legend showed / hid a group; detail: { group, hidden }",
+            "minerva-layout-end": "The layout is done (the force simulation cooled down); detail: { layout }",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "fit": "Fits the visible nodes in the view",
+            "focusNode": "Centers a node (expanding its collapsed ancestors), optionally zooming",
+            "setData": "Replaces the data until the properties change again",
+            "select": "Selects nodes (null clears the selection)",
+            "getSelection": "Ids of the selected nodes",
+            "expand": "Expands a node (all nodes without an id)",
+            "collapse": "Collapses a node (all nodes with children without an id)",
+            "toggle": "Collapses / expands a node",
+            "getPositions": "Current positions of the nodes in layout units",
+            "relayout": "Computes the layout again",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

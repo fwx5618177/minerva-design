@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "zh",
+  "renderer": "angular",
+  "page": "segmented-control",
+  "title": "SegmentedControl 分段控制器",
+  "description": "用于切换模式和筛选条件的单选分段开关，滑块会滑动到选中的分段下方。若每个选项都有各自的内容面板，请使用 Tabs。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SegmentedControl",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSegmentedControl. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSegmentedControl. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSegmentedControl"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-segmented-control",
+        "props": [
+          {
+            "name": "options",
+            "typeText": "readonly SegmentedControlOption[]",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "value",
+            "typeText": "string | null | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "SegmentedControlSize",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "color",
+            "typeText": "SegmentedControlColor",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "fullWidth",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "name",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          },
+          {
+            "name": "aria-labelledby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string | null | undefined",
+            "required": false
+          },
+          {
+            "name": "change",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/segmented-control/segmented-control.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:SegmentedControl": {
+      "kind": "cssVars",
+      "source": "react/src/components/SegmentedControl",
+      "vars": [
+        {
+          "name": "--segmented-control-height",
+          "description": "Height of the control (defaults to the density's control height)"
+        },
+        {
+          "name": "--segmented-control-padding",
+          "description": "Space between the track and the segments (defaults to 2px)"
+        },
+        {
+          "name": "--segmented-control-radius",
+          "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+        },
+        {
+          "name": "--segmented-control-background",
+          "description": "Background of the track (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--segmented-control-color",
+          "description": "Text color of the unselected segments"
+        },
+        {
+          "name": "--segmented-control-item-padding-x",
+          "description": "Inline padding of a segment"
+        },
+        {
+          "name": "--segmented-control-thumb-background",
+          "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-thumb-shadow",
+          "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-selected-color",
+          "description": "Text color of the selected segment"
+        },
+        {
+          "name": "--segmented-control-duration",
+          "description": "Duration of the thumb slide (defaults to --transition-base)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "pick-a-view",
+      "title": "Pick a view",
+      "description": "[(value)] holds the selected value; (change) reports user selections. One tab stop: the arrow keys move and select, Home / End jump to the ends.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSegmentedControl } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSegmentedControl],\n  template: `\n<mn-segmented-control aria-label=\"Calendar view\" [options]=\"options\" [(value)]=\"value\"/><output>Showing the {{value}} view</output>\n  `,\n})\nexport class Example {\n  value: string | null | undefined = \"week\";\n  options = [\n  {\n    \"value\": \"day\",\n    \"label\": \"Day\"\n  },\n  {\n    \"value\": \"week\",\n    \"label\": \"Week\"\n  },\n  {\n    \"value\": \"month\",\n    \"label\": \"Month\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "sizes-full-width-and-colors",
+      "title": "Sizes, full width and colors",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSegmentedControl } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSegmentedControl],\n  template: `\n<mn-segmented-control size=\"small\" aria-label=\"Small\" [options]=\"periods\" defaultValue=\"Daily\"/><mn-segmented-control size=\"large\" color=\"primary\" aria-label=\"Large\" [options]=\"periods\" defaultValue=\"Weekly\"/><mn-segmented-control fullWidth aria-label=\"Full width\" [options]=\"periods\" defaultValue=\"Monthly\"/>\n  `,\n})\nexport class Example {\n  periods = [\"Daily\", \"Weekly\", \"Monthly\"];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "change-events-and-disabled-segments",
+      "title": "Change events and disabled segments",
+      "description": "Disabled segments are skipped by the arrow keys; disabled blocks the whole control. The component is also a ControlValueAccessor (ngModel, formControl).",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSegmentedControl } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSegmentedControl],\n  template: `\n<mn-segmented-control aria-label=\"Theme\" [options]=\"themes\" [(value)]=\"mode\" (change)=\"changes = changes + 1\"/><mn-segmented-control disabled aria-label=\"Theme (disabled)\" [options]=\"themes\" value=\"light\"/><output>Theme: {{mode}} ({{changes}} changes)</output>\n  `,\n})\nexport class Example {\n  mode = \"dark\";\n  changes = 0;\n  themes = [\n  {\n    \"value\": \"light\",\n    \"label\": \"Light\"\n  },\n  {\n    \"value\": \"dark\",\n    \"label\": \"Dark\"\n  },\n  {\n    \"value\": \"system\",\n    \"label\": \"System\",\n    \"disabled\": true\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SegmentedControl 分段控制器",
+      "description": "用于切换模式和筛选条件的单选分段开关，滑块会滑动到选中的分段下方。若每个选项都有各自的内容面板，请使用 Tabs。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "受控值（value / onChange；值的类型是泛型）。控件是由 radio 分段组成的 radiogroup，只有一个 Tab 停靠点：方向键移动并选中（跳过禁用分段并循环），Home / End 跳到两端。"
+        },
+        "icons": {
+          "title": "图标",
+          "description": "选项可以在标签旁显示图标，也可以只显示图标；仅图标的分段需要提供 aria-label。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "三种密度，跟随控件高度。纯字符串选项既是值也是标签。"
+        },
+        "full-width": {
+          "title": "撑满宽度",
+          "description": "fullWidth 让控件撑满容器；各分段始终等分宽度。name 会添加一个隐藏输入框，使值随表单一起提交。"
+        },
+        "colors": {
+          "title": "颜色与禁用",
+          "description": "neutral（默认）在浅色轨道上显示凸起的滑块，primary 显示主色实心滑块。可以禁用单个分段或整个控件。"
+        }
+      },
+      "api": {
+        "SegmentedControlProps": {
+          "options": "分段：字符串或选项对象",
+          "value": "选中的值（受控；与 onChange 搭配使用）",
+          "defaultValue": "初始选中的值（非受控）",
+          "onChange": "选中值变化时调用，参数为选中的值",
+          "size": "分段密度",
+          "color": "滑块颜色",
+          "fullWidth": "撑满容器宽度（各分段始终等分宽度）",
+          "disabled": "禁用所有分段",
+          "name": "在表单中携带值的隐藏输入框名称",
+          "aria-label": "分组的无障碍标签",
+          "aria-labelledby": "为分组提供标签的元素 id",
+          "id": "根元素 id",
+          "className": "附加的类名",
+          "ref": "根 <div>（role=\"radiogroup\"）的 ref"
+        },
+        "SegmentedControlOptionObject": {
+          "value": "分段的值",
+          "label": "可见标签（默认为值，除非提供了图标）",
+          "icon": "显示在标签前的图标（仅图标分段时单独显示）",
+          "disabled": "禁用该分段",
+          "aria-label": "无障碍名称；仅图标分段必须提供"
+        }
+      },
+      "cssVars": {
+        "--segmented-control-height": "控件高度（默认为当前密度的控件高度）",
+        "--segmented-control-padding": "轨道与分段之间的间距（默认 2px）",
+        "--segmented-control-radius": "轨道圆角（默认 --radius-md）；滑块随之变化",
+        "--segmented-control-background": "轨道背景（默认 --surface-muted-color）",
+        "--segmented-control-color": "未选中分段的文字颜色",
+        "--segmented-control-item-padding-x": "分段的水平内边距",
+        "--segmented-control-thumb-background": "滑块背景（默认 --surface-elevated-color；color=\"primary\" 时为 --primary-color）",
+        "--segmented-control-thumb-shadow": "滑块阴影（默认 --shadow-sm；color=\"primary\" 时无阴影）",
+        "--segmented-control-selected-color": "选中分段的文字颜色",
+        "--segmented-control-duration": "滑块滑动的时长（默认 --transition-base）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "options 可以是 JSON 数组（或逗号分隔值）属性，也可以是 property；value 设置初始选中项，minerva-change 报告选中的值。只有一个 Tab 停靠点：方向键移动并选中。"
+          },
+          "icons": {
+            "title": "图标",
+            "description": "选项对象可带 icon（文本，或通过 property 传入 Node / lit 模板），仅图标分段需提供 aria-label。"
+          },
+          "sizes": {
+            "title": "尺寸",
+            "description": "三种密度（同时提供 :state(size-small) 等自定义状态）。"
+          },
+          "full-width": {
+            "title": "撑满宽度与表单",
+            "description": "full-width 让控件撑满；它是表单关联元素，name 会提交值，required 会校验，form.reset() 恢复 value 属性。"
+          },
+          "colors": {
+            "title": "颜色与禁用",
+            "description": "color=\"primary\" 显示主色实心滑块；禁用的选项和 disabled 属性会阻止选择。"
+          }
+        },
+        "minerva-segmented-control": {
+          "props": {
+            "required": "表单提交前必须选中一个值。",
+            "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与元素关联的 <label> 元素（只读）。",
+            "validity": "有效性状态，同 <input>.validity（只读）。",
+            "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+            "willValidate": "元素是否参与约束校验（只读）。"
+          },
+          "events": {
+            "change": "用户选中了另一个分段（与原生单选框一致）。",
+            "minerva-change": "用户选中了另一个分段（detail: { value }）。"
+          },
+          "methods": {
+            "focus": "聚焦选中的分段（否则为第一个可用分段）。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+            "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+            "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+            "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中与原生组件交互。"
+          }
+        }
+      }
+    }
+  }
+}

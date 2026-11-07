@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "form-layout",
+  "title": "FormLayout",
+  "description": "Un formulaire natif dont les champs sont disposés sur une grille responsive ; envoi, réinitialisation et validation restent natifs.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "FormLayout",
+      "support": {
+        "status": "beta",
+        "notes": "Native submit/reset once, responsive measured column maps, spacing token/CSS gap and row/column overrides. No browser form element ref; non-window host size changes call measure(width). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native submit/reset once, responsive measured column maps, spacing token/CSS gap and row/column overrides. No browser form element ref; non-window host size changes call measure(width). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/form-layout/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "form-layout",
+        "props": [
+          {
+            "name": "columns",
+            "typeText": "unknown",
+            "required": false,
+            "default": 1
+          },
+          {
+            "name": "gap",
+            "typeText": "unknown",
+            "required": false,
+            "default": 4
+          },
+          {
+            "name": "rowGap",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "columnGap",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [
+          {
+            "name": "submit",
+            "typeText": "{ value: Record<string, unknown>; formId?: string }",
+            "description": "Native form values, forwarded once."
+          },
+          {
+            "name": "reset",
+            "typeText": "{}",
+            "description": "Native form reset, forwarded once."
+          }
+        ],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-form-layout\": \"minerva-design/dist/weapp/form-layout/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:FormLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/FormLayout",
+      "vars": [
+        {
+          "name": "--form-layout-max-width",
+          "description": "Maximum width of the form (none by default)"
+        },
+        {
+          "name": "--form-layout-margin-inline",
+          "description": "Inline margin of the form (set auto with a max width to center it)"
+        },
+        {
+          "name": "--form-layout-padding",
+          "description": "Inner padding of the form"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "FormLayout",
+      "description": "Un formulaire natif dont les champs sont disposés sur une grille responsive ; envoi, réinitialisation et validation restent natifs.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "columns suit la largeur du formulaire ; GridItem fullWidth asChild étend un FormField sur toute la ligne sans enveloppe."
+        },
+        "gaps": {
+          "title": "Espacements",
+          "description": "gap, rowGap et columnGap acceptent des jetons d’espacement ou des valeurs CSS."
+        }
+      },
+      "api": {
+        "FormLayoutProps": {
+          "columns": "Nombre de colonnes de la ResponsiveGrid interne : un nombre ou `{ base, sm, md, lg }` (largeurs de conteneur 480 / 768 / 1200px). Entiers de 1 à 12",
+          "gap": "Espacement entre les champs : nombres et chaînes numériques = jetons d’espacement, autres chaînes = valeurs CSS",
+          "rowGap": "Espacement entre les lignes ; `gap` par défaut",
+          "columnGap": "Espacement entre les colonnes ; `gap` par défaut",
+          "ref": "Ref vers l’élément <form>"
+        }
+      },
+      "cssVars": {
+        "--form-layout-max-width": "Largeur maximale du formulaire (aucune par défaut)",
+        "--form-layout-margin-inline": "Marge en ligne du formulaire (auto avec une largeur maximale pour le centrer)",
+        "--form-layout-padding": "Marge intérieure du formulaire"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Placez la mise en page dans un <form> natif : envoi, réinitialisation et validation restent natifs. columns=\"1 2\" donne une colonne dans un conteneur étroit et deux à partir de 480px ; minerva-grid-item full-width occupe toute une ligne."
+          },
+          "gaps": {
+            "title": "Colonnes et espacements",
+            "description": "gap définit les deux espacements ; row-gap et column-gap les remplacent (nombres de l'échelle d'espacement ou longueurs CSS). Fonctionne aussi avec des champs natifs."
+          }
+        },
+        "minerva-form-layout": {
+          "slots": {
+            "default": "Champs."
+          },
+          "cssVars": {
+            "--responsive-grid-align-items": "Alignement vertical des champs dans leur ligne (par défaut : stretch).",
+            "--responsive-grid-justify-items": "Alignement horizontal des champs dans leur colonne (par défaut : stretch)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

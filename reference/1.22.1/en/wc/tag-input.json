@@ -1,0 +1,751 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "tag-input",
+  "title": "TagInput",
+  "description": "Free-form tag entry with suggestions: Enter, the add button or blur add the draft, arrow keys pick a suggestion, and IME composition never commits.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TagInput",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/tag-input",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-tag-input",
+        "props": [
+          {
+            "name": "defaultValue",
+            "typeText": "string[]",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "options",
+            "typeText": "string[]",
+            "attribute": "options",
+            "required": false
+          },
+          {
+            "name": "separators",
+            "typeText": "string[]",
+            "attribute": "separators",
+            "required": false
+          },
+          {
+            "name": "noCommitOnBlur",
+            "typeText": "boolean",
+            "attribute": "no-commit-on-blur",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string",
+            "attribute": "placeholder",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "attribute": "invalid",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "attribute": "readonly",
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "typeText": "string | undefined",
+            "attribute": "empty-text",
+            "required": false
+          },
+          {
+            "name": "addLabel",
+            "typeText": "string | undefined",
+            "attribute": "add-label",
+            "required": false
+          },
+          {
+            "name": "clearLabel",
+            "typeText": "string | undefined",
+            "attribute": "clear-label",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string[]",
+            "required": false
+          },
+          {
+            "name": "removeLabel",
+            "typeText": "(tag: string) => string | undefined",
+            "required": false
+          },
+          {
+            "name": "createLabel",
+            "typeText": "(tag: string) => string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent",
+            "description": "The tags changed (addition, removal, clearing); `detail: { value }`"
+          },
+          {
+            "name": "minerva-input",
+            "typeText": "CustomEvent",
+            "description": "The typed text (draft) changed; `detail: { value }` (the draft)"
+          },
+          {
+            "name": "minerva-open-change",
+            "typeText": "CustomEvent",
+            "description": "The suggestion list is about to open / close (`detail: { open }`); cancelable: `preventDefault()` keeps the current state"
+          },
+          {
+            "name": "minerva-clear",
+            "typeText": "CustomEvent",
+            "description": "The clear button removed every tag"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-tag-input": {
+      "kind": "element",
+      "source": "web-components/src/components/tag-input/tag-input.ts",
+      "className": "MinervaTagInput",
+      "summary": "Tag field: type, paste or pick suggestions to build a list of tags.",
+      "description": "Free-form tag field with suggestions (`<TagInput>` of React). Enter, the add button and blur add the trimmed draft; typed or pasted `separators` split text into tags; ArrowUp / ArrowDown pick a suggestion (`options`); Escape discards the draft; Backspace in an empty draft removes the last tag. IME composition never commits. Duplicates are ignored. Form-associated: every tag is submitted under `name` (one entry per tag, `formData.getAll(name)`; the draft is not submitted), supports `required`, `form.reset()` (restores the `value` attribute) and `<fieldset disabled>`. Name it with `<label for>`, `aria-label` or `aria-labelledby`. The suggestion list is a `popover=\"manual\"` panel in the shadow root (top layer, anchored below the field); Escape (topmost layer only) and outside interactions close it, focus stays in the text input.",
+      "properties": [
+        {
+          "name": "defaultValue",
+          "attribute": "value",
+          "type": "string[]",
+          "default": "[]",
+          "description": "Initial tags, restored by `form.reset()`: the `value` attribute, a JSON array (`'[\"a\",\"b\"]'`) or comma-separated text (`\"a, b\"`). Until the user edits the tags, changing it also changes `value`"
+        },
+        {
+          "name": "options",
+          "attribute": "options",
+          "type": "string[]",
+          "default": "[]",
+          "description": "Suggestions; already selected tags are hidden and duplicates merged (`options` attribute: JSON array or comma-separated text)"
+        },
+        {
+          "name": "separators",
+          "attribute": "separators",
+          "type": "string[]",
+          "default": "[...DEFAULT_SEPARATORS]",
+          "description": "Keys that commit the draft: a literal string (e.g. \",\" or \";\") splits the typed or pasted text into tags; \"Enter\" commits on the Enter key (and also splits pasted text on line breaks). Attribute: a JSON array or whitespace-separated values (`separators=\"; Enter\"`)"
+        },
+        {
+          "name": "noCommitOnBlur",
+          "attribute": "no-commit-on-blur",
+          "type": "boolean",
+          "default": "false",
+          "description": "Does not add the typed draft as a tag when the field loses focus"
+        },
+        {
+          "name": "placeholder",
+          "attribute": "placeholder",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Placeholder of the text input"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Size of the text input"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false",
+          "description": "Error state; sets aria-invalid on the text input"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows the tags without editing controls (still submitted)"
+        },
+        {
+          "name": "emptyText",
+          "attribute": "empty-text",
+          "type": "string | undefined",
+          "description": "Text of the suggestion list when nothing matches (default: localized \"No matches\")"
+        },
+        {
+          "name": "addLabel",
+          "attribute": "add-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the add button (default: localized \"Add tag\")"
+        },
+        {
+          "name": "clearLabel",
+          "attribute": "clear-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the clear button (default: localized \"Clear tags\")"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "value",
+          "type": "string[]",
+          "description": "Selected tags (property only; the `value` attribute sets `defaultValue`). Assign a new array: in-place mutations are not observed"
+        },
+        {
+          "name": "removeLabel",
+          "type": "(tag: string) => string | undefined",
+          "description": "Accessible label of a tag's remove button (default: localized `Remove ${tag}`)"
+        },
+        {
+          "name": "createLabel",
+          "type": "(tag: string) => string | undefined",
+          "description": "Text of the \"create this tag\" suggestion (default: localized `Add \"${tag}\"`)"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-change",
+          "description": "The tags changed (addition, removal, clearing); `detail: { value }`"
+        },
+        {
+          "name": "minerva-input",
+          "description": "The typed text (draft) changed; `detail: { value }` (the draft)"
+        },
+        {
+          "name": "minerva-open-change",
+          "description": "The suggestion list is about to open / close (`detail: { open }`); cancelable: `preventDefault()` keeps the current state"
+        },
+        {
+          "name": "minerva-clear",
+          "description": "The clear button removed every tag"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The wrapper"
+        },
+        {
+          "name": "tags",
+          "description": "The list of tags"
+        },
+        {
+          "name": "tag",
+          "description": "A tag (web components only: React renders a Tag, styled with its own hooks)"
+        },
+        {
+          "name": "remove-button",
+          "description": "The remove button of a tag (web components only, see tag)"
+        },
+        {
+          "name": "control",
+          "description": "The text field box (web components only: React renders an Input, styled with its own hooks)"
+        },
+        {
+          "name": "input",
+          "description": "The native text <input> (role=\"combobox\"; web components only, see control)"
+        },
+        {
+          "name": "list",
+          "description": "The suggestion list (role=listbox, while open)"
+        },
+        {
+          "name": "option",
+          "description": "A suggestion (role=option; the highlighted one has aria-selected=\"true\")"
+        },
+        {
+          "name": "option--highlighted",
+          "description": "Item state of `option`: highlighted"
+        },
+        {
+          "name": "empty",
+          "description": "The text shown when no suggestion matches"
+        },
+        {
+          "name": "add-button",
+          "description": "The add button (web components only: React renders an IconButton, styled with its own hooks)"
+        },
+        {
+          "name": "clear-button",
+          "description": "The clear button (web components only: React renders an IconButton, styled with its own hooks)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        },
+        {
+          "name": "--input-height",
+          "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--input-padding-x",
+          "description": "Horizontal padding of the text (every size)"
+        },
+        {
+          "name": "--input-radius",
+          "description": "Corner radius (defaults to --radius-lg)"
+        },
+        {
+          "name": "--input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--input-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--input-focus-color",
+          "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+        },
+        {
+          "name": "--tag-height",
+          "description": "Minimum height (every size; default: the content height)"
+        },
+        {
+          "name": "--tag-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--tag-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--tag-radius",
+          "description": "Corner radius of the rounded shape (defaults to --radius-sm)"
+        },
+        {
+          "name": "--tag-gap",
+          "description": "Space between the icon, the label and the close button"
+        },
+        {
+          "name": "--tag-ring-color",
+          "description": "Color of the hairline ring of the tinted (default) variant (defaults to the text color at 16%)"
+        },
+        {
+          "name": "--tag-input-gap",
+          "description": "Space between the tags and between the tags and the entry row"
+        },
+        {
+          "name": "--tag-input-tag-min-height",
+          "description": "Minimum height of a tag (defaults to the density's small control height)"
+        },
+        {
+          "name": "--tag-input-list-max-height",
+          "description": "Maximum height of the suggestion list before it scrolls"
+        },
+        {
+          "name": "--tag-input-list-radius",
+          "description": "Corner radius of the suggestion list (defaults to --radius-md)"
+        },
+        {
+          "name": "--tag-input-option-padding-y",
+          "description": "Vertical padding of a suggestion (follows the density's row padding)"
+        },
+        {
+          "name": "--tag-input-option-padding-x",
+          "description": "Horizontal padding of a suggestion (follows the density's row padding)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:TagInput": {
+      "kind": "cssVars",
+      "source": "react/src/components/TagInput",
+      "vars": [
+        {
+          "name": "--tag-input-gap",
+          "description": "Space between the tags and between the tags and the entry row"
+        },
+        {
+          "name": "--tag-input-tag-min-height",
+          "description": "Minimum height of a tag (defaults to the density's small control height)"
+        },
+        {
+          "name": "--tag-input-list-max-height",
+          "description": "Maximum height of the suggestion list before it scrolls"
+        },
+        {
+          "name": "--tag-input-list-radius",
+          "description": "Corner radius of the suggestion list (defaults to --radius-md)"
+        },
+        {
+          "name": "--tag-input-option-padding-y",
+          "description": "Vertical padding of a suggestion (follows the density's row padding)"
+        },
+        {
+          "name": "--tag-input-option-padding-x",
+          "description": "Horizontal padding of a suggestion (follows the density's row padding)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag-input/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/tag-input/wc/basic.html": "<minerva-tag-input\n  id=\"tags\"\n  aria-label=\"Tags\"\n  placeholder=\"Type a tag and press Enter\"\n  value=\"React\"\n  options=\"React, Vue, Svelte, Solid\"\n></minerva-tag-input>\n<output id=\"result\" style=\"display: block; margin-top: 8px\"></output>\n",
+        "apps/docs/src/docs/pages/tag-input/wc/basic.ts": "// `value` is a property holding a new array after every change; the\n// `value` attribute only sets the initial tags.\nexport function setup(root: HTMLElement) {\n  const tags = root.querySelector<HTMLElement & { value: string[] }>(\"#tags\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#result\")!;\n  const show = () => (result.value = `Tags: ${tags.value.join(\", \") || \"—\"}`);\n  show();\n  tags.addEventListener(\"minerva-change\", show);\n  return () => tags.removeEventListener(\"minerva-change\", show);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Type a tag and press Enter, or pick a suggestion with the arrow keys. value is a property; minerva-change reports each new list."
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag-input/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/tag-input/wc/form.html": "<form id=\"article\" style=\"display: grid; gap: 8px\">\n  <label for=\"article-tags\">Article tags</label>\n  <minerva-tag-input\n    id=\"article-tags\"\n    name=\"tags\"\n    value='[\"news\", \"tech\"]'\n    options=\"news, tech, science, culture, sport\"\n    required\n  ></minerva-tag-input>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button type=\"submit\">Publish</minerva-button>\n    <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n      >Reset</minerva-button\n    >\n  </div>\n  <output id=\"result\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/tag-input/wc/form.ts": "// Every tag is submitted as its own `tags` entry; `required` blocks an\n// empty list and form.reset() restores the `value` attribute.\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#article\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#result\")!;\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    result.value = `tags = ${JSON.stringify(new FormData(form).getAll(\"tags\"))}`;\n  };\n  const onReset = () => (result.value = \"\");\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "In a form",
+      "description": "The element is form-associated: each tag is submitted as its own entry under name, required rejects an empty list and Reset restores the value attribute."
+    },
+    {
+      "id": "separators",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag-input/wc/separators.html",
+      "files": {
+        "apps/docs/src/docs/pages/tag-input/wc/separators.html": "<minerva-tag-input\n  aria-label=\"Recipients\"\n  placeholder='Type or paste \"a; b, c\"'\n  value=\"alice@example.com\"\n  separators=\", ; Enter\"\n  no-commit-on-blur\n></minerva-tag-input>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Separators",
+      "description": "separators=\", ; Enter\" splits typed or pasted text into tags. With no-commit-on-blur, leaving the field keeps the draft as text."
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag-input/wc/states.html",
+      "files": {
+        "apps/docs/src/docs/pages/tag-input/wc/states.html": "<div style=\"display: grid; gap: 12px\">\n  <minerva-tag-input\n    aria-label=\"Small\"\n    size=\"small\"\n    value=\"small\"\n  ></minerva-tag-input>\n  <minerva-tag-input\n    aria-label=\"Large\"\n    size=\"large\"\n    value=\"large\"\n  ></minerva-tag-input>\n  <minerva-tag-input\n    aria-label=\"Invalid\"\n    invalid\n    value=\"invalid\"\n  ></minerva-tag-input>\n  <minerva-tag-input\n    aria-label=\"Read-only\"\n    readonly\n    value=\"archived, 2024\"\n  ></minerva-tag-input>\n  <minerva-tag-input\n    aria-label=\"Disabled\"\n    disabled\n    value=\"locked\"\n  ></minerva-tag-input>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Sizes and states",
+      "description": "Three sizes, invalid, readonly (tags shown without editing controls, still submitted) and disabled."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TagInput",
+      "description": "Free-form tag entry with suggestions: Enter, the add button or blur add the draft, arrow keys pick a suggestion, and IME composition never commits.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Selected tags are hidden from the suggestions; Escape discards the draft."
+        },
+        "form-control": {
+          "title": "Forms",
+          "description": "name submits each tag as a hidden input; FormField provides the label and read-only state."
+        },
+        "separators": {
+          "title": "Separators",
+          "description": "separators lists the strings that split typed or pasted text into tags; \"Enter\" commits on the Enter key and splits pasted lines."
+        }
+      },
+      "api": {
+        "TagInputProps": {
+          "value": "Selected tags (controlled); omit for an uncontrolled field",
+          "defaultValue": "Initial tags of an uncontrolled field",
+          "onChange": "Called with the next tags after an addition, a removal or clearing",
+          "options": "Suggestions; already selected tags are hidden and duplicates merged",
+          "commitOnBlur": "Adds the typed draft as a tag when the input loses focus",
+          "separators": "Keys that commit the draft: a literal string (e.g. \",\" or \";\") splits the typed or pasted text into tags; \"Enter\" commits on the Enter key (and also splits pasted text on line breaks)",
+          "id": "Id of the text input (defaults to the FormControl id)",
+          "name": "Submits every selected tag under this name (hidden inputs); the draft is not submitted",
+          "placeholder": "Placeholder of the text input",
+          "aria-label": "Accessible name of the text input when there is no FormControl label",
+          "aria-labelledby": "Ids of the elements labelling the text input (wins over the FormControl label)",
+          "aria-describedby": "Extra ids describing the text input",
+          "disabled": "Disables the field (also set by FormControl)",
+          "readOnly": "Shows the tags without editing controls (also set by FormControl)",
+          "invalid": "Error state (also set by an invalid FormControl)",
+          "size": "Size of the text input",
+          "emptyText": "Text of the suggestion list when nothing matches",
+          "addLabel": "Accessible label of the add button",
+          "clearLabel": "Accessible label of the clear button",
+          "removeLabel": "Accessible label of a tag's remove button",
+          "createLabel": "Text of the \"create this tag\" suggestion",
+          "className": "Class name of the wrapper",
+          "style": "Inline style of the wrapper",
+          "ref": "Ref to the text <input>"
+        }
+      },
+      "cssVars": {
+        "--tag-input-gap": "Space between the tags and between the tags and the entry row",
+        "--tag-input-tag-min-height": "Minimum height of a tag (defaults to the density's small control height)",
+        "--tag-input-list-max-height": "Maximum height of the suggestion list before it scrolls",
+        "--tag-input-list-radius": "Corner radius of the suggestion list (defaults to --radius-md)",
+        "--tag-input-option-padding-y": "Vertical padding of a suggestion (follows the density's row padding)",
+        "--tag-input-option-padding-x": "Horizontal padding of a suggestion (follows the density's row padding)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Type a tag and press Enter, or pick a suggestion with the arrow keys. value is a property; minerva-change reports each new list."
+          },
+          "separators": {
+            "title": "Separators",
+            "description": "separators=\", ; Enter\" splits typed or pasted text into tags. With no-commit-on-blur, leaving the field keeps the draft as text."
+          },
+          "states": {
+            "title": "Sizes and states",
+            "description": "Three sizes, invalid, readonly (tags shown without editing controls, still submitted) and disabled."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "The element is form-associated: each tag is submitted as its own entry under name, required rejects an empty list and Reset restores the value attribute."
+          }
+        },
+        "minerva-tag-input": {
+          "props": {
+            "noCommitOnBlur": "Does not add the typed draft as a tag when the field loses focus.",
+            "readOnly": "Shows the tags without editing controls; they are still submitted.",
+            "required": "The control must have a value for the form to be submitted.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message describing the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only)."
+          },
+          "events": {
+            "minerva-change": "The tags changed (addition, removal, clearing); detail: { value }.",
+            "minerva-input": "The typed text (draft) changed; detail: { value } is the draft.",
+            "minerva-open-change": "The suggestion list is about to open or close (detail: { open }); cancelable: preventDefault() keeps the current state.",
+            "minerva-clear": "The clear button removed every tag."
+          },
+          "cssVars": {
+            "--icon-button-color": "Icon color of the add and clear buttons.",
+            "--icon-button-hover-bg": "Background of the add and clear buttons on hover.",
+            "--icon-button-pressed-color": "Icon color of a pressed icon button.",
+            "--icon-button-pressed-bg": "Background of a pressed icon button.",
+            "--icon-button-size": "Width and height of the add and clear buttons (defaults follow the density's control heights).",
+            "--icon-button-icon-size": "Font size of the button icons.",
+            "--icon-button-radius": "Corner radius of the add and clear buttons (defaults to --radius-lg).",
+            "--input-height": "Minimum height of the text field (defaults to the density's control height of the size).",
+            "--input-padding-x": "Horizontal padding of the text.",
+            "--input-radius": "Corner radius of the text field (defaults to --radius-lg).",
+            "--input-font-size": "Font size of the text field.",
+            "--input-background": "Background color of the text field.",
+            "--input-border-color": "Border color of the text field at rest.",
+            "--input-focus-color": "Border color of the text field while hovered or focused.",
+            "--tag-height": "Minimum height of a tag (default: the content height).",
+            "--tag-padding-x": "Horizontal padding of a tag.",
+            "--tag-font-size": "Font size of a tag.",
+            "--tag-radius": "Corner radius of a tag (defaults to --radius-sm).",
+            "--tag-gap": "Space between a tag's label and its remove button.",
+            "--tag-ring-color": "Color of the hairline ring of the tinted tags (defaults to the text color at 16%)."
+          },
+          "methods": {
+            "focus": "Focuses the inner control.",
+            "blur": "Removes focus from the inner control.",
+            "checkValidity": "Checks validity; fires invalid when invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with \"\".",
+            "formResetCallback": "Form-associated callback called by form.reset(): restores the default value.",
+            "formDisabledCallback": "Form-associated callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form-associated callback called when the browser restores the value (back navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

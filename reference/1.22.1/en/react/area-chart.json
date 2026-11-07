@@ -1,0 +1,834 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "react",
+  "page": "area-chart",
+  "title": "Area chart",
+  "description": "Filled areas that show a volume over time: smooth by default, overlapping, stacked into a total or as 100% shares. Hover to read every series at one x; zoom with Ctrl / ⌘ + wheel or a pinch.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "data": {
+      "dau": "Daily active users",
+      "dauAria": "Daily active users, April to June 2026",
+      "others": "Others",
+      "shareAria": "Market share by vendor, 2016 to 2026",
+      "sources": {
+        "organic": "Organic search",
+        "direct": "Direct",
+        "referral": "Referral",
+        "social": "Social"
+      },
+      "visitsAria": "Monthly visits by traffic source, stacked",
+      "instances": "Running instances",
+      "quota": "Quota",
+      "instancesAria": "Instances started by the autoscaler over one day",
+      "energy": {
+        "nuclear": "Nuclear",
+        "hydro": "Hydro",
+        "wind": "Wind",
+        "solar": "Solar",
+        "gas": "Gas"
+      },
+      "gw": "{{value}} GW",
+      "power": "Power",
+      "energyAria": "Electricity generation by source over one day, stacked",
+      "actual": "Actual",
+      "plan": "Plan",
+      "cumulativeAria": "Cumulative sales of the year against the plan",
+      "download": "Download",
+      "upload": "Upload",
+      "bandwidthAria": "Server bandwidth over two hours, download above zero and upload below",
+      "solarProduction": "Solar production",
+      "kwh": "{{value}} kWh",
+      "solarAria": "Daily energy of a rooftop solar installation in 2026",
+      "resetZoom": "Reset zoom",
+      "visibleTotal": "{{from}} – {{to}}: {{total}} in total, {{average}} per day on average",
+      "zoomHint": "Ctrl / ⌘ + wheel or pinch to zoom on a season, drag to pan.",
+      "departments": {
+        "engineering": "Engineering",
+        "sales": "Sales",
+        "support": "Customer support",
+        "operations": "Operations",
+        "admin": "Finance & HR"
+      },
+      "headcountAria": "Headcount per department, monthly, 2025 and 2026",
+      "headcountPanel": "Headcount of the selected month",
+      "employees": "{{value}} employees",
+      "lastYear": "Last year",
+      "thisYear": "This year",
+      "blackFriday": "Black Friday",
+      "cyberMonday": "Cyber Monday",
+      "lastShipping": "Last shipping day",
+      "seasonAria": "Daily orders in November and December, this year against last year",
+      "seasonSummary": "{{total}} orders this season, {{change}} against last year.",
+      "diskUsed": "Used",
+      "diskForecast": "Trend",
+      "gb": "{{value}} GB",
+      "capacity": "Capacity {{value}}",
+      "volume": "Volume",
+      "volumes": {
+        "database": "Database",
+        "logs": "Logs",
+        "uploads": "User uploads"
+      },
+      "fullIn": "Full in about {{days}}, around {{date}}",
+      "notFull": "Not full within the next {{days}}",
+      "diskAria": "Disk usage over 60 days with its trend up to the capacity"
+    }
+  },
+  "components": [
+    {
+      "name": "AreaChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "AreaChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as areas unless they set a `type`"
+          },
+          {
+            "name": "curve",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "linear",
+              "smooth",
+              "step"
+            ],
+            "typeText": "ChartCurve | undefined",
+            "typeRef": "type:9a03680a65f827285385",
+            "default": "smooth",
+            "required": false,
+            "description": "Shape of the edges: straight, smooth (monotone) or steps"
+          },
+          {
+            "name": "stacked",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stacks the areas on top of each other"
+          },
+          {
+            "name": "percent",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Scales the stacks to 100% (implies `stacked`)"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the pointer"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:018692c396245c230316",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:7f639ac6d9481ff0bde9",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:677083ee0328d7ee4253",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is clicked"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:0256cf20d9a3f1b1c88a",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is clicked where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:ee073556f18eb3ee4cae",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:167734f7bd5dd7f686a6",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and when it falls back after a GPU loss)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "AreaChartProps": {
+      "source": "charts/src/react/types.ts",
+      "description": "Props of AreaChart",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Series drawn as areas unless they set a `type`"
+        },
+        {
+          "name": "curve",
+          "type": "ChartCurve",
+          "required": false,
+          "default": "\"smooth\"",
+          "description": "Shape of the edges: straight, smooth (monotone) or steps"
+        },
+        {
+          "name": "stacked",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Stacks the areas on top of each other"
+        },
+        {
+          "name": "percent",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Scales the stacks to 100% (implies `stacked`)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/basic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { AreaChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst START = new Date(2026, 3, 1).getTime();\n\nexport default function BasicDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo((): ChartSeries[] => {\n    const random = mulberry32(21);\n    const data: [Date, number][] = [];\n    let level = 18_000;\n    for (let i = 0; i < 90; i++) {\n      level *= 1.004 + (random() - 0.5) * 0.01;\n      const seasonal = 1 + 0.04 * Math.sin(i / 9);\n      const value = level * seasonal * (0.985 + random() * 0.03);\n      data.push([new Date(START + i * DAY), Math.round(value)]);\n    }\n    return [{ name: t(\"dau\"), data }];\n  }, [t]);\n  const compact = useMemo(\n    () => new Intl.NumberFormat(locale, { notation: \"compact\" }),\n    [locale],\n  );\n  const date = useMemo(\n    () => new Intl.DateTimeFormat(locale, { month: \"short\", day: \"numeric\" }),\n    [locale],\n  );\n\n  return (\n    <AreaChart\n      series={series}\n      xAxis={{ type: \"time\", format: (value) => date.format(value) }}\n      yAxis={{ format: (value) => compact.format(value) }}\n      height={280}\n      ariaLabel={t(\"dauAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Basic",
+      "description": "One series over Date x values: the edge is a smooth (monotone) curve that never overshoots the data."
+    },
+    {
+      "id": "cumulative",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/cumulative.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/cumulative.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { AreaChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Monthly sales (thousand USD) of the first 10 months, and the yearly plan\nconst sales = [182, 164, 210, 225, 198, 241, 233, 219, 262, 280];\nconst PLAN = 2_700;\n// running total of the months already closed\nconst runningTotal = sales.map((_, i) =>\n  sales.slice(0, i + 1).reduce((sum, value) => sum + value, 0),\n);\n\n/** Short month names in the reader's language */\nconst monthNames = (locale: string) => {\n  const format = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  return Array.from({ length: 12 }, (_, m) =>\n    format.format(new Date(2026, m, 1)),\n  );\n};\n\nexport default function CumulativeDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo((): ChartSeries[] => {\n    const months = monthNames(locale);\n    // the remaining months are unknown (null)\n    const actual = months.map(\n      (month, i) => [month, runningTotal[i] ?? null] as const,\n    );\n    // the plan grows evenly through the year\n    const plan = months.map(\n      (month, i) => [month, Math.round((PLAN * (i + 1)) / 12)] as const,\n    );\n    return [\n      { name: t(\"actual\"), data: actual },\n      {\n        name: t(\"plan\"),\n        type: \"line\",\n        data: plan,\n        color: \"var(--text-secondary-color)\",\n        lineWidth: 1.5,\n      },\n    ];\n  }, [t, locale]);\n  // values are in thousands of dollars\n  const usd = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"USD\",\n      notation: \"compact\",\n    });\n    return (value: number) => format.format(value * 1000);\n  }, [locale]);\n\n  return (\n    <AreaChart\n      series={series}\n      curve=\"linear\"\n      yAxis={{ zero: true, format: usd }}\n      height={300}\n      ariaLabel={t(\"cumulativeAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Cumulative vs plan",
+      "description": "Running total of sales against an evenly growing plan drawn as a line series; null values leave the months still to come empty."
+    },
+    {
+      "id": "disk-forecast",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/disk-forecast.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/disk-forecast.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Select, SelectItem } from \"minerva-design\";\nimport {\n  AreaChart,\n  type ChartAnnotation,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst HISTORY = 60;\nconst HORIZON = 120; // days of forecast at most\n// local midnight: the time axis places its ticks in local time\nconst START = new Date(2026, 8, 1).getTime();\nconst TODAY = START + (HISTORY - 1) * DAY;\n\n// Disk usage (GB) of three volumes over the last 60 days\nconst volumes = {\n  database: { capacity: 500, start: 310, growth: 2.1, seed: 1 },\n  logs: { capacity: 200, start: 120, growth: 0.6, seed: 2 },\n  uploads: { capacity: 1000, start: 420, growth: 1.2, seed: 3 },\n} as const;\ntype Volume = keyof typeof volumes;\n\nconst usage = (key: Volume) => {\n  const { start, growth, seed } = volumes[key];\n  const random = mulberry32(seed);\n  return Array.from({ length: HISTORY }, (_, i) => {\n    // logs are rotated every week: a sawtooth on top of the trend\n    const rotation = key === \"logs\" ? ((i % 7) - 3) * 4 : 0;\n    const value = start + growth * i + rotation + (random() - 0.5) * 6;\n    return Math.round(value * 10) / 10;\n  });\n};\n\n/** Least-squares line through the last 30 days */\nconst trend = (values: number[]) => {\n  const recent = values.slice(-30);\n  const n = recent.length;\n  const mx = (n - 1) / 2;\n  const my = recent.reduce((a, b) => a + b, 0) / n;\n  let num = 0;\n  let den = 0;\n  recent.forEach((y, i) => {\n    num += (i - mx) * (y - my);\n    den += (i - mx) ** 2;\n  });\n  const slope = num / den;\n  // value of the line today (the last day)\n  return { slope, today: my + slope * (n - 1 - mx) };\n};\n\nexport default function DiskForecastDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n  const [volume, setVolume] = useState<Volume>(\"database\");\n  const { capacity } = volumes[volume];\n\n  const model = useMemo(() => {\n    const used = usage(volume);\n    const { slope, today } = trend(used);\n    const daysLeft = slope > 0 ? (capacity - today) / slope : Infinity;\n    const days = Math.min(HORIZON, Math.ceil(daysLeft));\n    const forecast = Array.from({ length: days + 1 }, (_, k) => {\n      const value = Math.min(capacity, today + slope * k);\n      return [TODAY + k * DAY, Math.round(value * 10) / 10] as const;\n    });\n    return { used, forecast, daysLeft };\n  }, [volume, capacity]);\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"diskUsed\"),\n        data: model.used.map((value, i) => [START + i * DAY, value] as const),\n      },\n      {\n        name: t(\"diskForecast\"),\n        type: \"line\",\n        lineWidth: 1.5,\n        color: \"var(--text-secondary-color)\",\n        data: model.forecast,\n      },\n    ],\n    [t, model],\n  );\n  const formats = useMemo(() => {\n    const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });\n    return {\n      gb: (value: number) => t(\"gb\", { value: number.format(value) }),\n      days: new Intl.NumberFormat(locale, {\n        style: \"unit\",\n        unit: \"day\",\n        unitDisplay: \"long\",\n      }),\n      date: new Intl.DateTimeFormat(locale, { month: \"short\", day: \"numeric\" }),\n      long: new Intl.DateTimeFormat(locale, { dateStyle: \"long\" }),\n    };\n  }, [t, locale]);\n  const annotations = useMemo(\n    (): ChartAnnotation[] => [\n      {\n        type: \"rect\",\n        x0: TODAY,\n        color: \"var(--text-secondary-color)\",\n        opacity: 0.05,\n      },\n      {\n        type: \"line\",\n        axis: \"y\",\n        value: capacity,\n        color: \"var(--danger-color)\",\n        dash: [4, 4],\n        label: t(\"capacity\", { value: formats.gb(capacity) }),\n      },\n    ],\n    [t, capacity, formats],\n  );\n\n  const full = model.daysLeft <= HORIZON;\n  const fullDate = TODAY + Math.ceil(model.daysLeft) * DAY;\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 12,\n        }}\n      >\n        <Select\n          size=\"small\"\n          style={{ width: 200 }}\n          aria-label={t(\"volume\")}\n          value={volume}\n          onChange={(value) => setVolume(value as Volume)}\n        >\n          {(Object.keys(volumes) as Volume[]).map((key) => (\n            <SelectItem key={key} value={key}>\n              {t(`volumes.${key}`)}\n            </SelectItem>\n          ))}\n        </Select>\n        <output\n          aria-live=\"polite\"\n          style={{ color: full ? \"var(--danger-color)\" : undefined }}\n        >\n          {full\n            ? t(\"fullIn\", {\n                days: formats.days.format(Math.ceil(model.daysLeft)),\n                date: formats.long.format(fullDate),\n              })\n            : t(\"notFull\", { days: formats.days.format(HORIZON) })}\n        </output>\n      </div>\n      <AreaChart\n        series={series}\n        curve=\"linear\"\n        annotations={annotations}\n        xAxis={{ type: \"time\", format: (x) => formats.date.format(x) }}\n        yAxis={{ zero: true, max: capacity * 1.1, format: formats.gb }}\n        height={300}\n        ariaLabel={t(\"diskAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Capacity forecast",
+      "description": "Disk usage as an area and a line series extending the trend of the last 30 days up to the capacity, marked by a y annotation; a rect shades the future and the readout gives the day the volume fills up."
+    },
+    {
+      "id": "energy-mix",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/energy-mix.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/energy-mix.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { AreaChart, type ChartSeries } from \"minerva-design/charts\";\n\nconst hours = Array.from({ length: 24 }, (_, hour) => hour);\n\n// Electricity generation of a grid over one spring day, in gigawatts\nconst generation = {\n  nuclear: hours.map(() => 38),\n  hydro: hours.map((h) => 6 + 3 * Math.exp(-((h - 19) ** 2) / 6)),\n  wind: hours.map((h) => 9 + 4 * Math.sin((h + 3) / 4)),\n  solar: hours.map((h) => Math.max(0, 22 * Math.sin(((h - 6) / 14) * Math.PI))),\n  gas: hours.map((h) => 4 + 6 * Math.exp(-((h - 20) ** 2) / 5)),\n};\nconst colors = {\n  nuclear: \"#8b5cf6\",\n  hydro: \"#0ea5e9\",\n  wind: \"#14b8a6\",\n  solar: \"#f59e0b\",\n  gas: \"#94a3b8\",\n};\n\nexport default function EnergyMixDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo((): ChartSeries[] => {\n    const time = new Intl.DateTimeFormat(locale, { hour: \"numeric\" });\n    const label = (hour: number) => time.format(new Date(2026, 3, 20, hour));\n    const names = {\n      nuclear: t(\"energy.nuclear\"),\n      hydro: t(\"energy.hydro\"),\n      wind: t(\"energy.wind\"),\n      solar: t(\"energy.solar\"),\n      gas: t(\"energy.gas\"),\n    };\n    return (Object.keys(generation) as (keyof typeof generation)[]).map(\n      (key) => ({\n        name: names[key],\n        color: colors[key],\n        data: hours.map((h) => [label(h), generation[key][h]] as const),\n      }),\n    );\n  }, [t, locale]);\n  const gigawatts = useMemo(() => {\n    const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });\n    return (value: number) => t(\"gw\", { value: number.format(value) });\n  }, [t, locale]);\n\n  return (\n    <AreaChart\n      series={series}\n      stacked\n      yAxis={{ format: gigawatts, title: t(\"power\") }}\n      height={320}\n      ariaLabel={t(\"energyAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Energy mix",
+      "description": "Electricity generation by source over a day, stacked: the top edge is the total demand and the solar bump shows when the other sources ramp down. Each series sets its own color."
+    },
+    {
+      "id": "hover-panel",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/hover-panel.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/hover-panel.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  AreaChart,\n  type ChartHoverEvent,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nconst MONTHS = 24;\nconst month = (i: number) => new Date(2025, i, 1).getTime();\n\n// Headcount per department at the start of every month of a growing company\nconst departments = [\n  {\n    key: \"engineering\",\n    color: \"var(--chart-series-1, #4f46e5)\",\n    start: 48,\n    hires: 2.6,\n  },\n  {\n    key: \"sales\",\n    color: \"var(--chart-series-2, #10b981)\",\n    start: 22,\n    hires: 1.4,\n  },\n  {\n    key: \"support\",\n    color: \"var(--chart-series-3, #f59e0b)\",\n    start: 14,\n    hires: 0.9,\n  },\n  {\n    key: \"operations\",\n    color: \"var(--chart-series-4, #ef4444)\",\n    start: 9,\n    hires: 0.5,\n  },\n  {\n    key: \"admin\",\n    color: \"var(--chart-series-5, #0ea5e9)\",\n    start: 7,\n    hires: 0.25,\n  },\n] as const;\nconst headcount = departments.map(({ start, hires }, d) =>\n  Array.from({ length: MONTHS }, (_, i) =>\n    // hiring slows down during a freeze in the summer of 2025\n    Math.round(start + hires * i - (i > 5 && i < 9 ? (i - 5) * hires : 0) + d),\n  ),\n);\n\ninterface Row {\n  name: string;\n  color: string;\n  value: number;\n}\n\nexport default function HoverPanelDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n  // the hovered month, `null` shows the latest one\n  const [hovered, setHovered] = useState<ChartHoverEvent | null>(null);\n\n  const series = useMemo(\n    (): ChartSeries[] =>\n      departments.map(({ key, color }, d) => ({\n        name: t(`departments.${key}`),\n        color,\n        data: (headcount[d] ?? []).map(\n          (value, i) => [month(i), value] as const,\n        ),\n      })),\n    [t],\n  );\n  const formats = useMemo(\n    () => ({\n      number: new Intl.NumberFormat(locale),\n      percent: new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 0,\n      }),\n      month: new Intl.DateTimeFormat(locale, {\n        year: \"numeric\",\n        month: \"long\",\n      }),\n      tick: new Intl.DateTimeFormat(locale, {\n        year: \"2-digit\",\n        month: \"short\",\n      }),\n    }),\n    [locale],\n  );\n\n  // the panel lists every department of the month, largest first\n  const last = MONTHS - 1;\n  const time = hovered?.x ?? month(last);\n  const rows: Row[] = hovered\n    ? hovered.items.map((item) => ({\n        name: item.seriesName,\n        color: item.color,\n        value: item.y,\n      }))\n    : series.map((s, d) => ({\n        name: s.name ?? \"\",\n        color: s.color ?? \"\",\n        value: headcount[d]?.[last] ?? 0,\n      }));\n  rows.sort((a, b) => b.value - a.value);\n  const total = rows.reduce((sum, row) => sum + row.value, 0);\n\n  return (\n    <div\n      style={{\n        display: \"flex\",\n        flexWrap: \"wrap\",\n        gap: 16,\n        width: \"100%\",\n      }}\n    >\n      <div style={{ flex: \"1 1 420px\", minWidth: 0 }}>\n        <AreaChart\n          series={series}\n          stacked\n          curve=\"step\"\n          tooltip={false}\n          crosshair\n          onHover={setHovered}\n          xAxis={{ type: \"time\", format: (x) => formats.tick.format(x) }}\n          legend={false}\n          height={300}\n          ariaLabel={t(\"headcountAria\")}\n        />\n      </div>\n      <section\n        aria-label={t(\"headcountPanel\")}\n        style={{\n          display: \"grid\",\n          alignContent: \"start\",\n          gap: 8,\n          flex: \"0 1 240px\",\n        }}\n      >\n        <div>\n          <div style={{ fontSize: 13, color: \"var(--text-secondary-color)\" }}>\n            {formats.month.format(time)}\n          </div>\n          <strong style={{ fontSize: 22 }}>\n            {t(\"employees\", { value: formats.number.format(total) })}\n          </strong>\n        </div>\n        {rows.map((row) => (\n          <div\n            key={row.name}\n            style={{\n              display: \"grid\",\n              gridTemplateColumns: \"auto 1fr auto auto\",\n              alignItems: \"center\",\n              gap: 8,\n              fontSize: 13,\n            }}\n          >\n            <span\n              aria-hidden\n              style={{\n                width: 10,\n                height: 10,\n                borderRadius: 2,\n                background: row.color,\n              }}\n            />\n            <span>{row.name}</span>\n            <strong>{formats.number.format(row.value)}</strong>\n            <span style={{ color: \"var(--text-secondary-color)\" }}>\n              {formats.percent.format(row.value / total)}\n            </span>\n          </div>\n        ))}\n      </section>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Readout panel",
+      "description": "tooltip={false} with crosshair and onHover: a side panel lists the headcount of every department at the hovered month, largest first, and shows the latest month when the pointer leaves."
+    },
+    {
+      "id": "mirrored",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/mirrored.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/mirrored.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { AreaChart, type ChartSeries } from \"minerva-design/charts\";\n\nconst MINUTE = 60 * 1000;\nconst START = new Date(2026, 9, 30, 9).getTime();\n\n// Bandwidth of a server every minute for two hours (Mbit/s)\nconst minutes = Array.from({ length: 120 }, (_, i) => i);\nconst download = minutes.map(\n  (i) =>\n    [\n      START + i * MINUTE,\n      Math.round(420 + 180 * Math.sin(i / 11) + 90 * Math.sin(i / 2.3)),\n    ] as const,\n);\n// upload is drawn below zero: same scale, mirrored\nconst upload = minutes.map(\n  (i) =>\n    [\n      START + i * MINUTE,\n      -Math.round(160 + 60 * Math.sin(i / 7 + 1) + 40 * Math.cos(i / 1.7)),\n    ] as const,\n);\n\nexport default function MirroredDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      { name: t(\"download\"), data: download },\n      { name: t(\"upload\"), data: upload },\n    ],\n    [t],\n  );\n  // \"420 Mb/s\", \"420 Mbit/s\"...: the sign only says the direction\n  const bandwidth = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"megabit-per-second\",\n    });\n    return (value: number) => format.format(Math.abs(value));\n  }, [locale]);\n  const time = useMemo(\n    () =>\n      new Intl.DateTimeFormat(locale, { hour: \"2-digit\", minute: \"2-digit\" }),\n    [locale],\n  );\n\n  return (\n    <AreaChart\n      series={series}\n      curve=\"linear\"\n      xAxis={{ type: \"time\", format: (value) => time.format(value) }}\n      yAxis={{ format: bandwidth }}\n      annotations={[{ type: \"line\", axis: \"y\", value: 0 }]}\n      height={300}\n      ariaLabel={t(\"bandwidthAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Mirrored in / out",
+      "description": "Download above zero and upload below it on the same scale, a common layout for network monitoring; the y format drops the sign."
+    },
+    {
+      "id": "percent",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/percent.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/percent.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { AreaChart, type ChartSeries } from \"minerva-design/charts\";\n\nconst years = Array.from({ length: 11 }, (_, i) => String(2016 + i));\n\n// Units shipped (millions) by vendor; `percent` turns them into shares\nconst vendors = {\n  aurora: [38, 41, 47, 52, 58, 66, 71, 74, 79, 83, 88],\n  borealis: [52, 50, 49, 47, 44, 43, 41, 40, 38, 37, 35],\n  cobalt: [12, 16, 21, 27, 31, 34, 36, 41, 44, 49, 54],\n  others: [44, 42, 39, 36, 33, 30, 28, 25, 23, 21, 19],\n};\n\nexport default function PercentDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo((): ChartSeries[] => {\n    const names = {\n      aurora: \"Aurora\",\n      borealis: \"Borealis\",\n      cobalt: \"Cobalt\",\n      others: t(\"others\"),\n    };\n    // \"88 million units\" in the tooltip\n    const units = new Intl.NumberFormat(locale, { notation: \"compact\" });\n    return (Object.keys(vendors) as (keyof typeof vendors)[]).map((key) => ({\n      name: names[key],\n      format: (value: number) => units.format(value * 1_000_000),\n      data: years.map((year, i) => [year, vendors[key][i]] as const),\n    }));\n  }, [t, locale]);\n\n  return (\n    <AreaChart\n      series={series}\n      percent\n      height={300}\n      ariaLabel={t(\"shareAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "100% stacked",
+      "description": "percent scales every x to 100% to compare shares rather than amounts, such as a market share; the tooltip shows each value and its share."
+    },
+    {
+      "id": "stacked",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/stacked.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/stacked.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { AreaChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Monthly visits by traffic source, January to December\nconst sources = {\n  organic: [\n    42_000, 44_500, 47_800, 46_900, 51_200, 54_000, 52_300, 55_800, 60_100,\n    63_400, 66_200, 70_500,\n  ],\n  direct: [\n    21_000, 21_800, 22_400, 23_900, 24_100, 25_600, 26_000, 25_200, 27_300,\n    28_800, 29_500, 31_200,\n  ],\n  referral: [\n    9_800, 10_400, 12_900, 11_700, 12_300, 14_800, 13_900, 14_200, 15_600,\n    17_400, 16_900, 18_300,\n  ],\n  social: [\n    6_200, 7_900, 7_100, 8_800, 11_400, 10_200, 9_600, 12_700, 13_100, 12_400,\n    15_800, 17_900,\n  ],\n};\n\n/** Short month names in the reader's language */\nconst monthNames = (locale: string) => {\n  const format = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  return Array.from({ length: 12 }, (_, m) =>\n    format.format(new Date(2026, m, 1)),\n  );\n};\n\nexport default function StackedDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo((): ChartSeries[] => {\n    const months = monthNames(locale);\n    const names = {\n      organic: t(\"sources.organic\"),\n      direct: t(\"sources.direct\"),\n      referral: t(\"sources.referral\"),\n      social: t(\"sources.social\"),\n    };\n    return (Object.keys(sources) as (keyof typeof sources)[]).map((key) => ({\n      name: names[key],\n      data: months.map((month, i) => [month, sources[key][i]] as const),\n    }));\n  }, [t, locale]);\n  const compact = useMemo(\n    () => new Intl.NumberFormat(locale, { notation: \"compact\" }),\n    [locale],\n  );\n\n  return (\n    <AreaChart\n      series={series}\n      stacked\n      yAxis={{ format: (value) => compact.format(value) }}\n      height={300}\n      ariaLabel={t(\"visitsAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Stacked",
+      "description": "stacked piles the areas so the top edge is the total; use it when the parts add up to a meaningful whole. Click a legend item to hide a source and restack the others."
+    },
+    {
+      "id": "step",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/step.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/step.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { AreaChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst QUARTER_HOUR = 15 * 60 * 1000;\n// local midnight, so the time axis reads 00:00 → 24:00 in every time zone\nconst START = new Date(2026, 5, 15).getTime();\nconst QUOTA = 14;\n\nexport default function StepDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n\n  // Instances started by an autoscaler: the count holds until the next change\n  const series = useMemo((): ChartSeries[] => {\n    const random = mulberry32(8);\n    const data: [Date, number][] = [];\n    let instances = 3;\n    for (let i = 0; i < 96; i++) {\n      const hour = i / 4;\n      const load = 3 + 9 * Math.exp(-((hour - 14) ** 2) / 18) + random() * 2;\n      const target = Math.min(QUOTA, Math.max(2, Math.round(load)));\n      // scale out quickly, scale in one instance at a time\n      if (target > instances) instances = target;\n      else if (target < instances && random() < 0.5) instances -= 1;\n      data.push([new Date(START + i * QUARTER_HOUR), instances]);\n    }\n    return [{ name: t(\"instances\"), data }];\n  }, [t]);\n  const time = useMemo(\n    () =>\n      new Intl.DateTimeFormat(locale, { hour: \"2-digit\", minute: \"2-digit\" }),\n    [locale],\n  );\n\n  return (\n    <AreaChart\n      series={series}\n      curve=\"step\"\n      xAxis={{ type: \"time\", format: (value) => time.format(value) }}\n      yAxis={{ zero: true, max: QUOTA + 2 }}\n      annotations={[\n        {\n          type: \"line\",\n          axis: \"y\",\n          value: QUOTA,\n          dash: [4, 4],\n          color: \"var(--danger-color)\",\n          label: t(\"quota\"),\n        },\n      ]}\n      height={280}\n      ariaLabel={t(\"instancesAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Step",
+      "description": "curve=\"step\" holds each value until the next one, which suits counts that change at discrete moments; an annotation marks the quota."
+    },
+    {
+      "id": "year-over-year",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/year-over-year.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/year-over-year.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  AreaChart,\n  type ChartAnnotation,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAYS = 61; // November and December\nconst day = (i: number) => new Date(2026, 10, 1 + i).getTime();\nconst LAST_SHIPPING = 47; // December 18\n\n/**\n * Daily orders of an online shop during the holiday season: Black Friday\n * and Cyber Monday spikes, then a drop after the last shipping day\n */\nconst season = (seed: number, scale: number, blackFriday: number) => {\n  const random = mulberry32(seed);\n  return Array.from({ length: DAYS }, (_, i) => {\n    const spike = (at: number, height: number) =>\n      height * Math.exp(-Math.abs(i - at) / 1.2);\n    const lift =\n      1 + i / 90 + spike(blackFriday, 2.4) + spike(blackFriday + 3, 1.5);\n    const after = i > LAST_SHIPPING ? 0.45 : 1;\n    const noise = 0.92 + random() * 0.16;\n    return Math.round(1800 * scale * lift * after * noise);\n  });\n};\n// both years on the same calendar days: Black Friday moves by one day\nconst thisYear = season(26, 1.14, 26);\nconst lastYear = season(25, 1, 27);\nconst sum = (values: number[]) => values.reduce((a, b) => a + b, 0);\n\nexport default function YearOverYearDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"lastYear\"),\n        color: \"var(--text-secondary-color)\",\n        opacity: 0.15,\n        lineWidth: 1,\n        data: lastYear.map((value, i) => [day(i), value] as const),\n      },\n      {\n        name: t(\"thisYear\"),\n        opacity: 0.3,\n        data: thisYear.map((value, i) => [day(i), value] as const),\n      },\n    ],\n    [t],\n  );\n  const annotations = useMemo(\n    (): ChartAnnotation[] => [\n      {\n        type: \"text\",\n        x: day(26),\n        y: thisYear[26],\n        text: t(\"blackFriday\"),\n        anchor: \"right\",\n        color: \"var(--text-color)\",\n      },\n      {\n        type: \"text\",\n        x: day(29),\n        y: thisYear[29],\n        text: t(\"cyberMonday\"),\n        anchor: \"left\",\n        color: \"var(--text-color)\",\n      },\n      {\n        type: \"line\",\n        axis: \"x\",\n        value: day(LAST_SHIPPING),\n        dash: [4, 4],\n        color: \"var(--danger-color)\",\n        label: t(\"lastShipping\"),\n      },\n    ],\n    [t],\n  );\n  const formats = useMemo(\n    () => ({\n      number: new Intl.NumberFormat(locale),\n      compact: new Intl.NumberFormat(locale, { notation: \"compact\" }),\n      change: new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n        signDisplay: \"exceptZero\",\n      }),\n      date: new Intl.DateTimeFormat(locale, { month: \"short\", day: \"numeric\" }),\n    }),\n    [locale],\n  );\n  const total = sum(thisYear);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <AreaChart\n        series={series}\n        annotations={annotations}\n        curve=\"linear\"\n        crosshair\n        xAxis={{ type: \"time\", format: (x) => formats.date.format(x) }}\n        yAxis={{ format: (y) => formats.compact.format(y) }}\n        height={320}\n        ariaLabel={t(\"seasonAria\")}\n      />\n      <p style={{ margin: 0 }}>\n        {t(\"seasonSummary\", {\n          total: formats.number.format(total),\n          change: formats.change.format(total / sum(lastYear) - 1),\n        })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Year over year",
+      "description": "Last year's season drawn as a faint grey area behind this year's, on the same calendar days; text annotations name the spikes and an x line marks the last shipping day before Christmas."
+    },
+    {
+      "id": "zoom-total",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/demos/zoom-total.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/demos/zoom-total.tsx": "import { useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport {\n  AreaChart,\n  type ChartHandle,\n  type ChartSeries,\n  type ChartView,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\n// local midnight: the time axis places its ticks in local time\nconst START = new Date(2026, 0, 1).getTime();\n\n// Daily energy of a rooftop solar installation (kWh): long summer days,\n// short winter days and cloudy spells\nconst random = mulberry32(365);\nconst production = Array.from({ length: 365 }, (_, day) => {\n  const season = 0.55 + 0.45 * Math.sin(((day - 80) / 365) * 2 * Math.PI);\n  const clouds = 0.35 + 0.65 * random() ** 0.5;\n  return [\n    START + day * DAY,\n    Math.round(32 * season * clouds * 10) / 10,\n  ] as const;\n});\n\n/** Total and daily average of the days inside [from, to] */\nconst stats = (from: number, to: number) => {\n  const days = production.filter(([time]) => time >= from && time <= to);\n  const total = days.reduce((sum, [, kwh]) => sum + kwh, 0);\n  return { total, average: days.length ? total / days.length : 0, from, to };\n};\nconst ALL = stats(START, START + 364 * DAY);\n\nexport default function ZoomTotalDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.area-chart.data\",\n  });\n  const locale = i18n.language;\n  const chart = useRef<ChartHandle>(null);\n  const [visible, setVisible] = useState(ALL);\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"solarProduction\"),\n        color: \"var(--warning-color)\",\n        data: production,\n      },\n    ],\n    [t],\n  );\n  const formats = useMemo(() => {\n    const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });\n    return {\n      kwh: (value: number) => t(\"kwh\", { value: number.format(value) }),\n      date: new Intl.DateTimeFormat(locale, { month: \"short\", day: \"numeric\" }),\n    };\n  }, [t, locale]);\n\n  // onZoom reports the visible x range after every zoom and pan\n  const onZoom = (view: ChartView) => setVisible(stats(view.x[0], view.x[1]));\n  const reset = () => {\n    chart.current?.resetZoom();\n    setVisible(ALL);\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 10, width: \"100%\" }}>\n      <AreaChart\n        ref={chart}\n        series={series}\n        curve=\"linear\"\n        onZoom={onZoom}\n        xAxis={{ type: \"time\", format: (x) => formats.date.format(x) }}\n        yAxis={{ format: formats.kwh }}\n        legend={false}\n        height={280}\n        ariaLabel={t(\"solarAria\")}\n      />\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 12,\n        }}\n      >\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          disabled={visible === ALL}\n          onClick={reset}\n        >\n          {t(\"resetZoom\")}\n        </Button>\n        <output aria-live=\"polite\">\n          {t(\"visibleTotal\", {\n            from: formats.date.format(visible.from),\n            to: formats.date.format(visible.to),\n            total: formats.kwh(visible.total),\n            average: formats.kwh(visible.average),\n          })}\n        </output>\n      </div>\n      <p\n        style={{\n          margin: 0,\n          fontSize: 13,\n          color: \"var(--text-secondary-color)\",\n        }}\n      >\n        {t(\"zoomHint\")}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Total of the visible range",
+      "description": "onZoom reports the visible x range after every zoom and pan: the readout sums the solar energy of the days in view. The button calls resetZoom() on the chart ref."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Area chart",
+      "description": "Filled areas that show a volume over time: smooth by default, overlapping, stacked into a total or as 100% shares. Hover to read every series at one x; zoom with Ctrl / ⌘ + wheel or a pinch.",
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "One series over Date x values: the edge is a smooth (monotone) curve that never overshoots the data."
+        },
+        "stacked": {
+          "title": "Stacked",
+          "description": "stacked piles the areas so the top edge is the total; use it when the parts add up to a meaningful whole. Click a legend item to hide a source and restack the others."
+        },
+        "percent": {
+          "title": "100% stacked",
+          "description": "percent scales every x to 100% to compare shares rather than amounts, such as a market share; the tooltip shows each value and its share."
+        },
+        "step": {
+          "title": "Step",
+          "description": "curve=\"step\" holds each value until the next one, which suits counts that change at discrete moments; an annotation marks the quota."
+        },
+        "energy-mix": {
+          "title": "Energy mix",
+          "description": "Electricity generation by source over a day, stacked: the top edge is the total demand and the solar bump shows when the other sources ramp down. Each series sets its own color."
+        },
+        "cumulative": {
+          "title": "Cumulative vs plan",
+          "description": "Running total of sales against an evenly growing plan drawn as a line series; null values leave the months still to come empty."
+        },
+        "mirrored": {
+          "title": "Mirrored in / out",
+          "description": "Download above zero and upload below it on the same scale, a common layout for network monitoring; the y format drops the sign."
+        },
+        "zoom-total": {
+          "title": "Total of the visible range",
+          "description": "onZoom reports the visible x range after every zoom and pan: the readout sums the solar energy of the days in view. The button calls resetZoom() on the chart ref."
+        },
+        "hover-panel": {
+          "title": "Readout panel",
+          "description": "tooltip={false} with crosshair and onHover: a side panel lists the headcount of every department at the hovered month, largest first, and shows the latest month when the pointer leaves."
+        },
+        "year-over-year": {
+          "title": "Year over year",
+          "description": "Last year's season drawn as a faint grey area behind this year's, on the same calendar days; text annotations name the spikes and an x line marks the last shipping day before Christmas."
+        },
+        "disk-forecast": {
+          "title": "Capacity forecast",
+          "description": "Disk usage as an area and a line series extending the trend of the last 30 days up to the capacity, marked by a y annotation; a rect shades the future and the readout gives the day the volume fills up."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Daily active users over 90 days on a time axis: the area is smooth by default; scrub along the chart to read each day, pinch to zoom."
+          }
+        }
+      },
+      "data": {
+        "dau": "Daily active users",
+        "dauAria": "Daily active users, April to June 2026",
+        "others": "Others",
+        "shareAria": "Market share by vendor, 2016 to 2026",
+        "sources": {
+          "organic": "Organic search",
+          "direct": "Direct",
+          "referral": "Referral",
+          "social": "Social"
+        },
+        "visitsAria": "Monthly visits by traffic source, stacked",
+        "instances": "Running instances",
+        "quota": "Quota",
+        "instancesAria": "Instances started by the autoscaler over one day",
+        "energy": {
+          "nuclear": "Nuclear",
+          "hydro": "Hydro",
+          "wind": "Wind",
+          "solar": "Solar",
+          "gas": "Gas"
+        },
+        "gw": "{{value}} GW",
+        "power": "Power",
+        "energyAria": "Electricity generation by source over one day, stacked",
+        "actual": "Actual",
+        "plan": "Plan",
+        "cumulativeAria": "Cumulative sales of the year against the plan",
+        "download": "Download",
+        "upload": "Upload",
+        "bandwidthAria": "Server bandwidth over two hours, download above zero and upload below",
+        "solarProduction": "Solar production",
+        "kwh": "{{value}} kWh",
+        "solarAria": "Daily energy of a rooftop solar installation in 2026",
+        "resetZoom": "Reset zoom",
+        "visibleTotal": "{{from}} – {{to}}: {{total}} in total, {{average}} per day on average",
+        "zoomHint": "Ctrl / ⌘ + wheel or pinch to zoom on a season, drag to pan.",
+        "departments": {
+          "engineering": "Engineering",
+          "sales": "Sales",
+          "support": "Customer support",
+          "operations": "Operations",
+          "admin": "Finance & HR"
+        },
+        "headcountAria": "Headcount per department, monthly, 2025 and 2026",
+        "headcountPanel": "Headcount of the selected month",
+        "employees": "{{value}} employees",
+        "lastYear": "Last year",
+        "thisYear": "This year",
+        "blackFriday": "Black Friday",
+        "cyberMonday": "Cyber Monday",
+        "lastShipping": "Last shipping day",
+        "seasonAria": "Daily orders in November and December, this year against last year",
+        "seasonSummary": "{{total}} orders this season, {{change}} against last year.",
+        "diskUsed": "Used",
+        "diskForecast": "Trend",
+        "gb": "{{value}} GB",
+        "capacity": "Capacity {{value}}",
+        "volume": "Volume",
+        "volumes": {
+          "database": "Database",
+          "logs": "Logs",
+          "uploads": "User uploads"
+        },
+        "fullIn": "Full in about {{days}}, around {{date}}",
+        "notFull": "Not full within the next {{days}}",
+        "diskAria": "Disk usage over 60 days with its trend up to the capacity"
+      },
+      "api": {
+        "AreaChartProps": {
+          "series": "Series drawn as areas unless they set a type",
+          "curve": "Shape of the edges: \"linear\", \"smooth\" (monotone) or \"step\"",
+          "stacked": "Stacks the areas on top of each other",
+          "percent": "Scales the stacks to 100% at each x (implies stacked)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "stacked": {
+            "title": "Stacked areas",
+            "description": "Three traffic sources piled up with smooth edges (the default curve)."
+          },
+          "percent": {
+            "title": "100% stacked",
+            "description": "percent scales every stack to 100%: the share of each energy source through the day, with straight edges."
+          }
+        },
+        "minerva-area-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "taro",
+  "page": "steps",
+  "title": "Steps",
+  "description": "Shows the stages of a workflow and lets the user move between them.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Steps",
+      "support": {
+        "status": "beta",
+        "notes": "Page-tab onSelect/actions/close events, measured overflow arrows and active-item native scrollIntoView; step selection, active-path tree expansion with explicit collapse persistence and renderLink(item,content,state). Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native horizontal scrolling and touch activation replace browser keyboard navigation. Native route links require the application renderer or onItemSelect to navigate. PageTabs uses native scroll measurement and explicit dir for RTL; React has no reorder API, and child order follows the caller. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Page-tab onSelect/actions/close events, measured overflow arrows and active-item native scrollIntoView; step selection, active-path tree expansion with explicit collapse persistence and renderLink(item,content,state). Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native horizontal scrolling and touch activation replace browser keyboard navigation. Native route links require the application renderer or onItemSelect to navigate. PageTabs uses native scroll measurement and explicit dir for RTL; React has no reorder API, and child order follows the caller. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "Steps"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "array",
+            "typeText": "StepsItem[]",
+            "typeRef": "type:af140ce0aef2db53714e",
+            "required": true
+          },
+          {
+            "name": "value",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => void) | undefined",
+            "typeRef": "type:8856600e439be0b7746a",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Steps": {
+      "kind": "cssVars",
+      "source": "react/src/components/Steps",
+      "vars": [
+        {
+          "name": "--steps-gap",
+          "description": "Space between the steps (row and column gap)"
+        },
+        {
+          "name": "--steps-font-size",
+          "description": "Font size of the labels"
+        },
+        {
+          "name": "--steps-indicator-size",
+          "description": "Diameter of the numbered indicator"
+        },
+        {
+          "name": "--steps-accent-color",
+          "description": "Color of the current / completed indicators (defaults to --primary-color)"
+        },
+        {
+          "name": "--steps-current-background",
+          "description": "Background of the current step's indicator"
+        },
+        {
+          "name": "--steps-connector-color",
+          "description": "Color of the line joining the upcoming steps (defaults to --border-color)"
+        },
+        {
+          "name": "--steps-connector-complete-color",
+          "description": "Color of the line after a completed step (defaults to the accent color)"
+        },
+        {
+          "name": "--steps-connector-min-width",
+          "description": "Minimum length of the line joining two steps"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Steps",
+      "description": "Shows the stages of a workflow and lets the user move between them.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Review is initially selected. Choose Draft to go back; Publish is disabled."
+        },
+        "read-only": {
+          "title": "Read-only progress",
+          "description": "Without onChange the steps are a read-only progress indicator: a plain ordered list (no buttons) whose current item has aria-current=\"step\"."
+        },
+        "styling": {
+          "title": "Styling",
+          "description": "Completed steps show a check mark on a solid disc, the current one a soft halo, and the connectors fill in as steps complete. --steps-accent-color recolors them, --steps-connector-min-width / --steps-connector-color tune the lines."
+        }
+      },
+      "api": {
+        "StepsProps": {
+          "items": "Steps, in order",
+          "value": "Value of the current step (controlled; pair with onChange)",
+          "defaultValue": "Value of the initial current step (uncontrolled)",
+          "onChange": "Called with the value of the step the user navigates to. Steps only report navigation: validation and workflow transitions belong to the caller",
+          "readOnly": "Renders the steps as a read-only progress indicator: plain list items without buttons, the current one marked aria-current=\"step\"",
+          "aria-label": "Accessible label of the list",
+          "className": "Additional class name",
+          "ref": "Ref to the root <ol> element"
+        },
+        "StepsItem": {
+          "value": "Unique value of the step, matched against the Steps value",
+          "label": "Visible label of the step",
+          "disabled": "Prevents navigating to this step (e.g. a terminal state that is not reached yet)"
+        }
+      },
+      "cssVars": {
+        "--steps-gap": "Space between the steps (row and column gap)",
+        "--steps-font-size": "Font size of the labels",
+        "--steps-indicator-size": "Diameter of the numbered indicator",
+        "--steps-accent-color": "Color of the current / completed indicators (defaults to --primary-color)",
+        "--steps-current-background": "Background of the current step's indicator",
+        "--steps-connector-color": "Color of the line joining the upcoming steps (defaults to --border-color)",
+        "--steps-connector-complete-color": "Color of the line after a completed step (defaults to the accent color)",
+        "--steps-connector-min-width": "Minimum length of the line joining two steps"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Read-only progress",
+            "description": "Steps come from the items property; earlier steps are complete and the current one has aria-current=\"step\"."
+          },
+          "navigable": {
+            "title": "Navigable wizard",
+            "description": "navigable turns each step into a button. minerva-change is cancelable: the caller validates the transition (accept the terms to leave the first step)."
+          },
+          "styling": {
+            "title": "Styling",
+            "description": "CSS variables set the accent color, indicator size and gap; ::part(label) styles the labels."
+          }
+        },
+        "minerva-steps": {
+          "props": {
+            "navigable": "Renders each step as a button the user can navigate with (default: read-only)."
+          },
+          "events": {
+            "minerva-change": "The user navigated to a step (detail: { value }); cancelable: preventDefault() keeps the current step."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Review is initially selected. Choose Draft to go back; Publish is disabled."
+          },
+          "vertical": {
+            "title": "Vertical layout",
+            "description": "Vertical layout using Steps; the preview follows the selected site theme and palette."
+          }
+        }
+      }
+    }
+  }
+}

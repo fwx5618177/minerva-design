@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "divider",
+  "title": "Divider 区切り線",
+  "description": "コンテンツを水平または垂直に区切る細い線。テキストを含めることもできます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Divider",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/divider",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-divider",
+        "props": [
+          {
+            "name": "variant",
+            "typeText": "\"solid\" | \"dashed\" | \"dotted\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "orientation",
+            "typeText": "\"horizontal\" | \"vertical\"",
+            "attribute": "orientation",
+            "required": false
+          },
+          {
+            "name": "thickness",
+            "typeText": "number",
+            "attribute": "thickness",
+            "required": false
+          },
+          {
+            "name": "length",
+            "typeText": "string | number | undefined",
+            "attribute": "length",
+            "required": false
+          },
+          {
+            "name": "spacing",
+            "typeText": "number",
+            "attribute": "spacing",
+            "required": false
+          },
+          {
+            "name": "textAlign",
+            "typeText": "\"left\" | \"center\" | \"right\"",
+            "attribute": "text-align",
+            "required": false
+          },
+          {
+            "name": "elevation",
+            "typeText": "boolean",
+            "attribute": "elevation",
+            "required": false
+          },
+          {
+            "name": "flexItem",
+            "typeText": "boolean",
+            "attribute": "flex-item",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Optional text of a horizontal divider (ignored when vertical)"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-divider": {
+      "kind": "element",
+      "source": "web-components/src/components/divider/divider.ts",
+      "className": "MinervaDivider",
+      "summary": "Separator line, optionally with text.",
+      "description": "A horizontal or vertical separator line (`<Divider>` of React). Without content it renders a native `<hr>` (implicit `separator` role); text in the default slot is rendered between the two halves of a horizontal divider (`role=\"separator\"`). The line color comes from `--divider-color`. Vertical dividers are inline (1em high); `flex-item` stretches one to the height of its flex container.",
+      "properties": [
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"solid\" | \"dashed\" | \"dotted\"",
+          "default": "\"solid\"",
+          "description": "Line style"
+        },
+        {
+          "name": "orientation",
+          "attribute": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "default": "\"horizontal\"",
+          "description": "Divider direction"
+        },
+        {
+          "name": "thickness",
+          "attribute": "thickness",
+          "type": "number",
+          "default": "1",
+          "description": "Line thickness in pixels"
+        },
+        {
+          "name": "length",
+          "attribute": "length",
+          "type": "string | number | undefined",
+          "description": "Length of the line (width when horizontal, height when vertical): px number or CSS length"
+        },
+        {
+          "name": "spacing",
+          "attribute": "spacing",
+          "type": "number",
+          "default": "16",
+          "description": "Margin around the divider in pixels (block axis when horizontal, inline axis when vertical)"
+        },
+        {
+          "name": "textAlign",
+          "attribute": "text-align",
+          "type": "\"left\" | \"center\" | \"right\"",
+          "default": "\"center\"",
+          "description": "Position of the text"
+        },
+        {
+          "name": "elevation",
+          "attribute": "elevation",
+          "type": "boolean",
+          "default": "false",
+          "description": "Adds a subtle shadow"
+        },
+        {
+          "name": "flexItem",
+          "attribute": "flex-item",
+          "type": "boolean",
+          "default": "false",
+          "description": "Vertical divider stretching to the height of its flex container"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Optional text of a horizontal divider (ignored when vertical)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The <hr>, or the role=separator element of a divider with text (align: position of the text)"
+        },
+        {
+          "name": "label",
+          "description": "The text between the two halves of the line"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--divider-color",
+          "description": "Line color (defaults to --border-color)"
+        },
+        {
+          "name": "--divider-thickness",
+          "description": "Line thickness"
+        },
+        {
+          "name": "--divider-spacing",
+          "description": "Inline margin around a vertical divider"
+        },
+        {
+          "name": "--divider-text-gap",
+          "description": "Space between the text and the lines"
+        },
+        {
+          "name": "--divider-text-font-size",
+          "description": "Font size of the text"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Divider": {
+      "kind": "cssVars",
+      "source": "react/src/components/Divider",
+      "vars": [
+        {
+          "name": "--divider-color",
+          "description": "Line color (defaults to --border-color)"
+        },
+        {
+          "name": "--divider-thickness",
+          "description": "Line thickness"
+        },
+        {
+          "name": "--divider-spacing",
+          "description": "Inline margin around a vertical divider"
+        },
+        {
+          "name": "--divider-text-gap",
+          "description": "Space between the text and the lines"
+        },
+        {
+          "name": "--divider-text-font-size",
+          "description": "Font size of the text"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/divider/wc/basic.html": "<div style=\"width: 100%\">\n  <p>Content above the divider.</p>\n  <minerva-divider></minerva-divider>\n  <p>Content below the divider.</p>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "横の区切り線で 1 番目と 2 番目のセクションを分けます。"
+    },
+    {
+      "id": "custom-style",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/wc/custom-style.html",
+      "files": {
+        "apps/docs/src/docs/pages/divider/wc/custom-style.html": "<div style=\"width: 100%\">\n  <minerva-divider\n    style=\"--divider-color: #7c3aed\"\n    thickness=\"2\"\n  ></minerva-divider\n  ><minerva-divider\n    style=\"--divider-color: #16a34a\"\n    thickness=\"3\"\n    variant=\"dashed\"\n    length=\"50%\"\n  ></minerva-divider\n  ><minerva-divider style=\"--divider-color: #7c3aed\">Section</minerva-divider\n  ><minerva-divider spacing=\"32\" elevation></minerva-divider>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "カスタムスタイル",
+      "description": "CSS カスタムプロパティ --divider-color（インラインスタイル、クラス、祖先要素）で線の色を設定し、太さ・長さ・余白・elevation の影をカスタマイズします。"
+    },
+    {
+      "id": "flex-item",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/wc/flex-item.html",
+      "files": {
+        "apps/docs/src/docs/pages/divider/wc/flex-item.html": "<div style=\"display: flex; align-items: center; gap: 12px; height: 48px\">\n  <span>Edit</span\n  ><minerva-divider\n    orientation=\"vertical\"\n    flex-item\n    spacing=\"0\"\n  ></minerva-divider\n  ><span>Share</span\n  ><minerva-divider\n    orientation=\"vertical\"\n    flex-item\n    spacing=\"0\"\n  ></minerva-divider\n  ><span>Delete</span>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "flex コンテナ内",
+      "description": "flexItem を指定すると縦の区切り線が flex コンテナの高さまで伸びます。"
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/wc/variants.html",
+      "files": {
+        "apps/docs/src/docs/pages/divider/wc/variants.html": "<div style=\"width: 100%\">\n  <minerva-divider variant=\"solid\"></minerva-divider\n  ><minerva-divider variant=\"dashed\"></minerva-divider\n  ><minerva-divider variant=\"dotted\"></minerva-divider>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "線のスタイル",
+      "description": "実線（デフォルト）、破線、点線。"
+    },
+    {
+      "id": "vertical",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/wc/vertical.html",
+      "files": {
+        "apps/docs/src/docs/pages/divider/wc/vertical.html": "<div style=\"display: flex; align-items: center\">\n  <span>Home</span\n  ><minerva-divider\n    orientation=\"vertical\"\n    length=\"16\"\n    spacing=\"12\"\n  ></minerva-divider\n  ><span>Products</span\n  ><minerva-divider\n    orientation=\"vertical\"\n    length=\"16\"\n    spacing=\"12\"\n  ></minerva-divider\n  ><span>About</span>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "縦方向",
+      "description": "縦の区切り線で Home、Products、About を分けます。"
+    },
+    {
+      "id": "with-text",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/wc/with-text.html",
+      "files": {
+        "apps/docs/src/docs/pages/divider/wc/with-text.html": "<div style=\"width: 100%\">\n  <minerva-divider text-align=\"left\">Left</minerva-divider\n  ><minerva-divider>Center</minerva-divider\n  ><minerva-divider text-align=\"right\" variant=\"dashed\" thickness=\"3\"\n    >Right</minerva-divider\n  >\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "テキスト付き",
+      "description": "Left、Center、Right の文字揃えを比較します。右揃えの区切り線は破線です。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Divider 区切り線",
+      "description": "コンテンツを水平または垂直に区切る細い線。テキストを含めることもできます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "横の区切り線で 1 番目と 2 番目のセクションを分けます。"
+        },
+        "variants": {
+          "title": "線のスタイル",
+          "description": "実線（デフォルト）、破線、点線。"
+        },
+        "with-text": {
+          "title": "テキスト付き",
+          "description": "Left、Center、Right の文字揃えを比較します。右揃えの区切り線は破線です。"
+        },
+        "vertical": {
+          "title": "縦方向",
+          "description": "縦の区切り線で Home、Products、About を分けます。"
+        },
+        "custom-style": {
+          "title": "カスタムスタイル",
+          "description": "CSS カスタムプロパティ --divider-color（インラインスタイル、クラス、祖先要素）で線の色を設定し、太さ・長さ・余白・elevation の影をカスタマイズします。"
+        },
+        "flex-item": {
+          "title": "flex コンテナ内",
+          "description": "flexItem を指定すると縦の区切り線が flex コンテナの高さまで伸びます。"
+        }
+      },
+      "api": {
+        "DividerProps": {
+          "variant": "線のスタイル",
+          "orientation": "区切り線の方向",
+          "thickness": "線の太さ（ピクセル）",
+          "length": "線の長さ（水平時は幅、垂直時は高さ）",
+          "spacing": "区切り線の周囲の余白（ピクセル。水平時は上下、垂直時は左右）",
+          "children": "水平の区切り線の中に表示する任意のテキスト",
+          "textAlign": "テキストの位置",
+          "elevation": "控えめな影を付ける",
+          "className": "追加のクラス名",
+          "style": "インラインスタイル",
+          "ref": "ルートの <div> 要素への ref",
+          "flexItem": "縦の区切り線を flex コンテナの高さまで伸ばします"
+        }
+      },
+      "cssVars": {
+        "--divider-color": "線の色（既定値は --border-color）",
+        "--divider-thickness": "線の太さ",
+        "--divider-spacing": "縦の区切り線の左右マージン",
+        "--divider-text-gap": "テキストと線の間隔",
+        "--divider-text-font-size": "テキストのフォントサイズ"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "横の区切り線で 1 番目と 2 番目のセクションを分けます。"
+          },
+          "variants": {
+            "title": "線のスタイル",
+            "description": "実線（デフォルト）、破線、点線。"
+          },
+          "with-text": {
+            "title": "テキスト付き",
+            "description": "Left、Center、Right の文字揃えを比較します。右揃えの区切り線は破線です。"
+          },
+          "vertical": {
+            "title": "縦方向",
+            "description": "縦の区切り線で Home、Products、About を分けます。"
+          },
+          "custom-style": {
+            "title": "カスタムスタイル",
+            "description": "CSS カスタムプロパティ --divider-color（インラインスタイル、クラス、祖先要素）で線の色を設定し、太さ・長さ・余白・elevation の影をカスタマイズします。"
+          },
+          "flex-item": {
+            "title": "flex コンテナ内",
+            "description": "flexItem を指定すると縦の区切り線が flex コンテナの高さまで伸びます。"
+          }
+        },
+        "minerva-divider": {
+          "slots": {
+            "default": "水平の区切り線のテキスト（任意、垂直の場合は無視）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "横の区切り線で 1 番目と 2 番目のセクションを分けます。"
+          },
+          "vertical": {
+            "title": "縦方向",
+            "description": "縦の区切り線で Home、Products、About を分けます。"
+          },
+          "with-text": {
+            "title": "テキスト付き",
+            "description": "Left、Center、Right の文字揃えを比較します。右揃えの区切り線は破線です。"
+          }
+        }
+      }
+    }
+  }
+}

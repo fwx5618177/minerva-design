@@ -1,0 +1,873 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "react",
+  "page": "dashboard-columns",
+  "title": "DashboardColumns",
+  "description": "Columns of cards on a dashboard, one per workflow stage, pipeline step or status (To do / Doing / Done): equal-width columns with a title, a count and an accent color, stacked cards, and horizontal scrolling. With draggable, DashboardCard children move between and within columns by mouse, touch or keyboard; the board stays controlled (onCardMove).",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DashboardCard",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DashboardCard"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Key of the card, reported as `cardKey` by a draggable board"
+          },
+          {
+            "name": "label",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Name of the card in the drag announcements and, when draggable, its accessible name"
+          },
+          {
+            "name": "id",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the card"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DashboardColumn",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DashboardColumn"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "title",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": true,
+            "description": "Title of the column (also its accessible name)"
+          },
+          {
+            "name": "value",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
+          },
+          {
+            "name": "count",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge"
+          },
+          {
+            "name": "color",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "union",
+            "typeText": "DashboardColumnColor | undefined",
+            "typeRef": "type:346e893bb2fab5bfdbfb",
+            "required": false,
+            "description": "Accent of the column (a dot before the title): a theme color or any CSS color"
+          },
+          {
+            "name": "description",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Supporting text under the header"
+          },
+          {
+            "name": "actions",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Header controls on the end side (e.g. an add button)"
+          },
+          {
+            "name": "empty",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content shown when the column has no cards"
+          },
+          {
+            "name": "footer",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Footer below the cards (e.g. an \"Add card\" button)"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the column"
+          },
+          {
+            "name": "id",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the column"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DashboardColumns",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DashboardColumns"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "columnWidth",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "union",
+            "typeText": "DashboardLength | undefined",
+            "typeRef": "type:f599dfc479dbce7e0d00",
+            "default": "18rem",
+            "required": false,
+            "description": "Width of every column (a number is pixels). With `fill` it is the minimum width: columns stretch equally when they fit"
+          },
+          {
+            "name": "fill",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)"
+          },
+          {
+            "name": "gap",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "union",
+            "typeText": "DashboardLength | undefined",
+            "typeRef": "type:f599dfc479dbce7e0d00",
+            "default": "0.75rem",
+            "required": false,
+            "description": "Space between the columns (a number is pixels)"
+          },
+          {
+            "name": "height",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "union",
+            "typeText": "DashboardLength | undefined",
+            "typeRef": "type:f599dfc479dbce7e0d00",
+            "required": false,
+            "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)"
+          },
+          {
+            "name": "maxHeight",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "union",
+            "typeText": "DashboardLength | undefined",
+            "typeRef": "type:f599dfc479dbce7e0d00",
+            "required": false,
+            "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)"
+          },
+          {
+            "name": "draggable",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Lets the DashboardCard children of keyed columns (`value`) be dragged between and within columns: with the mouse, a long press on touch screens, or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data."
+          },
+          {
+            "name": "canDrop",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "function",
+            "typeText": "((move: DashboardCardMove) => boolean) | undefined",
+            "typeRef": "type:8d0b0741c169cc33043e",
+            "parameters": [
+              {
+                "name": "move",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "DashboardCardMove",
+                "typeRef": "type:fd9302cfc7d74ff2894a"
+              }
+            ],
+            "returnType": {
+              "typeText": "boolean",
+              "typeRef": "type:7087acd01ef7dd9f1d5c"
+            },
+            "required": false,
+            "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them (its original position is always allowed)"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the board region"
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of an element naming the board (instead of aria-label)"
+          },
+          {
+            "name": "id",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the board"
+          }
+        ],
+        "events": [
+          {
+            "name": "onCardMove",
+            "source": "packages/react/src/components/DashboardColumns/types.ts",
+            "kind": "function",
+            "typeText": "((move: DashboardCardMove) => void) | undefined",
+            "typeRef": "type:d0fc2970e5124e57e3d2",
+            "parameters": [
+              {
+                "name": "move",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "DashboardCardMove",
+                "typeRef": "type:fd9302cfc7d74ff2894a"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a card is dropped at a new position (not when it is put back where it was): move the card in your data (`moveDashboardCard` from `minerva-design/core` does it for plain lists)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "DashboardColumnsProps": {
+      "source": "react/src/components/DashboardColumns/types.ts",
+      "description": "Props of the DashboardColumns component: a horizontally scrolling row of DashboardColumn",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "The columns (DashboardColumn)"
+        },
+        {
+          "name": "columnWidth",
+          "type": "DashboardLength",
+          "required": false,
+          "default": "\"18rem\"",
+          "description": "Width of every column (a number is pixels). With `fill` it is the minimum width: columns stretch equally when they fit"
+        },
+        {
+          "name": "fill",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)"
+        },
+        {
+          "name": "gap",
+          "type": "DashboardLength",
+          "required": false,
+          "default": "\"0.75rem\"",
+          "description": "Space between the columns (a number is pixels)"
+        },
+        {
+          "name": "height",
+          "type": "DashboardLength",
+          "required": false,
+          "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)"
+        },
+        {
+          "name": "maxHeight",
+          "type": "DashboardLength",
+          "required": false,
+          "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)"
+        },
+        {
+          "name": "draggable",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Lets the DashboardCard children of keyed columns (`value`) be dragged between and within columns: with the mouse, a long press on touch screens, or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data."
+        },
+        {
+          "name": "onCardMove",
+          "type": "(move: DashboardCardMove) => void",
+          "required": false,
+          "description": "Called when a card is dropped at a new position (not when it is put back where it was): move the card in your data (`moveDashboardCard` from `minerva-design/core` does it for plain lists)"
+        },
+        {
+          "name": "canDrop",
+          "type": "(move: DashboardCardMove) => boolean",
+          "required": false,
+          "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them (its original position is always allowed)"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": "\"Board\" (translated)",
+          "description": "Accessible name of the board region"
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "required": false,
+          "description": "Id of an element naming the board (instead of aria-label)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Inline style of the board"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Id of the board"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root <div>"
+        }
+      ]
+    },
+    "DashboardColumnProps": {
+      "source": "react/src/components/DashboardColumns/types.ts",
+      "description": "Props of the DashboardColumn component: a status column of a DashboardColumns",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Title of the column (also its accessible name)"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "required": false,
+          "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge"
+        },
+        {
+          "name": "color",
+          "type": "DashboardColumnColor",
+          "required": false,
+          "description": "Accent of the column (a dot before the title): a theme color or any CSS color"
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Supporting text under the header"
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Header controls on the end side (e.g. an add button)"
+        },
+        {
+          "name": "empty",
+          "type": "ReactNode",
+          "required": false,
+          "default": "\"No items\" (translated)",
+          "description": "Content shown when the column has no cards"
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Footer below the cards (e.g. an \"Add card\" button)"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "The cards: each child is wrapped in a role=\"listitem\""
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": "the title with the count (\"To do, 3 items\", translated)",
+          "description": "Accessible name of the column"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Inline style of the column"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Id of the column"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "required": false,
+          "description": "Ref to the root <section>"
+        }
+      ]
+    },
+    "DashboardCardProps": {
+      "source": "react/src/components/DashboardColumns/types.ts",
+      "description": "Props of the DashboardCard component: a card of a DashboardColumn that a draggable board can move",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "description": "Key of the card, reported as `cardKey` by a draggable board"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "default": "its text content",
+          "description": "Name of the card in the drag announcements and, when draggable, its accessible name"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content of the card"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Inline style of the card"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Id of the card"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root <div>"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:DashboardColumns": {
+      "kind": "cssVars",
+      "source": "react/src/components/DashboardColumns",
+      "vars": [
+        {
+          "name": "--dashboard-column-width",
+          "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+        },
+        {
+          "name": "--dashboard-gap",
+          "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+        },
+        {
+          "name": "--dashboard-column-background",
+          "description": "Background of a column (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--dashboard-column-border-color",
+          "description": "Border color of a column (defaults to --border-color)"
+        },
+        {
+          "name": "--dashboard-column-radius",
+          "description": "Corner radius of a column (defaults to --radius-lg)"
+        },
+        {
+          "name": "--dashboard-column-color",
+          "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+        },
+        {
+          "name": "--dashboard-card-gap",
+          "description": "Space between the cards of a column (defaults to --space-2)"
+        },
+        {
+          "name": "--dashboard-count-background",
+          "description": "Background of the count badge (defaults to --surface-color)"
+        },
+        {
+          "name": "--dashboard-count-color",
+          "description": "Text color of the count badge (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--dashboard-drop-indicator-color",
+          "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/demos/basic.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  Card,\n  CardDescription,\n  CardTitle,\n  DashboardColumns,\n  DashboardColumn,\n  Tag,\n} from \"minerva-design\";\n\ntype Status = \"todo\" | \"doing\" | \"done\";\ninterface Task {\n  id: number;\n  title: string;\n  owner: string;\n  status: Status;\n}\n\nconst COLUMNS: { status: Status; title: string }[] = [\n  { status: \"todo\", title: \"To do\" },\n  { status: \"doing\", title: \"Doing\" },\n  { status: \"done\", title: \"Done\" },\n];\nconst NEXT: Record<Status, Status | undefined> = {\n  todo: \"doing\",\n  doing: \"done\",\n  done: undefined,\n};\nconst titleOf = (status: Status) =>\n  COLUMNS.find((column) => column.status === status)!.title;\n\nexport default function BasicDemo() {\n  const [tasks, setTasks] = useState<Task[]>([\n    {\n      id: 1,\n      title: \"Write the onboarding guide\",\n      owner: \"Ada\",\n      status: \"todo\",\n    },\n    { id: 2, title: \"Audit color contrast\", owner: \"Lin\", status: \"todo\" },\n    { id: 3, title: \"Ship the billing page\", owner: \"Sam\", status: \"doing\" },\n    { id: 4, title: \"Set up error tracking\", owner: \"Ada\", status: \"done\" },\n  ]);\n  // Cards move with their own actions here (draggable boards: drag-drop demo).\n  const advance = (id: number) =>\n    setTasks((all) =>\n      all.map((task) =>\n        task.id === id && NEXT[task.status]\n          ? { ...task, status: NEXT[task.status]! }\n          : task,\n      ),\n    );\n\n  return (\n    <DashboardColumns aria-label=\"Sprint 12\">\n      {COLUMNS.map((column) => {\n        const items = tasks.filter((task) => task.status === column.status);\n        return (\n          <DashboardColumn\n            key={column.status}\n            title={column.title}\n            count={items.length}\n          >\n            {items.map((task) => (\n              <Card key={task.id} padding=\"small\">\n                <CardTitle as=\"h4\">{task.title}</CardTitle>\n                <CardDescription>\n                  <Tag size=\"small\">{task.owner}</Tag>\n                </CardDescription>\n                {NEXT[task.status] ? (\n                  <Button\n                    size=\"small\"\n                    variant=\"ghost\"\n                    onClick={() => advance(task.id)}\n                    aria-label={`Move to ${titleOf(NEXT[task.status]!)}: ${task.title}`}\n                  >\n                    Move to {titleOf(NEXT[task.status]!)}\n                  </Button>\n                ) : null}\n              </Card>\n            ))}\n          </DashboardColumn>\n        );\n      })}\n    </DashboardColumns>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "DashboardColumns is a labelled, keyboard-scrollable region of DashboardColumn; each column is a group named by its title and count, and its cards (here minerva Cards) form a list. Here cards move with their own actions (a button or a menu); see Drag and drop for draggable boards."
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/demos/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/demos/colors.tsx": "import { Card, DashboardColumns, DashboardColumn } from \"minerva-design\";\n\nconst columns = [\n  { title: \"Backlog\", color: \"neutral\", cards: [\"Collect feedback\"] },\n  { title: \"Ready\", color: \"info\", cards: [\"Pricing page copy\"] },\n  { title: \"In progress\", color: \"primary\", cards: [\"Search API\", \"Avatars\"] },\n  { title: \"Review\", color: \"warning\", cards: [\"Dark mode\"] },\n  { title: \"Blocked\", color: \"danger\", cards: [\"SSO with Okta\"] },\n  { title: \"Done\", color: \"success\", cards: [\"Release 2.4\"] },\n  { title: \"Research\", color: \"#7c3aed\", cards: [\"Interview users\"] },\n];\n\nexport default function ColorsDemo() {\n  return (\n    <DashboardColumns aria-label=\"Product roadmap\" columnWidth={220} gap={8}>\n      {columns.map((column) => (\n        <DashboardColumn\n          key={column.title}\n          title={column.title}\n          count={column.cards.length}\n          color={column.color}\n        >\n          {column.cards.map((card) => (\n            <Card key={card} padding=\"small\">\n              {card}\n            </Card>\n          ))}\n        </DashboardColumn>\n      ))}\n    </DashboardColumns>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Colors and counts",
+      "description": "color puts an accent dot before the title: a theme color (primary, success, warning, danger, info, neutral) or any CSS color. count shows a badge, announced with the title. columnWidth and gap size the columns; on narrow screens they keep their width and snap while the board scrolls."
+    },
+    {
+      "id": "drag-drop",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/demos/drag-drop.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/demos/drag-drop.tsx": "import { useState } from \"react\";\nimport {\n  Card,\n  CardDescription,\n  CardTitle,\n  DashboardColumns,\n  DashboardCard,\n  DashboardColumn,\n  Tag,\n  type DashboardCardMove,\n} from \"minerva-design\";\nimport { moveDashboardCard } from \"minerva-design/core\";\n\ntype Status = \"todo\" | \"doing\" | \"done\";\ninterface Task {\n  id: string;\n  title: string;\n  owner: string;\n}\n\nconst COLUMNS: { status: Status; title: string }[] = [\n  { status: \"todo\", title: \"To do\" },\n  { status: \"doing\", title: \"Doing\" },\n  { status: \"done\", title: \"Done\" },\n];\n/** Work in progress limit of \"Doing\" */\nconst LIMIT = 2;\n\nexport default function DragDropDemo() {\n  const [lists, setLists] = useState<Record<Status, Task[]>>({\n    todo: [\n      { id: \"guide\", title: \"Write the onboarding guide\", owner: \"Ada\" },\n      { id: \"contrast\", title: \"Audit color contrast\", owner: \"Lin\" },\n      { id: \"search\", title: \"Index the docs search\", owner: \"Sam\" },\n    ],\n    doing: [{ id: \"billing\", title: \"Ship the billing page\", owner: \"Sam\" }],\n    done: [{ id: \"errors\", title: \"Set up error tracking\", owner: \"Ada\" }],\n  });\n\n  // The board is controlled: it reports the move, the app applies it.\n  const onCardMove = (move: DashboardCardMove) =>\n    setLists(\n      (current) =>\n        moveDashboardCard(current, move, (task) => task.id) as Record<\n          Status,\n          Task[]\n        >,\n    );\n  // A full \"Doing\" column takes no more cards (it can still be reordered).\n  const canDrop = (move: DashboardCardMove) =>\n    move.toColumn !== \"doing\" ||\n    move.fromColumn === \"doing\" ||\n    lists.doing.length < LIMIT;\n\n  return (\n    <DashboardColumns\n      aria-label=\"Sprint 12\"\n      draggable\n      onCardMove={onCardMove}\n      canDrop={canDrop}\n    >\n      {COLUMNS.map((column) => (\n        <DashboardColumn\n          key={column.status}\n          value={column.status}\n          title={column.title}\n          count={lists[column.status].length}\n          description={\n            column.status === \"doing\" ? `At most ${LIMIT} cards` : undefined\n          }\n        >\n          {lists[column.status].map((task) => (\n            <DashboardCard key={task.id} value={task.id} label={task.title}>\n              <Card padding=\"small\">\n                <CardTitle as=\"h4\">{task.title}</CardTitle>\n                <CardDescription>\n                  <Tag size=\"small\">{task.owner}</Tag>\n                </CardDescription>\n              </Card>\n            </DashboardCard>\n          ))}\n        </DashboardColumn>\n      ))}\n    </DashboardColumns>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Drag and drop",
+      "description": "draggable lets the DashboardCard children of keyed columns (value) be dragged: with the mouse, with a long press on touch screens, or with the keyboard (Space or Enter picks a focused card up, the arrows move it, Space or Enter drops it, Escape cancels; each step is announced). The board never reorders anything: onCardMove reports { cardKey, fromColumn, fromIndex, toColumn, toIndex } and moveDashboardCard (minerva-design/core) applies it to your lists. canDrop refuses positions: here \"Doing\" takes at most 2 cards."
+    },
+    {
+      "id": "empty-actions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/demos/empty-actions.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/demos/empty-actions.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  Card,\n  DashboardColumns,\n  DashboardColumn,\n} from \"minerva-design\";\n\nexport default function EmptyActionsDemo() {\n  const [ideas, setIdeas] = useState<string[]>([]);\n  const add = () => setIdeas((all) => [...all, `Idea ${all.length + 1}`]);\n\n  return (\n    <DashboardColumns aria-label=\"Ideas\" fill>\n      <DashboardColumn\n        title=\"Ideas\"\n        count={ideas.length}\n        description=\"Anything worth exploring\"\n        actions={\n          <Button size=\"small\" variant=\"ghost\" onClick={add}>\n            Add\n          </Button>\n        }\n        empty=\"No ideas yet: use Add to create one.\"\n        footer={\n          ideas.length > 0 ? (\n            <Button\n              size=\"small\"\n              variant=\"outline\"\n              color=\"neutral\"\n              onClick={() => setIdeas([])}\n            >\n              Clear column\n            </Button>\n          ) : null\n        }\n      >\n        {ideas.map((idea) => (\n          <Card key={idea} padding=\"small\">\n            {idea}\n          </Card>\n        ))}\n      </DashboardColumn>\n      <DashboardColumn title=\"Archived\" count={0} />\n    </DashboardColumns>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Empty state, actions and footer",
+      "description": "actions sits at the end of the header (e.g. an add button), description under it and footer below the cards. A column without cards shows empty (\"No items\" by default, translated). fill stretches the columns equally when they fit."
+    },
+    {
+      "id": "fixed-height",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/demos/fixed-height.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/demos/fixed-height.tsx": "import { Card, DashboardColumns, DashboardColumn } from \"minerva-design\";\n\nconst cards = (prefix: string, count: number) =>\n  Array.from({ length: count }, (_, index) => `${prefix} ${index + 1}`);\n\nconst columns = [\n  { title: \"Inbox\", color: \"info\", cards: cards(\"Ticket\", 12) },\n  { title: \"Triaged\", color: \"warning\", cards: cards(\"Bug\", 5) },\n  { title: \"Fixed\", color: \"success\", cards: cards(\"Fix\", 8) },\n];\n\nexport default function FixedHeightDemo() {\n  return (\n    <DashboardColumns aria-label=\"Support queue\" height={320}>\n      {columns.map((column) => (\n        <DashboardColumn\n          key={column.title}\n          title={column.title}\n          count={column.cards.length}\n          color={column.color}\n        >\n          {column.cards.map((card) => (\n            <Card key={card} padding=\"small\">\n              {card}\n            </Card>\n          ))}\n        </DashboardColumn>\n      ))}\n    </DashboardColumns>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Fixed height",
+      "description": "height or maxHeight bound the board: each column body scrolls vertically while the board scrolls horizontally."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DashboardColumns",
+      "description": "Columns of cards on a dashboard, one per workflow stage, pipeline step or status (To do / Doing / Done): equal-width columns with a title, a count and an accent color, stacked cards, and horizontal scrolling. With draggable, DashboardCard children move between and within columns by mouse, touch or keyboard; the board stays controlled (onCardMove).",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "DashboardColumns is a labelled, keyboard-scrollable region of DashboardColumn; each column is a group named by its title and count, and its cards (here minerva Cards) form a list. Here cards move with their own actions (a button or a menu); see Drag and drop for draggable boards."
+        },
+        "colors": {
+          "title": "Colors and counts",
+          "description": "color puts an accent dot before the title: a theme color (primary, success, warning, danger, info, neutral) or any CSS color. count shows a badge, announced with the title. columnWidth and gap size the columns; on narrow screens they keep their width and snap while the board scrolls."
+        },
+        "empty-actions": {
+          "title": "Empty state, actions and footer",
+          "description": "actions sits at the end of the header (e.g. an add button), description under it and footer below the cards. A column without cards shows empty (\"No items\" by default, translated). fill stretches the columns equally when they fit."
+        },
+        "fixed-height": {
+          "title": "Fixed height",
+          "description": "height or maxHeight bound the board: each column body scrolls vertically while the board scrolls horizontally."
+        },
+        "drag-drop": {
+          "title": "Drag and drop",
+          "description": "draggable lets the DashboardCard children of keyed columns (value) be dragged: with the mouse, with a long press on touch screens, or with the keyboard (Space or Enter picks a focused card up, the arrows move it, Space or Enter drops it, Escape cancels; each step is announced). The board never reorders anything: onCardMove reports { cardKey, fromColumn, fromIndex, toColumn, toIndex } and moveDashboardCard (minerva-design/core) applies it to your lists. canDrop refuses positions: here \"Doing\" takes at most 2 cards."
+        }
+      },
+      "api": {
+        "DashboardColumnsProps": {
+          "children": "The columns (DashboardColumn)",
+          "columnWidth": "Width of every column (a number is pixels); with fill it is the minimum width",
+          "fill": "Stretches the columns equally to fill the board when they fit (they keep columnWidth as their minimum width and scroll otherwise)",
+          "gap": "Space between the columns (a number is pixels)",
+          "height": "Height of the board: the column bodies scroll vertically within it (a number is pixels)",
+          "maxHeight": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
+          "draggable": "Lets the DashboardCard children of keyed columns be dragged between and within columns (mouse, touch long press, keyboard)",
+          "onCardMove": "Called when a card is dropped at a new position, with { cardKey, fromColumn, fromIndex, toColumn, toIndex } (toIndex counts the cards without the moved one): move the card in your data",
+          "canDrop": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them",
+          "aria-label": "Accessible name of the board region",
+          "aria-labelledby": "Id of an element naming the board (instead of aria-label)",
+          "className": "Additional class name",
+          "style": "Inline style of the board",
+          "id": "Id of the board",
+          "ref": "Ref to the root <div>"
+        },
+        "DashboardColumnProps": {
+          "title": "Title of the column (also its accessible name)",
+          "value": "Key of the column, reported as fromColumn / toColumn by a draggable board (columns without one take no cards)",
+          "count": "Number of items shown as a badge next to the title (and announced with it); omit to hide the badge",
+          "color": "Accent of the column (a dot before the title): a theme color or any CSS color",
+          "description": "Supporting text under the header",
+          "actions": "Header controls on the end side (e.g. an add button)",
+          "empty": "Content shown when the column has no cards",
+          "footer": "Footer below the cards (e.g. an \"Add card\" button)",
+          "children": "The cards: each child is wrapped in a role=\"listitem\"",
+          "aria-label": "Accessible name of the column (defaults to the title with the count, e.g. \"To do, 3 items\")",
+          "className": "Additional class name",
+          "style": "Inline style of the column",
+          "id": "Id of the column",
+          "ref": "Ref to the root <section>"
+        },
+        "DashboardCardProps": {
+          "value": "Key of the card, reported as cardKey by a draggable board",
+          "label": "Name of the card in the drag announcements and, when draggable, its accessible name (defaults to its text)",
+          "children": "Content of the card",
+          "className": "Additional class name",
+          "style": "Inline style of the card",
+          "id": "Id of the card",
+          "ref": "Ref to the root <div>"
+        }
+      },
+      "cssVars": {
+        "--dashboard-column-width": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)",
+        "--dashboard-gap": "Space between the columns (defaults to 0.75rem; the gap prop sets it)",
+        "--dashboard-column-background": "Background of a column (defaults to --surface-muted-color)",
+        "--dashboard-column-border-color": "Border color of a column (defaults to --border-color)",
+        "--dashboard-column-radius": "Corner radius of a column (defaults to --radius-lg)",
+        "--dashboard-column-color": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)",
+        "--dashboard-card-gap": "Space between the cards of a column (defaults to --space-2)",
+        "--dashboard-count-background": "Background of the count badge (defaults to --surface-color)",
+        "--dashboard-count-color": "Text color of the count badge (defaults to --text-secondary-color)",
+        "--dashboard-drop-indicator-color": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "minerva-dashboard-column elements in a minerva-dashboard-columns; slotted cards get role=\"listitem\". Here each card moves to the next column with its own button, and the script updates the count attributes; see Drag and drop for draggable boards."
+          },
+          "colors": {
+            "title": "Colors and counts",
+            "description": "color takes a theme color (also the :state(color-success) ... custom states) or any CSS color; count shows a badge announced with the heading. column-width and gap size the columns."
+          },
+          "empty-actions": {
+            "title": "Empty state and actions",
+            "description": "The actions slot sits at the end of the header; empty-text (or the empty slot) shows while the column has no cards; fill stretches the columns when they fit."
+          },
+          "fixed-height": {
+            "title": "Fixed height",
+            "description": "height or max-height bound the board: each column body scrolls vertically while the board scrolls horizontally."
+          },
+          "drag-drop": {
+            "title": "Drag and drop",
+            "description": "With draggable, minerva-dashboard-card elements of keyed columns (value) move by mouse, touch or keyboard. The board fires minerva-card-move ({ cardKey, fromColumn, fromIndex, toColumn, toIndex }) and never moves anything itself: the script moves the card element and updates the counts. The canDrop property keeps \"Doing\" at 2 cards."
+          }
+        },
+        "minerva-dashboard-columns": {
+          "props": {
+            "draggable": "Lets the minerva-dashboard-card children of keyed columns be dragged (mouse, touch long press, keyboard); replaces the native draggable: the attribute turns it on unless it is \"false\""
+          },
+          "events": {
+            "minerva-card-move": "A card was dropped at a new position (detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }); move the card element or re-render."
+          },
+          "slots": {
+            "default": "The columns (minerva-dashboard-column)"
+          },
+          "methods": {
+            "focus": "Focuses the scrolling region (the arrow keys then scroll it)."
+          }
+        },
+        "minerva-dashboard-column": {
+          "props": {
+            "heading": "Title of the column (also its accessible name; or the heading slot)",
+            "emptyText": "Text shown when there are no cards (defaults to the translated \"No items\"; or the empty slot)"
+          },
+          "slots": {
+            "default": "The cards (each gets role=\"listitem\" unless it has a role)",
+            "heading": "Rich title (alternative to the heading attribute)",
+            "actions": "Header controls on the end side (e.g. an add button)",
+            "description": "Supporting text (alternative to the description attribute)",
+            "empty": "Content shown when there are no cards",
+            "footer": "Footer below the cards (e.g. an \"Add card\" button)"
+          }
+        },
+        "minerva-dashboard-card": {
+          "slots": {
+            "default": "The content of the card"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "A horizontal ScrollView of columns that snaps column by column; cards move with their own buttons."
+          },
+          "drag-drop": {
+            "title": "Drag and drop",
+            "description": "A long press picks a card up, the board stops scrolling, and the card drops where the finger lifts; screen readers get Move up / Move down / Move to <column> actions on each card. onCardMove reports the move."
+          }
+        }
+      }
+    }
+  }
+}

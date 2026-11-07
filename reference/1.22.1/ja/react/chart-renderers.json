@@ -1,0 +1,828 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "ja",
+  "renderer": "react",
+  "page": "chart-renderers",
+  "title": "レンダラー比較",
+  "description": "4 つのチャートバックエンドの違い、お使いのブラウザーで動くバックエンド、そしてこのデバイスでの比較。フレームレート、フレーム時間、メインスレッドの負荷、起動時間、100 点満点のスコアをライブで計測します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "chain": {
+      "title": "チャートがバックエンドを選ぶしくみ",
+      "text": "直交座標系のチャート（折れ線、面、棒、散布図、ローソク足、ヒートマップ、スパークライン、四象限）は、データを 4 つのバックエンドのいずれかで、テキスト（軸、ラベル、凡例、ツールチップ）を DOM で描画します。4 つとも同じ図形を同じ色で描き、違いは速度、起動コスト、利用可否、制約にあります。",
+      "auto": "renderer=\"auto\"（既定）は WebGPU、WebGL2、WebGL、Canvas2D の順に試し、最初に起動できたものを使います。使用中のバックエンドは onRendererChange、renderer イベント、ready Promise で通知されます。",
+      "software": "Auto はソフトウェアで動作する GPU（SwiftShader、llvmpipe、Microsoft Basic Render Driver など）をスキップします。Canvas2D より遅いため、仮想マシンやヘッドレスブラウザーでは通常 Canvas2D になります。",
+      "forced": "renderer=\"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\" でバックエンドを強制できます（ソフトウェア GPU も含む）。起動できない場合はチェーンを下に進み、上に戻ることはありません。",
+      "lost": "GPU が失われると（ドライバーのリセット、デバイスの取り外し、コンテキストの破棄）、チャートは次のバックエンドに移り、同じデータ・ズーム・状態で再描画して、新しいバックエンドを通知します。",
+      "global": "setDefaultChartRenderer() は renderer が未指定または \"auto\" のすべてのチャートのバックエンドを設定します。React、Vue、Angular、Web Components 共通で、画面上のチャートもその場で切り替わります。"
+    },
+    "matrix": {
+      "title": "早見表",
+      "text": "各バックエンドが内部で使うもの、1 フレームの描き方、制約。",
+      "corner": "項目",
+      "rows": {
+        "api": {
+          "label": "ブラウザー API",
+          "webgpu": "WebGPU（Vulkan、Metal、Direct3D 12 の上で動作）",
+          "webgl2": "WebGL 2.0（OpenGL ES 3.0）",
+          "webgl": "WebGL 1.0（OpenGL ES 2.0）と ANGLE_instanced_arrays 拡張",
+          "canvas2d": "Canvas 2D コンテキスト（ブラウザーがラスタライズ）"
+        },
+        "shaders": {
+          "label": "シェーダー",
+          "webgpu": "WGSL",
+          "webgl2": "GLSL ES 3.00",
+          "webgl": "GLSL ES 1.00",
+          "canvas2d": "なし：JavaScript からパス、矩形、ピクセルを描画"
+        },
+        "draw": {
+          "label": "1 フレームの描画",
+          "webgpu": "系列ごとに GPU バッファーからインスタンス描画 1 回",
+          "webgl2": "系列ごとにインスタンス描画 1 回、系列ごとに頂点配列オブジェクト 1 つ",
+          "webgl": "系列ごとにインスタンス描画 1 回、描画のたびに属性を再バインド（頂点配列オブジェクトなし）",
+          "canvas2d": "表示中のすべての図形を JavaScript で描き直す"
+        },
+        "zoom": {
+          "label": "ズームとパン",
+          "webgpu": "変換だけが変わり、バッファーは再構築しない",
+          "webgl2": "変換だけが変わり、バッファーは再構築しない",
+          "webgl": "変換だけが変わり、バッファーは再構築しない",
+          "canvas2d": "毎フレーム表示範囲を描き直す"
+        },
+        "lines": {
+          "label": "数百万点の折れ線",
+          "webgpu": "表示中の線分をすべて描画",
+          "webgl2": "表示中の線分をすべて描画",
+          "webgl": "表示中の線分をすべて描画",
+          "canvas2d": "ピクセル列ごとの最小値 / 最大値に間引き（1 列最大 4 点）、輪郭は同じ"
+        },
+        "scatter": {
+          "label": "大規模な散布図",
+          "webgpu": "すべての点を描画、系列ごとにインスタンス描画 1 回",
+          "webgl2": "すべての点を描画、系列ごとにインスタンス描画 1 回",
+          "webgl": "すべての点を描画、系列ごとにインスタンス描画 1 回",
+          "canvas2d": "20,000 点を超えると ImageData バッファーに 1 ピクセルずつ書き込む：1 フレームあたり O(n) のまま"
+        },
+        "antialias": {
+          "label": "アンチエイリアス",
+          "webgpu": "シェーダー内で処理（MSAA なし）",
+          "webgl2": "シェーダー内で処理（MSAA なし）",
+          "webgl": "シェーダー内で処理（MSAA なし）",
+          "canvas2d": "ブラウザー標準"
+        },
+        "contexts": {
+          "label": "ページあたりのコンテキスト数",
+          "webgpu": "チャートごとにデバイス 1 つ。WebGL の上限には数えない",
+          "webgl2": "ブラウザーが保持する WebGL コンテキストは約 16 個まで。超えると画面外のチャートを一時停止し、スクロールで戻ったときに復元",
+          "webgl": "WebGL2 と同じ上限を共有",
+          "canvas2d": "上限なし"
+        },
+        "loss": {
+          "label": "GPU の喪失",
+          "webgpu": "WebGL2 にフォールバック",
+          "webgl2": "WebGL にフォールバック",
+          "webgl": "Canvas2D にフォールバック",
+          "canvas2d": "失うものなし"
+        },
+        "start": {
+          "label": "起動",
+          "webgpu": "非同期：アダプター、デバイス、パイプライン",
+          "webgl2": "同期的にコンテキスト作成、起動時にシェーダーをコンパイル",
+          "webgl": "同期的にコンテキスト作成、起動時にシェーダーをコンパイル",
+          "canvas2d": "即時"
+        },
+        "fit": {
+          "label": "向いている用途",
+          "webgpu": "数百万点、ライブデータ、長時間のズーム操作",
+          "webgl2": "WebGPU がない環境での同様の用途。最も広く使える高速経路",
+          "webgl": "古い GPU やドライバー、WebGL2 のないブラウザー",
+          "canvas2d": "小さなチャート、1 ページに多数のチャート、ソフトウェア GPU、GPU なし"
+        }
+      }
+    },
+    "expect": {
+      "title": "目安",
+      "text": "下の実測から読み取れる傾向で、保証ではありません。お使いのデバイスはこのページのベンチマークで計測してください。",
+      "small": "数万点までなら、どのバックエンドもディスプレイのリフレッシュに追いつきます。Canvas2D は GPU コンテキストもまったく必要ありません。",
+      "medium": "折れ線と面：Canvas2D はピクセル列単位に間引くため、高速な CPU なら 200 万点のソート済みデータでも滑らかです。GPU バックエンドのコストは規模によらずほぼ一定です。",
+      "large": "差が開くのは散布図です。Canvas2D は毎フレームすべての点を描くため、メインスレッド時間は点の数とともに増えます（サンプル機で 10 万点約 8 ms、100 万点約 12 ms、200 万点約 21 ms で、リフレッシュレートを下回ります）。一方 GPU バックエンドは 1〜3 ms 前後にとどまります。",
+      "bars": "棒グラフ：サンプル機では 20 万本まで、どのバックエンドも追いつき、メインスレッド時間が最も少ないのは GPU バックエンドでした。",
+      "gpus": "WebGPU、WebGL2、WebGL の差は 1〜2 ms 程度に収まることが多く、実行ごとのばらつきと同程度です。内蔵 GPU、古い GPU、スマートフォンでは差が広がり、CPU が遅いと Canvas2D が早く遅れをとります。",
+      "startup": "最初のフレームには数十ミリ秒かかり、アップロードするデータ量とともに増えます（サンプル機で 200 万点に約 100 ms）。"
+    },
+    "sample": {
+      "title": "計測例",
+      "text": "Apple M3 Max のノートパソコンでベンチマークのデモを 1 回実行した結果です。macOS の Chrome 156、60 Hz ディスプレイ、ピクセル比 1、バックエンドごとに 3 秒。各セルはスコアと 1 フレームのメインスレッド時間で、フレームレートがディスプレイを下回った場合はそれも示します。",
+      "corner": "負荷",
+      "workload": "{{workload}} · {{count}}点",
+      "note": "1 台のマシンで 1 回実行した数値です。数点や 1 ms 程度の差はばらつきの範囲内です。ご自身の結果は上のベンチマークで計測してください。"
+    },
+    "score": {
+      "title": "スコアの計算方法",
+      "text": "各実行の最後に 100 点満点のスコアを出します。計測値だけから計算し、このディスプレイのリフレッシュレート（実行前に計測）を基準にします。4 つの項目はそれぞれ 0 から 1 の値です。",
+      "smooth": "滑らかさ（40%）：毎秒フレーム数 ÷ リフレッシュレート。",
+      "stability": "安定性（20%）：フレーム予算（1000 ms ÷ リフレッシュレート）÷ フレーム間隔の 95 パーセンタイル。平均が良くても長いフレームは減点されます。",
+      "headroom": "余裕（25%）：1 − 1 フレームのメインスレッド時間 ÷ フレーム予算。つまり各フレームでアプリに残る時間の割合です。",
+      "startup": "起動（15%）：1 − チャートのマウントから最初のフレームが描画されるまでの時間 ÷ 1 秒。",
+      "grades": "評価：85 以上は優秀、65 以上は良好、40 以上は普通、40 未満は不十分。スコアは同じデバイス・同じ負荷でバックエンドを比べるためのもので、別のマシンとは比較できません。"
+    },
+    "method": {
+      "title": "計測方法と注意点",
+      "text": "ベンチマークはチャートを 1 つずつ、バックエンドを強制してマウントし、同じデータと同じカメラ経路を使います。",
+      "same": "データ：シード付きの TypedArray 列を計測開始前に一度だけ生成し、すべてのバックエンドで共有します。カメラはデータ全体（最も重いフレーム）から最大ズームまで寄って戻りながら横にも移動し、アニメーションフレームごとに setView を呼びます。",
+      "work": "メインスレッド時間：アニメーションフレームの開始から、そのフレーム内で送ったメッセージが処理されるまで。このメッセージはフレームの描画後に実行されるため、チャートの JavaScript と描画呼び出し、スタイル計算、レイアウト、ペイントが含まれます。",
+      "vsync": "フレームレートはディスプレイが上限です。両方ともリフレッシュレートに達したバックエンドは滑らかさで同点になり、差は余裕に現れます。",
+      "gpu": "描画呼び出し後の GPU 時間は JavaScript からは見えません。素早く送信しても GPU を飽和させるバックエンドは、フレームレートの低下とフレーム間隔の伸びとして現れます。",
+      "noise": "結果は電源モード、サーマルスロットリング、ほかのタブ、ブラウザー拡張によって変わります。実行中はタブを前面に保ち、2 回実行して比べてください。"
+    },
+    "browsers": {
+      "title": "ブラウザー対応",
+      "text": "各バックエンドが使える環境。バージョンは機能が既定で有効になった最初の安定版です。対応状況は GPU とドライバーにも左右されます。",
+      "corner": "ブラウザー",
+      "note": "WebGPU は安全なコンテキスト（HTTPS または localhost）でのみ動作します。ブラウザーは一部の GPU やドライバーをブロックすることがあり、その場合チャートは自動でフォールバックします。このブラウザーで実際に使えるものは、上の「お使いのデバイス」デモで確認できます。",
+      "rows": {
+        "chrome": {
+          "label": "Chrome、Edge（デスクトップ）",
+          "webgpu": "113 以降（Windows、macOS、ChromeOS）",
+          "webgl2": "Chrome 56 以降、Edge 79 以降",
+          "webgl": "対応",
+          "canvas2d": "対応"
+        },
+        "firefox": {
+          "label": "Firefox（デスクトップ）",
+          "webgpu": "Windows で 141 以降。ほかのプラットフォームは順次対応",
+          "webgl2": "51 以降",
+          "webgl": "対応",
+          "canvas2d": "対応"
+        },
+        "safari": {
+          "label": "Safari（macOS）",
+          "webgpu": "26 以降",
+          "webgl2": "15 以降",
+          "webgl": "対応",
+          "canvas2d": "対応"
+        },
+        "ios": {
+          "label": "iOS と iPadOS（全ブラウザー）",
+          "webgpu": "26 以降",
+          "webgl2": "15 以降",
+          "webgl": "対応",
+          "canvas2d": "対応"
+        },
+        "android": {
+          "label": "Android 版 Chrome",
+          "webgpu": "121 以降、Android 12 以降かつ対応 GPU",
+          "webgl2": "対応",
+          "webgl": "対応",
+          "canvas2d": "対応"
+        },
+        "linux": {
+          "label": "Linux 版 Chrome",
+          "webgpu": "バージョンと GPU ドライバーによる",
+          "webgl2": "対応",
+          "webgl": "対応",
+          "canvas2d": "対応"
+        }
+      }
+    },
+    "choose": {
+      "title": "どれを使うべきか",
+      "auto": "本番環境では renderer を \"auto\" のままにしてください。訪問者ごとに、そのデバイスがハードウェアで動かせる最速のバックエンドが選ばれ、GPU の喪失も自動で処理されます。",
+      "webgpu": "WebGPU の強制はテストや比較のときだけにしてください。ハードウェアで動く場合、auto はすでに最初に選びます。",
+      "webgl2": "対象デバイスで WebGPU ドライバーに問題がある場合や、WebGPU の提供時期が異なるブラウザー間で描画を揃えたい場合は WebGL2 を強制します。",
+      "webgl": "古いデバイスでの表示を再現したいときは WebGL を強制します。",
+      "canvas2d": "小さなチャート、サムネイル、スパークライン、数十個のチャートを並べるページ（コンテキスト上限なし）、GPU のない環境では Canvas2D を強制します。",
+      "many": "チャートの多いダッシュボードでは、大きなものや操作するものは auto のままにして小さなものは Canvas2D にするか、画面外に出たチャートを破棄してください。",
+      "more": "データ形式、ストリーミング、100 万点のデモは<performance>チャートのパフォーマンス</performance>に、フレームワークに依存しない API は<engine>チャートエンジン</engine>にあります。"
+    },
+    "data": {
+      "renderers": {
+        "auto": "自動",
+        "webgpu": "WebGPU",
+        "webgl2": "WebGL2",
+        "webgl": "WebGL",
+        "canvas2d": "Canvas2D"
+      },
+      "ms": "{{value}} ms",
+      "fps": "{{value}} fps",
+      "series": {
+        "line": "信号 {{index}}",
+        "scatter": "クラスター {{index}}",
+        "bars": "値"
+      },
+      "env": {
+        "probing": "バックエンドを調べています…",
+        "backend": "バックエンド",
+        "autoTag": "自動",
+        "status": "状態",
+        "cpu": "CPU",
+        "support": {
+          "hardware": "ハードウェア GPU",
+          "software": "ソフトウェア GPU",
+          "missing": "利用不可"
+        },
+        "device": "GPU / デバイス",
+        "cpuDevice": "ブラウザーが描画、GPU コンテキスト不要",
+        "version": "API バージョン",
+        "limits": "上限",
+        "maxTexture": "テクスチャー最大 {{value}} px",
+        "maxBuffer": "バッファー最大 {{value}}",
+        "noInstancing": "インスタンス描画なし：Canvas2D にフォールバック",
+        "autoPick": "Auto の選択",
+        "autoWhy": {
+          "webgpu": "ここでは WebGPU がハードウェア GPU で動作します。",
+          "webgl2": "ここにはハードウェアの WebGPU がなく、WebGL2 が最適です。",
+          "webgl": "ここにはハードウェアの WebGPU も WebGL2 もなく、WebGL が最適です。",
+          "canvas2d": "ここにはハードウェア GPU のバックエンドがありません。ソフトウェア GPU より Canvas2D のほうが高速です。"
+        },
+        "secure": "安全なコンテキスト",
+        "yes": "はい",
+        "no": "いいえ",
+        "secureNote": "WebGPU には HTTPS または localhost が必要です。",
+        "dpr": "ピクセル比",
+        "dprNote": "CSS ピクセルあたりのデバイスピクセル：塗る画素が増えます。",
+        "threads": "CPU スレッド",
+        "threadsNote": "ブラウザーが報告する論理コア数。",
+        "tableAria": "このデバイスのチャートバックエンド",
+        "note": "GPU 名は一般的な名称になったり表示されなかったりします。ブラウザーはプライバシーのために隠したり丸めたりすることがあります。"
+      },
+      "workload": "負荷",
+      "workloads": {
+        "line": "折れ線",
+        "scatter": "散布図",
+        "bars": "棒"
+      },
+      "points": "点の数",
+      "pointsValue": "{{value}}点",
+      "duration": "各実行の時間",
+      "seconds": "バックエンドごとに {{value}} 秒",
+      "includeSoftware": "ソフトウェア GPU を含める",
+      "runAll": "すべてのバックエンドを実行",
+      "stop": "停止",
+      "liveAria": "{{backend}} が {{count}} 点を描画中",
+      "idle": "ベンチマークを実行してください。各バックエンドに同じデータと同じズーム経路を順番に与えます。",
+      "between": "前のバックエンドを解放しています…",
+      "doneHint": "完了。負荷や規模を変えて再実行し、比較してください。",
+      "fellBack": "{{requested}} → {{backend}}",
+      "col": {
+        "backend": "バックエンド",
+        "score": "スコア",
+        "fps": "FPS",
+        "p50": "フレーム p50",
+        "p95": "フレーム p95",
+        "work": "メインスレッド / フレーム",
+        "startup": "最初のフレーム",
+        "status": "実行"
+      },
+      "status": {
+        "ok": "完了",
+        "slow": "停止：2 秒を超えるフレームがありました",
+        "timeout": "起動しませんでした"
+      },
+      "parts": {
+        "smooth": "滑らかさ（{{weight}}%）",
+        "stability": "安定性（{{weight}}%）",
+        "headroom": "余裕（{{weight}}%）",
+        "startup": "起動（{{weight}}%）"
+      },
+      "scoreValue": "{{value}} / 100",
+      "grades": {
+        "excellent": "優秀",
+        "good": "良好",
+        "fair": "普通",
+        "poor": "不十分"
+      },
+      "vsCanvas": "メインスレッド：Canvas2D の {{value}}",
+      "tableAria": "バックエンドごとのベンチマーク結果",
+      "breakdownAria": "各バックエンドのスコアの 4 項目の内訳",
+      "measuring": "{{backend}} を計測中（{{total}} 件中 {{index}} 件目）…",
+      "preparing": "次の実行を準備しています…",
+      "done": "完了：同じデータ、同じカメラ経路で、バックエンドを 1 つずつ計測しました。",
+      "copied": "結果を Markdown の表としてコピーしました。",
+      "ready": "準備完了。",
+      "skippedNote": "スキップ（ソフトウェア GPU）：{{backends}}。",
+      "refreshNote": "ディスプレイ：{{value}} Hz、フレーム予算 {{budget}} ms",
+      "copy": "結果をコピー",
+      "copyTitle": "{{workload}}、{{count}} 点、{{refresh}} Hz ディスプレイ",
+      "runScaling": "スケーリングテストを実行",
+      "scalingIdle": "テストを実行してください。ハードウェアで動く各バックエンドが 10K、100K、1M、2M 点をそれぞれ 1.5 秒描画します（約 1 分）。",
+      "pointsAxis": "点の数",
+      "fpsAxis": "毎秒フレーム数",
+      "workAxis": "1 フレームのメインスレッド時間",
+      "scalingFpsAria": "{{workload}}：点の数とバックエンド別のフレームレート",
+      "scalingWorkAria": "{{workload}}：点の数とバックエンド別の 1 フレームのメインスレッド時間",
+      "scalingMeasuring": "{{backend}} を {{count}} 点で計測中（{{total}} 件中 {{index}} 件目）…",
+      "scalingDone": "完了。平らな曲線は画面サイズに、上昇する曲線はデータ量に比例します。",
+      "scalingHint": "ソフトウェア GPU はスキップします。フレームレート以外の軸は対数軸です。",
+      "preference": "レンダラー",
+      "switchAria": "選択したバックエンドで描画した {{count}} 点の折れ線",
+      "switchLog": "バックエンドの変更",
+      "switchEntry": "{{backend}} が {{ms}} で準備完了",
+      "switchEntryOther": "{{requested}} を要求：{{backend}} が {{ms}} で準備完了",
+      "switchStatus": "{{backend}} で描画中。",
+      "starting": "レンダラーを起動しています…",
+      "switchHint": "切り替えてもデータ、ズーム、ホバー状態は保たれます。",
+      "loseGpu": "GPU を失わせる",
+      "restart": "WebGPU からやり直す",
+      "chainLost": "{{backend}}（喪失）",
+      "lostEntry": "{{backend}} を喪失",
+      "fallbackEntry": "{{backend}} で {{ms}} 後に復旧",
+      "startEntry": "{{backend}} で起動",
+      "fallbackAria": "GPU を失うとフォールバックする {{count}} 点の折れ線",
+      "fallbackLog": "喪失と復旧",
+      "cannotLose": "このブラウザーではページから {{backend}} の喪失をシミュレートできません。",
+      "chainEnd": "チェーンの終端：Canvas2D は GPU を必要としません。",
+      "fallbackStatus": "{{backend}} で描画中。",
+      "fallbackHint": "実際の喪失は、ドライバーの更新、GPU のリセット、ブラウザーによるコンテキストの破棄で起こります。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "benchmark",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/chart-renderers/demos/benchmark.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/chart-renderers/demos/benchmark.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  Button,\n  Radio,\n  RadioGroup,\n  Select,\n  SelectItem,\n  Switch,\n  Table,\n  type TableColumn,\n} from \"minerva-design\";\nimport { HorizontalBarChart, type ChartSeries } from \"minerva-design/charts\";\nimport { probeBackends, type BackendsSupport } from \"../../../renderer/support\";\nimport { fpsClass, scoreClass, useBenchFormat } from \"../bench/format\";\nimport { useBenchQueue } from \"../bench/queue\";\nimport { BACKENDS, WEIGHTS, gradeOf, type BenchResult } from \"../bench/score\";\nimport { BenchStage } from \"../bench/stage\";\nimport { COUNTS, WORKLOADS, type Workload } from \"../bench/workloads\";\nimport styles from \"../bench/bench.module.scss\";\n\nconst DURATIONS = [2000, 3000, 5000];\nconst PARTS = [\"smooth\", \"stability\", \"headroom\", \"startup\"] as const;\n\nexport default function BenchmarkDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const text = useBenchFormat();\n  const [workload, setWorkload] = useState<Workload>(\"line\");\n  const [count, setCount] = useState(1_000_000);\n  const [duration, setDuration] = useState(3000);\n  const [software, setSoftware] = useState(false);\n  const [skipped, setSkipped] = useState<string[]>([]);\n  const [copied, setCopied] = useState(false);\n  const bench = useBenchQueue((kind, index) => t(`series.${kind}`, { index }));\n  const { active, results, refresh, running, planned } = bench;\n\n  const run = async () => {\n    const support: BackendsSupport = await probeBackends();\n    const skip = software\n      ? []\n      : BACKENDS.filter((kind) => support[kind] === \"software\");\n    setSkipped(skip.map(text.renderer));\n    setCopied(false);\n    void bench.start(\n      BACKENDS.filter((kind) => !skip.includes(kind)).map((backend) => ({\n        backend,\n        workload,\n        count,\n        duration,\n      })),\n    );\n  };\n\n  const name = (result: BenchResult) =>\n    result.drawn && result.drawn !== result.job.backend\n      ? t(\"fellBack\", {\n          requested: text.renderer(result.job.backend),\n          backend: text.renderer(result.drawn),\n        })\n      : text.renderer(result.job.backend);\n\n  const best = results.reduce<BenchResult | null>(\n    (top, result) =>\n      !top || result.score.total > top.score.total ? result : top,\n    null,\n  );\n  const canvas = results.find(\n    (result) => result.job.backend === \"canvas2d\" && result.status === \"ok\",\n  );\n\n  const columns: TableColumn<BenchResult>[] = [\n    { key: \"backend\", header: t(\"col.backend\"), render: (r) => name(r) },\n    {\n      key: \"score\",\n      header: t(\"col.score\"),\n      align: \"right\",\n      render: (r) => (\n        <span className={`${styles.mono} ${scoreClass(r.score.total)}`}>\n          {r.score.total}\n        </span>\n      ),\n    },\n    {\n      key: \"fps\",\n      header: t(\"col.fps\"),\n      align: \"right\",\n      render: (r) => (\n        <span className={`${styles.mono} ${fpsClass(r.fps)}`}>\n          {text.count(r.fps)}\n        </span>\n      ),\n    },\n    {\n      key: \"p50\",\n      header: t(\"col.p50\"),\n      align: \"right\",\n      render: (r) => <span className={styles.mono}>{text.ms(r.p50)}</span>,\n    },\n    {\n      key: \"p95\",\n      header: t(\"col.p95\"),\n      align: \"right\",\n      render: (r) => <span className={styles.mono}>{text.ms(r.p95)}</span>,\n    },\n    {\n      key: \"work\",\n      header: t(\"col.work\"),\n      align: \"right\",\n      render: (r) => <span className={styles.mono}>{text.ms(r.work)}</span>,\n    },\n    {\n      key: \"startup\",\n      header: t(\"col.startup\"),\n      align: \"right\",\n      render: (r) => <span className={styles.mono}>{text.ms(r.startup)}</span>,\n    },\n    {\n      key: \"status\",\n      header: t(\"col.status\"),\n      render: (r) => t(`status.${r.status}`),\n    },\n  ];\n\n  // the score of each backend, split into its weighted parts\n  const breakdown: ChartSeries[] = PARTS.map((part) => ({\n    name: t(`parts.${part}`, { weight: WEIGHTS[part] * 100 }),\n    data: results.map(\n      (r) =>\n        [\n          name(r),\n          Math.round(r.score[part] * WEIGHTS[part] * 1000) / 10,\n        ] as const,\n    ),\n  }));\n\n  const copy = () => {\n    const header = `| ${columns.map((c) => c.header).join(\" | \")} |`;\n    const rule = `|${columns.map(() => \" --- |\").join(\"\")}`;\n    const lines = results.map(\n      (r) =>\n        `| ${name(r)} | ${r.score.total} | ${text.count(r.fps)} | ${text.ms(r.p50)} | ${text.ms(r.p95)} | ${text.ms(r.work)} | ${text.ms(r.startup)} | ${t(`status.${r.status}`)} |`,\n    );\n    const title = t(\"copyTitle\", {\n      workload: t(`workloads.${workload}`),\n      count: text.compact(count),\n      refresh,\n    });\n    void navigator.clipboard\n      ?.writeText([title, \"\", header, rule, ...lines].join(\"\\n\"))\n      .then(() => setCopied(true));\n  };\n\n  return (\n    <div className={styles.stage}>\n      <div className={styles.toolbar}>\n        <RadioGroup\n          aria-label={t(\"workload\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={workload}\n          disabled={running}\n          onChange={(value) => {\n            const next = value as Workload;\n            setWorkload(next);\n            setCount(COUNTS[next][2] ?? COUNTS[next][0]!);\n          }}\n        >\n          {WORKLOADS.map((kind) => (\n            <Radio key={kind} value={kind} label={t(`workloads.${kind}`)} />\n          ))}\n        </RadioGroup>\n        <Select\n          size=\"small\"\n          style={{ width: 150 }}\n          aria-label={t(\"points\")}\n          value={String(count)}\n          disabled={running}\n          onChange={(value) => setCount(Number(value))}\n        >\n          {COUNTS[workload].map((value) => (\n            <SelectItem key={value} value={String(value)}>\n              {t(\"pointsValue\", { value: text.compact(value) })}\n            </SelectItem>\n          ))}\n        </Select>\n        <Select\n          size=\"small\"\n          style={{ width: 120 }}\n          aria-label={t(\"duration\")}\n          value={String(duration)}\n          disabled={running}\n          onChange={(value) => setDuration(Number(value))}\n        >\n          {DURATIONS.map((value) => (\n            <SelectItem key={value} value={String(value)}>\n              {t(\"seconds\", { value: value / 1000 })}\n            </SelectItem>\n          ))}\n        </Select>\n        <Switch\n          size=\"small\"\n          checked={software}\n          disabled={running}\n          onChange={setSoftware}\n          label={t(\"includeSoftware\")}\n        />\n        <span className={styles.spacer} />\n        {running ? (\n          <Button size=\"small\" variant=\"outline\" onClick={bench.stop}>\n            {t(\"stop\")}\n          </Button>\n        ) : (\n          <Button size=\"small\" onClick={() => void run()}>\n            {t(\"runAll\")}\n          </Button>\n        )}\n      </div>\n\n      <div className={styles.body}>\n        <div className={styles.live}>\n          {active ? (\n            <BenchStage\n              key={active.run}\n              job={active.job}\n              series={active.series}\n              startedAt={active.startedAt}\n              refresh={refresh}\n              height={260}\n              ariaLabel={t(\"liveAria\", {\n                backend: text.renderer(active.job.backend),\n                count: text.compact(active.job.count),\n              })}\n              onDone={bench.onDone}\n            />\n          ) : (\n            <div className={styles.placeholder}>\n              {running\n                ? t(\"between\")\n                : results.length\n                  ? t(\"doneHint\")\n                  : t(\"idle\")}\n            </div>\n          )}\n        </div>\n\n        {results.length > 0 && (\n          <>\n            <dl className={styles.cards}>\n              {results.map((r) => (\n                <div\n                  key={r.job.backend}\n                  className={`${styles.card} ${!running && r === best ? styles.cardBest : \"\"}`}\n                >\n                  <dt>{name(r)}</dt>\n                  <dd className={scoreClass(r.score.total)}>\n                    {t(\"scoreValue\", { value: r.score.total })}\n                  </dd>\n                  <small>\n                    {t(`grades.${gradeOf(r.score.total)}`)}\n                    {canvas && r !== canvas && r.work > 0\n                      ? ` · ${t(\"vsCanvas\", { value: text.percent(r.work / canvas.work) })}`\n                      : \"\"}\n                  </small>\n                </div>\n              ))}\n            </dl>\n            <Table\n              aria-label={t(\"tableAria\")}\n              size=\"small\"\n              columns={columns}\n              data={results}\n              rowKey={(r) => r.job.backend}\n            />\n            {!running && (\n              <HorizontalBarChart\n                series={breakdown}\n                stacked\n                renderer=\"canvas2d\"\n                yAxis={{ min: 0, max: 100 }}\n                height={60 + results.length * 44}\n                ariaLabel={t(\"breakdownAria\")}\n              />\n            )}\n          </>\n        )}\n      </div>\n\n      <div className={styles.footer}>\n        <p role=\"status\">\n          {active\n            ? t(\"measuring\", {\n                backend: text.renderer(active.job.backend),\n                index: results.length + 1,\n                total: planned,\n              })\n            : running\n              ? t(\"preparing\")\n              : results.length\n                ? copied\n                  ? t(\"copied\")\n                  : t(\"done\")\n                : t(\"ready\")}\n          {skipped.length > 0 &&\n            ` ${t(\"skippedNote\", { backends: skipped.join(\", \") })}`}\n        </p>\n        <p className={styles.hint}>\n          {t(\"refreshNote\", {\n            value: refresh,\n            budget: text.decimal(1000 / refresh),\n          })}\n        </p>\n        {!running && results.length > 0 && (\n          <Button size=\"xsmall\" variant=\"outline\" onClick={copy}>\n            {t(\"copy\")}\n          </Button>\n        )}\n      </div>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/renderer/support.ts": "// What each forced backend would run on, probed before a benchmark: a GPU\n// backend forced onto a software rasterizer (SwiftShader, llvmpipe… in VMs,\n// CI and headless browsers) takes seconds per frame with a million points\n// and would freeze the page.\nimport type { ChartRendererKind } from \"minerva-design/charts/core\";\n\n/**\n * - `hardware`: the backend starts on a real GPU (Canvas2D always does)\n * - `software`: it would start on a software rasterizer\n * - `missing`: it cannot start; a forced chart falls back to the next\n *   hardware-accelerated backend, or to Canvas2D\n */\nexport type BackendSupport = \"hardware\" | \"software\" | \"missing\";\n\nexport type BackendsSupport = Record<ChartRendererKind, BackendSupport>;\n\n/** Same test as the chart engine (renderers/gl.ts) */\nconst SOFTWARE_RENDERER =\n  /swiftshader|llvmpipe|softpipe|software|basic render driver|microsoft basic/i;\n\nconst probeGl = (kind: \"webgl2\" | \"webgl\"): BackendSupport => {\n  if (typeof document === \"undefined\") return \"missing\";\n  let gl: WebGLRenderingContextBase | null;\n  try {\n    const canvas = document.createElement(\"canvas\");\n    gl =\n      kind === \"webgl2\"\n        ? canvas.getContext(\"webgl2\")\n        : canvas.getContext(\"webgl\");\n  } catch {\n    gl = null;\n  }\n  if (!gl) return \"missing\";\n  const info = gl.getExtension(\"WEBGL_debug_renderer_info\");\n  const name: unknown = info\n    ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL)\n    : gl.getParameter(gl.RENDERER);\n  // releases the context right away (browsers cap the live contexts)\n  gl.getExtension(\"WEBGL_lose_context\")?.loseContext();\n  return SOFTWARE_RENDERER.test(String(name ?? \"\")) ? \"software\" : \"hardware\";\n};\n\ninterface ProbedAdapter {\n  isFallbackAdapter?: boolean;\n  info?: {\n    isFallbackAdapter?: boolean;\n    vendor?: string;\n    architecture?: string;\n    description?: string;\n  };\n}\n\ninterface GpuNavigator {\n  gpu?: { requestAdapter: () => Promise<ProbedAdapter | null> };\n}\n\nconst probeWebGpu = async (): Promise<BackendSupport> => {\n  const gpu =\n    typeof navigator === \"undefined\"\n      ? undefined\n      : (navigator as GpuNavigator).gpu;\n  if (!gpu) return \"missing\";\n  let adapter: ProbedAdapter | null;\n  try {\n    adapter = await gpu.requestAdapter();\n  } catch {\n    adapter = null;\n  }\n  if (!adapter) return \"missing\";\n  const info = adapter.info;\n  const name = [info?.vendor, info?.architecture, info?.description].join(\" \");\n  return adapter.isFallbackAdapter ||\n    info?.isFallbackAdapter ||\n    SOFTWARE_RENDERER.test(name)\n    ? \"software\"\n    : \"hardware\";\n};\n\nlet probed: Promise<BackendsSupport> | null = null;\n\n/**\n * The backend `renderer: \"auto\"` starts on: the first hardware-accelerated\n * one (auto skips software GPUs), else Canvas2D\n */\nexport const autoPick = (support: BackendsSupport): ChartRendererKind =>\n  ([\"webgpu\", \"webgl2\", \"webgl\"] as const).find(\n    (kind) => support[kind] === \"hardware\",\n  ) ?? \"canvas2d\";\n\n/** Probes the backends once per page load */\nexport const probeBackends = (): Promise<BackendsSupport> => {\n  if (!probed) {\n    probed = probeWebGpu().then((webgpu) => ({\n      webgpu,\n      webgl2: probeGl(\"webgl2\"),\n      webgl: probeGl(\"webgl\"),\n      canvas2d: \"hardware\" as const,\n    }));\n  }\n  return probed;\n};\n\n/** Forgets the probe (tests) */\nexport const resetBackendsProbe = () => {\n  probed = null;\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/format.ts": "import { useTranslation } from \"react-i18next\";\nimport type {\n  ChartRendererKind,\n  ChartRendererPreference,\n} from \"minerva-design/charts\";\nimport { gradeOf } from \"./score\";\nimport styles from \"./bench.module.scss\";\n\n/** Color class of a score out of 100 */\nexport const scoreClass = (score: number) =>\n  ({\n    excellent: styles.excellent,\n    good: styles.good,\n    fair: styles.fair,\n    poor: styles.poor,\n  })[gradeOf(score)];\n\n/** Color class of a frame rate */\nexport const fpsClass = (fps: number) =>\n  fps >= 50 ? styles.good : fps >= 25 ? styles.fair : styles.poor;\n\n/** Localized numbers, durations and backend names of the benchmarks */\nexport const useBenchFormat = () => {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const number = new Intl.NumberFormat(i18n.language);\n  const compact = new Intl.NumberFormat(i18n.language, {\n    notation: \"compact\",\n    maximumFractionDigits: 1,\n  });\n  const decimal = new Intl.NumberFormat(i18n.language, {\n    minimumFractionDigits: 1,\n    maximumFractionDigits: 1,\n  });\n  const bytes = new Intl.NumberFormat(i18n.language, {\n    style: \"unit\",\n    unit: \"gigabyte\",\n    maximumFractionDigits: 1,\n  });\n  const percent = new Intl.NumberFormat(i18n.language, {\n    style: \"percent\",\n    maximumFractionDigits: 0,\n  });\n  return {\n    count: (value: number) => number.format(Math.round(value)),\n    compact: (value: number) => compact.format(value),\n    decimal: (value: number) => decimal.format(value),\n    ms: (value: number) =>\n      t(\"ms\", {\n        value:\n          value < 100\n            ? decimal.format(value)\n            : number.format(Math.round(value)),\n      }),\n    fps: (value: number) =>\n      t(\"fps\", { value: number.format(Math.round(value)) }),\n    gigabytes: (value: number) => bytes.format(value / 1024 ** 3),\n    percent: (value: number) => percent.format(value),\n    renderer: (kind: ChartRendererPreference | ChartRendererKind) =>\n      t(`renderers.${kind}`),\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/score.ts": "// Scores of the renderer benchmarks: what a run measures and how it turns\n// into a score out of 100, relative to the display refresh rate.\nimport type { ChartRendererKind } from \"minerva-design/charts\";\nimport type { Workload } from \"./workloads\";\n\nexport const BACKENDS: readonly ChartRendererKind[] = [\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\n\nexport interface BenchJob {\n  backend: ChartRendererKind;\n  workload: Workload;\n  count: number;\n  /** Measured part of the run, in ms */\n  duration: number;\n}\n\nexport interface Measures {\n  /** From mounting the chart to its first painted frame, in ms */\n  startup: number;\n  /** Frames per second over the run */\n  fps: number;\n  /** Median interval between two frames, in ms */\n  p50: number;\n  /** 95th percentile of the frame intervals, in ms */\n  p95: number;\n  /** Average main-thread time of a frame, in ms */\n  work: number;\n  frames: number;\n}\n\n/** Each part between 0 and 1, `total` out of 100 */\nexport interface Score {\n  smooth: number;\n  stability: number;\n  headroom: number;\n  startup: number;\n  total: number;\n}\n\nexport interface BenchResult extends Measures {\n  job: BenchJob;\n  /** Backend that drew the chart (another one after a fallback) */\n  drawn: ChartRendererKind | null;\n  /** `slow`: a frame took over 2 s, `timeout`: the backend never started */\n  status: \"ok\" | \"slow\" | \"timeout\";\n  /** Display refresh rate the score is relative to, in Hz */\n  refresh: number;\n  score: Score;\n}\n\n/** Weights of the score (they add up to 1) */\nexport const WEIGHTS = {\n  smooth: 0.4,\n  stability: 0.2,\n  headroom: 0.25,\n  startup: 0.15,\n} as const;\n\n/** A startup at or above this scores 0, in ms */\nexport const STARTUP_LIMIT = 1000;\n\nconst clamp = (value: number) =>\n  Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0;\n\n/**\n * - smooth: frame rate / refresh rate\n * - stability: frame budget / 95th percentile frame interval\n * - headroom: 1 - main-thread time per frame / frame budget\n * - startup: 1 - time to first frame / 1 s\n */\nexport const scoreOf = (measures: Measures, refresh: number): Score => {\n  const budget = 1000 / refresh;\n  const parts = {\n    smooth: clamp(measures.fps / refresh),\n    stability: clamp(budget / measures.p95),\n    headroom: clamp(1 - measures.work / budget),\n    startup: clamp(1 - measures.startup / STARTUP_LIMIT),\n  };\n  const total =\n    parts.smooth * WEIGHTS.smooth +\n    parts.stability * WEIGHTS.stability +\n    parts.headroom * WEIGHTS.headroom +\n    parts.startup * WEIGHTS.startup;\n  return { ...parts, total: Math.round(total * 100) };\n};\n\nexport type Grade = \"excellent\" | \"good\" | \"fair\" | \"poor\";\n\nexport const gradeOf = (score: number): Grade =>\n  score >= 85\n    ? \"excellent\"\n    : score >= 65\n      ? \"good\"\n      : score >= 40\n        ? \"fair\"\n        : \"poor\";\n\n/** Display refresh rate: median of 24 idle animation-frame intervals, in Hz */\nexport const measureRefresh = (): Promise<number> =>\n  new Promise((resolve) => {\n    const times: number[] = [];\n    const step = (time: number) => {\n      times.push(time);\n      if (times.length < 25) {\n        requestAnimationFrame(step);\n        return;\n      }\n      const deltas = times\n        .slice(1)\n        .map((t, i) => t - times[i]!)\n        .sort((a, b) => a - b);\n      const median = deltas[deltas.length >> 1] ?? 1000 / 60;\n      resolve(Math.min(240, Math.max(30, Math.round(1000 / median))));\n    };\n    requestAnimationFrame(step);\n  });\n\nexport const percentile = (sorted: readonly number[], p: number) =>\n  sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] ?? 0;\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/workloads.ts": "// Workloads of the renderer benchmarks: seeded typed-array columns (every\n// visit draws the same picture) and the camera path that zooms in and out\n// of them while the frames are measured.\nimport type { ChartSeries, ChartView } from \"minerva-design/charts\";\n\nexport type Workload = \"line\" | \"scatter\" | \"bars\";\n\nexport const WORKLOADS: readonly Workload[] = [\"line\", \"scatter\", \"bars\"];\n\n/** Point counts offered per workload (bars stay lower: one shape each) */\nexport const COUNTS: Record<Workload, readonly number[]> = {\n  line: [10_000, 100_000, 1_000_000, 2_000_000],\n  scatter: [10_000, 100_000, 1_000_000, 2_000_000],\n  bars: [1_000, 10_000, 100_000, 200_000],\n};\n\n/** Seeded PRNG (mulberry32): uniform numbers in [0, 1) */\nexport function mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst LINES = 4;\nconst CLUSTERS = 8;\nconst START = Date.UTC(2026, 0, 1);\n\n/** Four signals sharing one x column (one sample per second) */\nconst lineSeries = (count: number, name: (index: number) => string) => {\n  const length = Math.max(2, Math.round(count / LINES));\n  const random = mulberry32(11);\n  const x = new Float64Array(length);\n  for (let i = 0; i < length; i++) x[i] = START + i * 1000;\n  return Array.from({ length: LINES }, (_, s): ChartSeries => {\n    const y = new Float64Array(length);\n    let walk = 0;\n    for (let i = 0; i < length; i++) {\n      walk += (random() - 0.5) * 0.6;\n      walk *= 0.999;\n      y[i] = 20 + s * 12 + walk + 4 * Math.sin((i / length) * 18 + s);\n    }\n    return {\n      id: `signal-${s}`,\n      name: name(s + 1),\n      data: { x, y },\n      lineWidth: 1,\n    };\n  });\n};\n\n/** Eight Gaussian clusters */\nconst scatterSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(23);\n  const normal = () =>\n    Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n  const per = Math.max(1, Math.round(count / CLUSTERS));\n  const pointSize = count > 200_000 ? 2 : count > 20_000 ? 3 : 5;\n  return Array.from({ length: CLUSTERS }, (_, c): ChartSeries => {\n    const angle = (c / CLUSTERS) * 2 * Math.PI;\n    const cx = 50 + 28 * Math.cos(angle);\n    const cy = 50 + 28 * Math.sin(angle);\n    const spread = 4 + (c % 3) * 2;\n    const x = new Float64Array(per);\n    const y = new Float64Array(per);\n    for (let i = 0; i < per; i++) {\n      x[i] = cx + normal() * spread;\n      y[i] = cy + normal() * spread;\n    }\n    return {\n      id: `cluster-${c}`,\n      name: name(c + 1),\n      type: \"scatter\",\n      data: { x, y },\n      pointSize,\n      opacity: 0.6,\n    };\n  });\n};\n\n/** One bar per index */\nconst barSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(37);\n  const x = new Float64Array(count);\n  const y = new Float64Array(count);\n  for (let i = 0; i < count; i++) {\n    x[i] = i;\n    y[i] = 40 + 30 * Math.sin((i / count) * 12) + random() * 25;\n  }\n  return [\n    { id: \"bars\", name: name(1), type: \"bar\", data: { x, y } },\n  ] as ChartSeries[];\n};\n\n/** The series of a workload; `name` labels series `index` (from 1) */\nexport const makeSeries = (\n  workload: Workload,\n  count: number,\n  name: (index: number) => string,\n): ChartSeries[] =>\n  workload === \"line\"\n    ? lineSeries(count, name)\n    : workload === \"scatter\"\n      ? scatterSeries(count, name)\n      : barSeries(count, name);\n\n/** Deepest zoom of the camera path, per workload */\nconst ZOOM: Record<Workload, number> = { line: 200, scatter: 20, bars: 100 };\n\n/**\n * The view at `seconds` into a run of `period` seconds: from the whole data\n * set (the hardest frame) down to the deepest zoom and back, drifting\n * sideways so that new data enters the window on every frame.\n */\nexport const cameraAt = (\n  workload: Workload,\n  seconds: number,\n  period: number,\n  base: ChartView,\n): ChartView => {\n  const phase = (seconds / period) * 2 * Math.PI;\n  const zoom = 1 + ((ZOOM[workload] - 1) * (1 - Math.cos(phase))) / 2;\n  const axis = (\n    [from, to]: [number, number],\n    drift: number,\n  ): [number, number] => {\n    const width = (to - from) / zoom;\n    const room = (to - from - width) / 2;\n    const center = (from + to) / 2 + room * 0.8 * drift;\n    return [center - width / 2, center + width / 2];\n  };\n  return {\n    x: axis(base.x, Math.sin(phase * 1.5)),\n    y: workload === \"scatter\" ? axis(base.y, Math.cos(phase * 1.5)) : base.y,\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/bench.module.scss": ".stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--border-color);\n}\n\n.spacer {\n  flex: 1;\n}\n\n.body {\n  display: grid;\n  gap: 12px;\n  padding: 12px 14px;\n}\n\n.live {\n  position: relative;\n  min-height: 260px;\n}\n\n.placeholder {\n  display: grid;\n  place-items: center;\n  height: 260px;\n  padding: 0 24px;\n  border: 1px dashed var(--border-color);\n  border-radius: var(--radius-md);\n  font-size: 13px;\n  text-align: center;\n  color: var(--text-muted-color);\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  border-top: 1px solid var(--border-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.hint {\n  color: var(--text-muted-color);\n}\n\n.mono {\n  font-family: var(--font-family-mono);\n  font-variant-numeric: tabular-nums;\n}\n\n.excellent {\n  color: var(--success-color);\n  font-weight: 600;\n}\n\n.good {\n  color: var(--success-color);\n}\n\n.fair {\n  color: var(--warning-color);\n}\n\n.poor {\n  color: var(--danger-color);\n}\n\n.fallback {\n  color: var(--warning-color);\n}\n\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  margin: 0;\n}\n\n.card {\n  display: grid;\n  gap: 2px;\n  min-width: 0;\n  padding: 10px 12px;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n\n  dt {\n    font-size: 12px;\n    color: var(--text-muted-color);\n  }\n\n  dd {\n    margin: 0;\n    font-family: var(--font-family-mono);\n    font-size: 22px;\n    font-variant-numeric: tabular-nums;\n    font-weight: 600;\n  }\n\n  small {\n    font-size: 12px;\n    color: var(--text-secondary-color);\n  }\n}\n\n.cardBest {\n  border-color: var(--primary-color);\n}\n\n.log {\n  display: grid;\n  gap: 4px;\n  max-height: 168px;\n  margin: 0;\n  padding: 8px 12px;\n  overflow: auto;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n  font-family: var(--font-family-mono);\n  font-size: 12px;\n  list-style: none;\n  color: var(--text-secondary-color);\n}\n\n.wrap {\n  overflow-wrap: anywhere;\n}\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/queue.ts": "// Runs benchmark jobs one after the other, one mounted chart at a time.\nimport { useCallback, useEffect, useRef, useState } from \"react\";\nimport type { ChartSeries } from \"minerva-design/charts\";\nimport { measureRefresh, type BenchJob, type BenchResult } from \"./score\";\nimport { makeSeries, type Workload } from \"./workloads\";\n\ninterface Active {\n  job: BenchJob;\n  series: ChartSeries[];\n  startedAt: number;\n  run: number;\n}\n\n/**\n * Runs jobs one after the other. The data of a workload is generated once\n * (before the clock starts) and shared by the backends.\n */\nexport function useBenchQueue(\n  name: (workload: Workload, index: number) => string,\n) {\n  const [active, setActive] = useState<Active | null>(null);\n  const [results, setResults] = useState<BenchResult[]>([]);\n  const [refresh, setRefresh] = useState(60);\n  const [running, setRunning] = useState(false);\n  const [planned, setPlanned] = useState(0);\n  const queue = useRef<BenchJob[]>([]);\n  const cache = useRef(new Map<string, ChartSeries[]>());\n  const runs = useRef(0);\n  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);\n  const nameRef = useRef(name);\n  useEffect(() => {\n    nameRef.current = name;\n  });\n  useEffect(\n    () => () => {\n      clearTimeout(timer.current);\n      queue.current = [];\n    },\n    [],\n  );\n\n  const next = useCallback(() => {\n    const job = queue.current.shift();\n    if (!job) {\n      setActive(null);\n      setRunning(false);\n      return;\n    }\n    const key = `${job.workload}:${job.count}`;\n    let series = cache.current.get(key);\n    if (!series) {\n      series = makeSeries(job.workload, job.count, (index) =>\n        nameRef.current(job.workload, index),\n      );\n      cache.current.set(key, series);\n    }\n    setActive({\n      job,\n      series,\n      startedAt: performance.now(),\n      run: ++runs.current,\n    });\n  }, []);\n\n  const start = useCallback(\n    async (jobs: BenchJob[]) => {\n      clearTimeout(timer.current);\n      setResults([]);\n      setRunning(true);\n      setPlanned(jobs.length);\n      queue.current = [...jobs];\n      setRefresh(await measureRefresh());\n      next();\n    },\n    [next],\n  );\n\n  const stop = useCallback(() => {\n    clearTimeout(timer.current);\n    queue.current = [];\n    setActive(null);\n    setRunning(false);\n  }, []);\n\n  /** Unmounts the chart, lets the GPU release it, then starts the next job */\n  const onDone = useCallback(\n    (result: BenchResult) => {\n      setResults((previous) => [...previous, result]);\n      setActive(null);\n      timer.current = setTimeout(next, 300);\n    },\n    [next],\n  );\n\n  return {\n    active,\n    results,\n    refresh,\n    running,\n    planned,\n    start,\n    stop,\n    onDone,\n  };\n}\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/stage.tsx": "// Measures one backend at a time: mounts a chart forced onto the backend,\n// waits for its first frame, warms up, then moves the camera on every\n// animation frame for a fixed time and records the frame intervals and the\n// main-thread time of each frame.\nimport { useEffect, useRef } from \"react\";\nimport {\n  Chart,\n  type ChartHandle,\n  type ChartRendererKind,\n  type ChartSeries,\n  type ChartView,\n} from \"minerva-design/charts\";\nimport {\n  percentile,\n  scoreOf,\n  type BenchJob,\n  type BenchResult,\n  type Measures,\n} from \"./score\";\nimport { cameraAt } from \"./workloads\";\n\n/** A started backend gets this long to draw its first frame, in ms */\nconst START_TIMEOUT = 15_000;\n/** Frames skipped after the first one (uploads, shader compilation) */\nconst WARMUP = 5;\n/** A frame interval above this ends the run (the backend is too slow), in ms */\nconst SLOW_FRAME = 2000;\n\ninterface StageProps {\n  job: BenchJob;\n  series: ChartSeries[];\n  /** performance.now() when the job was mounted */\n  startedAt: number;\n  refresh: number;\n  height: number;\n  ariaLabel: string;\n  onDrawn?: (backend: ChartRendererKind) => void;\n  onDone: (result: BenchResult) => void;\n}\n\n/** The chart under test; reports once, then the host unmounts it */\nexport function BenchStage({\n  job,\n  series,\n  startedAt,\n  refresh,\n  height,\n  ariaLabel,\n  onDrawn,\n  onDone,\n}: StageProps) {\n  const handle = useRef<ChartHandle>(null);\n  const drawn = useRef<ChartRendererKind | null>(null);\n  const done = useRef(onDone);\n  useEffect(() => {\n    done.current = onDone;\n  });\n\n  useEffect(() => {\n    let id = 0;\n    let finished = false;\n    let firstFrame = 0;\n    let warmup = 0;\n    let base: ChartView | null = null;\n    let start = 0;\n    let last = 0;\n    const intervals: number[] = [];\n    let work = 0;\n    let works = 0;\n    const channel = new MessageChannel();\n    // messages run once the frame they were posted in is rendered\n    channel.port1.onmessage = (event: MessageEvent<[number, boolean]>) => {\n      const [posted, first] = event.data;\n      const now = performance.now();\n      if (first) firstFrame = now - startedAt;\n      else {\n        work += now - posted;\n        works++;\n      }\n    };\n\n    const finish = (status: BenchResult[\"status\"]) => {\n      if (finished) return;\n      finished = true;\n      cancelAnimationFrame(id);\n      const elapsed = last - start;\n      const sorted = [...intervals].sort((a, b) => a - b);\n      const measures: Measures = {\n        startup: firstFrame,\n        fps: elapsed > 0 ? (intervals.length * 1000) / elapsed : 0,\n        p50: percentile(sorted, 0.5),\n        p95: percentile(sorted, 0.95),\n        work: works ? work / works : 0,\n        frames: intervals.length,\n      };\n      // the last work message arrives after this frame\n      setTimeout(() => {\n        done.current({\n          ...measures,\n          job,\n          drawn: drawn.current,\n          status,\n          refresh,\n          score:\n            status === \"timeout\"\n              ? { smooth: 0, stability: 0, headroom: 0, startup: 0, total: 0 }\n              : scoreOf(measures, refresh),\n        });\n      }, 0);\n    };\n\n    const loop = (time: number) => {\n      id = requestAnimationFrame(loop);\n      const instance = handle.current?.getInstance();\n      if (!drawn.current || !instance) {\n        if (performance.now() - startedAt > START_TIMEOUT) finish(\"timeout\");\n        return;\n      }\n      if (!firstFrame && warmup === 0) {\n        channel.port2.postMessage([time, true]);\n        warmup++;\n        return;\n      }\n      if (warmup < WARMUP) {\n        warmup++;\n        return;\n      }\n      if (!base) {\n        instance.resetZoom();\n        base = instance.getView();\n        start = time;\n        last = time;\n        return;\n      }\n      intervals.push(time - last);\n      const slow = time - last > SLOW_FRAME;\n      last = time;\n      channel.port2.postMessage([time, false]);\n      instance.setView(\n        cameraAt(\n          job.workload,\n          (time - start) / 1000,\n          job.duration / 1000,\n          base,\n        ),\n      );\n      if (slow) finish(\"slow\");\n      else if (time - start >= job.duration) finish(\"ok\");\n    };\n    id = requestAnimationFrame(loop);\n    return () => {\n      finished = true;\n      cancelAnimationFrame(id);\n      channel.port1.close();\n      channel.port2.close();\n    };\n  }, [job, startedAt, refresh]);\n\n  return (\n    <Chart\n      ref={handle}\n      series={series}\n      renderer={job.backend}\n      onRendererChange={(kind) => {\n        drawn.current = kind;\n        onDrawn?.(kind);\n      }}\n      legend={false}\n      tooltip={false}\n      interaction={false}\n      xAxis={job.workload === \"line\" ? { type: \"time\" } : undefined}\n      height={height}\n      ariaLabel={ariaLabel}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "ベンチマークとスコア",
+      "description": "負荷（折れ線、散布図、棒）、規模、時間を選んで実行すると、各バックエンドが同じデータを同じズーム経路で順番に描画します。表にはフレームレート、フレーム時間の中央値と 95 パーセンタイル、1 フレームのメインスレッド時間、最初のフレームまでの時間を、カードと棒グラフにはスコアとその内訳を示します。結果は Markdown の表としてコピーして共有できます。"
+    },
+    {
+      "id": "environment",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/chart-renderers/demos/environment.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/chart-renderers/demos/environment.tsx": "import { useEffect, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { LoadingState, Table, Tag, type TableColumn } from \"minerva-design\";\nimport type { ChartRendererKind } from \"minerva-design/charts\";\nimport {\n  autoPick,\n  probeBackends,\n  type BackendSupport,\n  type BackendsSupport,\n} from \"../../../renderer/support\";\nimport { probeDetails, type DetailsByBackend } from \"../bench/detect\";\nimport { useBenchFormat } from \"../bench/format\";\nimport { BACKENDS } from \"../bench/score\";\nimport styles from \"../bench/bench.module.scss\";\n\ninterface Row {\n  kind: ChartRendererKind;\n  support: BackendSupport;\n}\n\nconst TAG_COLOR = {\n  hardware: \"success\",\n  software: \"warning\",\n  missing: \"neutral\",\n} as const;\n\nexport default function EnvironmentDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const text = useBenchFormat();\n  const [support, setSupport] = useState<BackendsSupport | null>(null);\n  const [details, setDetails] = useState<DetailsByBackend | null>(null);\n\n  useEffect(() => {\n    let cancelled = false;\n    void Promise.all([probeBackends(), probeDetails()]).then(\n      ([probed, found]) => {\n        if (cancelled) return;\n        setSupport(probed);\n        setDetails(found);\n      },\n    );\n    return () => {\n      cancelled = true;\n    };\n  }, []);\n\n  if (!support || !details) {\n    return (\n      <LoadingState\n        size=\"small\"\n        style={{ height: 240 }}\n        label={t(\"env.probing\")}\n      />\n    );\n  }\n\n  const auto = autoPick(support);\n  const rows: Row[] = BACKENDS.map((kind) => ({\n    kind,\n    support: support[kind],\n  }));\n  const columns: TableColumn<Row>[] = [\n    {\n      key: \"backend\",\n      header: t(\"env.backend\"),\n      render: (row) => (\n        <span style={{ display: \"inline-flex\", gap: 6, alignItems: \"center\" }}>\n          <strong>{text.renderer(row.kind)}</strong>\n          {row.kind === auto && (\n            <Tag size=\"small\" color=\"primary\" variant=\"solid\">\n              {t(\"env.autoTag\")}\n            </Tag>\n          )}\n        </span>\n      ),\n    },\n    {\n      key: \"status\",\n      header: t(\"env.status\"),\n      render: (row) => (\n        <Tag size=\"small\" color={TAG_COLOR[row.support]}>\n          {row.kind === \"canvas2d\"\n            ? t(\"env.cpu\")\n            : t(`env.support.${row.support}`)}\n        </Tag>\n      ),\n    },\n    {\n      key: \"device\",\n      header: t(\"env.device\"),\n      render: (row) => (\n        <span className={styles.wrap}>\n          {row.kind === \"canvas2d\"\n            ? t(\"env.cpuDevice\")\n            : (details[row.kind]?.device ?? \"–\")}\n        </span>\n      ),\n    },\n    {\n      key: \"version\",\n      header: t(\"env.version\"),\n      render: (row) => (\n        <span className={styles.wrap}>{details[row.kind]?.version ?? \"–\"}</span>\n      ),\n    },\n    {\n      key: \"limits\",\n      header: t(\"env.limits\"),\n      render: (row) => {\n        const found = details[row.kind];\n        if (!found) return \"–\";\n        const parts: string[] = [];\n        if (found.maxTexture)\n          parts.push(\n            t(\"env.maxTexture\", { value: text.count(found.maxTexture) }),\n          );\n        if (found.maxBuffer)\n          parts.push(\n            t(\"env.maxBuffer\", { value: text.gigabytes(found.maxBuffer) }),\n          );\n        if (found.instancing === false) parts.push(t(\"env.noInstancing\"));\n        return parts.length ? parts.join(\" · \") : \"–\";\n      },\n    },\n  ];\n\n  const secure = typeof isSecureContext === \"boolean\" ? isSecureContext : false;\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <dl className={styles.cards}>\n        <div className={`${styles.card} ${styles.cardBest}`}>\n          <dt>{t(\"env.autoPick\")}</dt>\n          <dd>{text.renderer(auto)}</dd>\n          <small>{t(`env.autoWhy.${auto}`)}</small>\n        </div>\n        <div className={styles.card}>\n          <dt>{t(\"env.secure\")}</dt>\n          <dd>{secure ? t(\"env.yes\") : t(\"env.no\")}</dd>\n          <small>{t(\"env.secureNote\")}</small>\n        </div>\n        <div className={styles.card}>\n          <dt>{t(\"env.dpr\")}</dt>\n          <dd>{text.decimal(window.devicePixelRatio || 1)}</dd>\n          <small>{t(\"env.dprNote\")}</small>\n        </div>\n        <div className={styles.card}>\n          <dt>{t(\"env.threads\")}</dt>\n          <dd>{navigator.hardwareConcurrency || \"–\"}</dd>\n          <small>{t(\"env.threadsNote\")}</small>\n        </div>\n      </dl>\n      <Table\n        aria-label={t(\"env.tableAria\")}\n        size=\"small\"\n        columns={columns}\n        data={rows}\n        rowKey={(row) => row.kind}\n      />\n      <p className={styles.hint} style={{ margin: 0, fontSize: 13 }}>\n        {t(\"env.note\")}\n      </p>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/renderer/support.ts": "// What each forced backend would run on, probed before a benchmark: a GPU\n// backend forced onto a software rasterizer (SwiftShader, llvmpipe… in VMs,\n// CI and headless browsers) takes seconds per frame with a million points\n// and would freeze the page.\nimport type { ChartRendererKind } from \"minerva-design/charts/core\";\n\n/**\n * - `hardware`: the backend starts on a real GPU (Canvas2D always does)\n * - `software`: it would start on a software rasterizer\n * - `missing`: it cannot start; a forced chart falls back to the next\n *   hardware-accelerated backend, or to Canvas2D\n */\nexport type BackendSupport = \"hardware\" | \"software\" | \"missing\";\n\nexport type BackendsSupport = Record<ChartRendererKind, BackendSupport>;\n\n/** Same test as the chart engine (renderers/gl.ts) */\nconst SOFTWARE_RENDERER =\n  /swiftshader|llvmpipe|softpipe|software|basic render driver|microsoft basic/i;\n\nconst probeGl = (kind: \"webgl2\" | \"webgl\"): BackendSupport => {\n  if (typeof document === \"undefined\") return \"missing\";\n  let gl: WebGLRenderingContextBase | null;\n  try {\n    const canvas = document.createElement(\"canvas\");\n    gl =\n      kind === \"webgl2\"\n        ? canvas.getContext(\"webgl2\")\n        : canvas.getContext(\"webgl\");\n  } catch {\n    gl = null;\n  }\n  if (!gl) return \"missing\";\n  const info = gl.getExtension(\"WEBGL_debug_renderer_info\");\n  const name: unknown = info\n    ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL)\n    : gl.getParameter(gl.RENDERER);\n  // releases the context right away (browsers cap the live contexts)\n  gl.getExtension(\"WEBGL_lose_context\")?.loseContext();\n  return SOFTWARE_RENDERER.test(String(name ?? \"\")) ? \"software\" : \"hardware\";\n};\n\ninterface ProbedAdapter {\n  isFallbackAdapter?: boolean;\n  info?: {\n    isFallbackAdapter?: boolean;\n    vendor?: string;\n    architecture?: string;\n    description?: string;\n  };\n}\n\ninterface GpuNavigator {\n  gpu?: { requestAdapter: () => Promise<ProbedAdapter | null> };\n}\n\nconst probeWebGpu = async (): Promise<BackendSupport> => {\n  const gpu =\n    typeof navigator === \"undefined\"\n      ? undefined\n      : (navigator as GpuNavigator).gpu;\n  if (!gpu) return \"missing\";\n  let adapter: ProbedAdapter | null;\n  try {\n    adapter = await gpu.requestAdapter();\n  } catch {\n    adapter = null;\n  }\n  if (!adapter) return \"missing\";\n  const info = adapter.info;\n  const name = [info?.vendor, info?.architecture, info?.description].join(\" \");\n  return adapter.isFallbackAdapter ||\n    info?.isFallbackAdapter ||\n    SOFTWARE_RENDERER.test(name)\n    ? \"software\"\n    : \"hardware\";\n};\n\nlet probed: Promise<BackendsSupport> | null = null;\n\n/**\n * The backend `renderer: \"auto\"` starts on: the first hardware-accelerated\n * one (auto skips software GPUs), else Canvas2D\n */\nexport const autoPick = (support: BackendsSupport): ChartRendererKind =>\n  ([\"webgpu\", \"webgl2\", \"webgl\"] as const).find(\n    (kind) => support[kind] === \"hardware\",\n  ) ?? \"canvas2d\";\n\n/** Probes the backends once per page load */\nexport const probeBackends = (): Promise<BackendsSupport> => {\n  if (!probed) {\n    probed = probeWebGpu().then((webgpu) => ({\n      webgpu,\n      webgl2: probeGl(\"webgl2\"),\n      webgl: probeGl(\"webgl\"),\n      canvas2d: \"hardware\" as const,\n    }));\n  }\n  return probed;\n};\n\n/** Forgets the probe (tests) */\nexport const resetBackendsProbe = () => {\n  probed = null;\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/detect.ts": "// What the browser offers for each backend: the GPU behind it, the API\n// version and a few limits. Every probe releases its context right away\n// (browsers cap the live WebGL contexts of a page).\nimport type { ChartRendererKind } from \"minerva-design/charts\";\n\nexport interface BackendDetails {\n  /** GPU (or driver) name, when the browser exposes it */\n  device: string | null;\n  /** API and shading language versions */\n  version: string | null;\n  /** Largest 2D texture, in pixels */\n  maxTexture: number | null;\n  /** WebGPU: largest buffer, in bytes */\n  maxBuffer: number | null;\n  /** WebGL 1: whether instancing (ANGLE_instanced_arrays) is there */\n  instancing: boolean | null;\n}\n\nconst empty: BackendDetails = {\n  device: null,\n  version: null,\n  maxTexture: null,\n  maxBuffer: null,\n  instancing: null,\n};\n\nconst glDetails = (kind: \"webgl2\" | \"webgl\"): BackendDetails | null => {\n  let gl: WebGLRenderingContext | WebGL2RenderingContext | null;\n  try {\n    const canvas = document.createElement(\"canvas\");\n    gl =\n      kind === \"webgl2\"\n        ? canvas.getContext(\"webgl2\")\n        : canvas.getContext(\"webgl\");\n  } catch {\n    gl = null;\n  }\n  if (!gl) return null;\n  const info = gl.getExtension(\"WEBGL_debug_renderer_info\");\n  const device: unknown = info\n    ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL)\n    : gl.getParameter(gl.RENDERER);\n  const details: BackendDetails = {\n    ...empty,\n    device: device ? String(device) : null,\n    version: `${String(gl.getParameter(gl.VERSION))} · ${String(\n      gl.getParameter(gl.SHADING_LANGUAGE_VERSION),\n    )}`,\n    maxTexture: Number(gl.getParameter(gl.MAX_TEXTURE_SIZE)) || null,\n    instancing:\n      kind === \"webgl\" ? !!gl.getExtension(\"ANGLE_instanced_arrays\") : true,\n  };\n  gl.getExtension(\"WEBGL_lose_context\")?.loseContext();\n  return details;\n};\n\ninterface Adapter {\n  info?: { vendor?: string; architecture?: string; description?: string };\n  limits?: { maxTextureDimension2D?: number; maxBufferSize?: number };\n}\n\nconst webGpuDetails = async (): Promise<BackendDetails | null> => {\n  const gpu = (\n    navigator as Navigator & {\n      gpu?: { requestAdapter: () => Promise<Adapter | null> };\n    }\n  ).gpu;\n  if (!gpu) return null;\n  let adapter: Adapter | null;\n  try {\n    adapter = await gpu.requestAdapter();\n  } catch {\n    adapter = null;\n  }\n  if (!adapter) return null;\n  const { vendor, architecture, description } = adapter.info ?? {};\n  const name = [vendor, architecture].filter(Boolean).join(\" · \");\n  return {\n    ...empty,\n    device: description || name || null,\n    version: \"WebGPU · WGSL\",\n    maxTexture: adapter.limits?.maxTextureDimension2D ?? null,\n    maxBuffer: adapter.limits?.maxBufferSize ?? null,\n  };\n};\n\nexport type DetailsByBackend = Record<ChartRendererKind, BackendDetails | null>;\n\nlet probed: Promise<DetailsByBackend> | null = null;\n\n/** Details of every backend (null: it cannot start here), probed once */\nexport const probeDetails = (): Promise<DetailsByBackend> => {\n  if (!probed) {\n    probed = webGpuDetails().then((webgpu) => ({\n      webgpu,\n      webgl2: glDetails(\"webgl2\"),\n      webgl: glDetails(\"webgl\"),\n      canvas2d: { ...empty, version: \"CanvasRenderingContext2D\" },\n    }));\n  }\n  return probed;\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/format.ts": "import { useTranslation } from \"react-i18next\";\nimport type {\n  ChartRendererKind,\n  ChartRendererPreference,\n} from \"minerva-design/charts\";\nimport { gradeOf } from \"./score\";\nimport styles from \"./bench.module.scss\";\n\n/** Color class of a score out of 100 */\nexport const scoreClass = (score: number) =>\n  ({\n    excellent: styles.excellent,\n    good: styles.good,\n    fair: styles.fair,\n    poor: styles.poor,\n  })[gradeOf(score)];\n\n/** Color class of a frame rate */\nexport const fpsClass = (fps: number) =>\n  fps >= 50 ? styles.good : fps >= 25 ? styles.fair : styles.poor;\n\n/** Localized numbers, durations and backend names of the benchmarks */\nexport const useBenchFormat = () => {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const number = new Intl.NumberFormat(i18n.language);\n  const compact = new Intl.NumberFormat(i18n.language, {\n    notation: \"compact\",\n    maximumFractionDigits: 1,\n  });\n  const decimal = new Intl.NumberFormat(i18n.language, {\n    minimumFractionDigits: 1,\n    maximumFractionDigits: 1,\n  });\n  const bytes = new Intl.NumberFormat(i18n.language, {\n    style: \"unit\",\n    unit: \"gigabyte\",\n    maximumFractionDigits: 1,\n  });\n  const percent = new Intl.NumberFormat(i18n.language, {\n    style: \"percent\",\n    maximumFractionDigits: 0,\n  });\n  return {\n    count: (value: number) => number.format(Math.round(value)),\n    compact: (value: number) => compact.format(value),\n    decimal: (value: number) => decimal.format(value),\n    ms: (value: number) =>\n      t(\"ms\", {\n        value:\n          value < 100\n            ? decimal.format(value)\n            : number.format(Math.round(value)),\n      }),\n    fps: (value: number) =>\n      t(\"fps\", { value: number.format(Math.round(value)) }),\n    gigabytes: (value: number) => bytes.format(value / 1024 ** 3),\n    percent: (value: number) => percent.format(value),\n    renderer: (kind: ChartRendererPreference | ChartRendererKind) =>\n      t(`renderers.${kind}`),\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/score.ts": "// Scores of the renderer benchmarks: what a run measures and how it turns\n// into a score out of 100, relative to the display refresh rate.\nimport type { ChartRendererKind } from \"minerva-design/charts\";\nimport type { Workload } from \"./workloads\";\n\nexport const BACKENDS: readonly ChartRendererKind[] = [\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\n\nexport interface BenchJob {\n  backend: ChartRendererKind;\n  workload: Workload;\n  count: number;\n  /** Measured part of the run, in ms */\n  duration: number;\n}\n\nexport interface Measures {\n  /** From mounting the chart to its first painted frame, in ms */\n  startup: number;\n  /** Frames per second over the run */\n  fps: number;\n  /** Median interval between two frames, in ms */\n  p50: number;\n  /** 95th percentile of the frame intervals, in ms */\n  p95: number;\n  /** Average main-thread time of a frame, in ms */\n  work: number;\n  frames: number;\n}\n\n/** Each part between 0 and 1, `total` out of 100 */\nexport interface Score {\n  smooth: number;\n  stability: number;\n  headroom: number;\n  startup: number;\n  total: number;\n}\n\nexport interface BenchResult extends Measures {\n  job: BenchJob;\n  /** Backend that drew the chart (another one after a fallback) */\n  drawn: ChartRendererKind | null;\n  /** `slow`: a frame took over 2 s, `timeout`: the backend never started */\n  status: \"ok\" | \"slow\" | \"timeout\";\n  /** Display refresh rate the score is relative to, in Hz */\n  refresh: number;\n  score: Score;\n}\n\n/** Weights of the score (they add up to 1) */\nexport const WEIGHTS = {\n  smooth: 0.4,\n  stability: 0.2,\n  headroom: 0.25,\n  startup: 0.15,\n} as const;\n\n/** A startup at or above this scores 0, in ms */\nexport const STARTUP_LIMIT = 1000;\n\nconst clamp = (value: number) =>\n  Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0;\n\n/**\n * - smooth: frame rate / refresh rate\n * - stability: frame budget / 95th percentile frame interval\n * - headroom: 1 - main-thread time per frame / frame budget\n * - startup: 1 - time to first frame / 1 s\n */\nexport const scoreOf = (measures: Measures, refresh: number): Score => {\n  const budget = 1000 / refresh;\n  const parts = {\n    smooth: clamp(measures.fps / refresh),\n    stability: clamp(budget / measures.p95),\n    headroom: clamp(1 - measures.work / budget),\n    startup: clamp(1 - measures.startup / STARTUP_LIMIT),\n  };\n  const total =\n    parts.smooth * WEIGHTS.smooth +\n    parts.stability * WEIGHTS.stability +\n    parts.headroom * WEIGHTS.headroom +\n    parts.startup * WEIGHTS.startup;\n  return { ...parts, total: Math.round(total * 100) };\n};\n\nexport type Grade = \"excellent\" | \"good\" | \"fair\" | \"poor\";\n\nexport const gradeOf = (score: number): Grade =>\n  score >= 85\n    ? \"excellent\"\n    : score >= 65\n      ? \"good\"\n      : score >= 40\n        ? \"fair\"\n        : \"poor\";\n\n/** Display refresh rate: median of 24 idle animation-frame intervals, in Hz */\nexport const measureRefresh = (): Promise<number> =>\n  new Promise((resolve) => {\n    const times: number[] = [];\n    const step = (time: number) => {\n      times.push(time);\n      if (times.length < 25) {\n        requestAnimationFrame(step);\n        return;\n      }\n      const deltas = times\n        .slice(1)\n        .map((t, i) => t - times[i]!)\n        .sort((a, b) => a - b);\n      const median = deltas[deltas.length >> 1] ?? 1000 / 60;\n      resolve(Math.min(240, Math.max(30, Math.round(1000 / median))));\n    };\n    requestAnimationFrame(step);\n  });\n\nexport const percentile = (sorted: readonly number[], p: number) =>\n  sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] ?? 0;\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/workloads.ts": "// Workloads of the renderer benchmarks: seeded typed-array columns (every\n// visit draws the same picture) and the camera path that zooms in and out\n// of them while the frames are measured.\nimport type { ChartSeries, ChartView } from \"minerva-design/charts\";\n\nexport type Workload = \"line\" | \"scatter\" | \"bars\";\n\nexport const WORKLOADS: readonly Workload[] = [\"line\", \"scatter\", \"bars\"];\n\n/** Point counts offered per workload (bars stay lower: one shape each) */\nexport const COUNTS: Record<Workload, readonly number[]> = {\n  line: [10_000, 100_000, 1_000_000, 2_000_000],\n  scatter: [10_000, 100_000, 1_000_000, 2_000_000],\n  bars: [1_000, 10_000, 100_000, 200_000],\n};\n\n/** Seeded PRNG (mulberry32): uniform numbers in [0, 1) */\nexport function mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst LINES = 4;\nconst CLUSTERS = 8;\nconst START = Date.UTC(2026, 0, 1);\n\n/** Four signals sharing one x column (one sample per second) */\nconst lineSeries = (count: number, name: (index: number) => string) => {\n  const length = Math.max(2, Math.round(count / LINES));\n  const random = mulberry32(11);\n  const x = new Float64Array(length);\n  for (let i = 0; i < length; i++) x[i] = START + i * 1000;\n  return Array.from({ length: LINES }, (_, s): ChartSeries => {\n    const y = new Float64Array(length);\n    let walk = 0;\n    for (let i = 0; i < length; i++) {\n      walk += (random() - 0.5) * 0.6;\n      walk *= 0.999;\n      y[i] = 20 + s * 12 + walk + 4 * Math.sin((i / length) * 18 + s);\n    }\n    return {\n      id: `signal-${s}`,\n      name: name(s + 1),\n      data: { x, y },\n      lineWidth: 1,\n    };\n  });\n};\n\n/** Eight Gaussian clusters */\nconst scatterSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(23);\n  const normal = () =>\n    Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n  const per = Math.max(1, Math.round(count / CLUSTERS));\n  const pointSize = count > 200_000 ? 2 : count > 20_000 ? 3 : 5;\n  return Array.from({ length: CLUSTERS }, (_, c): ChartSeries => {\n    const angle = (c / CLUSTERS) * 2 * Math.PI;\n    const cx = 50 + 28 * Math.cos(angle);\n    const cy = 50 + 28 * Math.sin(angle);\n    const spread = 4 + (c % 3) * 2;\n    const x = new Float64Array(per);\n    const y = new Float64Array(per);\n    for (let i = 0; i < per; i++) {\n      x[i] = cx + normal() * spread;\n      y[i] = cy + normal() * spread;\n    }\n    return {\n      id: `cluster-${c}`,\n      name: name(c + 1),\n      type: \"scatter\",\n      data: { x, y },\n      pointSize,\n      opacity: 0.6,\n    };\n  });\n};\n\n/** One bar per index */\nconst barSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(37);\n  const x = new Float64Array(count);\n  const y = new Float64Array(count);\n  for (let i = 0; i < count; i++) {\n    x[i] = i;\n    y[i] = 40 + 30 * Math.sin((i / count) * 12) + random() * 25;\n  }\n  return [\n    { id: \"bars\", name: name(1), type: \"bar\", data: { x, y } },\n  ] as ChartSeries[];\n};\n\n/** The series of a workload; `name` labels series `index` (from 1) */\nexport const makeSeries = (\n  workload: Workload,\n  count: number,\n  name: (index: number) => string,\n): ChartSeries[] =>\n  workload === \"line\"\n    ? lineSeries(count, name)\n    : workload === \"scatter\"\n      ? scatterSeries(count, name)\n      : barSeries(count, name);\n\n/** Deepest zoom of the camera path, per workload */\nconst ZOOM: Record<Workload, number> = { line: 200, scatter: 20, bars: 100 };\n\n/**\n * The view at `seconds` into a run of `period` seconds: from the whole data\n * set (the hardest frame) down to the deepest zoom and back, drifting\n * sideways so that new data enters the window on every frame.\n */\nexport const cameraAt = (\n  workload: Workload,\n  seconds: number,\n  period: number,\n  base: ChartView,\n): ChartView => {\n  const phase = (seconds / period) * 2 * Math.PI;\n  const zoom = 1 + ((ZOOM[workload] - 1) * (1 - Math.cos(phase))) / 2;\n  const axis = (\n    [from, to]: [number, number],\n    drift: number,\n  ): [number, number] => {\n    const width = (to - from) / zoom;\n    const room = (to - from - width) / 2;\n    const center = (from + to) / 2 + room * 0.8 * drift;\n    return [center - width / 2, center + width / 2];\n  };\n  return {\n    x: axis(base.x, Math.sin(phase * 1.5)),\n    y: workload === \"scatter\" ? axis(base.y, Math.cos(phase * 1.5)) : base.y,\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/bench.module.scss": ".stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--border-color);\n}\n\n.spacer {\n  flex: 1;\n}\n\n.body {\n  display: grid;\n  gap: 12px;\n  padding: 12px 14px;\n}\n\n.live {\n  position: relative;\n  min-height: 260px;\n}\n\n.placeholder {\n  display: grid;\n  place-items: center;\n  height: 260px;\n  padding: 0 24px;\n  border: 1px dashed var(--border-color);\n  border-radius: var(--radius-md);\n  font-size: 13px;\n  text-align: center;\n  color: var(--text-muted-color);\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  border-top: 1px solid var(--border-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.hint {\n  color: var(--text-muted-color);\n}\n\n.mono {\n  font-family: var(--font-family-mono);\n  font-variant-numeric: tabular-nums;\n}\n\n.excellent {\n  color: var(--success-color);\n  font-weight: 600;\n}\n\n.good {\n  color: var(--success-color);\n}\n\n.fair {\n  color: var(--warning-color);\n}\n\n.poor {\n  color: var(--danger-color);\n}\n\n.fallback {\n  color: var(--warning-color);\n}\n\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  margin: 0;\n}\n\n.card {\n  display: grid;\n  gap: 2px;\n  min-width: 0;\n  padding: 10px 12px;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n\n  dt {\n    font-size: 12px;\n    color: var(--text-muted-color);\n  }\n\n  dd {\n    margin: 0;\n    font-family: var(--font-family-mono);\n    font-size: 22px;\n    font-variant-numeric: tabular-nums;\n    font-weight: 600;\n  }\n\n  small {\n    font-size: 12px;\n    color: var(--text-secondary-color);\n  }\n}\n\n.cardBest {\n  border-color: var(--primary-color);\n}\n\n.log {\n  display: grid;\n  gap: 4px;\n  max-height: 168px;\n  margin: 0;\n  padding: 8px 12px;\n  overflow: auto;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n  font-family: var(--font-family-mono);\n  font-size: 12px;\n  list-style: none;\n  color: var(--text-secondary-color);\n}\n\n.wrap {\n  overflow-wrap: anywhere;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "お使いのデバイス",
+      "description": "エンジンと同じ方法で各バックエンドを調べます。ハードウェア GPU で起動するか、ソフトウェア GPU でしか動かないか、まったく起動しないか、ブラウザーが報告する GPU と API のバージョン、いくつかの上限、そしてここで renderer=\"auto\" が選ぶバックエンドを表示します。調査に使ったコンテキストはすぐに解放します。"
+    },
+    {
+      "id": "fallback",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/chart-renderers/demos/fallback.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/chart-renderers/demos/fallback.tsx": "import { useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, Tag } from \"minerva-design\";\nimport { Chart, type ChartRendererKind } from \"minerva-design/charts\";\nimport { useBenchFormat } from \"../bench/format\";\nimport { BACKENDS } from \"../bench/score\";\nimport { makeSeries } from \"../bench/workloads\";\nimport styles from \"../bench/bench.module.scss\";\n\nconst POINTS = 100_000;\n\ninterface Entry {\n  id: number;\n  text: string;\n}\n\ninterface ConfiguredContext {\n  getConfiguration?: () => { device?: { destroy(): void } } | null;\n}\n\n/**\n * Loses the GPU of the chart's data canvas the way a driver reset would:\n * WEBGL_lose_context for WebGL, destroying the device for WebGPU\n */\nconst loseGpu = (root: HTMLElement | null, kind: ChartRendererKind) => {\n  const canvas = root?.querySelector<HTMLCanvasElement>(\n    \"canvas.minerva-chart-data\",\n  );\n  if (!canvas) return false;\n  if (kind === \"webgpu\") {\n    // returns the context the chart configured (getConfiguration: recent browsers)\n    const context = canvas.getContext(\"webgpu\") as ConfiguredContext | null;\n    const device = context?.getConfiguration?.()?.device;\n    if (!device) return false;\n    device.destroy();\n    return true;\n  }\n  if (kind === \"webgl2\" || kind === \"webgl\") {\n    const gl = canvas.getContext(kind) as WebGLRenderingContext | null;\n    const ext = gl?.getExtension(\"WEBGL_lose_context\");\n    if (!ext) return false;\n    ext.loseContext();\n    return true;\n  }\n  return false;\n};\n\nexport default function FallbackDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const text = useBenchFormat();\n  const rootRef = useRef<HTMLDivElement>(null);\n  const [run, setRun] = useState(0);\n  const [drawn, setDrawn] = useState<ChartRendererKind | null>(null);\n  const [lost, setLost] = useState<ChartRendererKind[]>([]);\n  const [log, setLog] = useState<Entry[]>([]);\n  const [blocked, setBlocked] = useState(false);\n  const lostAt = useRef(0);\n\n  const series = useMemo(\n    () => makeSeries(\"line\", POINTS, (index) => t(\"series.line\", { index })),\n    [t],\n  );\n\n  const add = (line: string) =>\n    setLog((previous) =>\n      [{ id: (previous[0]?.id ?? 0) + 1, text: line }, ...previous].slice(0, 8),\n    );\n\n  const lose = () => {\n    if (!drawn || drawn === \"canvas2d\") return;\n    lostAt.current = performance.now();\n    if (!loseGpu(rootRef.current, drawn)) {\n      setBlocked(true);\n      return;\n    }\n    setLost((previous) => [...previous, drawn]);\n    add(t(\"lostEntry\", { backend: text.renderer(drawn) }));\n  };\n\n  const restart = () => {\n    setRun((value) => value + 1);\n    setDrawn(null);\n    setLost([]);\n    setLog([]);\n    setBlocked(false);\n  };\n\n  return (\n    <div className={styles.stage} ref={rootRef}>\n      <div className={styles.toolbar}>\n        <span style={{ display: \"flex\", flexWrap: \"wrap\", gap: 6 }}>\n          {BACKENDS.map((kind) => (\n            <Tag\n              key={kind}\n              size=\"small\"\n              color={\n                kind === drawn\n                  ? \"success\"\n                  : lost.includes(kind)\n                    ? \"danger\"\n                    : \"neutral\"\n              }\n              variant={kind === drawn ? \"solid\" : \"subtle\"}\n            >\n              {lost.includes(kind)\n                ? t(\"chainLost\", { backend: text.renderer(kind) })\n                : text.renderer(kind)}\n            </Tag>\n          ))}\n        </span>\n        <span className={styles.spacer} />\n        <Button\n          size=\"small\"\n          disabled={!drawn || drawn === \"canvas2d\"}\n          onClick={lose}\n        >\n          {t(\"loseGpu\")}\n        </Button>\n        <Button size=\"small\" variant=\"outline\" onClick={restart}>\n          {t(\"restart\")}\n        </Button>\n      </div>\n      <div className={styles.body}>\n        <Chart\n          key={run}\n          series={series}\n          // forced: the chain starts at WebGPU and only moves down\n          renderer=\"webgpu\"\n          onRendererChange={(kind) => {\n            setDrawn(kind);\n            add(\n              lostAt.current\n                ? t(\"fallbackEntry\", {\n                    backend: text.renderer(kind),\n                    ms: text.ms(performance.now() - lostAt.current),\n                  })\n                : t(\"startEntry\", { backend: text.renderer(kind) }),\n            );\n            lostAt.current = 0;\n          }}\n          legend={false}\n          xAxis={{ type: \"time\" }}\n          height={240}\n          ariaLabel={t(\"fallbackAria\", { count: text.compact(POINTS) })}\n        />\n        <ol className={styles.log} aria-label={t(\"fallbackLog\")}>\n          {log.map((entry) => (\n            <li key={entry.id}>{entry.text}</li>\n          ))}\n        </ol>\n      </div>\n      <div className={styles.footer}>\n        <p role=\"status\">\n          {blocked\n            ? t(\"cannotLose\", { backend: drawn ? text.renderer(drawn) : \"\" })\n            : drawn === \"canvas2d\"\n              ? t(\"chainEnd\")\n              : drawn\n                ? t(\"fallbackStatus\", { backend: text.renderer(drawn) })\n                : t(\"starting\")}\n        </p>\n        <p className={styles.hint}>{t(\"fallbackHint\")}</p>\n      </div>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/format.ts": "import { useTranslation } from \"react-i18next\";\nimport type {\n  ChartRendererKind,\n  ChartRendererPreference,\n} from \"minerva-design/charts\";\nimport { gradeOf } from \"./score\";\nimport styles from \"./bench.module.scss\";\n\n/** Color class of a score out of 100 */\nexport const scoreClass = (score: number) =>\n  ({\n    excellent: styles.excellent,\n    good: styles.good,\n    fair: styles.fair,\n    poor: styles.poor,\n  })[gradeOf(score)];\n\n/** Color class of a frame rate */\nexport const fpsClass = (fps: number) =>\n  fps >= 50 ? styles.good : fps >= 25 ? styles.fair : styles.poor;\n\n/** Localized numbers, durations and backend names of the benchmarks */\nexport const useBenchFormat = () => {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const number = new Intl.NumberFormat(i18n.language);\n  const compact = new Intl.NumberFormat(i18n.language, {\n    notation: \"compact\",\n    maximumFractionDigits: 1,\n  });\n  const decimal = new Intl.NumberFormat(i18n.language, {\n    minimumFractionDigits: 1,\n    maximumFractionDigits: 1,\n  });\n  const bytes = new Intl.NumberFormat(i18n.language, {\n    style: \"unit\",\n    unit: \"gigabyte\",\n    maximumFractionDigits: 1,\n  });\n  const percent = new Intl.NumberFormat(i18n.language, {\n    style: \"percent\",\n    maximumFractionDigits: 0,\n  });\n  return {\n    count: (value: number) => number.format(Math.round(value)),\n    compact: (value: number) => compact.format(value),\n    decimal: (value: number) => decimal.format(value),\n    ms: (value: number) =>\n      t(\"ms\", {\n        value:\n          value < 100\n            ? decimal.format(value)\n            : number.format(Math.round(value)),\n      }),\n    fps: (value: number) =>\n      t(\"fps\", { value: number.format(Math.round(value)) }),\n    gigabytes: (value: number) => bytes.format(value / 1024 ** 3),\n    percent: (value: number) => percent.format(value),\n    renderer: (kind: ChartRendererPreference | ChartRendererKind) =>\n      t(`renderers.${kind}`),\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/score.ts": "// Scores of the renderer benchmarks: what a run measures and how it turns\n// into a score out of 100, relative to the display refresh rate.\nimport type { ChartRendererKind } from \"minerva-design/charts\";\nimport type { Workload } from \"./workloads\";\n\nexport const BACKENDS: readonly ChartRendererKind[] = [\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\n\nexport interface BenchJob {\n  backend: ChartRendererKind;\n  workload: Workload;\n  count: number;\n  /** Measured part of the run, in ms */\n  duration: number;\n}\n\nexport interface Measures {\n  /** From mounting the chart to its first painted frame, in ms */\n  startup: number;\n  /** Frames per second over the run */\n  fps: number;\n  /** Median interval between two frames, in ms */\n  p50: number;\n  /** 95th percentile of the frame intervals, in ms */\n  p95: number;\n  /** Average main-thread time of a frame, in ms */\n  work: number;\n  frames: number;\n}\n\n/** Each part between 0 and 1, `total` out of 100 */\nexport interface Score {\n  smooth: number;\n  stability: number;\n  headroom: number;\n  startup: number;\n  total: number;\n}\n\nexport interface BenchResult extends Measures {\n  job: BenchJob;\n  /** Backend that drew the chart (another one after a fallback) */\n  drawn: ChartRendererKind | null;\n  /** `slow`: a frame took over 2 s, `timeout`: the backend never started */\n  status: \"ok\" | \"slow\" | \"timeout\";\n  /** Display refresh rate the score is relative to, in Hz */\n  refresh: number;\n  score: Score;\n}\n\n/** Weights of the score (they add up to 1) */\nexport const WEIGHTS = {\n  smooth: 0.4,\n  stability: 0.2,\n  headroom: 0.25,\n  startup: 0.15,\n} as const;\n\n/** A startup at or above this scores 0, in ms */\nexport const STARTUP_LIMIT = 1000;\n\nconst clamp = (value: number) =>\n  Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0;\n\n/**\n * - smooth: frame rate / refresh rate\n * - stability: frame budget / 95th percentile frame interval\n * - headroom: 1 - main-thread time per frame / frame budget\n * - startup: 1 - time to first frame / 1 s\n */\nexport const scoreOf = (measures: Measures, refresh: number): Score => {\n  const budget = 1000 / refresh;\n  const parts = {\n    smooth: clamp(measures.fps / refresh),\n    stability: clamp(budget / measures.p95),\n    headroom: clamp(1 - measures.work / budget),\n    startup: clamp(1 - measures.startup / STARTUP_LIMIT),\n  };\n  const total =\n    parts.smooth * WEIGHTS.smooth +\n    parts.stability * WEIGHTS.stability +\n    parts.headroom * WEIGHTS.headroom +\n    parts.startup * WEIGHTS.startup;\n  return { ...parts, total: Math.round(total * 100) };\n};\n\nexport type Grade = \"excellent\" | \"good\" | \"fair\" | \"poor\";\n\nexport const gradeOf = (score: number): Grade =>\n  score >= 85\n    ? \"excellent\"\n    : score >= 65\n      ? \"good\"\n      : score >= 40\n        ? \"fair\"\n        : \"poor\";\n\n/** Display refresh rate: median of 24 idle animation-frame intervals, in Hz */\nexport const measureRefresh = (): Promise<number> =>\n  new Promise((resolve) => {\n    const times: number[] = [];\n    const step = (time: number) => {\n      times.push(time);\n      if (times.length < 25) {\n        requestAnimationFrame(step);\n        return;\n      }\n      const deltas = times\n        .slice(1)\n        .map((t, i) => t - times[i]!)\n        .sort((a, b) => a - b);\n      const median = deltas[deltas.length >> 1] ?? 1000 / 60;\n      resolve(Math.min(240, Math.max(30, Math.round(1000 / median))));\n    };\n    requestAnimationFrame(step);\n  });\n\nexport const percentile = (sorted: readonly number[], p: number) =>\n  sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] ?? 0;\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/workloads.ts": "// Workloads of the renderer benchmarks: seeded typed-array columns (every\n// visit draws the same picture) and the camera path that zooms in and out\n// of them while the frames are measured.\nimport type { ChartSeries, ChartView } from \"minerva-design/charts\";\n\nexport type Workload = \"line\" | \"scatter\" | \"bars\";\n\nexport const WORKLOADS: readonly Workload[] = [\"line\", \"scatter\", \"bars\"];\n\n/** Point counts offered per workload (bars stay lower: one shape each) */\nexport const COUNTS: Record<Workload, readonly number[]> = {\n  line: [10_000, 100_000, 1_000_000, 2_000_000],\n  scatter: [10_000, 100_000, 1_000_000, 2_000_000],\n  bars: [1_000, 10_000, 100_000, 200_000],\n};\n\n/** Seeded PRNG (mulberry32): uniform numbers in [0, 1) */\nexport function mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst LINES = 4;\nconst CLUSTERS = 8;\nconst START = Date.UTC(2026, 0, 1);\n\n/** Four signals sharing one x column (one sample per second) */\nconst lineSeries = (count: number, name: (index: number) => string) => {\n  const length = Math.max(2, Math.round(count / LINES));\n  const random = mulberry32(11);\n  const x = new Float64Array(length);\n  for (let i = 0; i < length; i++) x[i] = START + i * 1000;\n  return Array.from({ length: LINES }, (_, s): ChartSeries => {\n    const y = new Float64Array(length);\n    let walk = 0;\n    for (let i = 0; i < length; i++) {\n      walk += (random() - 0.5) * 0.6;\n      walk *= 0.999;\n      y[i] = 20 + s * 12 + walk + 4 * Math.sin((i / length) * 18 + s);\n    }\n    return {\n      id: `signal-${s}`,\n      name: name(s + 1),\n      data: { x, y },\n      lineWidth: 1,\n    };\n  });\n};\n\n/** Eight Gaussian clusters */\nconst scatterSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(23);\n  const normal = () =>\n    Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n  const per = Math.max(1, Math.round(count / CLUSTERS));\n  const pointSize = count > 200_000 ? 2 : count > 20_000 ? 3 : 5;\n  return Array.from({ length: CLUSTERS }, (_, c): ChartSeries => {\n    const angle = (c / CLUSTERS) * 2 * Math.PI;\n    const cx = 50 + 28 * Math.cos(angle);\n    const cy = 50 + 28 * Math.sin(angle);\n    const spread = 4 + (c % 3) * 2;\n    const x = new Float64Array(per);\n    const y = new Float64Array(per);\n    for (let i = 0; i < per; i++) {\n      x[i] = cx + normal() * spread;\n      y[i] = cy + normal() * spread;\n    }\n    return {\n      id: `cluster-${c}`,\n      name: name(c + 1),\n      type: \"scatter\",\n      data: { x, y },\n      pointSize,\n      opacity: 0.6,\n    };\n  });\n};\n\n/** One bar per index */\nconst barSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(37);\n  const x = new Float64Array(count);\n  const y = new Float64Array(count);\n  for (let i = 0; i < count; i++) {\n    x[i] = i;\n    y[i] = 40 + 30 * Math.sin((i / count) * 12) + random() * 25;\n  }\n  return [\n    { id: \"bars\", name: name(1), type: \"bar\", data: { x, y } },\n  ] as ChartSeries[];\n};\n\n/** The series of a workload; `name` labels series `index` (from 1) */\nexport const makeSeries = (\n  workload: Workload,\n  count: number,\n  name: (index: number) => string,\n): ChartSeries[] =>\n  workload === \"line\"\n    ? lineSeries(count, name)\n    : workload === \"scatter\"\n      ? scatterSeries(count, name)\n      : barSeries(count, name);\n\n/** Deepest zoom of the camera path, per workload */\nconst ZOOM: Record<Workload, number> = { line: 200, scatter: 20, bars: 100 };\n\n/**\n * The view at `seconds` into a run of `period` seconds: from the whole data\n * set (the hardest frame) down to the deepest zoom and back, drifting\n * sideways so that new data enters the window on every frame.\n */\nexport const cameraAt = (\n  workload: Workload,\n  seconds: number,\n  period: number,\n  base: ChartView,\n): ChartView => {\n  const phase = (seconds / period) * 2 * Math.PI;\n  const zoom = 1 + ((ZOOM[workload] - 1) * (1 - Math.cos(phase))) / 2;\n  const axis = (\n    [from, to]: [number, number],\n    drift: number,\n  ): [number, number] => {\n    const width = (to - from) / zoom;\n    const room = (to - from - width) / 2;\n    const center = (from + to) / 2 + room * 0.8 * drift;\n    return [center - width / 2, center + width / 2];\n  };\n  return {\n    x: axis(base.x, Math.sin(phase * 1.5)),\n    y: workload === \"scatter\" ? axis(base.y, Math.cos(phase * 1.5)) : base.y,\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/bench.module.scss": ".stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--border-color);\n}\n\n.spacer {\n  flex: 1;\n}\n\n.body {\n  display: grid;\n  gap: 12px;\n  padding: 12px 14px;\n}\n\n.live {\n  position: relative;\n  min-height: 260px;\n}\n\n.placeholder {\n  display: grid;\n  place-items: center;\n  height: 260px;\n  padding: 0 24px;\n  border: 1px dashed var(--border-color);\n  border-radius: var(--radius-md);\n  font-size: 13px;\n  text-align: center;\n  color: var(--text-muted-color);\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  border-top: 1px solid var(--border-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.hint {\n  color: var(--text-muted-color);\n}\n\n.mono {\n  font-family: var(--font-family-mono);\n  font-variant-numeric: tabular-nums;\n}\n\n.excellent {\n  color: var(--success-color);\n  font-weight: 600;\n}\n\n.good {\n  color: var(--success-color);\n}\n\n.fair {\n  color: var(--warning-color);\n}\n\n.poor {\n  color: var(--danger-color);\n}\n\n.fallback {\n  color: var(--warning-color);\n}\n\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  margin: 0;\n}\n\n.card {\n  display: grid;\n  gap: 2px;\n  min-width: 0;\n  padding: 10px 12px;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n\n  dt {\n    font-size: 12px;\n    color: var(--text-muted-color);\n  }\n\n  dd {\n    margin: 0;\n    font-family: var(--font-family-mono);\n    font-size: 22px;\n    font-variant-numeric: tabular-nums;\n    font-weight: 600;\n  }\n\n  small {\n    font-size: 12px;\n    color: var(--text-secondary-color);\n  }\n}\n\n.cardBest {\n  border-color: var(--primary-color);\n}\n\n.log {\n  display: grid;\n  gap: 4px;\n  max-height: 168px;\n  margin: 0;\n  padding: 8px 12px;\n  overflow: auto;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n  font-family: var(--font-family-mono);\n  font-size: 12px;\n  list-style: none;\n  color: var(--text-secondary-color);\n}\n\n.wrap {\n  overflow-wrap: anywhere;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "GPU の喪失",
+      "description": "使用中のバックエンドで GPU の喪失をシミュレートします（WebGL は WEBGL_lose_context、WebGPU はデバイスの破棄）。チャートは次のバックエンドに移って再描画し、最後は Canvas2D に至ります。ログには各復旧にかかった時間が表示されます。"
+    },
+    {
+      "id": "scaling",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/chart-renderers/demos/scaling.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/chart-renderers/demos/scaling.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, Radio, RadioGroup } from \"minerva-design\";\nimport { LineChart, type ChartSeries } from \"minerva-design/charts\";\nimport { probeBackends } from \"../../../renderer/support\";\nimport { useBenchFormat } from \"../bench/format\";\nimport { useBenchQueue } from \"../bench/queue\";\nimport { BACKENDS } from \"../bench/score\";\nimport { BenchStage } from \"../bench/stage\";\nimport { COUNTS, type Workload } from \"../bench/workloads\";\nimport styles from \"../bench/bench.module.scss\";\n\n/** Shorter runs: four sizes per backend */\nconst DURATION = 1500;\n\nexport default function ScalingDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const text = useBenchFormat();\n  const [workload, setWorkload] = useState<Workload>(\"line\");\n  const [measured, setMeasured] = useState<Workload>(\"line\");\n  const bench = useBenchQueue((kind, index) => t(`series.${kind}`, { index }));\n  const { active, results, running, planned } = bench;\n\n  const run = async () => {\n    const support = await probeBackends();\n    const backends = BACKENDS.filter((kind) => support[kind] !== \"software\");\n    setMeasured(workload);\n    void bench.start(\n      backends.flatMap((backend) =>\n        COUNTS[workload].map((count) => ({\n          backend,\n          workload,\n          count,\n          duration: DURATION,\n        })),\n      ),\n    );\n  };\n\n  /** One line per backend, one point per size */\n  const curve = (value: (fps: number, work: number) => number) =>\n    BACKENDS.map((kind): ChartSeries | null => {\n      const runs = results.filter(\n        (r) => r.job.backend === kind && r.status !== \"timeout\",\n      );\n      if (!runs.length) return null;\n      return {\n        id: kind,\n        name: text.renderer(kind),\n        data: runs.map((r) => [r.job.count, value(r.fps, r.work)] as const),\n      };\n    }).filter((series): series is ChartSeries => series !== null);\n\n  const xAxis = {\n    type: \"log\" as const,\n    title: t(\"pointsAxis\"),\n    format: (value: number) => text.compact(value),\n  };\n\n  return (\n    <div className={styles.stage}>\n      <div className={styles.toolbar}>\n        <RadioGroup\n          aria-label={t(\"workload\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={workload}\n          disabled={running}\n          onChange={(value) => setWorkload(value as Workload)}\n        >\n          <Radio value=\"line\" label={t(\"workloads.line\")} />\n          <Radio value=\"scatter\" label={t(\"workloads.scatter\")} />\n        </RadioGroup>\n        <span className={styles.spacer} />\n        {running ? (\n          <Button size=\"small\" variant=\"outline\" onClick={bench.stop}>\n            {t(\"stop\")}\n          </Button>\n        ) : (\n          <Button size=\"small\" onClick={() => void run()}>\n            {t(\"runScaling\")}\n          </Button>\n        )}\n      </div>\n\n      <div className={styles.body}>\n        {running && (\n          <div className={styles.live} style={{ minHeight: 180 }}>\n            {active ? (\n              <BenchStage\n                key={active.run}\n                job={active.job}\n                series={active.series}\n                startedAt={active.startedAt}\n                refresh={bench.refresh}\n                height={180}\n                ariaLabel={t(\"liveAria\", {\n                  backend: text.renderer(active.job.backend),\n                  count: text.compact(active.job.count),\n                })}\n                onDone={bench.onDone}\n              />\n            ) : (\n              <div className={styles.placeholder} style={{ height: 180 }}>\n                {t(\"between\")}\n              </div>\n            )}\n          </div>\n        )}\n        {!running && results.length === 0 && (\n          <div className={styles.placeholder}>{t(\"scalingIdle\")}</div>\n        )}\n        {results.length > 0 && (\n          <div\n            style={{\n              display: \"grid\",\n              gridTemplateColumns: \"repeat(auto-fit, minmax(280px, 1fr))\",\n              gap: 12,\n            }}\n          >\n            <LineChart\n              series={curve((fps) => Math.round(fps))}\n              renderer=\"canvas2d\"\n              xAxis={xAxis}\n              yAxis={{ min: 0, title: t(\"fpsAxis\") }}\n              height={260}\n              ariaLabel={t(\"scalingFpsAria\", {\n                workload: t(`workloads.${measured}`),\n              })}\n            />\n            <LineChart\n              series={curve((_, work) => Math.max(0.1, work))}\n              renderer=\"canvas2d\"\n              xAxis={xAxis}\n              yAxis={{\n                type: \"log\",\n                title: t(\"workAxis\"),\n                format: (value) => text.ms(value),\n              }}\n              height={260}\n              ariaLabel={t(\"scalingWorkAria\", {\n                workload: t(`workloads.${measured}`),\n              })}\n            />\n          </div>\n        )}\n      </div>\n\n      <div className={styles.footer}>\n        <p role=\"status\">\n          {active\n            ? t(\"scalingMeasuring\", {\n                backend: text.renderer(active.job.backend),\n                count: text.compact(active.job.count),\n                index: results.length + 1,\n                total: planned,\n              })\n            : running\n              ? t(\"preparing\")\n              : results.length\n                ? t(\"scalingDone\")\n                : t(\"ready\")}\n        </p>\n        <p className={styles.hint}>{t(\"scalingHint\")}</p>\n      </div>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/renderer/support.ts": "// What each forced backend would run on, probed before a benchmark: a GPU\n// backend forced onto a software rasterizer (SwiftShader, llvmpipe… in VMs,\n// CI and headless browsers) takes seconds per frame with a million points\n// and would freeze the page.\nimport type { ChartRendererKind } from \"minerva-design/charts/core\";\n\n/**\n * - `hardware`: the backend starts on a real GPU (Canvas2D always does)\n * - `software`: it would start on a software rasterizer\n * - `missing`: it cannot start; a forced chart falls back to the next\n *   hardware-accelerated backend, or to Canvas2D\n */\nexport type BackendSupport = \"hardware\" | \"software\" | \"missing\";\n\nexport type BackendsSupport = Record<ChartRendererKind, BackendSupport>;\n\n/** Same test as the chart engine (renderers/gl.ts) */\nconst SOFTWARE_RENDERER =\n  /swiftshader|llvmpipe|softpipe|software|basic render driver|microsoft basic/i;\n\nconst probeGl = (kind: \"webgl2\" | \"webgl\"): BackendSupport => {\n  if (typeof document === \"undefined\") return \"missing\";\n  let gl: WebGLRenderingContextBase | null;\n  try {\n    const canvas = document.createElement(\"canvas\");\n    gl =\n      kind === \"webgl2\"\n        ? canvas.getContext(\"webgl2\")\n        : canvas.getContext(\"webgl\");\n  } catch {\n    gl = null;\n  }\n  if (!gl) return \"missing\";\n  const info = gl.getExtension(\"WEBGL_debug_renderer_info\");\n  const name: unknown = info\n    ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL)\n    : gl.getParameter(gl.RENDERER);\n  // releases the context right away (browsers cap the live contexts)\n  gl.getExtension(\"WEBGL_lose_context\")?.loseContext();\n  return SOFTWARE_RENDERER.test(String(name ?? \"\")) ? \"software\" : \"hardware\";\n};\n\ninterface ProbedAdapter {\n  isFallbackAdapter?: boolean;\n  info?: {\n    isFallbackAdapter?: boolean;\n    vendor?: string;\n    architecture?: string;\n    description?: string;\n  };\n}\n\ninterface GpuNavigator {\n  gpu?: { requestAdapter: () => Promise<ProbedAdapter | null> };\n}\n\nconst probeWebGpu = async (): Promise<BackendSupport> => {\n  const gpu =\n    typeof navigator === \"undefined\"\n      ? undefined\n      : (navigator as GpuNavigator).gpu;\n  if (!gpu) return \"missing\";\n  let adapter: ProbedAdapter | null;\n  try {\n    adapter = await gpu.requestAdapter();\n  } catch {\n    adapter = null;\n  }\n  if (!adapter) return \"missing\";\n  const info = adapter.info;\n  const name = [info?.vendor, info?.architecture, info?.description].join(\" \");\n  return adapter.isFallbackAdapter ||\n    info?.isFallbackAdapter ||\n    SOFTWARE_RENDERER.test(name)\n    ? \"software\"\n    : \"hardware\";\n};\n\nlet probed: Promise<BackendsSupport> | null = null;\n\n/**\n * The backend `renderer: \"auto\"` starts on: the first hardware-accelerated\n * one (auto skips software GPUs), else Canvas2D\n */\nexport const autoPick = (support: BackendsSupport): ChartRendererKind =>\n  ([\"webgpu\", \"webgl2\", \"webgl\"] as const).find(\n    (kind) => support[kind] === \"hardware\",\n  ) ?? \"canvas2d\";\n\n/** Probes the backends once per page load */\nexport const probeBackends = (): Promise<BackendsSupport> => {\n  if (!probed) {\n    probed = probeWebGpu().then((webgpu) => ({\n      webgpu,\n      webgl2: probeGl(\"webgl2\"),\n      webgl: probeGl(\"webgl\"),\n      canvas2d: \"hardware\" as const,\n    }));\n  }\n  return probed;\n};\n\n/** Forgets the probe (tests) */\nexport const resetBackendsProbe = () => {\n  probed = null;\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/format.ts": "import { useTranslation } from \"react-i18next\";\nimport type {\n  ChartRendererKind,\n  ChartRendererPreference,\n} from \"minerva-design/charts\";\nimport { gradeOf } from \"./score\";\nimport styles from \"./bench.module.scss\";\n\n/** Color class of a score out of 100 */\nexport const scoreClass = (score: number) =>\n  ({\n    excellent: styles.excellent,\n    good: styles.good,\n    fair: styles.fair,\n    poor: styles.poor,\n  })[gradeOf(score)];\n\n/** Color class of a frame rate */\nexport const fpsClass = (fps: number) =>\n  fps >= 50 ? styles.good : fps >= 25 ? styles.fair : styles.poor;\n\n/** Localized numbers, durations and backend names of the benchmarks */\nexport const useBenchFormat = () => {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const number = new Intl.NumberFormat(i18n.language);\n  const compact = new Intl.NumberFormat(i18n.language, {\n    notation: \"compact\",\n    maximumFractionDigits: 1,\n  });\n  const decimal = new Intl.NumberFormat(i18n.language, {\n    minimumFractionDigits: 1,\n    maximumFractionDigits: 1,\n  });\n  const bytes = new Intl.NumberFormat(i18n.language, {\n    style: \"unit\",\n    unit: \"gigabyte\",\n    maximumFractionDigits: 1,\n  });\n  const percent = new Intl.NumberFormat(i18n.language, {\n    style: \"percent\",\n    maximumFractionDigits: 0,\n  });\n  return {\n    count: (value: number) => number.format(Math.round(value)),\n    compact: (value: number) => compact.format(value),\n    decimal: (value: number) => decimal.format(value),\n    ms: (value: number) =>\n      t(\"ms\", {\n        value:\n          value < 100\n            ? decimal.format(value)\n            : number.format(Math.round(value)),\n      }),\n    fps: (value: number) =>\n      t(\"fps\", { value: number.format(Math.round(value)) }),\n    gigabytes: (value: number) => bytes.format(value / 1024 ** 3),\n    percent: (value: number) => percent.format(value),\n    renderer: (kind: ChartRendererPreference | ChartRendererKind) =>\n      t(`renderers.${kind}`),\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/score.ts": "// Scores of the renderer benchmarks: what a run measures and how it turns\n// into a score out of 100, relative to the display refresh rate.\nimport type { ChartRendererKind } from \"minerva-design/charts\";\nimport type { Workload } from \"./workloads\";\n\nexport const BACKENDS: readonly ChartRendererKind[] = [\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\n\nexport interface BenchJob {\n  backend: ChartRendererKind;\n  workload: Workload;\n  count: number;\n  /** Measured part of the run, in ms */\n  duration: number;\n}\n\nexport interface Measures {\n  /** From mounting the chart to its first painted frame, in ms */\n  startup: number;\n  /** Frames per second over the run */\n  fps: number;\n  /** Median interval between two frames, in ms */\n  p50: number;\n  /** 95th percentile of the frame intervals, in ms */\n  p95: number;\n  /** Average main-thread time of a frame, in ms */\n  work: number;\n  frames: number;\n}\n\n/** Each part between 0 and 1, `total` out of 100 */\nexport interface Score {\n  smooth: number;\n  stability: number;\n  headroom: number;\n  startup: number;\n  total: number;\n}\n\nexport interface BenchResult extends Measures {\n  job: BenchJob;\n  /** Backend that drew the chart (another one after a fallback) */\n  drawn: ChartRendererKind | null;\n  /** `slow`: a frame took over 2 s, `timeout`: the backend never started */\n  status: \"ok\" | \"slow\" | \"timeout\";\n  /** Display refresh rate the score is relative to, in Hz */\n  refresh: number;\n  score: Score;\n}\n\n/** Weights of the score (they add up to 1) */\nexport const WEIGHTS = {\n  smooth: 0.4,\n  stability: 0.2,\n  headroom: 0.25,\n  startup: 0.15,\n} as const;\n\n/** A startup at or above this scores 0, in ms */\nexport const STARTUP_LIMIT = 1000;\n\nconst clamp = (value: number) =>\n  Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0;\n\n/**\n * - smooth: frame rate / refresh rate\n * - stability: frame budget / 95th percentile frame interval\n * - headroom: 1 - main-thread time per frame / frame budget\n * - startup: 1 - time to first frame / 1 s\n */\nexport const scoreOf = (measures: Measures, refresh: number): Score => {\n  const budget = 1000 / refresh;\n  const parts = {\n    smooth: clamp(measures.fps / refresh),\n    stability: clamp(budget / measures.p95),\n    headroom: clamp(1 - measures.work / budget),\n    startup: clamp(1 - measures.startup / STARTUP_LIMIT),\n  };\n  const total =\n    parts.smooth * WEIGHTS.smooth +\n    parts.stability * WEIGHTS.stability +\n    parts.headroom * WEIGHTS.headroom +\n    parts.startup * WEIGHTS.startup;\n  return { ...parts, total: Math.round(total * 100) };\n};\n\nexport type Grade = \"excellent\" | \"good\" | \"fair\" | \"poor\";\n\nexport const gradeOf = (score: number): Grade =>\n  score >= 85\n    ? \"excellent\"\n    : score >= 65\n      ? \"good\"\n      : score >= 40\n        ? \"fair\"\n        : \"poor\";\n\n/** Display refresh rate: median of 24 idle animation-frame intervals, in Hz */\nexport const measureRefresh = (): Promise<number> =>\n  new Promise((resolve) => {\n    const times: number[] = [];\n    const step = (time: number) => {\n      times.push(time);\n      if (times.length < 25) {\n        requestAnimationFrame(step);\n        return;\n      }\n      const deltas = times\n        .slice(1)\n        .map((t, i) => t - times[i]!)\n        .sort((a, b) => a - b);\n      const median = deltas[deltas.length >> 1] ?? 1000 / 60;\n      resolve(Math.min(240, Math.max(30, Math.round(1000 / median))));\n    };\n    requestAnimationFrame(step);\n  });\n\nexport const percentile = (sorted: readonly number[], p: number) =>\n  sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] ?? 0;\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/workloads.ts": "// Workloads of the renderer benchmarks: seeded typed-array columns (every\n// visit draws the same picture) and the camera path that zooms in and out\n// of them while the frames are measured.\nimport type { ChartSeries, ChartView } from \"minerva-design/charts\";\n\nexport type Workload = \"line\" | \"scatter\" | \"bars\";\n\nexport const WORKLOADS: readonly Workload[] = [\"line\", \"scatter\", \"bars\"];\n\n/** Point counts offered per workload (bars stay lower: one shape each) */\nexport const COUNTS: Record<Workload, readonly number[]> = {\n  line: [10_000, 100_000, 1_000_000, 2_000_000],\n  scatter: [10_000, 100_000, 1_000_000, 2_000_000],\n  bars: [1_000, 10_000, 100_000, 200_000],\n};\n\n/** Seeded PRNG (mulberry32): uniform numbers in [0, 1) */\nexport function mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst LINES = 4;\nconst CLUSTERS = 8;\nconst START = Date.UTC(2026, 0, 1);\n\n/** Four signals sharing one x column (one sample per second) */\nconst lineSeries = (count: number, name: (index: number) => string) => {\n  const length = Math.max(2, Math.round(count / LINES));\n  const random = mulberry32(11);\n  const x = new Float64Array(length);\n  for (let i = 0; i < length; i++) x[i] = START + i * 1000;\n  return Array.from({ length: LINES }, (_, s): ChartSeries => {\n    const y = new Float64Array(length);\n    let walk = 0;\n    for (let i = 0; i < length; i++) {\n      walk += (random() - 0.5) * 0.6;\n      walk *= 0.999;\n      y[i] = 20 + s * 12 + walk + 4 * Math.sin((i / length) * 18 + s);\n    }\n    return {\n      id: `signal-${s}`,\n      name: name(s + 1),\n      data: { x, y },\n      lineWidth: 1,\n    };\n  });\n};\n\n/** Eight Gaussian clusters */\nconst scatterSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(23);\n  const normal = () =>\n    Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n  const per = Math.max(1, Math.round(count / CLUSTERS));\n  const pointSize = count > 200_000 ? 2 : count > 20_000 ? 3 : 5;\n  return Array.from({ length: CLUSTERS }, (_, c): ChartSeries => {\n    const angle = (c / CLUSTERS) * 2 * Math.PI;\n    const cx = 50 + 28 * Math.cos(angle);\n    const cy = 50 + 28 * Math.sin(angle);\n    const spread = 4 + (c % 3) * 2;\n    const x = new Float64Array(per);\n    const y = new Float64Array(per);\n    for (let i = 0; i < per; i++) {\n      x[i] = cx + normal() * spread;\n      y[i] = cy + normal() * spread;\n    }\n    return {\n      id: `cluster-${c}`,\n      name: name(c + 1),\n      type: \"scatter\",\n      data: { x, y },\n      pointSize,\n      opacity: 0.6,\n    };\n  });\n};\n\n/** One bar per index */\nconst barSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(37);\n  const x = new Float64Array(count);\n  const y = new Float64Array(count);\n  for (let i = 0; i < count; i++) {\n    x[i] = i;\n    y[i] = 40 + 30 * Math.sin((i / count) * 12) + random() * 25;\n  }\n  return [\n    { id: \"bars\", name: name(1), type: \"bar\", data: { x, y } },\n  ] as ChartSeries[];\n};\n\n/** The series of a workload; `name` labels series `index` (from 1) */\nexport const makeSeries = (\n  workload: Workload,\n  count: number,\n  name: (index: number) => string,\n): ChartSeries[] =>\n  workload === \"line\"\n    ? lineSeries(count, name)\n    : workload === \"scatter\"\n      ? scatterSeries(count, name)\n      : barSeries(count, name);\n\n/** Deepest zoom of the camera path, per workload */\nconst ZOOM: Record<Workload, number> = { line: 200, scatter: 20, bars: 100 };\n\n/**\n * The view at `seconds` into a run of `period` seconds: from the whole data\n * set (the hardest frame) down to the deepest zoom and back, drifting\n * sideways so that new data enters the window on every frame.\n */\nexport const cameraAt = (\n  workload: Workload,\n  seconds: number,\n  period: number,\n  base: ChartView,\n): ChartView => {\n  const phase = (seconds / period) * 2 * Math.PI;\n  const zoom = 1 + ((ZOOM[workload] - 1) * (1 - Math.cos(phase))) / 2;\n  const axis = (\n    [from, to]: [number, number],\n    drift: number,\n  ): [number, number] => {\n    const width = (to - from) / zoom;\n    const room = (to - from - width) / 2;\n    const center = (from + to) / 2 + room * 0.8 * drift;\n    return [center - width / 2, center + width / 2];\n  };\n  return {\n    x: axis(base.x, Math.sin(phase * 1.5)),\n    y: workload === \"scatter\" ? axis(base.y, Math.cos(phase * 1.5)) : base.y,\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/bench.module.scss": ".stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--border-color);\n}\n\n.spacer {\n  flex: 1;\n}\n\n.body {\n  display: grid;\n  gap: 12px;\n  padding: 12px 14px;\n}\n\n.live {\n  position: relative;\n  min-height: 260px;\n}\n\n.placeholder {\n  display: grid;\n  place-items: center;\n  height: 260px;\n  padding: 0 24px;\n  border: 1px dashed var(--border-color);\n  border-radius: var(--radius-md);\n  font-size: 13px;\n  text-align: center;\n  color: var(--text-muted-color);\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  border-top: 1px solid var(--border-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.hint {\n  color: var(--text-muted-color);\n}\n\n.mono {\n  font-family: var(--font-family-mono);\n  font-variant-numeric: tabular-nums;\n}\n\n.excellent {\n  color: var(--success-color);\n  font-weight: 600;\n}\n\n.good {\n  color: var(--success-color);\n}\n\n.fair {\n  color: var(--warning-color);\n}\n\n.poor {\n  color: var(--danger-color);\n}\n\n.fallback {\n  color: var(--warning-color);\n}\n\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  margin: 0;\n}\n\n.card {\n  display: grid;\n  gap: 2px;\n  min-width: 0;\n  padding: 10px 12px;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n\n  dt {\n    font-size: 12px;\n    color: var(--text-muted-color);\n  }\n\n  dd {\n    margin: 0;\n    font-family: var(--font-family-mono);\n    font-size: 22px;\n    font-variant-numeric: tabular-nums;\n    font-weight: 600;\n  }\n\n  small {\n    font-size: 12px;\n    color: var(--text-secondary-color);\n  }\n}\n\n.cardBest {\n  border-color: var(--primary-color);\n}\n\n.log {\n  display: grid;\n  gap: 4px;\n  max-height: 168px;\n  margin: 0;\n  padding: 8px 12px;\n  overflow: auto;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n  font-family: var(--font-family-mono);\n  font-size: 12px;\n  list-style: none;\n  color: var(--text-secondary-color);\n}\n\n.wrap {\n  overflow-wrap: anywhere;\n}\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/queue.ts": "// Runs benchmark jobs one after the other, one mounted chart at a time.\nimport { useCallback, useEffect, useRef, useState } from \"react\";\nimport type { ChartSeries } from \"minerva-design/charts\";\nimport { measureRefresh, type BenchJob, type BenchResult } from \"./score\";\nimport { makeSeries, type Workload } from \"./workloads\";\n\ninterface Active {\n  job: BenchJob;\n  series: ChartSeries[];\n  startedAt: number;\n  run: number;\n}\n\n/**\n * Runs jobs one after the other. The data of a workload is generated once\n * (before the clock starts) and shared by the backends.\n */\nexport function useBenchQueue(\n  name: (workload: Workload, index: number) => string,\n) {\n  const [active, setActive] = useState<Active | null>(null);\n  const [results, setResults] = useState<BenchResult[]>([]);\n  const [refresh, setRefresh] = useState(60);\n  const [running, setRunning] = useState(false);\n  const [planned, setPlanned] = useState(0);\n  const queue = useRef<BenchJob[]>([]);\n  const cache = useRef(new Map<string, ChartSeries[]>());\n  const runs = useRef(0);\n  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);\n  const nameRef = useRef(name);\n  useEffect(() => {\n    nameRef.current = name;\n  });\n  useEffect(\n    () => () => {\n      clearTimeout(timer.current);\n      queue.current = [];\n    },\n    [],\n  );\n\n  const next = useCallback(() => {\n    const job = queue.current.shift();\n    if (!job) {\n      setActive(null);\n      setRunning(false);\n      return;\n    }\n    const key = `${job.workload}:${job.count}`;\n    let series = cache.current.get(key);\n    if (!series) {\n      series = makeSeries(job.workload, job.count, (index) =>\n        nameRef.current(job.workload, index),\n      );\n      cache.current.set(key, series);\n    }\n    setActive({\n      job,\n      series,\n      startedAt: performance.now(),\n      run: ++runs.current,\n    });\n  }, []);\n\n  const start = useCallback(\n    async (jobs: BenchJob[]) => {\n      clearTimeout(timer.current);\n      setResults([]);\n      setRunning(true);\n      setPlanned(jobs.length);\n      queue.current = [...jobs];\n      setRefresh(await measureRefresh());\n      next();\n    },\n    [next],\n  );\n\n  const stop = useCallback(() => {\n    clearTimeout(timer.current);\n    queue.current = [];\n    setActive(null);\n    setRunning(false);\n  }, []);\n\n  /** Unmounts the chart, lets the GPU release it, then starts the next job */\n  const onDone = useCallback(\n    (result: BenchResult) => {\n      setResults((previous) => [...previous, result]);\n      setActive(null);\n      timer.current = setTimeout(next, 300);\n    },\n    [next],\n  );\n\n  return {\n    active,\n    results,\n    refresh,\n    running,\n    planned,\n    start,\n    stop,\n    onDone,\n  };\n}\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/stage.tsx": "// Measures one backend at a time: mounts a chart forced onto the backend,\n// waits for its first frame, warms up, then moves the camera on every\n// animation frame for a fixed time and records the frame intervals and the\n// main-thread time of each frame.\nimport { useEffect, useRef } from \"react\";\nimport {\n  Chart,\n  type ChartHandle,\n  type ChartRendererKind,\n  type ChartSeries,\n  type ChartView,\n} from \"minerva-design/charts\";\nimport {\n  percentile,\n  scoreOf,\n  type BenchJob,\n  type BenchResult,\n  type Measures,\n} from \"./score\";\nimport { cameraAt } from \"./workloads\";\n\n/** A started backend gets this long to draw its first frame, in ms */\nconst START_TIMEOUT = 15_000;\n/** Frames skipped after the first one (uploads, shader compilation) */\nconst WARMUP = 5;\n/** A frame interval above this ends the run (the backend is too slow), in ms */\nconst SLOW_FRAME = 2000;\n\ninterface StageProps {\n  job: BenchJob;\n  series: ChartSeries[];\n  /** performance.now() when the job was mounted */\n  startedAt: number;\n  refresh: number;\n  height: number;\n  ariaLabel: string;\n  onDrawn?: (backend: ChartRendererKind) => void;\n  onDone: (result: BenchResult) => void;\n}\n\n/** The chart under test; reports once, then the host unmounts it */\nexport function BenchStage({\n  job,\n  series,\n  startedAt,\n  refresh,\n  height,\n  ariaLabel,\n  onDrawn,\n  onDone,\n}: StageProps) {\n  const handle = useRef<ChartHandle>(null);\n  const drawn = useRef<ChartRendererKind | null>(null);\n  const done = useRef(onDone);\n  useEffect(() => {\n    done.current = onDone;\n  });\n\n  useEffect(() => {\n    let id = 0;\n    let finished = false;\n    let firstFrame = 0;\n    let warmup = 0;\n    let base: ChartView | null = null;\n    let start = 0;\n    let last = 0;\n    const intervals: number[] = [];\n    let work = 0;\n    let works = 0;\n    const channel = new MessageChannel();\n    // messages run once the frame they were posted in is rendered\n    channel.port1.onmessage = (event: MessageEvent<[number, boolean]>) => {\n      const [posted, first] = event.data;\n      const now = performance.now();\n      if (first) firstFrame = now - startedAt;\n      else {\n        work += now - posted;\n        works++;\n      }\n    };\n\n    const finish = (status: BenchResult[\"status\"]) => {\n      if (finished) return;\n      finished = true;\n      cancelAnimationFrame(id);\n      const elapsed = last - start;\n      const sorted = [...intervals].sort((a, b) => a - b);\n      const measures: Measures = {\n        startup: firstFrame,\n        fps: elapsed > 0 ? (intervals.length * 1000) / elapsed : 0,\n        p50: percentile(sorted, 0.5),\n        p95: percentile(sorted, 0.95),\n        work: works ? work / works : 0,\n        frames: intervals.length,\n      };\n      // the last work message arrives after this frame\n      setTimeout(() => {\n        done.current({\n          ...measures,\n          job,\n          drawn: drawn.current,\n          status,\n          refresh,\n          score:\n            status === \"timeout\"\n              ? { smooth: 0, stability: 0, headroom: 0, startup: 0, total: 0 }\n              : scoreOf(measures, refresh),\n        });\n      }, 0);\n    };\n\n    const loop = (time: number) => {\n      id = requestAnimationFrame(loop);\n      const instance = handle.current?.getInstance();\n      if (!drawn.current || !instance) {\n        if (performance.now() - startedAt > START_TIMEOUT) finish(\"timeout\");\n        return;\n      }\n      if (!firstFrame && warmup === 0) {\n        channel.port2.postMessage([time, true]);\n        warmup++;\n        return;\n      }\n      if (warmup < WARMUP) {\n        warmup++;\n        return;\n      }\n      if (!base) {\n        instance.resetZoom();\n        base = instance.getView();\n        start = time;\n        last = time;\n        return;\n      }\n      intervals.push(time - last);\n      const slow = time - last > SLOW_FRAME;\n      last = time;\n      channel.port2.postMessage([time, false]);\n      instance.setView(\n        cameraAt(\n          job.workload,\n          (time - start) / 1000,\n          job.duration / 1000,\n          base,\n        ),\n      );\n      if (slow) finish(\"slow\");\n      else if (time - start >= job.duration) finish(\"ok\");\n    };\n    id = requestAnimationFrame(loop);\n    return () => {\n      finished = true;\n      cancelAnimationFrame(id);\n      channel.port1.close();\n      channel.port2.close();\n    };\n  }, [job, startedAt, refresh]);\n\n  return (\n    <Chart\n      ref={handle}\n      series={series}\n      renderer={job.backend}\n      onRendererChange={(kind) => {\n        drawn.current = kind;\n        onDrawn?.(kind);\n      }}\n      legend={false}\n      tooltip={false}\n      interaction={false}\n      xAxis={job.workload === \"line\" ? { type: \"time\" } : undefined}\n      height={height}\n      ariaLabel={ariaLabel}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "点数によるスケーリング",
+      "description": "ハードウェアで動く各バックエンドで 10K、100K、1M、2M 点を各 1.5 秒描画し、フレームレートと 1 フレームのメインスレッド時間を規模に対して対数軸にプロットします。GPU の曲線は平らなまま、Canvas2D は上昇します。"
+    },
+    {
+      "id": "switching",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/chart-renderers/demos/switching.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/chart-renderers/demos/switching.tsx": "import { useEffect, useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport {\n  Chart,\n  type ChartRendererKind,\n  type ChartRendererPreference,\n} from \"minerva-design/charts\";\nimport { useBenchFormat } from \"../bench/format\";\nimport { makeSeries } from \"../bench/workloads\";\nimport styles from \"../bench/bench.module.scss\";\n\nconst PREFERENCES: readonly ChartRendererPreference[] = [\n  \"auto\",\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\nconst POINTS = 200_000;\n\ninterface Entry {\n  id: number;\n  requested: ChartRendererPreference;\n  drawn: ChartRendererKind;\n  ms: number;\n}\n\nexport default function SwitchingDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const text = useBenchFormat();\n  const [preference, setPreference] = useState<ChartRendererPreference>(\"auto\");\n  const [drawn, setDrawn] = useState<ChartRendererKind | null>(null);\n  const [log, setLog] = useState<Entry[]>([]);\n  // when the current preference was asked for (performance.now())\n  const asked = useRef<{ requested: ChartRendererPreference; at: number }>({\n    requested: \"auto\",\n    at: 0,\n  });\n\n  const series = useMemo(\n    () => makeSeries(\"line\", POINTS, (index) => t(\"series.line\", { index })),\n    [t],\n  );\n  // the first backend is timed from the mount (renderers start asynchronously)\n  useEffect(() => {\n    asked.current.at = performance.now();\n  }, []);\n\n  return (\n    <div className={styles.stage}>\n      <div className={styles.toolbar}>\n        <RadioGroup\n          aria-label={t(\"preference\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={preference}\n          onChange={(value) => {\n            const next = value as ChartRendererPreference;\n            asked.current = { requested: next, at: performance.now() };\n            setPreference(next);\n          }}\n        >\n          {PREFERENCES.map((kind) => (\n            <Radio key={kind} value={kind} label={text.renderer(kind)} />\n          ))}\n        </RadioGroup>\n      </div>\n      <div className={styles.body}>\n        <Chart\n          series={series}\n          renderer={preference}\n          onRendererChange={(kind) => {\n            const { requested, at } = asked.current;\n            setDrawn(kind);\n            setLog((previous) =>\n              [\n                {\n                  id: (previous[0]?.id ?? 0) + 1,\n                  requested,\n                  drawn: kind,\n                  ms: performance.now() - at,\n                },\n                ...previous,\n              ].slice(0, 8),\n            );\n          }}\n          legend={false}\n          xAxis={{ type: \"time\" }}\n          height={240}\n          ariaLabel={t(\"switchAria\", { count: text.compact(POINTS) })}\n        />\n        <ol className={styles.log} aria-label={t(\"switchLog\")}>\n          {log.map((entry) => (\n            <li key={entry.id}>\n              {entry.requested === entry.drawn\n                ? t(\"switchEntry\", {\n                    backend: text.renderer(entry.drawn),\n                    ms: text.ms(entry.ms),\n                  })\n                : t(\"switchEntryOther\", {\n                    requested: text.renderer(entry.requested),\n                    backend: text.renderer(entry.drawn),\n                    ms: text.ms(entry.ms),\n                  })}\n            </li>\n          ))}\n        </ol>\n      </div>\n      <div className={styles.footer}>\n        <p role=\"status\">\n          {drawn\n            ? t(\"switchStatus\", { backend: text.renderer(drawn) })\n            : t(\"starting\")}\n        </p>\n        <p className={styles.hint}>{t(\"switchHint\")}</p>\n      </div>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/format.ts": "import { useTranslation } from \"react-i18next\";\nimport type {\n  ChartRendererKind,\n  ChartRendererPreference,\n} from \"minerva-design/charts\";\nimport { gradeOf } from \"./score\";\nimport styles from \"./bench.module.scss\";\n\n/** Color class of a score out of 100 */\nexport const scoreClass = (score: number) =>\n  ({\n    excellent: styles.excellent,\n    good: styles.good,\n    fair: styles.fair,\n    poor: styles.poor,\n  })[gradeOf(score)];\n\n/** Color class of a frame rate */\nexport const fpsClass = (fps: number) =>\n  fps >= 50 ? styles.good : fps >= 25 ? styles.fair : styles.poor;\n\n/** Localized numbers, durations and backend names of the benchmarks */\nexport const useBenchFormat = () => {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.chart-renderers.data\",\n  });\n  const number = new Intl.NumberFormat(i18n.language);\n  const compact = new Intl.NumberFormat(i18n.language, {\n    notation: \"compact\",\n    maximumFractionDigits: 1,\n  });\n  const decimal = new Intl.NumberFormat(i18n.language, {\n    minimumFractionDigits: 1,\n    maximumFractionDigits: 1,\n  });\n  const bytes = new Intl.NumberFormat(i18n.language, {\n    style: \"unit\",\n    unit: \"gigabyte\",\n    maximumFractionDigits: 1,\n  });\n  const percent = new Intl.NumberFormat(i18n.language, {\n    style: \"percent\",\n    maximumFractionDigits: 0,\n  });\n  return {\n    count: (value: number) => number.format(Math.round(value)),\n    compact: (value: number) => compact.format(value),\n    decimal: (value: number) => decimal.format(value),\n    ms: (value: number) =>\n      t(\"ms\", {\n        value:\n          value < 100\n            ? decimal.format(value)\n            : number.format(Math.round(value)),\n      }),\n    fps: (value: number) =>\n      t(\"fps\", { value: number.format(Math.round(value)) }),\n    gigabytes: (value: number) => bytes.format(value / 1024 ** 3),\n    percent: (value: number) => percent.format(value),\n    renderer: (kind: ChartRendererPreference | ChartRendererKind) =>\n      t(`renderers.${kind}`),\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/score.ts": "// Scores of the renderer benchmarks: what a run measures and how it turns\n// into a score out of 100, relative to the display refresh rate.\nimport type { ChartRendererKind } from \"minerva-design/charts\";\nimport type { Workload } from \"./workloads\";\n\nexport const BACKENDS: readonly ChartRendererKind[] = [\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\n\nexport interface BenchJob {\n  backend: ChartRendererKind;\n  workload: Workload;\n  count: number;\n  /** Measured part of the run, in ms */\n  duration: number;\n}\n\nexport interface Measures {\n  /** From mounting the chart to its first painted frame, in ms */\n  startup: number;\n  /** Frames per second over the run */\n  fps: number;\n  /** Median interval between two frames, in ms */\n  p50: number;\n  /** 95th percentile of the frame intervals, in ms */\n  p95: number;\n  /** Average main-thread time of a frame, in ms */\n  work: number;\n  frames: number;\n}\n\n/** Each part between 0 and 1, `total` out of 100 */\nexport interface Score {\n  smooth: number;\n  stability: number;\n  headroom: number;\n  startup: number;\n  total: number;\n}\n\nexport interface BenchResult extends Measures {\n  job: BenchJob;\n  /** Backend that drew the chart (another one after a fallback) */\n  drawn: ChartRendererKind | null;\n  /** `slow`: a frame took over 2 s, `timeout`: the backend never started */\n  status: \"ok\" | \"slow\" | \"timeout\";\n  /** Display refresh rate the score is relative to, in Hz */\n  refresh: number;\n  score: Score;\n}\n\n/** Weights of the score (they add up to 1) */\nexport const WEIGHTS = {\n  smooth: 0.4,\n  stability: 0.2,\n  headroom: 0.25,\n  startup: 0.15,\n} as const;\n\n/** A startup at or above this scores 0, in ms */\nexport const STARTUP_LIMIT = 1000;\n\nconst clamp = (value: number) =>\n  Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0;\n\n/**\n * - smooth: frame rate / refresh rate\n * - stability: frame budget / 95th percentile frame interval\n * - headroom: 1 - main-thread time per frame / frame budget\n * - startup: 1 - time to first frame / 1 s\n */\nexport const scoreOf = (measures: Measures, refresh: number): Score => {\n  const budget = 1000 / refresh;\n  const parts = {\n    smooth: clamp(measures.fps / refresh),\n    stability: clamp(budget / measures.p95),\n    headroom: clamp(1 - measures.work / budget),\n    startup: clamp(1 - measures.startup / STARTUP_LIMIT),\n  };\n  const total =\n    parts.smooth * WEIGHTS.smooth +\n    parts.stability * WEIGHTS.stability +\n    parts.headroom * WEIGHTS.headroom +\n    parts.startup * WEIGHTS.startup;\n  return { ...parts, total: Math.round(total * 100) };\n};\n\nexport type Grade = \"excellent\" | \"good\" | \"fair\" | \"poor\";\n\nexport const gradeOf = (score: number): Grade =>\n  score >= 85\n    ? \"excellent\"\n    : score >= 65\n      ? \"good\"\n      : score >= 40\n        ? \"fair\"\n        : \"poor\";\n\n/** Display refresh rate: median of 24 idle animation-frame intervals, in Hz */\nexport const measureRefresh = (): Promise<number> =>\n  new Promise((resolve) => {\n    const times: number[] = [];\n    const step = (time: number) => {\n      times.push(time);\n      if (times.length < 25) {\n        requestAnimationFrame(step);\n        return;\n      }\n      const deltas = times\n        .slice(1)\n        .map((t, i) => t - times[i]!)\n        .sort((a, b) => a - b);\n      const median = deltas[deltas.length >> 1] ?? 1000 / 60;\n      resolve(Math.min(240, Math.max(30, Math.round(1000 / median))));\n    };\n    requestAnimationFrame(step);\n  });\n\nexport const percentile = (sorted: readonly number[], p: number) =>\n  sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] ?? 0;\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/workloads.ts": "// Workloads of the renderer benchmarks: seeded typed-array columns (every\n// visit draws the same picture) and the camera path that zooms in and out\n// of them while the frames are measured.\nimport type { ChartSeries, ChartView } from \"minerva-design/charts\";\n\nexport type Workload = \"line\" | \"scatter\" | \"bars\";\n\nexport const WORKLOADS: readonly Workload[] = [\"line\", \"scatter\", \"bars\"];\n\n/** Point counts offered per workload (bars stay lower: one shape each) */\nexport const COUNTS: Record<Workload, readonly number[]> = {\n  line: [10_000, 100_000, 1_000_000, 2_000_000],\n  scatter: [10_000, 100_000, 1_000_000, 2_000_000],\n  bars: [1_000, 10_000, 100_000, 200_000],\n};\n\n/** Seeded PRNG (mulberry32): uniform numbers in [0, 1) */\nexport function mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst LINES = 4;\nconst CLUSTERS = 8;\nconst START = Date.UTC(2026, 0, 1);\n\n/** Four signals sharing one x column (one sample per second) */\nconst lineSeries = (count: number, name: (index: number) => string) => {\n  const length = Math.max(2, Math.round(count / LINES));\n  const random = mulberry32(11);\n  const x = new Float64Array(length);\n  for (let i = 0; i < length; i++) x[i] = START + i * 1000;\n  return Array.from({ length: LINES }, (_, s): ChartSeries => {\n    const y = new Float64Array(length);\n    let walk = 0;\n    for (let i = 0; i < length; i++) {\n      walk += (random() - 0.5) * 0.6;\n      walk *= 0.999;\n      y[i] = 20 + s * 12 + walk + 4 * Math.sin((i / length) * 18 + s);\n    }\n    return {\n      id: `signal-${s}`,\n      name: name(s + 1),\n      data: { x, y },\n      lineWidth: 1,\n    };\n  });\n};\n\n/** Eight Gaussian clusters */\nconst scatterSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(23);\n  const normal = () =>\n    Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n  const per = Math.max(1, Math.round(count / CLUSTERS));\n  const pointSize = count > 200_000 ? 2 : count > 20_000 ? 3 : 5;\n  return Array.from({ length: CLUSTERS }, (_, c): ChartSeries => {\n    const angle = (c / CLUSTERS) * 2 * Math.PI;\n    const cx = 50 + 28 * Math.cos(angle);\n    const cy = 50 + 28 * Math.sin(angle);\n    const spread = 4 + (c % 3) * 2;\n    const x = new Float64Array(per);\n    const y = new Float64Array(per);\n    for (let i = 0; i < per; i++) {\n      x[i] = cx + normal() * spread;\n      y[i] = cy + normal() * spread;\n    }\n    return {\n      id: `cluster-${c}`,\n      name: name(c + 1),\n      type: \"scatter\",\n      data: { x, y },\n      pointSize,\n      opacity: 0.6,\n    };\n  });\n};\n\n/** One bar per index */\nconst barSeries = (count: number, name: (index: number) => string) => {\n  const random = mulberry32(37);\n  const x = new Float64Array(count);\n  const y = new Float64Array(count);\n  for (let i = 0; i < count; i++) {\n    x[i] = i;\n    y[i] = 40 + 30 * Math.sin((i / count) * 12) + random() * 25;\n  }\n  return [\n    { id: \"bars\", name: name(1), type: \"bar\", data: { x, y } },\n  ] as ChartSeries[];\n};\n\n/** The series of a workload; `name` labels series `index` (from 1) */\nexport const makeSeries = (\n  workload: Workload,\n  count: number,\n  name: (index: number) => string,\n): ChartSeries[] =>\n  workload === \"line\"\n    ? lineSeries(count, name)\n    : workload === \"scatter\"\n      ? scatterSeries(count, name)\n      : barSeries(count, name);\n\n/** Deepest zoom of the camera path, per workload */\nconst ZOOM: Record<Workload, number> = { line: 200, scatter: 20, bars: 100 };\n\n/**\n * The view at `seconds` into a run of `period` seconds: from the whole data\n * set (the hardest frame) down to the deepest zoom and back, drifting\n * sideways so that new data enters the window on every frame.\n */\nexport const cameraAt = (\n  workload: Workload,\n  seconds: number,\n  period: number,\n  base: ChartView,\n): ChartView => {\n  const phase = (seconds / period) * 2 * Math.PI;\n  const zoom = 1 + ((ZOOM[workload] - 1) * (1 - Math.cos(phase))) / 2;\n  const axis = (\n    [from, to]: [number, number],\n    drift: number,\n  ): [number, number] => {\n    const width = (to - from) / zoom;\n    const room = (to - from - width) / 2;\n    const center = (from + to) / 2 + room * 0.8 * drift;\n    return [center - width / 2, center + width / 2];\n  };\n  return {\n    x: axis(base.x, Math.sin(phase * 1.5)),\n    y: workload === \"scatter\" ? axis(base.y, Math.cos(phase * 1.5)) : base.y,\n  };\n};\n",
+        "apps/docs/src/docs/pages/chart-renderers/bench/bench.module.scss": ".stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--border-color);\n}\n\n.spacer {\n  flex: 1;\n}\n\n.body {\n  display: grid;\n  gap: 12px;\n  padding: 12px 14px;\n}\n\n.live {\n  position: relative;\n  min-height: 260px;\n}\n\n.placeholder {\n  display: grid;\n  place-items: center;\n  height: 260px;\n  padding: 0 24px;\n  border: 1px dashed var(--border-color);\n  border-radius: var(--radius-md);\n  font-size: 13px;\n  text-align: center;\n  color: var(--text-muted-color);\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  border-top: 1px solid var(--border-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.hint {\n  color: var(--text-muted-color);\n}\n\n.mono {\n  font-family: var(--font-family-mono);\n  font-variant-numeric: tabular-nums;\n}\n\n.excellent {\n  color: var(--success-color);\n  font-weight: 600;\n}\n\n.good {\n  color: var(--success-color);\n}\n\n.fair {\n  color: var(--warning-color);\n}\n\n.poor {\n  color: var(--danger-color);\n}\n\n.fallback {\n  color: var(--warning-color);\n}\n\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  margin: 0;\n}\n\n.card {\n  display: grid;\n  gap: 2px;\n  min-width: 0;\n  padding: 10px 12px;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n\n  dt {\n    font-size: 12px;\n    color: var(--text-muted-color);\n  }\n\n  dd {\n    margin: 0;\n    font-family: var(--font-family-mono);\n    font-size: 22px;\n    font-variant-numeric: tabular-nums;\n    font-weight: 600;\n  }\n\n  small {\n    font-size: 12px;\n    color: var(--text-secondary-color);\n  }\n}\n\n.cardBest {\n  border-color: var(--primary-color);\n}\n\n.log {\n  display: grid;\n  gap: 4px;\n  max-height: 168px;\n  margin: 0;\n  padding: 8px 12px;\n  overflow: auto;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--surface-subtle-color);\n  font-family: var(--font-family-mono);\n  font-size: 12px;\n  list-style: none;\n  color: var(--text-secondary-color);\n}\n\n.wrap {\n  overflow-wrap: anywhere;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "バックエンドのライブ切り替え",
+      "description": "renderer プロパティで画面上のチャートのバックエンドを変えられます。チャートはその場でレンダラーを作り直し、データとズームを保ちます。ログには実際に描画したバックエンドと起動にかかった時間が表示されます。起動できない強制バックエンドはチェーンを下に進みます。Auto はページ上部のレンダラーバーに従います。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// default: the first backend that starts, best first\n<LineChart series={series} />                     // renderer=\"auto\"\n\n// a forced backend; if it cannot start, the next one in the chain\n<LineChart series={series} renderer=\"webgl2\" />\n\n// which backend is drawing (again after a fallback)\n<LineChart\n  series={series}\n  onRendererChange={(kind: ChartRendererKind) => setBackend(kind)}\n/>\n\n// every chart whose renderer is unset or \"auto\", in every framework\nsetDefaultChartRenderer(\"canvas2d\");",
+      "language": "tsx"
+    },
+    {
+      "source": "const budget = 1000 / refreshRate; // ms per frame: 16.7 at 60 Hz\n\nconst smooth = clamp(fps / refreshRate); // keeps up with the display\nconst stability = clamp(budget / p95FrameTime); // no long frames\nconst headroom = clamp(1 - mainThreadPerFrame / budget); // CPU left for the app\nconst startup = clamp(1 - timeToFirstFrame / 1000); // chart on screen quickly\n\nconst score = Math.round(\n  100 * (0.4 * smooth + 0.2 * stability + 0.25 * headroom + 0.15 * startup),\n); // clamp: between 0 and 1",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "レンダラー比較",
+      "description": "4 つのチャートバックエンドの違い、お使いのブラウザーで動くバックエンド、そしてこのデバイスでの比較。フレームレート、フレーム時間、メインスレッドの負荷、起動時間、100 点満点のスコアをライブで計測します。",
+      "chain": {
+        "title": "チャートがバックエンドを選ぶしくみ",
+        "text": "直交座標系のチャート（折れ線、面、棒、散布図、ローソク足、ヒートマップ、スパークライン、四象限）は、データを 4 つのバックエンドのいずれかで、テキスト（軸、ラベル、凡例、ツールチップ）を DOM で描画します。4 つとも同じ図形を同じ色で描き、違いは速度、起動コスト、利用可否、制約にあります。",
+        "auto": "renderer=\"auto\"（既定）は WebGPU、WebGL2、WebGL、Canvas2D の順に試し、最初に起動できたものを使います。使用中のバックエンドは onRendererChange、renderer イベント、ready Promise で通知されます。",
+        "software": "Auto はソフトウェアで動作する GPU（SwiftShader、llvmpipe、Microsoft Basic Render Driver など）をスキップします。Canvas2D より遅いため、仮想マシンやヘッドレスブラウザーでは通常 Canvas2D になります。",
+        "forced": "renderer=\"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\" でバックエンドを強制できます（ソフトウェア GPU も含む）。起動できない場合はチェーンを下に進み、上に戻ることはありません。",
+        "lost": "GPU が失われると（ドライバーのリセット、デバイスの取り外し、コンテキストの破棄）、チャートは次のバックエンドに移り、同じデータ・ズーム・状態で再描画して、新しいバックエンドを通知します。",
+        "global": "setDefaultChartRenderer() は renderer が未指定または \"auto\" のすべてのチャートのバックエンドを設定します。React、Vue、Angular、Web Components 共通で、画面上のチャートもその場で切り替わります。"
+      },
+      "matrix": {
+        "title": "早見表",
+        "text": "各バックエンドが内部で使うもの、1 フレームの描き方、制約。",
+        "corner": "項目",
+        "rows": {
+          "api": {
+            "label": "ブラウザー API",
+            "webgpu": "WebGPU（Vulkan、Metal、Direct3D 12 の上で動作）",
+            "webgl2": "WebGL 2.0（OpenGL ES 3.0）",
+            "webgl": "WebGL 1.0（OpenGL ES 2.0）と ANGLE_instanced_arrays 拡張",
+            "canvas2d": "Canvas 2D コンテキスト（ブラウザーがラスタライズ）"
+          },
+          "shaders": {
+            "label": "シェーダー",
+            "webgpu": "WGSL",
+            "webgl2": "GLSL ES 3.00",
+            "webgl": "GLSL ES 1.00",
+            "canvas2d": "なし：JavaScript からパス、矩形、ピクセルを描画"
+          },
+          "draw": {
+            "label": "1 フレームの描画",
+            "webgpu": "系列ごとに GPU バッファーからインスタンス描画 1 回",
+            "webgl2": "系列ごとにインスタンス描画 1 回、系列ごとに頂点配列オブジェクト 1 つ",
+            "webgl": "系列ごとにインスタンス描画 1 回、描画のたびに属性を再バインド（頂点配列オブジェクトなし）",
+            "canvas2d": "表示中のすべての図形を JavaScript で描き直す"
+          },
+          "zoom": {
+            "label": "ズームとパン",
+            "webgpu": "変換だけが変わり、バッファーは再構築しない",
+            "webgl2": "変換だけが変わり、バッファーは再構築しない",
+            "webgl": "変換だけが変わり、バッファーは再構築しない",
+            "canvas2d": "毎フレーム表示範囲を描き直す"
+          },
+          "lines": {
+            "label": "数百万点の折れ線",
+            "webgpu": "表示中の線分をすべて描画",
+            "webgl2": "表示中の線分をすべて描画",
+            "webgl": "表示中の線分をすべて描画",
+            "canvas2d": "ピクセル列ごとの最小値 / 最大値に間引き（1 列最大 4 点）、輪郭は同じ"
+          },
+          "scatter": {
+            "label": "大規模な散布図",
+            "webgpu": "すべての点を描画、系列ごとにインスタンス描画 1 回",
+            "webgl2": "すべての点を描画、系列ごとにインスタンス描画 1 回",
+            "webgl": "すべての点を描画、系列ごとにインスタンス描画 1 回",
+            "canvas2d": "20,000 点を超えると ImageData バッファーに 1 ピクセルずつ書き込む：1 フレームあたり O(n) のまま"
+          },
+          "antialias": {
+            "label": "アンチエイリアス",
+            "webgpu": "シェーダー内で処理（MSAA なし）",
+            "webgl2": "シェーダー内で処理（MSAA なし）",
+            "webgl": "シェーダー内で処理（MSAA なし）",
+            "canvas2d": "ブラウザー標準"
+          },
+          "contexts": {
+            "label": "ページあたりのコンテキスト数",
+            "webgpu": "チャートごとにデバイス 1 つ。WebGL の上限には数えない",
+            "webgl2": "ブラウザーが保持する WebGL コンテキストは約 16 個まで。超えると画面外のチャートを一時停止し、スクロールで戻ったときに復元",
+            "webgl": "WebGL2 と同じ上限を共有",
+            "canvas2d": "上限なし"
+          },
+          "loss": {
+            "label": "GPU の喪失",
+            "webgpu": "WebGL2 にフォールバック",
+            "webgl2": "WebGL にフォールバック",
+            "webgl": "Canvas2D にフォールバック",
+            "canvas2d": "失うものなし"
+          },
+          "start": {
+            "label": "起動",
+            "webgpu": "非同期：アダプター、デバイス、パイプライン",
+            "webgl2": "同期的にコンテキスト作成、起動時にシェーダーをコンパイル",
+            "webgl": "同期的にコンテキスト作成、起動時にシェーダーをコンパイル",
+            "canvas2d": "即時"
+          },
+          "fit": {
+            "label": "向いている用途",
+            "webgpu": "数百万点、ライブデータ、長時間のズーム操作",
+            "webgl2": "WebGPU がない環境での同様の用途。最も広く使える高速経路",
+            "webgl": "古い GPU やドライバー、WebGL2 のないブラウザー",
+            "canvas2d": "小さなチャート、1 ページに多数のチャート、ソフトウェア GPU、GPU なし"
+          }
+        }
+      },
+      "expect": {
+        "title": "目安",
+        "text": "下の実測から読み取れる傾向で、保証ではありません。お使いのデバイスはこのページのベンチマークで計測してください。",
+        "small": "数万点までなら、どのバックエンドもディスプレイのリフレッシュに追いつきます。Canvas2D は GPU コンテキストもまったく必要ありません。",
+        "medium": "折れ線と面：Canvas2D はピクセル列単位に間引くため、高速な CPU なら 200 万点のソート済みデータでも滑らかです。GPU バックエンドのコストは規模によらずほぼ一定です。",
+        "large": "差が開くのは散布図です。Canvas2D は毎フレームすべての点を描くため、メインスレッド時間は点の数とともに増えます（サンプル機で 10 万点約 8 ms、100 万点約 12 ms、200 万点約 21 ms で、リフレッシュレートを下回ります）。一方 GPU バックエンドは 1〜3 ms 前後にとどまります。",
+        "bars": "棒グラフ：サンプル機では 20 万本まで、どのバックエンドも追いつき、メインスレッド時間が最も少ないのは GPU バックエンドでした。",
+        "gpus": "WebGPU、WebGL2、WebGL の差は 1〜2 ms 程度に収まることが多く、実行ごとのばらつきと同程度です。内蔵 GPU、古い GPU、スマートフォンでは差が広がり、CPU が遅いと Canvas2D が早く遅れをとります。",
+        "startup": "最初のフレームには数十ミリ秒かかり、アップロードするデータ量とともに増えます（サンプル機で 200 万点に約 100 ms）。"
+      },
+      "sample": {
+        "title": "計測例",
+        "text": "Apple M3 Max のノートパソコンでベンチマークのデモを 1 回実行した結果です。macOS の Chrome 156、60 Hz ディスプレイ、ピクセル比 1、バックエンドごとに 3 秒。各セルはスコアと 1 フレームのメインスレッド時間で、フレームレートがディスプレイを下回った場合はそれも示します。",
+        "corner": "負荷",
+        "workload": "{{workload}} · {{count}}点",
+        "note": "1 台のマシンで 1 回実行した数値です。数点や 1 ms 程度の差はばらつきの範囲内です。ご自身の結果は上のベンチマークで計測してください。"
+      },
+      "score": {
+        "title": "スコアの計算方法",
+        "text": "各実行の最後に 100 点満点のスコアを出します。計測値だけから計算し、このディスプレイのリフレッシュレート（実行前に計測）を基準にします。4 つの項目はそれぞれ 0 から 1 の値です。",
+        "smooth": "滑らかさ（40%）：毎秒フレーム数 ÷ リフレッシュレート。",
+        "stability": "安定性（20%）：フレーム予算（1000 ms ÷ リフレッシュレート）÷ フレーム間隔の 95 パーセンタイル。平均が良くても長いフレームは減点されます。",
+        "headroom": "余裕（25%）：1 − 1 フレームのメインスレッド時間 ÷ フレーム予算。つまり各フレームでアプリに残る時間の割合です。",
+        "startup": "起動（15%）：1 − チャートのマウントから最初のフレームが描画されるまでの時間 ÷ 1 秒。",
+        "grades": "評価：85 以上は優秀、65 以上は良好、40 以上は普通、40 未満は不十分。スコアは同じデバイス・同じ負荷でバックエンドを比べるためのもので、別のマシンとは比較できません。"
+      },
+      "method": {
+        "title": "計測方法と注意点",
+        "text": "ベンチマークはチャートを 1 つずつ、バックエンドを強制してマウントし、同じデータと同じカメラ経路を使います。",
+        "same": "データ：シード付きの TypedArray 列を計測開始前に一度だけ生成し、すべてのバックエンドで共有します。カメラはデータ全体（最も重いフレーム）から最大ズームまで寄って戻りながら横にも移動し、アニメーションフレームごとに setView を呼びます。",
+        "work": "メインスレッド時間：アニメーションフレームの開始から、そのフレーム内で送ったメッセージが処理されるまで。このメッセージはフレームの描画後に実行されるため、チャートの JavaScript と描画呼び出し、スタイル計算、レイアウト、ペイントが含まれます。",
+        "vsync": "フレームレートはディスプレイが上限です。両方ともリフレッシュレートに達したバックエンドは滑らかさで同点になり、差は余裕に現れます。",
+        "gpu": "描画呼び出し後の GPU 時間は JavaScript からは見えません。素早く送信しても GPU を飽和させるバックエンドは、フレームレートの低下とフレーム間隔の伸びとして現れます。",
+        "noise": "結果は電源モード、サーマルスロットリング、ほかのタブ、ブラウザー拡張によって変わります。実行中はタブを前面に保ち、2 回実行して比べてください。"
+      },
+      "browsers": {
+        "title": "ブラウザー対応",
+        "text": "各バックエンドが使える環境。バージョンは機能が既定で有効になった最初の安定版です。対応状況は GPU とドライバーにも左右されます。",
+        "corner": "ブラウザー",
+        "note": "WebGPU は安全なコンテキスト（HTTPS または localhost）でのみ動作します。ブラウザーは一部の GPU やドライバーをブロックすることがあり、その場合チャートは自動でフォールバックします。このブラウザーで実際に使えるものは、上の「お使いのデバイス」デモで確認できます。",
+        "rows": {
+          "chrome": {
+            "label": "Chrome、Edge（デスクトップ）",
+            "webgpu": "113 以降（Windows、macOS、ChromeOS）",
+            "webgl2": "Chrome 56 以降、Edge 79 以降",
+            "webgl": "対応",
+            "canvas2d": "対応"
+          },
+          "firefox": {
+            "label": "Firefox（デスクトップ）",
+            "webgpu": "Windows で 141 以降。ほかのプラットフォームは順次対応",
+            "webgl2": "51 以降",
+            "webgl": "対応",
+            "canvas2d": "対応"
+          },
+          "safari": {
+            "label": "Safari（macOS）",
+            "webgpu": "26 以降",
+            "webgl2": "15 以降",
+            "webgl": "対応",
+            "canvas2d": "対応"
+          },
+          "ios": {
+            "label": "iOS と iPadOS（全ブラウザー）",
+            "webgpu": "26 以降",
+            "webgl2": "15 以降",
+            "webgl": "対応",
+            "canvas2d": "対応"
+          },
+          "android": {
+            "label": "Android 版 Chrome",
+            "webgpu": "121 以降、Android 12 以降かつ対応 GPU",
+            "webgl2": "対応",
+            "webgl": "対応",
+            "canvas2d": "対応"
+          },
+          "linux": {
+            "label": "Linux 版 Chrome",
+            "webgpu": "バージョンと GPU ドライバーによる",
+            "webgl2": "対応",
+            "webgl": "対応",
+            "canvas2d": "対応"
+          }
+        }
+      },
+      "choose": {
+        "title": "どれを使うべきか",
+        "auto": "本番環境では renderer を \"auto\" のままにしてください。訪問者ごとに、そのデバイスがハードウェアで動かせる最速のバックエンドが選ばれ、GPU の喪失も自動で処理されます。",
+        "webgpu": "WebGPU の強制はテストや比較のときだけにしてください。ハードウェアで動く場合、auto はすでに最初に選びます。",
+        "webgl2": "対象デバイスで WebGPU ドライバーに問題がある場合や、WebGPU の提供時期が異なるブラウザー間で描画を揃えたい場合は WebGL2 を強制します。",
+        "webgl": "古いデバイスでの表示を再現したいときは WebGL を強制します。",
+        "canvas2d": "小さなチャート、サムネイル、スパークライン、数十個のチャートを並べるページ（コンテキスト上限なし）、GPU のない環境では Canvas2D を強制します。",
+        "many": "チャートの多いダッシュボードでは、大きなものや操作するものは auto のままにして小さなものは Canvas2D にするか、画面外に出たチャートを破棄してください。",
+        "more": "データ形式、ストリーミング、100 万点のデモは<performance>チャートのパフォーマンス</performance>に、フレームワークに依存しない API は<engine>チャートエンジン</engine>にあります。"
+      },
+      "demos": {
+        "environment": {
+          "title": "お使いのデバイス",
+          "description": "エンジンと同じ方法で各バックエンドを調べます。ハードウェア GPU で起動するか、ソフトウェア GPU でしか動かないか、まったく起動しないか、ブラウザーが報告する GPU と API のバージョン、いくつかの上限、そしてここで renderer=\"auto\" が選ぶバックエンドを表示します。調査に使ったコンテキストはすぐに解放します。"
+        },
+        "benchmark": {
+          "title": "ベンチマークとスコア",
+          "description": "負荷（折れ線、散布図、棒）、規模、時間を選んで実行すると、各バックエンドが同じデータを同じズーム経路で順番に描画します。表にはフレームレート、フレーム時間の中央値と 95 パーセンタイル、1 フレームのメインスレッド時間、最初のフレームまでの時間を、カードと棒グラフにはスコアとその内訳を示します。結果は Markdown の表としてコピーして共有できます。"
+        },
+        "scaling": {
+          "title": "点数によるスケーリング",
+          "description": "ハードウェアで動く各バックエンドで 10K、100K、1M、2M 点を各 1.5 秒描画し、フレームレートと 1 フレームのメインスレッド時間を規模に対して対数軸にプロットします。GPU の曲線は平らなまま、Canvas2D は上昇します。"
+        },
+        "switching": {
+          "title": "バックエンドのライブ切り替え",
+          "description": "renderer プロパティで画面上のチャートのバックエンドを変えられます。チャートはその場でレンダラーを作り直し、データとズームを保ちます。ログには実際に描画したバックエンドと起動にかかった時間が表示されます。起動できない強制バックエンドはチェーンを下に進みます。Auto はページ上部のレンダラーバーに従います。"
+        },
+        "fallback": {
+          "title": "GPU の喪失",
+          "description": "使用中のバックエンドで GPU の喪失をシミュレートします（WebGL は WEBGL_lose_context、WebGPU はデバイスの破棄）。チャートは次のバックエンドに移って再描画し、最後は Canvas2D に至ります。ログには各復旧にかかった時間が表示されます。"
+        }
+      },
+      "data": {
+        "renderers": {
+          "auto": "自動",
+          "webgpu": "WebGPU",
+          "webgl2": "WebGL2",
+          "webgl": "WebGL",
+          "canvas2d": "Canvas2D"
+        },
+        "ms": "{{value}} ms",
+        "fps": "{{value}} fps",
+        "series": {
+          "line": "信号 {{index}}",
+          "scatter": "クラスター {{index}}",
+          "bars": "値"
+        },
+        "env": {
+          "probing": "バックエンドを調べています…",
+          "backend": "バックエンド",
+          "autoTag": "自動",
+          "status": "状態",
+          "cpu": "CPU",
+          "support": {
+            "hardware": "ハードウェア GPU",
+            "software": "ソフトウェア GPU",
+            "missing": "利用不可"
+          },
+          "device": "GPU / デバイス",
+          "cpuDevice": "ブラウザーが描画、GPU コンテキスト不要",
+          "version": "API バージョン",
+          "limits": "上限",
+          "maxTexture": "テクスチャー最大 {{value}} px",
+          "maxBuffer": "バッファー最大 {{value}}",
+          "noInstancing": "インスタンス描画なし：Canvas2D にフォールバック",
+          "autoPick": "Auto の選択",
+          "autoWhy": {
+            "webgpu": "ここでは WebGPU がハードウェア GPU で動作します。",
+            "webgl2": "ここにはハードウェアの WebGPU がなく、WebGL2 が最適です。",
+            "webgl": "ここにはハードウェアの WebGPU も WebGL2 もなく、WebGL が最適です。",
+            "canvas2d": "ここにはハードウェア GPU のバックエンドがありません。ソフトウェア GPU より Canvas2D のほうが高速です。"
+          },
+          "secure": "安全なコンテキスト",
+          "yes": "はい",
+          "no": "いいえ",
+          "secureNote": "WebGPU には HTTPS または localhost が必要です。",
+          "dpr": "ピクセル比",
+          "dprNote": "CSS ピクセルあたりのデバイスピクセル：塗る画素が増えます。",
+          "threads": "CPU スレッド",
+          "threadsNote": "ブラウザーが報告する論理コア数。",
+          "tableAria": "このデバイスのチャートバックエンド",
+          "note": "GPU 名は一般的な名称になったり表示されなかったりします。ブラウザーはプライバシーのために隠したり丸めたりすることがあります。"
+        },
+        "workload": "負荷",
+        "workloads": {
+          "line": "折れ線",
+          "scatter": "散布図",
+          "bars": "棒"
+        },
+        "points": "点の数",
+        "pointsValue": "{{value}}点",
+        "duration": "各実行の時間",
+        "seconds": "バックエンドごとに {{value}} 秒",
+        "includeSoftware": "ソフトウェア GPU を含める",
+        "runAll": "すべてのバックエンドを実行",
+        "stop": "停止",
+        "liveAria": "{{backend}} が {{count}} 点を描画中",
+        "idle": "ベンチマークを実行してください。各バックエンドに同じデータと同じズーム経路を順番に与えます。",
+        "between": "前のバックエンドを解放しています…",
+        "doneHint": "完了。負荷や規模を変えて再実行し、比較してください。",
+        "fellBack": "{{requested}} → {{backend}}",
+        "col": {
+          "backend": "バックエンド",
+          "score": "スコア",
+          "fps": "FPS",
+          "p50": "フレーム p50",
+          "p95": "フレーム p95",
+          "work": "メインスレッド / フレーム",
+          "startup": "最初のフレーム",
+          "status": "実行"
+        },
+        "status": {
+          "ok": "完了",
+          "slow": "停止：2 秒を超えるフレームがありました",
+          "timeout": "起動しませんでした"
+        },
+        "parts": {
+          "smooth": "滑らかさ（{{weight}}%）",
+          "stability": "安定性（{{weight}}%）",
+          "headroom": "余裕（{{weight}}%）",
+          "startup": "起動（{{weight}}%）"
+        },
+        "scoreValue": "{{value}} / 100",
+        "grades": {
+          "excellent": "優秀",
+          "good": "良好",
+          "fair": "普通",
+          "poor": "不十分"
+        },
+        "vsCanvas": "メインスレッド：Canvas2D の {{value}}",
+        "tableAria": "バックエンドごとのベンチマーク結果",
+        "breakdownAria": "各バックエンドのスコアの 4 項目の内訳",
+        "measuring": "{{backend}} を計測中（{{total}} 件中 {{index}} 件目）…",
+        "preparing": "次の実行を準備しています…",
+        "done": "完了：同じデータ、同じカメラ経路で、バックエンドを 1 つずつ計測しました。",
+        "copied": "結果を Markdown の表としてコピーしました。",
+        "ready": "準備完了。",
+        "skippedNote": "スキップ（ソフトウェア GPU）：{{backends}}。",
+        "refreshNote": "ディスプレイ：{{value}} Hz、フレーム予算 {{budget}} ms",
+        "copy": "結果をコピー",
+        "copyTitle": "{{workload}}、{{count}} 点、{{refresh}} Hz ディスプレイ",
+        "runScaling": "スケーリングテストを実行",
+        "scalingIdle": "テストを実行してください。ハードウェアで動く各バックエンドが 10K、100K、1M、2M 点をそれぞれ 1.5 秒描画します（約 1 分）。",
+        "pointsAxis": "点の数",
+        "fpsAxis": "毎秒フレーム数",
+        "workAxis": "1 フレームのメインスレッド時間",
+        "scalingFpsAria": "{{workload}}：点の数とバックエンド別のフレームレート",
+        "scalingWorkAria": "{{workload}}：点の数とバックエンド別の 1 フレームのメインスレッド時間",
+        "scalingMeasuring": "{{backend}} を {{count}} 点で計測中（{{total}} 件中 {{index}} 件目）…",
+        "scalingDone": "完了。平らな曲線は画面サイズに、上昇する曲線はデータ量に比例します。",
+        "scalingHint": "ソフトウェア GPU はスキップします。フレームレート以外の軸は対数軸です。",
+        "preference": "レンダラー",
+        "switchAria": "選択したバックエンドで描画した {{count}} 点の折れ線",
+        "switchLog": "バックエンドの変更",
+        "switchEntry": "{{backend}} が {{ms}} で準備完了",
+        "switchEntryOther": "{{requested}} を要求：{{backend}} が {{ms}} で準備完了",
+        "switchStatus": "{{backend}} で描画中。",
+        "starting": "レンダラーを起動しています…",
+        "switchHint": "切り替えてもデータ、ズーム、ホバー状態は保たれます。",
+        "loseGpu": "GPU を失わせる",
+        "restart": "WebGPU からやり直す",
+        "chainLost": "{{backend}}（喪失）",
+        "lostEntry": "{{backend}} を喪失",
+        "fallbackEntry": "{{backend}} で {{ms}} 後に復旧",
+        "startEntry": "{{backend}} で起動",
+        "fallbackAria": "GPU を失うとフォールバックする {{count}} 点の折れ線",
+        "fallbackLog": "喪失と復旧",
+        "cannotLose": "このブラウザーではページから {{backend}} の喪失をシミュレートできません。",
+        "chainEnd": "チェーンの終端：Canvas2D は GPU を必要としません。",
+        "fallbackStatus": "{{backend}} で描画中。",
+        "fallbackHint": "実際の喪失は、ドライバーの更新、GPU のリセット、ブラウザーによるコンテキストの破棄で起こります。"
+      }
+    }
+  }
+}

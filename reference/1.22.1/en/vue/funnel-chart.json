@@ -1,0 +1,619 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.22.1",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "funnel-chart",
+  "title": "Funnel chart",
+  "description": "Stages of a process that lose volume along the way (sign-ups, sales pipeline, checkout), with the conversion rate from each stage to the next. Hover or use the arrow keys to highlight a stage; click a legend item to hide it.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.22.1",
+    "sourceCommit": "a07dc9a260690841cc0eea98acdc24ac32032a2c",
+    "sourceDigest": "sha256:cbdfa6292d29dec33adda7a3e9cf0e027da50858956b8d08e3f7f3ed59c8d78a",
+    "referenceSourceDigest": "sha256:6d534260f2c14247d5360acc167a35134052fa342938ee2bdd089ae303d95f7c"
+  },
+  "content": {
+    "data": {
+      "signup": {
+        "pricing": "Pricing page",
+        "started": "Started sign-up",
+        "verified": "Verified email",
+        "project": "Created project",
+        "invited": "Invited teammate",
+        "upgraded": "Upgraded to paid"
+      },
+      "users": "{{users}} users",
+      "ofVisitors": "{{share}} of the visitors",
+      "droppedSince": "{{users}} dropped since “{{stage}}”",
+      "signupAria": "Sign-up funnel",
+      "features": {
+        "alerts": "Alerts",
+        "dashboards": "Dashboards",
+        "integrations": "Integrations",
+        "reports": "Reports",
+        "api": "Public API"
+      },
+      "sortOrder": "Sort order",
+      "sorts": {
+        "descending": "Descending",
+        "ascending": "Ascending",
+        "none": "Data order"
+      },
+      "weeklyUsers": "{{users}} weekly users",
+      "featuresAria": "Weekly active users per feature",
+      "shop": {
+        "visits": "Visits",
+        "product": "Product page",
+        "cart": "Added to cart",
+        "checkout": "Checkout",
+        "payment": "Payment",
+        "order": "Order placed"
+      },
+      "stage": "Stage",
+      "visitors": "Visitors",
+      "dropOff": "Drop-off",
+      "conversionOverall": "{{share}} of the first stage",
+      "shopAria": "Checkout funnel of an online shop",
+      "dropOffTable": "Drop-off between the stages",
+      "hiring": {
+        "applied": "Applied",
+        "screened": "Screened",
+        "technical": "Technical interview",
+        "onsite": "On-site interview",
+        "offer": "Offer",
+        "hired": "Hired"
+      },
+      "candidates": "{{candidates}} candidates",
+      "stageTime": "Typical time in this stage: {{days}}",
+      "hiringAria": "Hiring pipeline of an engineering role",
+      "hiringSelected": "{{stage}}: {{candidates}} candidates ({{share}} of the applicants)",
+      "hiringSummary": "{{rate}} of the applicants are hired, after {{days}} on average",
+      "devices": {
+        "desktop": "Desktop",
+        "mobile": "Mobile"
+      },
+      "conversionRate": "{{rate}} conversion",
+      "deviceFunnelAria": "Checkout funnel on {{device}}",
+      "campaigns": {
+        "stages": {
+          "impressions": "Impressions",
+          "clicks": "Clicks",
+          "leads": "Leads",
+          "qualified": "Qualified leads",
+          "customers": "Customers"
+        },
+        "channels": {
+          "all": "All channels",
+          "search": "Search ads",
+          "social": "Social media",
+          "email": "Email",
+          "partners": "Partners"
+        },
+        "channel": "Channel",
+        "fromPrevious": "{{share}} of the previous stage",
+        "costPer": "Cost per result: {{cost}}",
+        "aria": "Marketing funnel of this month: {{channel}}",
+        "summary": "Spend: {{spend}} · Customers: {{customers}} · Acquisition cost: {{cac}} per customer"
+      },
+      "whatIf": {
+        "stages": {
+          "visits": "Visits",
+          "cart": "Added to cart",
+          "checkout": "Checkout",
+          "paid": "Paid orders"
+        },
+        "aria": "Monthly checkout funnel computed from the conversion rates",
+        "step": "{{from}} → {{to}}",
+        "lower": "Lower the conversion of {{step}}",
+        "raise": "Raise the conversion of {{step}}",
+        "reset": "Reset to today's rates",
+        "summary": "{{orders}} orders ({{ordersDelta}}) · {{revenue}} revenue ({{revenueDelta}}) per month"
+      },
+      "sale": {
+        "stages": {
+          "visitors": "Visitors",
+          "product": "Viewed the deal",
+          "cart": "Added to cart",
+          "checkout": "Checkout",
+          "orders": "Orders"
+        },
+        "aria": "Flash sale funnel, updated live",
+        "pause": "Pause",
+        "resume": "Resume",
+        "restart": "Restart",
+        "status": "{{time}} · {{orders}} orders · {{rate}} of the visitors",
+        "ended": "The sale is over: {{orders}} orders."
+      },
+      "pipeline": {
+        "stages": {
+          "lead": "Lead",
+          "qualified": "Qualified",
+          "demo": "Demo",
+          "proposal": "Proposal",
+          "negotiation": "Negotiation"
+        },
+        "dealsAmount": "{{deals}} deals · {{amount}}",
+        "probability": "Win probability: {{share}}",
+        "aria": "Open deals by pipeline stage, by amount",
+        "stageTitle": "{{stage}}: {{deals}} open deals",
+        "forecast": "Weighted forecast: {{amount}}",
+        "hint": "Click a stage to list its deals."
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "FunnelChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "FunnelChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "animation",
+            "type": "boolean",
+            "required": false,
+            "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ShapeLegendOptions",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)",
+            "typeText": "boolean | ShapeLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ShapeTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it (default `true`)",
+            "typeText": "boolean | ShapeTooltipOptions"
+          },
+          {
+            "name": "conversion",
+            "type": "boolean",
+            "required": false,
+            "description": "Shows the conversion rate from the previous stage (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "sort",
+            "type": "\"none\" | \"ascending\" | \"descending\"",
+            "required": false,
+            "description": "Order of the stages (default `none`: the data order)",
+            "typeText": "\"none\" | \"ascending\" | \"descending\""
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D (default `auto`, see `setDefaultChartRenderer`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the drawing, in pixels (default 8 on every side)",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "shape",
+            "type": "\"bar\" | \"trapezoid\"",
+            "required": false,
+            "description": "Shape of the stages: trapezoids narrowing to the next stage, or centered bars (default `trapezoid`)",
+            "typeText": "\"bar\" | \"trapezoid\""
+          },
+          {
+            "name": "hidden",
+            "type": "readonly number[]",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back.",
+            "typeText": "readonly number[]"
+          },
+          {
+            "name": "texts",
+            "type": "Partial<ShapeChartLabels>",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")",
+            "typeText": "Partial<ShapeChartLabels>"
+          },
+          {
+            "name": "data",
+            "type": "readonly ShapeDatum[]",
+            "required": true,
+            "description": "Stages: a name, a value and an optional color",
+            "typeText": "readonly ShapeDatum[]"
+          },
+          {
+            "name": "format",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)",
+            "typeText": "((value: number) => string)"
+          },
+          {
+            "name": "percentFormat",
+            "type": "((share: number) => string)",
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")",
+            "typeText": "((share: number) => string)"
+          },
+          {
+            "name": "gap",
+            "type": "number",
+            "required": false,
+            "description": "Vertical gap between the stages, in pixels (default 4)",
+            "typeText": "number"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "type": "[event: ShapeHoverEvent | null]",
+            "typeText": "[event: ShapeHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "click",
+            "type": "[event: ShapeHoverEvent]",
+            "typeText": "[event: ShapeHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "toggle",
+            "type": "[event: ShapeToggleEvent]",
+            "typeText": "[event: ShapeToggleEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "bars",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/funnel-chart/vue/bars.vue",
+      "files": {
+        "apps/docs/src/docs/pages/funnel-chart/vue/bars.vue": "<script setup lang=\"ts\">\n// `shape=\"bar\"` draws centered bars, `sort=\"descending\"` orders the stages\n// by value.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { FunnelChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: [\"Interviews\", \"Applications\", \"Offers\", \"Screenings\", \"Hires\"],\n  zh: [\"面试\", \"申请\", \"录用通知\", \"筛选\", \"入职\"],\n  ja: [\"面接\", \"応募\", \"内定\", \"書類選考\", \"採用\"],\n  fr: [\"Entretiens\", \"Candidatures\", \"Offres\", \"Présélections\", \"Embauches\"],\n};\n\nconst { language } = useI18n();\nconst data = computed(() =>\n  [180, 940, 42, 410, 31].map((value, i) => ({\n    name: (TEXT[language.value] ?? TEXT.en)[i],\n    value,\n  })),\n);\n</script>\n\n<template>\n  <FunnelChart :data=\"data\" shape=\"bar\" sort=\"descending\" :height=\"300\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "bars",
+      "description": ""
+    },
+    {
+      "id": "conversion",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/funnel-chart/vue/conversion.vue",
+      "files": {
+        "apps/docs/src/docs/pages/funnel-chart/vue/conversion.vue": "<script setup lang=\"ts\">\n// Stages narrow to the next one; the labels show the conversion rate from\n// the previous stage.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { FunnelChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: [\"Visits\", \"Sign-ups\", \"Trials\", \"Purchases\"],\n  zh: [\"访问\", \"注册\", \"试用\", \"购买\"],\n  ja: [\"訪問\", \"登録\", \"トライアル\", \"購入\"],\n  fr: [\"Visites\", \"Inscriptions\", \"Essais\", \"Achats\"],\n};\n\nconst { language } = useI18n();\nconst data = computed(() =>\n  [12000, 4800, 2100, 860].map((value, i) => ({\n    name: (TEXT[language.value] ?? TEXT.en)[i],\n    value,\n  })),\n);\n</script>\n\n<template>\n  <FunnelChart :data=\"data\" :height=\"300\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "conversion",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.22.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Funnel chart",
+      "description": "Stages of a process that lose volume along the way (sign-ups, sales pipeline, checkout), with the conversion rate from each stage to the next. Hover or use the arrow keys to highlight a stage; click a legend item to hide it.",
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "Trapezoids narrow to the next stage and show the conversion rate; renderTooltip adds the share of visitors and the drop-off in React."
+        },
+        "bars": {
+          "title": "Bars and sorting",
+          "description": "shape=\"bar\" draws centered bars for values that are not a sequence; sort orders them (animated) and conversion={false} hides the rates."
+        },
+        "ecommerce": {
+          "title": "E-commerce checkout",
+          "description": "A shop's checkout funnel next to a Table of the drop-off between stages; the stage that loses the most visitors is highlighted in red in both."
+        },
+        "recruiting": {
+          "title": "Hiring pipeline",
+          "description": "Candidates of one role from application to hire as bars with one color per stage; the tooltip adds the typical time spent in the stage and a click selects it."
+        },
+        "compare": {
+          "title": "Comparing segments",
+          "description": "The same funnel split by device, side by side with the same stages and one color per segment, to see where mobile users drop out."
+        },
+        "campaigns": {
+          "title": "Marketing funnel by channel",
+          "description": "A Select filters the funnel to one acquisition channel and the stages animate to the new counts. renderTooltip adds the conversion from the previous stage and the cost per result, computed from the channel's spend; the line below gives the customer acquisition cost."
+        },
+        "what-if": {
+          "title": "What-if conversion model",
+          "description": "The −1 / +1 buttons change the conversion rate of one checkout step and the funnel is recomputed from the visits; the summary compares the orders and the revenue with today's rates. Rates are kept in whole percent points so that Reset knows when nothing has changed."
+        },
+        "live-sale": {
+          "title": "Live flash sale",
+          "description": "A one-hour sale replayed in 30 ticks (setInterval, cleared on pause, at the end and on unmount): new visitors arrive and move down the stages with a seeded random generator. The status line follows the clock, and only the end of the sale is announced."
+        },
+        "sales-pipeline": {
+          "title": "B2B sales pipeline",
+          "description": "Stages sized by the amount of their open deals, with conversion={false} because each stage holds different deals. onClick lists the deals of a stage next to the funnel, and renderTooltip shows their count and win probability."
+        }
+      },
+      "data": {
+        "signup": {
+          "pricing": "Pricing page",
+          "started": "Started sign-up",
+          "verified": "Verified email",
+          "project": "Created project",
+          "invited": "Invited teammate",
+          "upgraded": "Upgraded to paid"
+        },
+        "users": "{{users}} users",
+        "ofVisitors": "{{share}} of the visitors",
+        "droppedSince": "{{users}} dropped since “{{stage}}”",
+        "signupAria": "Sign-up funnel",
+        "features": {
+          "alerts": "Alerts",
+          "dashboards": "Dashboards",
+          "integrations": "Integrations",
+          "reports": "Reports",
+          "api": "Public API"
+        },
+        "sortOrder": "Sort order",
+        "sorts": {
+          "descending": "Descending",
+          "ascending": "Ascending",
+          "none": "Data order"
+        },
+        "weeklyUsers": "{{users}} weekly users",
+        "featuresAria": "Weekly active users per feature",
+        "shop": {
+          "visits": "Visits",
+          "product": "Product page",
+          "cart": "Added to cart",
+          "checkout": "Checkout",
+          "payment": "Payment",
+          "order": "Order placed"
+        },
+        "stage": "Stage",
+        "visitors": "Visitors",
+        "dropOff": "Drop-off",
+        "conversionOverall": "{{share}} of the first stage",
+        "shopAria": "Checkout funnel of an online shop",
+        "dropOffTable": "Drop-off between the stages",
+        "hiring": {
+          "applied": "Applied",
+          "screened": "Screened",
+          "technical": "Technical interview",
+          "onsite": "On-site interview",
+          "offer": "Offer",
+          "hired": "Hired"
+        },
+        "candidates": "{{candidates}} candidates",
+        "stageTime": "Typical time in this stage: {{days}}",
+        "hiringAria": "Hiring pipeline of an engineering role",
+        "hiringSelected": "{{stage}}: {{candidates}} candidates ({{share}} of the applicants)",
+        "hiringSummary": "{{rate}} of the applicants are hired, after {{days}} on average",
+        "devices": {
+          "desktop": "Desktop",
+          "mobile": "Mobile"
+        },
+        "conversionRate": "{{rate}} conversion",
+        "deviceFunnelAria": "Checkout funnel on {{device}}",
+        "campaigns": {
+          "stages": {
+            "impressions": "Impressions",
+            "clicks": "Clicks",
+            "leads": "Leads",
+            "qualified": "Qualified leads",
+            "customers": "Customers"
+          },
+          "channels": {
+            "all": "All channels",
+            "search": "Search ads",
+            "social": "Social media",
+            "email": "Email",
+            "partners": "Partners"
+          },
+          "channel": "Channel",
+          "fromPrevious": "{{share}} of the previous stage",
+          "costPer": "Cost per result: {{cost}}",
+          "aria": "Marketing funnel of this month: {{channel}}",
+          "summary": "Spend: {{spend}} · Customers: {{customers}} · Acquisition cost: {{cac}} per customer"
+        },
+        "whatIf": {
+          "stages": {
+            "visits": "Visits",
+            "cart": "Added to cart",
+            "checkout": "Checkout",
+            "paid": "Paid orders"
+          },
+          "aria": "Monthly checkout funnel computed from the conversion rates",
+          "step": "{{from}} → {{to}}",
+          "lower": "Lower the conversion of {{step}}",
+          "raise": "Raise the conversion of {{step}}",
+          "reset": "Reset to today's rates",
+          "summary": "{{orders}} orders ({{ordersDelta}}) · {{revenue}} revenue ({{revenueDelta}}) per month"
+        },
+        "sale": {
+          "stages": {
+            "visitors": "Visitors",
+            "product": "Viewed the deal",
+            "cart": "Added to cart",
+            "checkout": "Checkout",
+            "orders": "Orders"
+          },
+          "aria": "Flash sale funnel, updated live",
+          "pause": "Pause",
+          "resume": "Resume",
+          "restart": "Restart",
+          "status": "{{time}} · {{orders}} orders · {{rate}} of the visitors",
+          "ended": "The sale is over: {{orders}} orders."
+        },
+        "pipeline": {
+          "stages": {
+            "lead": "Lead",
+            "qualified": "Qualified",
+            "demo": "Demo",
+            "proposal": "Proposal",
+            "negotiation": "Negotiation"
+          },
+          "dealsAmount": "{{deals}} deals · {{amount}}",
+          "probability": "Win probability: {{share}}",
+          "aria": "Open deals by pipeline stage, by amount",
+          "stageTitle": "{{stage}}: {{deals}} open deals",
+          "forecast": "Weighted forecast: {{amount}}",
+          "hint": "Click a stage to list its deals."
+        }
+      },
+      "api": {
+        "FunnelChartProps": {
+          "data": "Stages: a name, a value and an optional color",
+          "sort": "Order of the stages: descending, ascending or the data order",
+          "gap": "Vertical gap between the stages, in pixels",
+          "conversion": "Shows the conversion rate from the previous stage",
+          "shape": "Shape of the stages: trapezoids that narrow to the next stage, or centered bars"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Each stage narrows to the next one and shows the conversion from the previous stage; tap a stage to select it."
+          }
+        },
+        "data": {
+          "stages": {
+            "install": "Installed",
+            "open": "Opened",
+            "signup": "Signed up",
+            "trial": "Started a trial",
+            "paid": "Paid"
+          },
+          "signupAria": "Sign-up funnel of a mobile app",
+          "selectedStage": "{{stage}}: {{users}} users ({{share}} of the installs)",
+          "tapStage": "Tap a stage to select it"
+        }
+      },
+      "wc": {
+        "demos": {
+          "conversion": {
+            "title": "Conversion funnel",
+            "description": "Stages narrowing to the next one, each labelled with its conversion rate from the previous stage."
+          },
+          "bars": {
+            "title": "Sorted bars",
+            "description": "Centered bars instead of trapezoids, with the stages sorted by value."
+          }
+        },
+        "minerva-funnel-chart": {
+          "props": {
+            "hideConversion": "Hides the conversion rates from the previous stage",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, null when nothing is hovered",
+            "minerva-click": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+            "minerva-toggle": "A legend item was clicked (or toggle() called); detail: { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node by index",
+            "getRenderer": "Backend drawing the shapes (webgpu, webgl2, webgl, canvas2d), null until ready; set it with the renderer engine option"
+          }
+        }
+      }
+    }
+  }
+}
