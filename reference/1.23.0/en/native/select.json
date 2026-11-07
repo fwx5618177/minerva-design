@@ -1,0 +1,811 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "en",
+  "renderer": "native",
+  "page": "select",
+  "title": "Select",
+  "description": "A single-choice dropdown with full keyboard support, groups and form integration.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "behavior": {
+      "title": "Behavior and accessibility",
+      "keyboard": "The trigger is a button with the combobox role (aria-haspopup=\"listbox\"). Click, Enter, Space, Arrow Down / Arrow Up, Home or End open the listbox and focus the selected option (or the first enabled one). Arrow keys move without wrapping and skip disabled options; Home / End and Page Up / Page Down jump. Enter or Space selects, closes and returns focus to the trigger; Escape closes without selecting; Tab closes and continues to the next field.",
+      "typeahead": "Typing letters on the closed trigger changes the selection directly, like a native select; while open it moves the highlight. Use textValue on options whose content is not plain text.",
+      "positioning": "The listbox is anchored below the trigger, at least as wide as it, flips above when there is not enough room and scrolls when its options do not fit the viewport. This is the same popper positioning as every other overlay of the library: it is predictable on touch screens and small viewports and keeps the trigger visible. Positioning the list over the trigger with the selected option aligned (\"item-aligned\") is a macOS idiom and was deliberately not used.",
+      "forms": "A hidden native select carries name, required and disabled: the value is part of FormData, required takes part in native constraint validation, and resetting the form restores defaultValue. The placeholder shows while the value is undefined or an empty string.",
+      "layers": "The listbox is portalled into the theme container of the closest ConfigProvider. Inside a Modal or Drawer, Escape closes only the listbox."
+    }
+  },
+  "components": [
+    {
+      "name": "Select",
+      "support": {
+        "status": "beta",
+        "notes": "Options open in a bottom sheet (single or multiple)"
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Options open in a bottom sheet (single or multiple)",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Select"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "multiple",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Several values (checkboxes and a confirm button)"
+          },
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "union",
+            "typeText": "string | string[] | undefined",
+            "typeRef": "type:cdf445ffccc04acaf8cd",
+            "required": false,
+            "description": "Selected value (controlled; pair with `onChange`) Selected values (controlled; pair with `onChange`)"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "union",
+            "typeText": "string | string[] | undefined",
+            "typeRef": "type:cdf445ffccc04acaf8cd",
+            "required": false,
+            "description": "Initially selected value (uncontrolled) Initially selected values (uncontrolled)"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "options",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "array",
+            "typeText": "SelectOption[] | undefined",
+            "typeRef": "type:e271e6e04b0fbf392840",
+            "required": false,
+            "description": "The options"
+          },
+          {
+            "name": "open",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Controlled open state of the options sheet"
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Initial open state while uncontrolled"
+          },
+          {
+            "name": "placeholder",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Text shown in the trigger while nothing is selected"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "NativeSize | undefined",
+            "typeRef": "type:3e1597e03bb6f7f3269e",
+            "default": "medium",
+            "required": false,
+            "description": "Size of the trigger"
+          },
+          {
+            "name": "invalid",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the error state"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the select"
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Visible label above the trigger; also its accessible name and the sheet title"
+          },
+          {
+            "name": "title",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Title of the options sheet"
+          },
+          {
+            "name": "searchable",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a search field filtering the options by label"
+          },
+          {
+            "name": "accessibilityLabel",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the trigger when there is no `label`"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "function",
+            "typeText": "((value: string) => void) | ((value: string[]) => void) | undefined",
+            "typeRef": "type:68aa65800c73636ebe44",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the picked value (the sheet then closes) Called with the confirmed values"
+          },
+          {
+            "name": "onOpenChange",
+            "source": "packages/native/src/components/Select/Select.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean, reason?: OverlayCloseReason | undefined) => void) | undefined",
+            "typeRef": "type:4865fc0abe338cf883c6",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              },
+              {
+                "name": "reason",
+                "position": 1,
+                "required": false,
+                "rest": false,
+                "typeText": "OverlayCloseReason | undefined",
+                "typeRef": "type:dee0306bddc4ca67a449"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the requested open state (and, when closing, the reason: \"action\" after a pick, \"confirm\", \"cancel\", \"mask\", \"back\")"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          },
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SelectGroup",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "SelectGroup"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Select/SelectParts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Select/SelectParts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SelectItem",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "SelectItem"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Select/SelectParts.tsx",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Select/SelectParts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "textValue",
+            "source": "packages/native/src/components/Select/SelectParts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "description",
+            "source": "packages/native/src/components/Select/SelectParts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SelectLabel",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "SelectLabel"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SelectSeparator",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "SelectSeparator"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:SelectSingleProps": {
+      "source": "native/src/components/Select/Select.tsx",
+      "kind": "interface",
+      "extends": [
+        "SelectBaseProps"
+      ],
+      "props": [
+        {
+          "name": "multiple",
+          "type": "false",
+          "required": false,
+          "default": "false",
+          "description": "Several values (checkboxes and a confirm button)"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Selected value (controlled; pair with `onChange`)"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "description": "Initially selected value (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "required": false,
+          "description": "Called with the picked value (the sheet then closes)"
+        }
+      ]
+    },
+    "native:SelectMultipleProps": {
+      "source": "native/src/components/Select/Select.tsx",
+      "kind": "interface",
+      "extends": [
+        "SelectBaseProps"
+      ],
+      "props": [
+        {
+          "name": "multiple",
+          "type": "true",
+          "required": true,
+          "default": "false",
+          "description": "Several values (checkboxes and a confirm button)"
+        },
+        {
+          "name": "value",
+          "type": "string[]",
+          "required": false,
+          "description": "Selected values (controlled; pair with `onChange`)"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string[]",
+          "required": false,
+          "description": "Initially selected values (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string[]) => void",
+          "required": false,
+          "description": "Called with the confirmed values"
+        }
+      ]
+    },
+    "native:SelectOption": {
+      "source": "native/src/components/Select/Select.tsx",
+      "description": "An option of the list",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "group",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "description": "Visible text (also the accessible name of the row)"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "description": "Value reported by `onChange`"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "description": "Disables the row"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Secondary text under the label"
+        }
+      ]
+    },
+    "native:SelectProps": {
+      "source": "native/src/components/Select/Select.tsx",
+      "kind": "alias",
+      "type": "SelectSingleProps | SelectMultipleProps"
+    },
+    "native:SelectItemProps": {
+      "source": "native/src/components/Select/SelectParts.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        },
+        {
+          "name": "textValue",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false
+        }
+      ]
+    },
+    "native:SelectGroupProps": {
+      "source": "native/src/components/Select/SelectParts.tsx",
+      "kind": "interface",
+      "extends": [
+        "ViewProps"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Select": {
+      "kind": "cssVars",
+      "source": "react/src/components/Select",
+      "vars": [
+        {
+          "name": "--select-height",
+          "description": "Height of the trigger (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--select-padding-x",
+          "description": "Horizontal padding of the trigger (every size)"
+        },
+        {
+          "name": "--select-radius",
+          "description": "Corner radius of the trigger and of the listbox (defaults to --radius-lg)"
+        },
+        {
+          "name": "--select-font-size",
+          "description": "Font size of the trigger (every size)"
+        },
+        {
+          "name": "--select-border-color",
+          "description": "Border color of the trigger at rest"
+        },
+        {
+          "name": "--select-dropdown-max-height",
+          "description": "Maximum height of the listbox before it scrolls"
+        },
+        {
+          "name": "--select-option-padding-y",
+          "description": "Vertical padding of an option (follows the density's row padding)"
+        },
+        {
+          "name": "--select-option-padding-x",
+          "description": "Horizontal padding of an option and of a group label (follows the density's row padding)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/select/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/select/native/basic.tsx": "import { useState } from \"react\";\nimport { Select } from \"minerva-design/native\";\nexport default function Basic() {\n  const [language, setLanguage] = useState(\"en\");\n  return (\n    <Select\n      accessibilityLabel=\"Language\"\n      value={language}\n      onChange={setLanguage}\n      options={[\n        { value: \"en\", label: \"English\" },\n        { value: \"zh\", label: \"Chinese\" },\n        { value: \"fr\", label: \"French\" },\n      ]}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "English is selected initially. Choose Chinese or French to update the controlled language value."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Select",
+      "description": "A single-choice dropdown with full keyboard support, groups and form integration.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "English is selected initially. Choose Chinese or French to update the controlled language value."
+        },
+        "groups": {
+          "title": "Groups",
+          "description": "SelectGroup, SelectLabel and SelectSeparator organize options; disabled options cannot be picked."
+        },
+        "sizes-and-states": {
+          "title": "Sizes, states and FormControl",
+          "description": "Three sizes, invalid and disabled states; inside a FormControl the trigger gets its label, description and required state."
+        }
+      },
+      "behavior": {
+        "title": "Behavior and accessibility",
+        "keyboard": "The trigger is a button with the combobox role (aria-haspopup=\"listbox\"). Click, Enter, Space, Arrow Down / Arrow Up, Home or End open the listbox and focus the selected option (or the first enabled one). Arrow keys move without wrapping and skip disabled options; Home / End and Page Up / Page Down jump. Enter or Space selects, closes and returns focus to the trigger; Escape closes without selecting; Tab closes and continues to the next field.",
+        "typeahead": "Typing letters on the closed trigger changes the selection directly, like a native select; while open it moves the highlight. Use textValue on options whose content is not plain text.",
+        "positioning": "The listbox is anchored below the trigger, at least as wide as it, flips above when there is not enough room and scrolls when its options do not fit the viewport. This is the same popper positioning as every other overlay of the library: it is predictable on touch screens and small viewports and keeps the trigger visible. Positioning the list over the trigger with the selected option aligned (\"item-aligned\") is a macOS idiom and was deliberately not used.",
+        "forms": "A hidden native select carries name, required and disabled: the value is part of FormData, required takes part in native constraint validation, and resetting the form restores defaultValue. The placeholder shows while the value is undefined or an empty string.",
+        "layers": "The listbox is portalled into the theme container of the closest ConfigProvider. Inside a Modal or Drawer, Escape closes only the listbox."
+      },
+      "api": {
+        "SelectProps": {
+          "value": "Selected value (controlled; pair with onChange)",
+          "defaultValue": "Initially selected value (uncontrolled)",
+          "onChange": "Called with the value of the newly selected item",
+          "open": "Whether the popup is open (controlled)",
+          "defaultOpen": "Whether the popup is initially open",
+          "onOpenChange": "Called when the popup opens or closes",
+          "placeholder": "Text shown in the trigger while nothing is selected",
+          "size": "Size of the trigger",
+          "invalid": "Shows the error state (also set by an invalid FormControl)",
+          "disabled": "Disables the select; inherited from a FormControl unless set",
+          "required": "Marks the select as required",
+          "name": "Name of the hidden native select, used in forms",
+          "id": "id of the trigger (defaults to the FormControl's id)",
+          "aria-label": "Accessible label of the trigger when there is no visible label",
+          "aria-describedby": "Extra ids of elements describing the trigger",
+          "className": "Additional class name of the trigger",
+          "contentClassName": "Additional class name of the popup",
+          "children": "SelectItem / SelectGroup / SelectLabel / SelectSeparator elements",
+          "ref": "Ref to the trigger <button>",
+          "aria-labelledby": "id(s) of the element(s) labelling the trigger (also names the listbox)",
+          "style": "Inline styles of the trigger"
+        },
+        "SelectItemProps": {
+          "value": "Value of the option (must not be empty)",
+          "disabled": "Prevents selecting the option",
+          "textValue": "Text used for typeahead when the content is not plain text",
+          "className": "Additional class name",
+          "children": "Content of the option",
+          "ref": "Ref to the option element"
+        },
+        "SelectGroupProps": {
+          "className": "Additional class name",
+          "children": "SelectLabel and SelectItem elements",
+          "ref": "Ref to the group element"
+        },
+        "SelectLabelProps": {
+          "className": "Additional class name",
+          "children": "Label content",
+          "ref": "Ref to the label element"
+        },
+        "SelectSeparatorProps": {
+          "className": "Additional class name",
+          "ref": "Ref to the separator element"
+        }
+      },
+      "cssVars": {
+        "--select-height": "Height of the trigger (every size; defaults to the density's control height of the size)",
+        "--select-padding-x": "Horizontal padding of the trigger (every size)",
+        "--select-radius": "Corner radius of the trigger and of the listbox (defaults to --radius-lg)",
+        "--select-font-size": "Font size of the trigger (every size)",
+        "--select-border-color": "Border color of the trigger at rest",
+        "--select-dropdown-max-height": "Maximum height of the listbox before it scrolls",
+        "--select-option-padding-y": "Vertical padding of an option (follows the density's row padding)",
+        "--select-option-padding-x": "Horizontal padding of an option and of a group label (follows the density's row padding)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "<minerva-option> children are the options; a wrapping <label> or aria-label names the select. size sets the trigger size, a disabled option cannot be picked."
+          },
+          "groups": {
+            "title": "Groups and rich options",
+            "description": "<minerva-option-group> with a <minerva-select-label> heading groups options, <minerva-select-separator> divides them. For options with rich content, label sets the text shown in the trigger and text-value the typeahead text."
+          },
+          "options-property": {
+            "title": "Options from data and events",
+            "description": "The options JS property takes flat options and labelled groups. minerva-change reports the picked value; minerva-open-change is cancelable — check the box to keep the listbox closed."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "The element is form-associated: it submits its value under name, required blocks submission while empty, Reset restores the value attribute and a disabled <fieldset> disables it."
+          }
+        },
+        "minerva-option": {
+          "props": {
+            "label": "Text shown in the select's trigger when selected (default: the text content).",
+            "selected": "Whether the option is the selected one (managed by the select).",
+            "highlighted": "Whether the option is highlighted (managed by the select).",
+            "text": "Text of the option: textValue, else label, else its text content (read-only).",
+            "displayLabel": "Label shown in the trigger: label, else the text content (read-only)."
+          },
+          "slots": {
+            "default": "Content of the option (text, icon…)."
+          }
+        },
+        "minerva-option-group": {
+          "slots": {
+            "default": "A <minerva-select-label> and <minerva-option> elements."
+          }
+        },
+        "minerva-select-label": {
+          "slots": {
+            "default": "Label text."
+          }
+        },
+        "minerva-select-separator": {},
+        "minerva-select": {
+          "props": {
+            "options": "Options (or labelled groups) rendered before the <minerva-option> children; JS property only.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled fieldset (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "<label> elements associated with the element (read-only).",
+            "validity": "Validity state, as <input>.validity (read-only).",
+            "validationMessage": "Message describing the current validation error, empty when valid (read-only).",
+            "willValidate": "Whether the element is a candidate for constraint validation (read-only)."
+          },
+          "events": {
+            "input": "The value changed (native-like, composed).",
+            "change": "The value changed (native-like).",
+            "minerva-change": "The user selected an option (detail: { value }).",
+            "minerva-open-change": "The user opened or closed the listbox (detail: { open }); cancelable: preventDefault() keeps the current state."
+          },
+          "slots": {
+            "default": "<minerva-option>, <minerva-option-group> and <minerva-select-separator> elements."
+          },
+          "methods": {
+            "focus": "Focuses the trigger.",
+            "blur": "Removes focus from the trigger.",
+            "show": "Opens the listbox.",
+            "hide": "Closes the listbox.",
+            "checkValidity": "Checks validity; fires invalid when invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets (or clears, with \"\") a custom validation error.",
+            "formResetCallback": "Form lifecycle callback called by the browser on form.reset(): restores the value attribute.",
+            "formDisabledCallback": "Form lifecycle callback called by the browser when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called by the browser to restore the value (back/forward cache, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "English is selected initially. Choose Chinese or French to update the controlled language value."
+          }
+        },
+        "limitations": "Native Select opens a mobile options sheet using options data. SelectGroup, SelectLabel and SelectSeparator are not exported on Native, so the web grouped-options example is not presented as a native preview."
+      }
+    }
+  }
+}

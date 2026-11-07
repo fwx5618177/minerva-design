@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "app-shell",
+  "title": "AppShell アプリシェル",
+  "description": "アプリの外枠：折りたたみ・フローティング可能なサイドバー、固定ヘッダー、単一の main ランドマーク。768px 以下ではナビゲーションがドロワーに移動します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "AppShell",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnAppShell. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnAppShell. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnAppShell"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-app-shell",
+        "props": [
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "[mnHeader]"
+          },
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AppShell": {
+      "kind": "cssVars",
+      "source": "react/src/components/AppShell",
+      "vars": [
+        {
+          "name": "--app-shell-sidebar-width",
+          "description": "Width of the expanded sidebar"
+        },
+        {
+          "name": "--app-shell-rail-width",
+          "description": "Width of the compact / floating rail"
+        },
+        {
+          "name": "--app-shell-header-height",
+          "description": "Minimum height of the header and the sidebar brand row"
+        },
+        {
+          "name": "--app-shell-background",
+          "description": "Background of the page area"
+        },
+        {
+          "name": "--app-shell-sidebar-background",
+          "description": "Background of the sidebar and the mobile navigation drawer"
+        },
+        {
+          "name": "--app-shell-header-background",
+          "description": "Background of the sticky header"
+        },
+        {
+          "name": "--app-shell-drawer-width",
+          "description": "Width of the mobile navigation drawer"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "workspace-navigation",
+      "title": "Workspace navigation",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAppShell, MnNavTree } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAppShell, MnNavTree],\n  template: `\n<div style=\"position:relative;isolation:isolate;transform:translateZ(0);height:360px;overflow:auto\"><mn-app-shell title=\"Workspace\"><ng-template><mn-nav-tree [items]=\"items\"/></ng-template><p style=\"padding:24px\">Open navigation to inspect the mobile drawer and keyboard focus behavior.</p></mn-app-shell></div>\n  `,\n})\nexport class Example {\n  items = [\n  {\n    \"id\": \"home\",\n    \"label\": \"Overview\",\n    \"href\": \"#overview\"\n  },\n  {\n    \"id\": \"projects\",\n    \"label\": \"Projects\",\n    \"href\": \"#projects\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "controlled-navigation-drawer",
+      "title": "Controlled navigation drawer",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnButton, MnDrawer } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnButton, MnDrawer],\n  template: `\n<button mnButton (click)=\"open=true\">Open navigation</button><mn-drawer title=\"Workspace\" [(open)]=\"open\" side=\"left\"><nav><a href=\"#overview\">Overview</a></nav></mn-drawer>\n  `,\n})\nexport class Example {\n  open = false;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AppShell アプリシェル",
+      "description": "アプリの外枠：折りたたみ・フローティング可能なサイドバー、固定ヘッダー、単一の main ランドマーク。768px 以下ではナビゲーションがドロワーに移動します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "navigation は collapsed / isMobile / closeNavigation / expandNavigation を受け取る描画関数です。"
+        },
+        "controlled": {
+          "title": "制御されたサイドバーモード",
+          "description": "sidebarMode / onSidebarModeChange で expanded・compact・floating を制御します。floating はホバーまたはキーボードフォーカスで展開します。"
+        },
+        "skip-link": {
+          "title": "スキップリンク",
+          "description": "「コンテンツへスキップ」リンクは最初のフォーカス可能な要素です。キーボードでフォーカスされるまで非表示で、main にフォーカスを移します。skipLink にはカスタムテキスト、または削除する場合は false を指定します。"
+        }
+      },
+      "api": {
+        "AppShellProps": {
+          "ref": "ルートの div への ref",
+          "brand": "サイドバー上部のブランド（ページ見出しではありません）",
+          "brandIcon": "装飾的なブランドアイコン（コンパクトレールでも表示）",
+          "navigation": "現在の状態からナビゲーションを描画します。常に 1 か所のみ（デスクトップはサイドバー、モバイルはドロワー）",
+          "navigationLabel": "サイドバーランドマークのアクセシブルネームとモバイルドロワーのタイトル",
+          "navigationKey": "ルート確定時に変更するとモバイルナビゲーションを閉じます",
+          "headerActions": "上部ヘッダーバーの内容（main の外側）",
+          "pageNavigation": "ヘッダーと main の間に描画（開いているページのタブなど）",
+          "children": "ページの内容（単一の main ランドマーク内に描画）",
+          "sidebarMode": "サイドバーモード（制御）",
+          "defaultSidebarMode": "初期サイドバーモード（非制御）",
+          "onSidebarModeChange": "ユーザーがモードを変更したとき次のモードで呼ばれます",
+          "labels": "コントロール名の上書き（既定はローカライズ済み）",
+          "skipLink": "最初のフォーカス可能な要素として描画される「コンテンツへスキップ」リンク（フォーカスされるまで視覚的に非表示）。main にフォーカスを移します。文字列でテキストを置き換え、false で削除します"
+        },
+        "AppShellNavigationState": {
+          "collapsed": "デスクトップのサイドバーが現在コンパクトレール表示",
+          "isMobile": "ナビゲーションがモバイルドロワー内に描画されている（ビューポート <= 768px）",
+          "closeNavigation": "モバイルのナビゲーションドロワーを閉じます（項目選択時に呼び出す）",
+          "expandNavigation": "サイドバーを expanded に切り替えます（コンパクトなグループを開くときなど）"
+        },
+        "AppShellLabels": {
+          "expand": "サイドバーを展開するトグルの名前",
+          "collapse": "サイドバーを折りたたむトグルの名前",
+          "enableFloating": "フローティングがオフのときのピン留めトグルの名前",
+          "disableFloating": "フローティングがオンのときのピン留めトグルの名前",
+          "openNavigation": "モバイルナビゲーションを開くヘッダーボタンの名前",
+          "closeNavigation": "モバイルナビゲーションの閉じるボタンの名前"
+        }
+      },
+      "cssVars": {
+        "--app-shell-sidebar-width": "展開したサイドバーの幅",
+        "--app-shell-rail-width": "コンパクト / フローティングのレールの幅",
+        "--app-shell-header-height": "ヘッダーとサイドバーのブランド行の最小の高さ",
+        "--app-shell-background": "ページ領域の背景",
+        "--app-shell-sidebar-background": "サイドバーとモバイルのナビゲーションドロワーの背景",
+        "--app-shell-header-background": "固定ヘッダーの背景",
+        "--app-shell-drawer-width": "モバイルのナビゲーションドロワーの幅"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ブランドと navigation スロットを持つサイドバー、固定ヘッダー（header-actions スロット）、デフォルトスロットを入れる main ランドマーク。768px 以下ではナビゲーションがヘッダーから開くモーダルドロワーに移ります。"
+          },
+          "sidebar-modes": {
+            "title": "サイドバーのモードとスロット",
+            "description": "sidebar-mode=\"compact\" はアイコンレールで始まります。サイドバーのボタンで展開したり、フローティングレールとして固定したりできます。collapsed 属性でナビゲーションをスタイル指定し（ここではラベルを非表示）、brand-icon はレールでも表示され、page-navigation はヘッダーと main の間に入ります。"
+          },
+          "controlled": {
+            "title": "イベント・メソッド・ラベル",
+            "description": "minerva-sidebar-mode-change と minerva-open-change はキャンセル可能です（モードをロックして確認）。expandNavigation() と focusMain() でシェルを操作し、*-label と skip-link 属性でコントロールの名前を変更します。"
+          }
+        },
+        "minerva-app-shell": {
+          "props": {
+            "noSkipLink": "「コンテンツへスキップ」リンクを削除します。",
+            "expandLabel": "サイドバーを展開するトグルの名前。",
+            "collapseLabel": "サイドバーを折りたたむトグルの名前。",
+            "enableFloatingLabel": "フローティングモードがオフのときのピントグルの名前。",
+            "disableFloatingLabel": "フローティングモードがオンのときのピントグルの名前。",
+            "openNavigationLabel": "モバイルナビゲーションを開くヘッダーボタンの名前。",
+            "closeNavigationLabel": "モバイルナビゲーションの閉じるボタンの名前。",
+            "mobile": "読み取り専用：モバイルレイアウトが有効です（ビューポート 768px 以下）。"
+          },
+          "events": {
+            "minerva-sidebar-mode-change": "ユーザーがサイドバーのモードを変更しました（detail: { mode }）。キャンセル可能：preventDefault() で現在のモードを維持します。",
+            "minerva-open-change": "モバイルドロワーが開閉しました（detail: { open }）。ユーザー操作によるものはキャンセル可能です。"
+          },
+          "slots": {
+            "default": "main ランドマーク内のページコンテンツ。",
+            "navigation": "ナビゲーション（デスクトップではサイドバー、モバイルではドロワー）。",
+            "brand": "ブランド（brand 属性の代わり）。",
+            "brand-icon": "装飾用のブランドアイコン（コンパクトレールでも表示）。",
+            "header-actions": "ヘッダーバーのコンテンツ（アカウントメニュー、検索など）。",
+            "page-navigation": "ヘッダーと main の間に描画されます（ページタブなど）。"
+          },
+          "cssVars": {
+            "--icon-button-color": "シェルのコントロール（サイドバーのトグル、メニューボタン）のアイコン色。",
+            "--icon-button-hover-bg": "ホバー時のシェルのコントロールの背景。",
+            "--icon-button-pressed-color": "押された状態のピントグルのアイコン色。",
+            "--icon-button-pressed-bg": "押された状態のピントグルの背景。",
+            "--icon-button-size": "シェルのコントロールの幅と高さ。",
+            "--icon-button-icon-size": "シェルのコントロールのアイコンサイズ。",
+            "--icon-button-radius": "シェルのコントロールの角丸の半径。"
+          },
+          "methods": {
+            "openNavigation": "モバイルナビゲーションのドロワーを開きます（モバイルレイアウトのみ）。",
+            "closeNavigation": "モバイルナビゲーションのドロワーを閉じます（項目が選ばれたときに呼び出します）。",
+            "expandNavigation": "サイドバーを展開状態に切り替えます（コンパクトレールでグループを開いたときなど）。",
+            "focusMain": "main ランドマークにフォーカスを移します。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

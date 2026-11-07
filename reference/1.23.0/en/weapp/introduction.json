@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "introduction",
+  "title": "Introduction",
+  "description": "The ideas behind Minerva, how to read the component pages, and the conventions shared by every component.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "principles": {
+      "title": "Design principles",
+      "tokens": {
+        "title": "Token-driven",
+        "text": "colors, radii and shadows come from CSS custom properties, so every component follows the active theme, including your own."
+      },
+      "accessible": {
+        "title": "Accessible by default",
+        "text": "components render native, semantic elements, support the keyboard, show a visible focus ring and expose aria-label where a visible label may be missing."
+      },
+      "predictable": {
+        "title": "Predictable APIs",
+        "text": "the same prop names (variant, size, shape, disabled, loading...) mean the same thing across components."
+      },
+      "small": {
+        "title": "Small and composable",
+        "text": "components do one thing and accept className and style, so they are easy to combine with your own layout and styles."
+      }
+    },
+    "reading": {
+      "title": "How to read the component pages",
+      "text": "Every component page follows the same structure:",
+      "import": "the exact import statement of the component. The global stylesheet is not repeated there: it is imported once, in your app entry (see Installation).",
+      "examples": "live demos covering each feature. Use \"Show code\" to see the complete source; every demo is self-contained and can be copied as is. Demos report what happened on the page with Minerva's own components (a toast, a dialog or an inline result), never with browser alerts or the console.",
+      "api": "tables generated from the component's TypeScript types, with the type, the default value and a description of every prop."
+    },
+    "conventions": {
+      "title": "Conventions",
+      "controlled": {
+        "title": "Controlled and uncontrolled",
+        "text": "Form components can manage their own state (pass defaultChecked / defaultValue, or nothing) or be controlled (pass checked / value together with onChange). Do not switch between the two modes during a component's lifetime."
+      },
+      "passthrough": {
+        "title": "className and style",
+        "text": "Components accept className (and usually style) on their root element. Components that wrap a native element, such as Button, also forward the native attributes (type, name, data-*, aria-*...)."
+      },
+      "aria": {
+        "title": "Accessible names",
+        "text": "When a control has no visible text (an icon button, a search button, a close icon...), give it an accessible name with the aria-label prop. It is passed through to the interactive element."
+      }
+    },
+    "browsers": {
+      "title": "Browser support",
+      "text": "Minerva targets current evergreen browsers: Chrome and Edge 111+, Firefox 113+ and Safari 16.2+. The theme relies on CSS custom properties and color-mix(); Internet Explorer is not supported. Server-side rendering works, the theme is applied on the client once React mounts."
+    },
+    "contributing": {
+      "title": "Contributing",
+      "text": "Minerva is open source under the MIT license. Bug reports, ideas and pull requests are welcome on GitHub:"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { useState } from \"react\";\nimport { Switch } from \"minerva-design\";\n\n// Uncontrolled: the component keeps its own state\n<Switch label=\"Wi-Fi\" defaultChecked />;\n\n// Controlled: you own the state and update it in onChange\nfunction Controlled() {\n  const [on, setOn] = useState(false);\n  return <Switch label=\"Bluetooth\" checked={on} onChange={setOn} />;\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Button, IconButton } from \"minerva-design\";\nimport { IoTrashOutline } from \"react-icons/io5\";\n\n<Button className=\"my-button\" style={{ minWidth: 120 }} type=\"submit\">\n  Save\n</Button>;\n\n// icon-only controls need an accessible name\n<IconButton icon={<IoTrashOutline />} aria-label=\"Delete item\" />;",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Introduction",
+      "description": "The ideas behind Minerva, how to read the component pages, and the conventions shared by every component.",
+      "principles": {
+        "title": "Design principles",
+        "tokens": {
+          "title": "Token-driven",
+          "text": "colors, radii and shadows come from CSS custom properties, so every component follows the active theme, including your own."
+        },
+        "accessible": {
+          "title": "Accessible by default",
+          "text": "components render native, semantic elements, support the keyboard, show a visible focus ring and expose aria-label where a visible label may be missing."
+        },
+        "predictable": {
+          "title": "Predictable APIs",
+          "text": "the same prop names (variant, size, shape, disabled, loading...) mean the same thing across components."
+        },
+        "small": {
+          "title": "Small and composable",
+          "text": "components do one thing and accept className and style, so they are easy to combine with your own layout and styles."
+        }
+      },
+      "reading": {
+        "title": "How to read the component pages",
+        "text": "Every component page follows the same structure:",
+        "import": "the exact import statement of the component. The global stylesheet is not repeated there: it is imported once, in your app entry (see Installation).",
+        "examples": "live demos covering each feature. Use \"Show code\" to see the complete source; every demo is self-contained and can be copied as is. Demos report what happened on the page with Minerva's own components (a toast, a dialog or an inline result), never with browser alerts or the console.",
+        "api": "tables generated from the component's TypeScript types, with the type, the default value and a description of every prop."
+      },
+      "conventions": {
+        "title": "Conventions",
+        "controlled": {
+          "title": "Controlled and uncontrolled",
+          "text": "Form components can manage their own state (pass defaultChecked / defaultValue, or nothing) or be controlled (pass checked / value together with onChange). Do not switch between the two modes during a component's lifetime."
+        },
+        "passthrough": {
+          "title": "className and style",
+          "text": "Components accept className (and usually style) on their root element. Components that wrap a native element, such as Button, also forward the native attributes (type, name, data-*, aria-*...)."
+        },
+        "aria": {
+          "title": "Accessible names",
+          "text": "When a control has no visible text (an icon button, a search button, a close icon...), give it an accessible name with the aria-label prop. It is passed through to the interactive element."
+        }
+      },
+      "browsers": {
+        "title": "Browser support",
+        "text": "Minerva targets current evergreen browsers: Chrome and Edge 111+, Firefox 113+ and Safari 16.2+. The theme relies on CSS custom properties and color-mix(); Internet Explorer is not supported. Server-side rendering works, the theme is applied on the client once React mounts."
+      },
+      "contributing": {
+        "title": "Contributing",
+        "text": "Minerva is open source under the MIT license. Bug reports, ideas and pull requests are welcome on GitHub:"
+      }
+    }
+  }
+}

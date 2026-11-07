@@ -1,0 +1,922 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "bar-chart",
+  "title": "柱状图",
+  "description": "并排分组或堆叠的柱状图，可叠加折线。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "data": {
+      "quarter": "第{{n}}季度",
+      "ticketsClosed": "已关闭工单",
+      "ticketsAria": "每季度关闭的支持工单数",
+      "orders": "订单",
+      "average7": "7 日均值",
+      "day": "天",
+      "ordersAria": "每日订单数及其 7 日均值",
+      "revenueAria": "2025 与 2026 年的季度收入",
+      "nps": {
+        "promoters": "推荐者",
+        "passives": "被动者",
+        "detractors": "贬损者"
+      },
+      "regions": {
+        "northAmerica": "北美",
+        "europe": "欧洲",
+        "asiaPacific": "亚太",
+        "latinAmerica": "拉丁美洲",
+        "middleEast": "中东"
+      },
+      "npsAria": "各地区推荐者、被动者与贬损者的占比",
+      "channels": {
+        "web": "网站",
+        "mobile": "移动应用",
+        "partners": "合作伙伴"
+      },
+      "channelsAria": "按渠道堆叠的每月订单数",
+      "sales": "销量",
+      "salesAria": "每季度销量",
+      "unitsStatus": "{{quarter}}：{{units}} 件",
+      "tapBar": "点按一根柱子",
+      "stacked": "堆叠",
+      "grouped": "分组",
+      "ordersPerChannelAria": "按渠道和月份的订单数",
+      "cities": {
+        "london": "伦敦",
+        "tokyo": "东京",
+        "paris": "巴黎"
+      },
+      "rainfallAria": "伦敦、东京与巴黎的月平均降水量",
+      "netResult": "净利润",
+      "profitAria": "每月净利润，盈利在零线以上，亏损在零线以下",
+      "unitsSold": "销量",
+      "rankingAria": "各国线上销量，从高到低",
+      "newCustomers": "新客户",
+      "week": "第{{n}}周",
+      "weeklyTarget": "每周目标",
+      "targetAria": "每周新客户数与每周目标对比",
+      "targetSummary": "{{total}} 周中有 {{reached}} 周达标（{{rate}}）。",
+      "revenue": "收入",
+      "pickedMonth": "{{month}}：{{value}}",
+      "backToQuarters": "返回季度",
+      "drillHint": "点击某个季度查看其各月数据。",
+      "quarterDetail": "{{quarter}}：合计 {{value}}。点击某个月份查看其收入。",
+      "quartersAria": "2026 年各季度收入；点击某个季度查看其各月数据",
+      "monthsAria": "2026 年 {{quarter}} 各月收入",
+      "hiringDepartments": {
+        "engineering": "工程",
+        "product": "产品",
+        "design": "设计",
+        "sales": "销售",
+        "marketing": "市场",
+        "support": "支持"
+      },
+      "previousYear": "去年",
+      "currentYear": "今年",
+      "change": "变化",
+      "compareLastYear": "与去年对比",
+      "hiresAria": "各部门今年与去年的招聘人数",
+      "deploysOk": "成功",
+      "deploysFailed": "已回滚",
+      "changeFreeze": "变更冻结",
+      "deploysAria": "八周内每天的生产部署次数，分为成功与回滚",
+      "deploysSummary": "每个工作日 {{perDay}} 次部署，变更失败率 {{failure}}。",
+      "offPeak": "低谷",
+      "standard": "平段",
+      "peak": "高峰",
+      "chargeHere": "充电",
+      "dailyAverage": "日均价",
+      "chargingTime": "充电时长",
+      "chargeFor": "{{energy}} kWh · {{duration}}",
+      "chargeAdvice": "建议在 {{start}} 至 {{end}} 充电，费用 {{cost}}，比 {{plugIn}} 插上电立即充电节省 {{saving}}。",
+      "pricePerMwh": "每 MWh 电价",
+      "pricesAria": "明天每小时的日前电价，并突出显示电动车最便宜的充电时段"
+    }
+  },
+  "components": [
+    {
+      "name": "BarChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "BarChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as bars unless they set a `type` (e.g. a `line` overlay)"
+          },
+          {
+            "name": "stacked",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stacks the bars of every series (otherwise they are grouped side by side)"
+          },
+          {
+            "name": "percent",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Scales the stacks to 100% (implies `stacked`)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Writes the value above every bar"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "ChartOrientation | undefined",
+            "typeRef": "type:872af3679a2d7fcf3d26",
+            "default": "vertical",
+            "required": false,
+            "description": "`horizontal` draws the bars from the left, the categories down the left side"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:018692c396245c230316",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the pointer"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:677083ee0328d7ee4253",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is clicked"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:0256cf20d9a3f1b1c88a",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is clicked where there is no point"
+          },
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:7f639ac6d9481ff0bde9",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) points change"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:ee073556f18eb3ee4cae",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:167734f7bd5dd7f686a6",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and when it falls back after a GPU loss)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "BarChartProps": {
+      "source": "charts/src/react/types.ts",
+      "description": "Props of BarChart (`labels` writes the values: override the tooltip texts with `tooltip.labels`)",
+      "kind": "interface",
+      "extends": [
+        "Omit<ChartCommonProps, \"labels\">"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Series drawn as bars unless they set a `type` (e.g. a `line` overlay)"
+        },
+        {
+          "name": "stacked",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Stacks the bars of every series (otherwise they are grouped side by side)"
+        },
+        {
+          "name": "percent",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Scales the stacks to 100% (implies `stacked`)"
+        },
+        {
+          "name": "labels",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Writes the value above every bar"
+        },
+        {
+          "name": "orientation",
+          "type": "ChartOrientation",
+          "required": false,
+          "default": "\"vertical\"",
+          "description": "`horizontal` draws the bars from the left, the categories down the left side"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/basic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\nconst closed = [320, 410, 385, 470];\n\nexport default function BasicDemo() {\n  const { t } = useTranslation(\"common\", { keyPrefix: \"docs.bar-chart.data\" });\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"ticketsClosed\"),\n        // \"Q1\", \"第1季度\", \"T1\"...\n        data: closed.map(\n          (value, i) => [t(\"quarter\", { n: i + 1 }), value] as const,\n        ),\n      },\n    ],\n    [t],\n  );\n\n  return <BarChart series={series} height={280} ariaLabel={t(\"ticketsAria\")} />;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "基础",
+      "description": "一个由 [类目, 值] 元组组成的系列；y 轴始终包含零。"
+    },
+    {
+      "id": "combo",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/combo.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/combo.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst random = mulberry32(5);\nconst orders = Array.from({ length: 30 }, (_, day) =>\n  Math.round(60 + day * 1.5 + random() * 40),\n);\n// trailing 7-day average of the bars\nconst average = orders.map((_, day) => {\n  const week = orders.slice(Math.max(0, day - 6), day + 1);\n  return Math.round(week.reduce((sum, v) => sum + v, 0) / week.length);\n});\n\nexport default function ComboDemo() {\n  const { t } = useTranslation(\"common\", { keyPrefix: \"docs.bar-chart.data\" });\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      { name: t(\"orders\"), data: orders },\n      { name: t(\"average7\"), type: \"line\", data: average, lineWidth: 3 },\n    ],\n    [t],\n  );\n\n  return (\n    <BarChart\n      series={series}\n      xAxis={{ title: t(\"day\") }}\n      height={300}\n      ariaLabel={t(\"ordersAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "柱与折线",
+      "description": "type: \"line\" 的系列绘制在柱之上，这里是 7 日平均值。"
+    },
+    {
+      "id": "deployments",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/deployments.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/deployments.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  BarChart,\n  type ChartAnnotation,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\n// a Monday, local midnight: the time axis places its ticks in local time\nconst START = new Date(2026, 8, 7).getTime();\nconst DAYS = 56;\nconst FREEZE = [38, 43] as const; // a change freeze before a big launch\n\n// Production deployments per day, and the ones that were rolled back\nconst random = mulberry32(42);\nconst days = Array.from({ length: DAYS }, (_, i) => {\n  const time = START + i * DAY;\n  const weekend = [0, 6].includes(new Date(time).getDay());\n  const frozen = i >= FREEZE[0] && i <= FREEZE[1];\n  const total =\n    weekend || frozen\n      ? random() < 0.15\n        ? 1\n        : 0\n      : Math.round(4 + random() * 6 + i / 14);\n  const failed = total > 0 && random() < 0.35 ? (random() < 0.8 ? 1 : 2) : 0;\n  return { time, weekend, ok: total - Math.min(failed, total), failed };\n});\nconst workingDays = days.filter((d) => !d.weekend).length;\nconst deployed = days.reduce((sum, d) => sum + d.ok + d.failed, 0);\nconst rolledBack = days.reduce((sum, d) => sum + d.failed, 0);\n\nexport default function DeploymentsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"deploysOk\"),\n        color: \"var(--success-color)\",\n        data: days.map((d) => [d.time, d.ok] as const),\n      },\n      {\n        name: t(\"deploysFailed\"),\n        color: \"var(--danger-color)\",\n        data: days.map((d) => [d.time, d.failed] as const),\n      },\n    ],\n    [t],\n  );\n  // every weekend, from Saturday to Monday (bars are centered on midnight)\n  const annotations = useMemo((): ChartAnnotation[] => {\n    const weekends: ChartAnnotation[] = days\n      .filter((d) => new Date(d.time).getDay() === 6)\n      .map((d) => ({\n        type: \"rect\",\n        x0: d.time - DAY / 2,\n        x1: d.time + (3 * DAY) / 2,\n        color: \"var(--text-secondary-color)\",\n        opacity: 0.07,\n      }));\n    return [\n      ...weekends,\n      {\n        type: \"rect\",\n        x0: START + FREEZE[0] * DAY - DAY / 2,\n        x1: START + FREEZE[1] * DAY + DAY / 2,\n        color: \"var(--warning-color)\",\n        opacity: 0.14,\n        label: t(\"changeFreeze\"),\n        labelPosition: \"top-right\",\n      },\n    ];\n  }, [t]);\n  const formats = useMemo(\n    () => ({\n      decimal: new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }),\n      percent: new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n\n      tick: new Intl.DateTimeFormat(locale, { month: \"short\", day: \"numeric\" }),\n    }),\n    [locale],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <BarChart\n        series={series}\n        stacked\n        annotations={annotations}\n        xAxis={{ type: \"time\", format: (x) => formats.tick.format(x) }}\n        tooltip={{ mode: \"axis\" }}\n        height={300}\n        ariaLabel={t(\"deploysAria\")}\n      />\n      <p style={{ margin: 0 }}>\n        {t(\"deploysSummary\", {\n          perDay: formats.decimal.format(deployed / workingDays),\n          failure: formats.percent.format(rolledBack / deployed),\n        })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "部署时间线",
+      "description": "时间轴上的堆叠柱统计每天成功与回滚的部署次数；rect 标注为周末和变更冻结期加上底色，摘要给出部署频率和变更失败率。"
+    },
+    {
+      "id": "drilldown",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/drilldown.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/drilldown.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport {\n  BarChart,\n  type ChartHoverEvent,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\n// Monthly revenue of 2026 in thousands of dollars, January to December\nconst monthly = [412, 389, 455, 470, 498, 463, 441, 429, 517, 552, 648, 731];\nconst quarterTotal = (q: number) =>\n  monthly.slice(q * 3, q * 3 + 3).reduce((sum, value) => sum + value, 0);\n\nexport default function DrilldownDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n  // `null`: the four quarters; a number: the months of that quarter\n  const [quarter, setQuarter] = useState<number | null>(null);\n  const [picked, setPicked] = useState<string | null>(null);\n\n  const usd = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"USD\",\n      notation: \"compact\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value * 1000);\n  }, [locale]);\n  const series = useMemo((): ChartSeries[] => {\n    if (quarter === null) {\n      return [\n        {\n          name: t(\"revenue\"),\n          data: [0, 1, 2, 3].map(\n            (q) => [t(\"quarter\", { n: q + 1 }), quarterTotal(q)] as const,\n          ),\n        },\n      ];\n    }\n    const month = new Intl.DateTimeFormat(locale, { month: \"long\" });\n    return [\n      {\n        name: t(\"revenue\"),\n        color: \"var(--chart-series-2, #10b981)\",\n        data: [0, 1, 2].map((m) => {\n          const index = quarter * 3 + m;\n          return [\n            month.format(new Date(2026, index, 1)),\n            monthly[index] ?? 0,\n          ] as const;\n        }),\n      },\n    ];\n  }, [t, locale, quarter]);\n\n  const onPointClick = (event: ChartHoverEvent) => {\n    const item = event.items[0];\n    if (!item) return;\n    if (quarter === null) {\n      setQuarter(item.index);\n      setPicked(null);\n    } else {\n      setPicked(t(\"pickedMonth\", { month: event.xLabel, value: usd(item.y) }));\n    }\n  };\n  const back = () => {\n    setQuarter(null);\n    setPicked(null);\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 12,\n          minHeight: 32,\n        }}\n      >\n        {quarter !== null && (\n          <Button size=\"small\" variant=\"outline\" onClick={back}>\n            {t(\"backToQuarters\")}\n          </Button>\n        )}\n        <output aria-live=\"polite\">\n          {quarter === null\n            ? t(\"drillHint\")\n            : (picked ??\n              t(\"quarterDetail\", {\n                quarter: t(\"quarter\", { n: quarter + 1 }),\n                value: usd(quarterTotal(quarter)),\n              }))}\n        </output>\n      </div>\n      <BarChart\n        series={series}\n        labels\n        onPointClick={onPointClick}\n        tooltip={{ mode: \"item\" }}\n        yAxis={{ format: usd }}\n        legend={false}\n        height={300}\n        ariaLabel={\n          quarter === null\n            ? t(\"quartersAria\")\n            : t(\"monthsAria\", { quarter: t(\"quarter\", { n: quarter + 1 }) })\n        }\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "下钻",
+      "description": "在季度上触发的 onPointClick 会把系列替换为该季度的三个月，Button 可返回季度视图；点击某个月份时，其收入会写入 aria-live 输出区域。"
+    },
+    {
+      "id": "ev-charging",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/ev-charging.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/ev-charging.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Select, SelectItem } from \"minerva-design\";\nimport {\n  BarChart,\n  type ChartAnnotation,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\n// Day-ahead electricity price per hour of tomorrow, in euros per MWh: low at\n// night, a morning and an evening peak, and a dip at noon when solar floods in\nconst prices = Array.from({ length: 24 }, (_, hour) => {\n  const morning = 38 * Math.exp(-((hour - 8) ** 2) / 4);\n  const evening = 62 * Math.exp(-((hour - 19) ** 2) / 5);\n  const solar = -46 * Math.exp(-((hour - 13) ** 2) / 6);\n  return (\n    Math.round((72 + morning + evening + solar + 6 * Math.sin(hour)) * 10) / 10\n  );\n});\nconst sorted = [...prices].sort((a, b) => a - b);\nconst CHEAP = sorted[5] ?? 0; // the 6 cheapest hours\nconst PEAK = sorted[18] ?? 0; // the 6 most expensive hours\nconst AVERAGE = prices.reduce((sum, p) => sum + p, 0) / prices.length;\nconst POWER = 11; // kW, a home wallbox\nconst PLUG_IN = 18; // the car is plugged in when coming home\n\nconst windowCost = (start: number, hours: number) =>\n  prices\n    .slice(start, start + hours)\n    .reduce((sum, price) => sum + (price / 1000) * POWER, 0);\n\nexport default function EvChargingDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n  const [hours, setHours] = useState(3);\n\n  // the cheapest run of `hours` consecutive hours\n  const best = useMemo(() => {\n    let start = 0;\n    for (let s = 1; s + hours <= prices.length; s++) {\n      if (windowCost(s, hours) < windowCost(start, hours)) start = s;\n    }\n    return start;\n  }, [hours]);\n\n  const formats = useMemo(() => {\n    const hour = new Intl.DateTimeFormat(locale, {\n      hour: \"2-digit\",\n      minute: \"2-digit\",\n    });\n    return {\n      hour: (h: number) => hour.format(new Date(2026, 10, 1, h)),\n      price: new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"EUR\",\n        maximumFractionDigits: 0,\n      }),\n      cost: new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"EUR\",\n      }),\n    };\n  }, [locale]);\n\n  // one series per price tier, stacked so that each hour shows a single bar\n  const series = useMemo((): ChartSeries[] => {\n    const tiers = [\n      {\n        name: t(\"offPeak\"),\n        color: \"var(--success-color)\",\n        test: (p: number) => p <= CHEAP,\n      },\n      {\n        name: t(\"standard\"),\n        color: \"var(--primary-color)\",\n        test: (p: number) => p > CHEAP && p < PEAK,\n      },\n      {\n        name: t(\"peak\"),\n        color: \"var(--danger-color)\",\n        test: (p: number) => p >= PEAK,\n      },\n    ];\n    return tiers.map((tier) => ({\n      name: tier.name,\n      color: tier.color,\n      data: prices.map(\n        (price, h) => [formats.hour(h), tier.test(price) ? price : 0] as const,\n      ),\n    }));\n  }, [t, formats]);\n  const annotations = useMemo(\n    (): ChartAnnotation[] => [\n      {\n        type: \"rect\",\n        // category axes place the bars at their index\n        x0: best - 0.5,\n        x1: best + hours - 0.5,\n        color: \"var(--success-color)\",\n        opacity: 0.12,\n        label: t(\"chargeHere\"),\n        labelPosition: \"top-left\",\n      },\n      {\n        type: \"line\",\n        axis: \"y\",\n        value: AVERAGE,\n        dash: [4, 4],\n        color: \"var(--text-secondary-color)\",\n        label: t(\"dailyAverage\"),\n      },\n    ],\n    [t, best, hours],\n  );\n\n  const cost = windowCost(best, hours);\n  const onArrival = windowCost(PLUG_IN, hours);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 12,\n        }}\n      >\n        <Select\n          size=\"small\"\n          style={{ width: 200 }}\n          aria-label={t(\"chargingTime\")}\n          value={String(hours)}\n          onChange={(value) => setHours(Number(value))}\n        >\n          {[2, 3, 4, 5].map((h) => (\n            <SelectItem key={h} value={String(h)}>\n              {t(\"chargeFor\", {\n                energy: new Intl.NumberFormat(locale).format(h * POWER),\n                duration: new Intl.NumberFormat(locale, {\n                  style: \"unit\",\n                  unit: \"hour\",\n                  unitDisplay: \"long\",\n                }).format(h),\n              })}\n            </SelectItem>\n          ))}\n        </Select>\n        <output aria-live=\"polite\">\n          {t(\"chargeAdvice\", {\n            start: formats.hour(best),\n            end: formats.hour((best + hours) % 24),\n            cost: formats.cost.format(cost),\n            saving: formats.cost.format(onArrival - cost),\n            plugIn: formats.hour(PLUG_IN),\n          })}\n        </output>\n      </div>\n      <BarChart\n        series={series}\n        stacked\n        annotations={annotations}\n        tooltip={{ mode: \"item\" }}\n        yAxis={{\n          title: t(\"pricePerMwh\"),\n          format: (y) => formats.price.format(y),\n        }}\n        height={300}\n        ariaLabel={t(\"pricesAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "最便宜的充电时段",
+      "description": "明天每小时的电价被拆分为三个堆叠系列，使每根柱子呈现其价格档位的颜色。rect 标注会随 Select 中所选充电时长标出最便宜的连续时段，输出区域将其费用与到家即充的费用进行对比。"
+    },
+    {
+      "id": "grouped",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/grouped.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/grouped.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Average monthly rainfall (mm), January to December\nconst rainfall = {\n  london: [55, 41, 41, 44, 49, 45, 45, 50, 49, 69, 59, 55],\n  tokyo: [52, 56, 118, 125, 138, 168, 154, 168, 210, 198, 93, 51],\n  paris: [51, 41, 48, 52, 63, 50, 63, 53, 48, 61, 51, 58],\n};\n\n/** Short month names in the reader's language */\nconst monthNames = (locale: string) => {\n  const format = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  return Array.from({ length: 12 }, (_, m) =>\n    format.format(new Date(2026, m, 1)),\n  );\n};\n\nexport default function GroupedDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n\n  // several series without `stacked`: the bars of each month sit side by side\n  const series = useMemo((): ChartSeries[] => {\n    const months = monthNames(locale);\n    return (Object.keys(rainfall) as (keyof typeof rainfall)[]).map((key) => ({\n      name: t(`cities.${key}`),\n      data: months.map((month, i) => [month, rainfall[key][i]] as const),\n    }));\n  }, [t, locale]);\n  const millimeters = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"unit\", unit: \"millimeter\" }),\n    [locale],\n  );\n\n  return (\n    <BarChart\n      series={series}\n      yAxis={{ format: (value) => millimeters.format(value) }}\n      height={300}\n      ariaLabel={t(\"rainfallAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "分组",
+      "description": "未设置 stacked 时，多个系列在每个类目中并排显示，这里是三座城市的月降水量；单位由 Intl.NumberFormat 书写。"
+    },
+    {
+      "id": "labels",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/labels.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/labels.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Revenue in thousands of dollars, Q1 to Q4\nconst revenue = {\n  \"2025\": [312, 348, 365, 421],\n  \"2026\": [356, 402, 431, 488],\n};\n\nexport default function LabelsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo(\n    (): ChartSeries[] =>\n      Object.entries(revenue).map(([year, values]) => ({\n        name: year,\n        data: values.map(\n          (value, i) => [t(\"quarter\", { n: i + 1 }), value] as const,\n        ),\n      })),\n    [t],\n  );\n  // \"$356K\", \"35.6万 US$\", \"356 k $US\"...\n  const usd = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"USD\",\n      notation: \"compact\",\n    });\n    return (value: number) => format.format(value * 1000);\n  }, [locale]);\n\n  return (\n    <BarChart\n      series={series}\n      labels\n      // the labels use the y axis format\n      yAxis={{ format: usd }}\n      height={300}\n      ariaLabel={t(\"revenueAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "数值标签",
+      "description": "labels 在每根柱子上方写出数值（使用 y 轴的 format），并在最高的柱子上方预留空间。适合柱子不多、需要精确数值的场景。"
+    },
+    {
+      "id": "percent",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/percent.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/percent.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\nconst regions = [\n  \"northAmerica\",\n  \"europe\",\n  \"asiaPacific\",\n  \"latinAmerica\",\n  \"middleEast\",\n];\n\n// Survey answers (respondents) grouped as Net Promoter Score categories\nconst answers = [\n  {\n    key: \"promoters\",\n    color: \"var(--success-color)\",\n    values: [612, 540, 702, 288, 164],\n  },\n  {\n    key: \"passives\",\n    color: \"var(--warning-color)\",\n    values: [254, 310, 268, 131, 92],\n  },\n  {\n    key: \"detractors\",\n    color: \"var(--danger-color)\",\n    values: [134, 196, 118, 97, 61],\n  },\n];\n\nexport default function PercentDemo() {\n  const { t } = useTranslation(\"common\", { keyPrefix: \"docs.bar-chart.data\" });\n\n  const series = useMemo(\n    (): ChartSeries[] =>\n      answers.map(({ key, color, values }) => ({\n        name: t(`nps.${key}`),\n        color,\n        data: regions.map(\n          (region, i) => [t(`regions.${region}`), values[i]] as const,\n        ),\n      })),\n    [t],\n  );\n\n  return (\n    <BarChart series={series} percent height={300} ariaLabel={t(\"npsAria\")} />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "百分比堆叠",
+      "description": "percent 将每个堆叠缩放为 100%，便于比较规模不同的分组的构成；提示框显示回答人数及其占比。"
+    },
+    {
+      "id": "period-compare",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/period-compare.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/period-compare.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport {\n  BarChart,\n  type ChartHoverEvent,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\n// Hires per department, last year and this year\nconst hires = {\n  engineering: [64, 81],\n  product: [12, 15],\n  design: [9, 7],\n  sales: [38, 52],\n  marketing: [17, 13],\n  support: [26, 31],\n} as const;\ntype Department = keyof typeof hires;\nconst keys = Object.keys(hires) as Department[];\n\nexport default function PeriodCompareDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n  const [compare, setCompare] = useState(true);\n\n  const series = useMemo((): ChartSeries[] => {\n    const names = keys.map((key) => t(`hiringDepartments.${key}`));\n    return [\n      {\n        id: \"previous\",\n        name: t(\"previousYear\"),\n        color: \"var(--border-strong-color)\",\n        // hidden series keep their place in the legend and come back as is\n        hidden: !compare,\n        data: keys.map((key, i) => [names[i] ?? key, hires[key][0]] as const),\n      },\n      {\n        id: \"current\",\n        name: t(\"currentYear\"),\n        color: \"var(--primary-color)\",\n        data: keys.map((key, i) => [names[i] ?? key, hires[key][1]] as const),\n      },\n    ];\n  }, [t, compare]);\n  const formats = useMemo(\n    () => ({\n      number: new Intl.NumberFormat(locale),\n      change: new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 0,\n        signDisplay: \"exceptZero\",\n      }),\n    }),\n    [locale],\n  );\n\n  // both years of the hovered department and the change between them\n  const renderTooltip = (event: ChartHoverEvent) => {\n    const department = keys[event.items[0]?.index ?? -1];\n    if (!department) return null;\n    const [previous, current] = hires[department];\n    const change = current / previous - 1;\n    return (\n      <div\n        style={{\n          display: \"grid\",\n          gridTemplateColumns: \"1fr auto\",\n          gap: \"2px 16px\",\n        }}\n      >\n        <strong style={{ gridColumn: \"1 / -1\" }}>{event.xLabel}</strong>\n        <span>{t(\"currentYear\")}</span>\n        <strong style={{ textAlign: \"end\" }}>\n          {formats.number.format(current)}\n        </strong>\n        <span>{t(\"previousYear\")}</span>\n        <span style={{ textAlign: \"end\" }}>\n          {formats.number.format(previous)}\n        </span>\n        <span>{t(\"change\")}</span>\n        <span\n          style={{\n            textAlign: \"end\",\n            color: change >= 0 ? \"var(--success-color)\" : \"var(--danger-color)\",\n          }}\n        >\n          {formats.change.format(change)}\n        </span>\n      </div>\n    );\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch\n        checked={compare}\n        onChange={setCompare}\n        label={t(\"compareLastYear\")}\n      />\n      <BarChart\n        series={series}\n        renderTooltip={renderTooltip}\n        yAxis={{ format: (y) => formats.number.format(y) }}\n        height={300}\n        ariaLabel={t(\"hiresAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "与去年对比",
+      "description": "Switch 通过设置去年系列的 hidden 来显示或隐藏对比，颜色保持不变；renderTooltip 列出两年的数值及百分比变化。"
+    },
+    {
+      "id": "profit-loss",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/profit-loss.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/profit-loss.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Net result per month (thousand EUR): losses are negative\nconst results = [-42, -18, 12, 35, 28, -9, 41, 66, 58, 73, 49, 92];\n\n/** Short month names in the reader's language */\nconst monthNames = (locale: string) => {\n  const format = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  return Array.from({ length: 12 }, (_, m) =>\n    format.format(new Date(2026, m, 1)),\n  );\n};\n\nexport default function ProfitLossDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n\n  // one color per bar: green above zero, red below\n  const series = useMemo((): ChartSeries[] => {\n    const months = monthNames(locale);\n    return [\n      {\n        name: t(\"netResult\"),\n        data: results.map((y, i) => ({\n          x: months[i],\n          y,\n          color: y >= 0 ? \"var(--success-color)\" : \"var(--danger-color)\",\n        })),\n      },\n    ];\n  }, [t, locale]);\n  // \"+€92K\", \"-42 k€\"...: the sign is part of the information\n  const euros = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"EUR\",\n      notation: \"compact\",\n      signDisplay: \"exceptZero\",\n    });\n    return (value: number) => format.format(value * 1000);\n  }, [locale]);\n\n  return (\n    <BarChart\n      series={series}\n      yAxis={{ format: euros }}\n      annotations={[{ type: \"line\", axis: \"y\", value: 0 }]}\n      legend={false}\n      height={300}\n      ariaLabel={t(\"profitAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "盈亏",
+      "description": "负值从零向下延伸；每个数据点设置自己的颜色，盈利为绿色、亏损为红色，y 轴格式显示正负号。"
+    },
+    {
+      "id": "ranking",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/ranking.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/ranking.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Online sales by country (thousand units), in no particular order\nconst salesByCountry: [string, number][] = [\n  [\"FR\", 182],\n  [\"US\", 541],\n  [\"JP\", 326],\n  [\"DE\", 248],\n  [\"BR\", 97],\n  [\"CN\", 463],\n  [\"GB\", 205],\n  [\"IN\", 151],\n  [\"CA\", 118],\n  [\"KR\", 134],\n];\n\nexport default function RankingDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo((): ChartSeries[] => {\n    // country names in the reader's language: \"Japan\", \"日本\", \"Japon\"...\n    const countries = new Intl.DisplayNames([locale], { type: \"region\" });\n    const ranked = [...salesByCountry].sort((a, b) => b[1] - a[1]);\n    return [\n      {\n        name: t(\"unitsSold\"),\n        showLabels: true,\n        data: ranked.map(\n          ([code, value]) => [countries.of(code) ?? code, value] as const,\n        ),\n      },\n    ];\n  }, [t, locale]);\n  const thousands = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, { notation: \"compact\" });\n    return (value: number) => format.format(value * 1000);\n  }, [locale]);\n\n  return (\n    <BarChart\n      series={series}\n      yAxis={{ format: thousands }}\n      height={320}\n      ariaLabel={t(\"rankingAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "排行",
+      "description": "传入前先对数据排序即可得到排行；Intl.DisplayNames 按读者的语言给出国家名称，showLabels 写出数值。"
+    },
+    {
+      "id": "stacked",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/stacked.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/stacked.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Orders per month (January to June) by channel\nconst byChannel = {\n  web: [120, 135, 150, 148, 170, 190],\n  mobile: [80, 95, 110, 125, 140, 160],\n  partners: [30, 28, 35, 42, 40, 51],\n};\n\n/** Short month names in the reader's language */\nconst monthNames = (locale: string, count: number) => {\n  const format = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  return Array.from({ length: count }, (_, m) =>\n    format.format(new Date(2026, m, 1)),\n  );\n};\n\nexport default function StackedDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const series = useMemo((): ChartSeries[] => {\n    const months = monthNames(locale, 6);\n    return (Object.keys(byChannel) as (keyof typeof byChannel)[]).map(\n      (key) => ({\n        name: t(`channels.${key}`),\n        data: months.map((month, i) => [month, byChannel[key][i]] as const),\n      }),\n    );\n  }, [t, locale]);\n\n  return (\n    <BarChart\n      series={series}\n      stacked\n      height={300}\n      ariaLabel={t(\"channelsAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "堆叠",
+      "description": "stacked 将各系列逐层堆叠。"
+    },
+    {
+      "id": "target",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/demos/target.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/demos/target.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BarChart, type ChartSeries } from \"minerva-design/charts\";\n\nconst TARGET = 120; // new customers per week\nconst signups = [96, 104, 131, 118, 142, 125, 109, 137, 151, 128, 146, 163];\n\nexport default function TargetDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bar-chart.data\",\n  });\n  const locale = i18n.language;\n\n  // bars that reach the target are highlighted\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"newCustomers\"),\n        data: signups.map((y, i) => ({\n          x: t(\"week\", { n: i + 1 }),\n          y,\n          color:\n            y >= TARGET ? \"var(--primary-color)\" : \"var(--border-strong-color)\",\n        })),\n      },\n    ],\n    [t],\n  );\n  const reached = signups.filter((value) => value >= TARGET).length;\n  const percent = new Intl.NumberFormat(locale, { style: \"percent\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <BarChart\n        series={series}\n        annotations={[\n          {\n            type: \"line\",\n            axis: \"y\",\n            value: TARGET,\n            color: \"var(--warning-color)\",\n            dash: [6, 4],\n            width: 2,\n            label: t(\"weeklyTarget\"),\n          },\n        ]}\n        legend={false}\n        height={300}\n        ariaLabel={t(\"targetAria\")}\n      />\n      <p>\n        {t(\"targetSummary\", {\n          reached,\n          total: signups.length,\n          rate: percent.format(reached / signups.length),\n        })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "对比目标",
+      "description": "虚线标出每周目标，达标的柱子通过数据点颜色高亮显示。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "柱状图",
+      "description": "并排分组或堆叠的柱状图，可叠加折线。",
+      "demos": {
+        "basic": {
+          "title": "基础",
+          "description": "一个由 [类目, 值] 元组组成的系列；y 轴始终包含零。"
+        },
+        "stacked": {
+          "title": "堆叠",
+          "description": "stacked 将各系列逐层堆叠。"
+        },
+        "labels": {
+          "title": "数值标签",
+          "description": "labels 在每根柱子上方写出数值（使用 y 轴的 format），并在最高的柱子上方预留空间。适合柱子不多、需要精确数值的场景。"
+        },
+        "percent": {
+          "title": "百分比堆叠",
+          "description": "percent 将每个堆叠缩放为 100%，便于比较规模不同的分组的构成；提示框显示回答人数及其占比。"
+        },
+        "combo": {
+          "title": "柱与折线",
+          "description": "type: \"line\" 的系列绘制在柱之上，这里是 7 日平均值。"
+        },
+        "grouped": {
+          "title": "分组",
+          "description": "未设置 stacked 时，多个系列在每个类目中并排显示，这里是三座城市的月降水量；单位由 Intl.NumberFormat 书写。"
+        },
+        "profit-loss": {
+          "title": "盈亏",
+          "description": "负值从零向下延伸；每个数据点设置自己的颜色，盈利为绿色、亏损为红色，y 轴格式显示正负号。"
+        },
+        "ranking": {
+          "title": "排行",
+          "description": "传入前先对数据排序即可得到排行；Intl.DisplayNames 按读者的语言给出国家名称，showLabels 写出数值。"
+        },
+        "target": {
+          "title": "对比目标",
+          "description": "虚线标出每周目标，达标的柱子通过数据点颜色高亮显示。"
+        },
+        "drilldown": {
+          "title": "下钻",
+          "description": "在季度上触发的 onPointClick 会把系列替换为该季度的三个月，Button 可返回季度视图；点击某个月份时，其收入会写入 aria-live 输出区域。"
+        },
+        "period-compare": {
+          "title": "与去年对比",
+          "description": "Switch 通过设置去年系列的 hidden 来显示或隐藏对比，颜色保持不变；renderTooltip 列出两年的数值及百分比变化。"
+        },
+        "deployments": {
+          "title": "部署时间线",
+          "description": "时间轴上的堆叠柱统计每天成功与回滚的部署次数；rect 标注为周末和变更冻结期加上底色，摘要给出部署频率和变更失败率。"
+        },
+        "ev-charging": {
+          "title": "最便宜的充电时段",
+          "description": "明天每小时的电价被拆分为三个堆叠系列，使每根柱子呈现其价格档位的颜色。rect 标注会随 Select 中所选充电时长标出最便宜的连续时段，输出区域将其费用与到家即充的费用进行对比。"
+        }
+      },
+      "data": {
+        "quarter": "第{{n}}季度",
+        "ticketsClosed": "已关闭工单",
+        "ticketsAria": "每季度关闭的支持工单数",
+        "orders": "订单",
+        "average7": "7 日均值",
+        "day": "天",
+        "ordersAria": "每日订单数及其 7 日均值",
+        "revenueAria": "2025 与 2026 年的季度收入",
+        "nps": {
+          "promoters": "推荐者",
+          "passives": "被动者",
+          "detractors": "贬损者"
+        },
+        "regions": {
+          "northAmerica": "北美",
+          "europe": "欧洲",
+          "asiaPacific": "亚太",
+          "latinAmerica": "拉丁美洲",
+          "middleEast": "中东"
+        },
+        "npsAria": "各地区推荐者、被动者与贬损者的占比",
+        "channels": {
+          "web": "网站",
+          "mobile": "移动应用",
+          "partners": "合作伙伴"
+        },
+        "channelsAria": "按渠道堆叠的每月订单数",
+        "sales": "销量",
+        "salesAria": "每季度销量",
+        "unitsStatus": "{{quarter}}：{{units}} 件",
+        "tapBar": "点按一根柱子",
+        "stacked": "堆叠",
+        "grouped": "分组",
+        "ordersPerChannelAria": "按渠道和月份的订单数",
+        "cities": {
+          "london": "伦敦",
+          "tokyo": "东京",
+          "paris": "巴黎"
+        },
+        "rainfallAria": "伦敦、东京与巴黎的月平均降水量",
+        "netResult": "净利润",
+        "profitAria": "每月净利润，盈利在零线以上，亏损在零线以下",
+        "unitsSold": "销量",
+        "rankingAria": "各国线上销量，从高到低",
+        "newCustomers": "新客户",
+        "week": "第{{n}}周",
+        "weeklyTarget": "每周目标",
+        "targetAria": "每周新客户数与每周目标对比",
+        "targetSummary": "{{total}} 周中有 {{reached}} 周达标（{{rate}}）。",
+        "revenue": "收入",
+        "pickedMonth": "{{month}}：{{value}}",
+        "backToQuarters": "返回季度",
+        "drillHint": "点击某个季度查看其各月数据。",
+        "quarterDetail": "{{quarter}}：合计 {{value}}。点击某个月份查看其收入。",
+        "quartersAria": "2026 年各季度收入；点击某个季度查看其各月数据",
+        "monthsAria": "2026 年 {{quarter}} 各月收入",
+        "hiringDepartments": {
+          "engineering": "工程",
+          "product": "产品",
+          "design": "设计",
+          "sales": "销售",
+          "marketing": "市场",
+          "support": "支持"
+        },
+        "previousYear": "去年",
+        "currentYear": "今年",
+        "change": "变化",
+        "compareLastYear": "与去年对比",
+        "hiresAria": "各部门今年与去年的招聘人数",
+        "deploysOk": "成功",
+        "deploysFailed": "已回滚",
+        "changeFreeze": "变更冻结",
+        "deploysAria": "八周内每天的生产部署次数，分为成功与回滚",
+        "deploysSummary": "每个工作日 {{perDay}} 次部署，变更失败率 {{failure}}。",
+        "offPeak": "低谷",
+        "standard": "平段",
+        "peak": "高峰",
+        "chargeHere": "充电",
+        "dailyAverage": "日均价",
+        "chargingTime": "充电时长",
+        "chargeFor": "{{energy}} kWh · {{duration}}",
+        "chargeAdvice": "建议在 {{start}} 至 {{end}} 充电，费用 {{cost}}，比 {{plugIn}} 插上电立即充电节省 {{saving}}。",
+        "pricePerMwh": "每 MWh 电价",
+        "pricesAria": "明天每小时的日前电价，并突出显示电动车最便宜的充电时段"
+      },
+      "api": {
+        "BarChartProps": {
+          "series": "未设置 type 的系列绘制为柱（可借 type 叠加折线等）",
+          "stacked": "将所有系列的柱堆叠而非分组",
+          "percent": "将堆叠缩放为 100%（隐含 stacked）",
+          "labels": "在每根柱子上方写出数值",
+          "orientation": "\"horizontal\" 让柱子从左侧生长，类别沿左侧排列"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础",
+            "description": "点击柱子：onPointClick 接收季度及其数值。"
+          },
+          "stacked": {
+            "title": "堆叠",
+            "description": "Switch 切换 stacked，在堆叠柱和分组柱之间切换。"
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "grouped": {
+            "title": "带标签的分组柱形图",
+            "description": "每个地区两年的数据并排显示；labels 在每根柱子上方显示数值。"
+          },
+          "stacked": {
+            "title": "堆叠柱形图",
+            "description": "按设备划分的会话数在每周每天堆叠显示。"
+          }
+        },
+        "minerva-bar-chart": {
+          "props": {
+            "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+            "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+          },
+          "events": {
+            "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
+            "minerva-point-click": "点击了数据点或柱子；detail：{ x, xLabel, items }",
+            "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",
+            "minerva-zoom": "用户进行了缩放或平移；detail：{ x, y }（可见范围）",
+            "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "显示完整的数据范围",
+            "getView": "可见范围，引擎创建之前为 null",
+            "setView": "设置可见范围",
+            "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+          }
+        }
+      }
+    }
+  }
+}

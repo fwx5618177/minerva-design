@@ -1,0 +1,427 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "time-and-sales",
+  "title": "Ruban des transactions",
+  "description": "Un ruban des transactions : les plus récentes en haut, qui glissent et clignotent, les grosses en gras et teintées, les balayages d'une même milliseconde fusionnés, des filtres de taille et une pause au survol. Des anneaux de tableaux typés gardent 200 000 transactions ; seules les lignes visibles sont dessinées.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "data": {
+      "aria": "Transactions BTC/USDT",
+      "pickedBuy": "Achat de {{size}} BTC à {{price}}",
+      "pickedSell": "Vente de {{size}} BTC à {{price}}",
+      "pausedHint": "En pause pendant le survol : éloignez le pointeur (ou cliquez sur le badge) pour reprendre.",
+      "liveHint": "Survolez le ruban pour le mettre en pause, cliquez sur une ligne pour choisir une transaction.",
+      "threshold": "Seuil des grosses transactions",
+      "atLeast": "≥ {{value}} BTC",
+      "minSize": "Quantité minimale",
+      "all": "Toutes",
+      "aggregate": "Fusionner les balayages d'une même milliseconde",
+      "tickColors": "Colorer les prix par tick",
+      "rows": "{{value}} lignes conservées",
+      "colors": "Convention de couleurs",
+      "redUp": "Rouge hausse, vert baisse",
+      "greenUp": "Vert hausse, rouge baisse",
+      "add": "Ajouter {{value}} transactions",
+      "loaded": "{{rows}} transactions, dernier lot en {{ms}} ms",
+      "rollingWindow": "Fenêtre glissante",
+      "lastWindow": "{{value}} dernières",
+      "vwap": "VWAP",
+      "buyShare": "Part achetée",
+      "bought": "Acheté",
+      "sold": "Vendu",
+      "btcValue": "{{value}} BTC",
+      "tradesPerSecond": "Transactions / s",
+      "largest": "Plus grosse transaction",
+      "largestBuy": "Achat {{size}} à {{price}}",
+      "largestSell": "Vente {{size}} à {{price}}",
+      "pressureBuy": "Les acheteurs prennent l'offre.",
+      "pressureSell": "Les vendeurs frappent la demande.",
+      "pressureBalanced": "Les flux acheteurs et vendeurs s'équilibrent.",
+      "pressureWaiting": "En attente de transactions…",
+      "timeZone": "Fuseau horaire",
+      "zones": {
+        "local": "Local",
+        "utc": "UTC",
+        "newYork": "New York",
+        "tokyo": "Tokyo"
+      },
+      "timeIn": "Heure ({{zone}})",
+      "blocksTitle": "Blocs ≥ {{value}} BTC",
+      "clearTape": "Effacer",
+      "blocksSeen": "{{value}} blocs depuis le début",
+      "blocksWaiting": "En attente d'un bloc…",
+      "blockBuy": "Achat",
+      "blockSell": "Vente",
+      "blockLine": "{{time}} · {{size}} BTC à {{price}} ≈ {{notional}}",
+      "blockPrints": "{{value}} transactions",
+      "sideTotals": "{{count}} transactions · {{size}} BTC",
+      "buysTape": "Achats",
+      "sellsTape": "Ventes",
+      "buysAria": "Achats BTC/USDT",
+      "sellsAria": "Ventes BTC/USDT",
+      "netFlow": "Flux net : {{value}} BTC (acheté − vendu)"
+    }
+  },
+  "components": [
+    {
+      "name": "TimeAndSales",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnTimeAndSales. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnTimeAndSales. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnTimeAndSales"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-time-and-sales",
+        "props": [
+          {
+            "name": "trades",
+            "typeText": "readonly MarketTrade[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/trading.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/trading.ts"
+          },
+          {
+            "name": "options",
+            "typeText": "TimeAndSalesOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/trading.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "TimeAndSalesRowEvent | null",
+            "required": false,
+            "source": "packages/angular/src/components/charts/trading.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "TimeAndSalesRowEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "tradeClick",
+            "typeText": "TimeAndSalesRowEvent",
+            "required": false,
+            "source": "packages/angular/src/components/charts/trading.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "TimeAndSalesRowEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pause",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/charts/trading.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "tape",
+      "title": "Live tape",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component, DestroyRef, inject, signal } from '@angular/core';\nimport { MnTimeAndSales } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTimeAndSales],\n  template: `\n<mn-time-and-sales [trades]=\"trades()\" [options]=\"{ largeTradeThreshold: 20 }\" [height]=\"320\" />\n  `,\n})\nexport class Example {\n  trades = (() => {\n  const fraction = (value: number) => value - Math.floor(value);\n  const round = (value: number) => Math.round(value * 100) / 100;\n  // the trade of a tick: around 100, mostly small, sometimes large\n  const trade = (tick: number) => ({\n    time: Date.UTC(2026, 9, 30, 9, 30) + tick * 250,\n    price: round(100 + Math.sin(tick / 30) / 4 + fraction(Math.sin(tick * 3.3) * 999) / 20),\n    size: Math.round(1 + fraction(Math.sin(tick * 9.1) * 43758.5453) ** 4 * 40),\n    side: fraction(Math.sin(tick * 4.7) * 43758.5453) > 0.45 ? (\"buy\" as const) : (\"sell\" as const),\n  });\n  const trades = signal(Array.from({ length: 40 }, (_, i) => trade(i)));\n  const timer = setInterval(() => {\n    trades.update((list) => [...list, trade(list.length)]);\n  }, 250);\n  inject(DestroyRef).onDestroy(() => clearInterval(timer));\n  return trades;\n})();\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "large-trades",
+      "title": "Grosses transactions",
+      "description": "Les transactions atteignant largeTradeThreshold sont en gras et teintées, d'autant plus jusqu'à 8 fois le seuil. aggregate fusionne un ordre agressif balayant plusieurs niveaux (même sens, même milliseconde) en une ligne : quantités additionnées, dernier prix et nombre d'exécutions.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnTimeAndSales, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTimeAndSales],\n  template: `\n@let t = labels[language()];\n<mn-time-and-sales\n  [trades]=\"trades\"\n  [options]=\"{ aggregate: true, minSize: 2, largeTradeThreshold: 25, columns: ['time', 'side', 'price', 'size'] }\"\n  [height]=\"300\"\n  (tradeClick)=\"clicked = $event.trade.price + ' × ' + $event.trade.size + ' ' + t.size + ' (' + $event.count + ')'\"\n/>\n<output aria-live=\"polite\">{{ clicked || t.hint }}</output>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  clicked = \"\";\n  trades = (() => {\n  const fraction = (value: number) => value - Math.floor(value);\n  const round = (value: number) => Math.round(value * 100) / 100;\n  // the trade of a tick: around 100, mostly small, sometimes large\n  const trade = (tick: number) => ({\n    time: Date.UTC(2026, 9, 30, 9, 30) + tick * 250,\n    price: round(100 + Math.sin(tick / 30) / 4 + fraction(Math.sin(tick * 3.3) * 999) / 20),\n    size: Math.round(1 + fraction(Math.sin(tick * 9.1) * 43758.5453) ** 4 * 40),\n    side: fraction(Math.sin(tick * 4.7) * 43758.5453) > 0.45 ? (\"buy\" as const) : (\"sell\" as const),\n  });\n  return Array.from({ length: 2000 }, (_, i) => trade(i));\n})();\n  labels = {\n  \"en\": {\n    \"hint\": \"Click a trade\",\n    \"size\": \"lots\"\n  },\n  \"zh\": {\n    \"hint\": \"点击一笔成交\",\n    \"size\": \"手\"\n  },\n  \"ja\": {\n    \"hint\": \"約定をクリックします\",\n    \"size\": \"ロット\"\n  },\n  \"fr\": {\n    \"hint\": \"Cliquez sur une transaction\",\n    \"size\": \"lots\"\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Ruban des transactions",
+      "description": "Un ruban des transactions : les plus récentes en haut, qui glissent et clignotent, les grosses en gras et teintées, les balayages d'une même milliseconde fusionnés, des filtres de taille et une pause au survol. Des anneaux de tableaux typés gardent 200 000 transactions ; seules les lignes visibles sont dessinées.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "trades reçoit les transactions de la plus ancienne à la plus récente ; le ruban affiche la plus récente en haut. Quand le tableau grandit (mêmes éléments en tête), seules les nouvelles sont ajoutées, sinon le ruban est remplacé. La molette ou la barre de défilement parcourent l'historique."
+        },
+        "live": {
+          "title": "Ruban en direct",
+          "description": "Les transactions passent par la ref (addTrades) : les nouvelles lignes glissent et clignotent, un dessin par image. Survolez pour mettre en pause : les lignes se figent et le badge compte les nouvelles ; cliquez dessus (ou Début) pour revenir. onTradeClick donne la transaction cliquée."
+        },
+        "large-trades": {
+          "title": "Grosses transactions",
+          "description": "Les transactions atteignant largeTradeThreshold sont en gras et teintées, d'autant plus jusqu'à 8 fois le seuil. aggregate fusionne un ordre agressif balayant plusieurs niveaux (même sens, même milliseconde) en une ligne : quantités additionnées, dernier prix et nombre d'exécutions."
+        },
+        "filters": {
+          "title": "Filtres",
+          "description": "minSize masque les lignes plus petites qu'une quantité (après agrégation) ; priceColor=\"tick\" colore le prix selon son mouvement depuis la transaction précédente. L'historique conservé est refiltré à chaque changement."
+        },
+        "large-data": {
+          "title": "100 000 transactions",
+          "description": "Le moteur sans framework (createTimeAndSales de minerva-design/charts/core) range les transactions dans des anneaux de tableaux typés : 100 000 se chargent en quelques millisecondes et chaque clic en ajoute 100 000, jusqu'à capacity. Seules les lignes visibles sont dessinées."
+        },
+        "dark": {
+          "title": "Terminal sombre",
+          "description": "Une palette de terminal sur les variables CSS du conteneur, une police à chasse fixe et la coloration par tick (vert à la hausse, rouge à la baisse)."
+        },
+        "compact": {
+          "title": "Compact (mobile)",
+          "description": "Un panneau de téléphone : lignes de 17 px, secondes seulement (milliseconds={false}) et balayages fusionnés. Sous 240 px de large, les textes rapetissent et la colonne du sens disparaît."
+        },
+        "red-up": {
+          "title": "Rouge à la hausse",
+          "description": "colorConvention=\"red-up\" : achats en rouge, ventes en vert (Chine continentale, Japon, Corée)."
+        },
+        "pressure": {
+          "title": "Pression acheteuse / vendeuse",
+          "description": "Les transactions passées à addTrades sont aussi gardées une minute pour calculer deux fois par seconde des statistiques glissantes : VWAP, volume acheté et vendu par les agresseurs, transactions par seconde et plus grosse transaction. Le ruban fusionne les balayages (aggregate) et colore les transactions dès 1 BTC (largeTradeThreshold)."
+        },
+        "clock": {
+          "title": "Fuseaux horaires et formats",
+          "description": "formatTime remplace l'horloge intégrée (locale ou UTC) par n'importe quel Intl.DateTimeFormat, ici dans un autre fuseau avec les millisecondes ; formatPrice affiche des dollars et labels.time indique le fuseau dans l'en-tête."
+        },
+        "block-alerts": {
+          "title": "Alertes de blocs",
+          "description": "Les transactions de même sens et de même milliseconde (un balayage, comme les fusionne aggregate) sont additionnées : dès 2 BTC elles sont consignées avec leur prix moyen et leur notionnel, et la même taille est mise en évidence sur le ruban par largeTradeThreshold. Effacer vide le ruban avec clear()."
+        },
+        "split": {
+          "title": "Achats et ventes côte à côte",
+          "description": "Un flux, deux rubans : les transactions sont séparées par sens de l'agresseur avant addTrades, chaque ruban avec son propre ariaLabel. Les en-têtes comptent les transactions et le volume de chaque côté, le flux net en fait la différence."
+        }
+      },
+      "data": {
+        "aria": "Transactions BTC/USDT",
+        "pickedBuy": "Achat de {{size}} BTC à {{price}}",
+        "pickedSell": "Vente de {{size}} BTC à {{price}}",
+        "pausedHint": "En pause pendant le survol : éloignez le pointeur (ou cliquez sur le badge) pour reprendre.",
+        "liveHint": "Survolez le ruban pour le mettre en pause, cliquez sur une ligne pour choisir une transaction.",
+        "threshold": "Seuil des grosses transactions",
+        "atLeast": "≥ {{value}} BTC",
+        "minSize": "Quantité minimale",
+        "all": "Toutes",
+        "aggregate": "Fusionner les balayages d'une même milliseconde",
+        "tickColors": "Colorer les prix par tick",
+        "rows": "{{value}} lignes conservées",
+        "colors": "Convention de couleurs",
+        "redUp": "Rouge hausse, vert baisse",
+        "greenUp": "Vert hausse, rouge baisse",
+        "add": "Ajouter {{value}} transactions",
+        "loaded": "{{rows}} transactions, dernier lot en {{ms}} ms",
+        "rollingWindow": "Fenêtre glissante",
+        "lastWindow": "{{value}} dernières",
+        "vwap": "VWAP",
+        "buyShare": "Part achetée",
+        "bought": "Acheté",
+        "sold": "Vendu",
+        "btcValue": "{{value}} BTC",
+        "tradesPerSecond": "Transactions / s",
+        "largest": "Plus grosse transaction",
+        "largestBuy": "Achat {{size}} à {{price}}",
+        "largestSell": "Vente {{size}} à {{price}}",
+        "pressureBuy": "Les acheteurs prennent l'offre.",
+        "pressureSell": "Les vendeurs frappent la demande.",
+        "pressureBalanced": "Les flux acheteurs et vendeurs s'équilibrent.",
+        "pressureWaiting": "En attente de transactions…",
+        "timeZone": "Fuseau horaire",
+        "zones": {
+          "local": "Local",
+          "utc": "UTC",
+          "newYork": "New York",
+          "tokyo": "Tokyo"
+        },
+        "timeIn": "Heure ({{zone}})",
+        "blocksTitle": "Blocs ≥ {{value}} BTC",
+        "clearTape": "Effacer",
+        "blocksSeen": "{{value}} blocs depuis le début",
+        "blocksWaiting": "En attente d'un bloc…",
+        "blockBuy": "Achat",
+        "blockSell": "Vente",
+        "blockLine": "{{time}} · {{size}} BTC à {{price}} ≈ {{notional}}",
+        "blockPrints": "{{value}} transactions",
+        "sideTotals": "{{count}} transactions · {{size}} BTC",
+        "buysTape": "Achats",
+        "sellsTape": "Ventes",
+        "buysAria": "Achats BTC/USDT",
+        "sellsAria": "Ventes BTC/USDT",
+        "netFlow": "Flux net : {{value}} BTC (acheté − vendu)"
+      },
+      "api": {
+        "TimeAndSalesProps": {
+          "trades": "Transactions, de la plus ancienne ; quand le tableau grandit seules les nouvelles sont ajoutées (sinon le ruban est remplacé)",
+          "onHover": "Ligne survolée (null en sortant)",
+          "onTradeClick": "Clic, toucher ou Entrée sur une ligne",
+          "onPause": "Le ruban s'est mis en pause (survol, défilement ou ligne choisie) ou a repris",
+          "ref": "Poignée impérative : addTrades, setTrades, clear, scrollToLatest, getInstance"
+        },
+        "TimeAndSalesHandle": {
+          "addTrades": "Ajoute des transactions (de la plus ancienne)",
+          "setTrades": "Remplace toutes les transactions",
+          "clear": "Supprime toutes les transactions",
+          "scrollToLatest": "Revient à la transaction la plus récente et reprend",
+          "getInstance": "L'instance du moteur sous-jacent (minerva-design/charts/core)"
+        },
+        "TimeAndSalesOptions": {
+          "capacity": "Transactions conservées (les plus anciennes sont supprimées)",
+          "rowHeight": "Hauteur d'une ligne, en pixels",
+          "columns": "Colonnes, de gauche à droite",
+          "minSize": "Masque les lignes plus petites que cette quantité (après agrégation)",
+          "largeTradeThreshold": "Les transactions atteignant cette quantité sont en gras et teintées (plus fort quand elles grossissent)",
+          "aggregate": "Fusionne les transactions consécutives de même sens et même milliseconde en une ligne : quantités additionnées, dernier prix",
+          "priceColor": "Colore le prix selon le sens de l'agresseur ou par tick (hausse ou baisse depuis la transaction précédente)",
+          "pauseOnHover": "Fige les lignes tant que le pointeur survole le ruban (les nouvelles sont comptées)",
+          "animate": "Les nouvelles transactions glissent et clignotent",
+          "header": "Ligne d'en-tête avec le nom des colonnes",
+          "milliseconds": "Millisecondes dans le format d'heure par défaut",
+          "timeZone": "Horloge du format d’heure par défaut : l’heure locale ou UTC (l’horloge de la plupart des places de marché)",
+          "formatTime": "Formate l'heure d'une transaction (remplace HH:MM:SS.mmm par défaut)",
+          "labels": "Remplace les textes intégrés, qui suivent locale (anglais, chinois, japonais et français intégrés)"
+        },
+        "OrderBookCommonOptions": {
+          "upColor": "Couleur des achats (le côté « hausse ») ; --success-color par défaut, --danger-color avec colorConvention \"red-up\"",
+          "downColor": "Couleur des ventes (le côté « baisse ») ; --danger-color par défaut, --success-color avec colorConvention \"red-up\"",
+          "colorConvention": "\"red-up\" inverse les couleurs par défaut : achats en rouge, ventes en vert (Chine continentale, Japon, Corée)",
+          "pricePrecision": "Décimales des prix ; déduites des données si omises",
+          "sizePrecision": "Décimales des quantités ; déduites des données si omises",
+          "locale": "Langue des nombres (Intl.NumberFormat, unités compactes comme k ou 万) et des textes intégrés (anglais, chinois, japonais, français) ; la langue de la page (attribut lang de l’élément html) par défaut",
+          "formatPrice": "Formate un prix (remplace pricePrecision et locale)",
+          "formatSize": "Formate une quantité (remplace sizePrecision et locale)",
+          "fontFamily": "Police des textes ; celle du thème si omise (une police à chasse fixe aligne les chiffres)",
+          "fontSize": "Taille des textes, en pixels",
+          "ariaLabel": "Nom accessible du widget ; labels.name localisé par défaut"
+        },
+        "OrderBookWidgetProps": {
+          "height": "Hauteur du widget ; les nombres sont des pixels",
+          "width": "Largeur du widget ; les nombres sont des pixels",
+          "className": "Classe du conteneur",
+          "style": "Style du conteneur"
+        },
+        "TimeAndSalesLabels": {
+          "time": "Colonne heure",
+          "price": "Colonne prix",
+          "size": "Colonne quantité",
+          "side": "Colonne sens",
+          "buy": "Sens achat",
+          "sell": "Sens vente",
+          "paused": "Badge pendant la pause",
+          "newTrades": "Badge des nouvelles transactions au-dessus de la vue ; {count} est remplacé",
+          "name": "Nom accessible (sans ariaLabel)"
+        },
+        "TimeAndSalesRowEvent": {
+          "trade": "La transaction (les lignes fusionnées additionnent les quantités et gardent le dernier prix)",
+          "count": "Transactions fusionnées dans la ligne (1 sans agrégation)",
+          "index": "Ligne depuis le haut (0 = la plus récente)"
+        },
+        "MarketTrade": {
+          "time": "Heure d'exécution (ms depuis l'époque)",
+          "price": "Prix d'exécution",
+          "size": "Quantité exécutée (devise de base)",
+          "side": "Sens de l'agresseur : \"buy\" a pris une vente, \"sell\" a frappé un achat"
+        },
+        "TimeAndSalesInstance": {
+          "addTrades": "Ajoute des transactions (de la plus ancienne), dessinées à l'image suivante",
+          "setTrades": "Remplace toutes les transactions",
+          "clear": "Supprime toutes les transactions",
+          "setOptions": "Remplace les options",
+          "scrollToLatest": "Revient à la transaction la plus récente et reprend",
+          "getCount": "Lignes après filtrage et agrégation",
+          "on": "S'abonne à un événement (hover, tradeClick, pause) ; renvoie la fonction de désabonnement",
+          "resize": "Mesure à nouveau le conteneur (un ResizeObserver le fait automatiquement)",
+          "destroy": "Supprime le ruban et ses écouteurs"
+        }
+      },
+      "wc": {
+        "demos": {
+          "tape": {
+            "title": "Ruban en direct",
+            "description": "Une transaction toutes les 250 ms en haut du ruban, les gros ordres en évidence ; le survol le met en pause et compte les nouvelles."
+          },
+          "large-trades": {
+            "title": "Ruban agrégé, gros ordres",
+            "description": "2 000 transactions, celles consécutives de même sens et prix fusionnées, les petites masquées ; cliquez sur une ligne."
+          }
+        },
+        "minerva-time-and-sales": {
+          "props": {
+            "options": "Autres options du moteur (TimeAndSalesOptions de minerva-design/charts/core : couleurs, textes, locale, labels…) ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Une ligne est survolée ; detail : { trade, count, index }, null quand le pointeur la quitte",
+            "minerva-trade-click": "Une ligne a été cliquée, touchée ou activée avec Entrée ; detail : { trade, count, index }",
+            "minerva-pause": "Le ruban s’est mis en pause (pointeur dessus, défilé vers le bas) ou a repris ; detail : { paused }"
+          },
+          "methods": {
+            "addTrades": "Ajoute des transactions (les plus anciennes d’abord)",
+            "setTrades": "Remplace toutes les transactions",
+            "clear": "Retire toutes les transactions",
+            "scrollToLatest": "Revient à la transaction la plus récente et reprend"
+          }
+        }
+      }
+    }
+  }
+}

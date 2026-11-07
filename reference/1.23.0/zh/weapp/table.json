@@ -1,0 +1,928 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "zh",
+  "renderer": "weapp",
+  "page": "table",
+  "title": "Table 表格",
+  "description": "展示数据行。常规场景用 Table（columns + data），自定义表头或合并单元格用 TableRoot 及其子组件，需要分页、加载与错误状态时用 DataTable。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DataTable",
+      "support": {
+        "status": "beta",
+        "notes": "All Table contracts and configure callbacks, error/retry slots and label, declarative pagination options for total/range/quick jump/size/labels/visual axes; owner-paginated rows. Native generic Component replaces ReactNode cells; browser focus and scrolling differ. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "All Table contracts and configure callbacks, error/retry slots and label, declarative pagination options for total/range/quick jump/size/labels/visual axes; owner-paginated rows. Native generic Component replaces ReactNode cells; browser focus and scrolling differ. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/data-table/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "data-table",
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "columns",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "data",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "rowKey",
+            "typeText": "string",
+            "required": false,
+            "default": "id"
+          },
+          {
+            "name": "selectable",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "selectedRowKeys",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "sortState",
+            "typeText": "unknown",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "manualSort",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "emptyText",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "error",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "current",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "pageSize",
+            "typeText": "number",
+            "required": false,
+            "default": 10
+          },
+          {
+            "name": "total",
+            "typeText": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "disabledRowKeys",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "filters",
+            "typeText": "object",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "manualFilter",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "size",
+            "typeText": "string",
+            "required": false,
+            "default": "medium"
+          },
+          {
+            "name": "variant",
+            "typeText": "string",
+            "required": false,
+            "default": "simple"
+          },
+          {
+            "name": "serverPagination",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "defaultSelectedRowKeys",
+            "typeText": "unknown",
+            "required": false
+          },
+          {
+            "name": "rowSelection",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultSortState",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultCurrent",
+            "typeText": "number",
+            "required": false,
+            "default": 1
+          },
+          {
+            "name": "scroll",
+            "typeText": "unknown",
+            "required": false
+          },
+          {
+            "name": "pagination",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "hoverable",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": "Scrollable table"
+          },
+          {
+            "name": "loadingRows",
+            "typeText": "number",
+            "required": false,
+            "default": 5
+          },
+          {
+            "name": "customCellRenderer",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "retryable",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "retryLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "sortchange",
+            "typeText": "{ sortState: { key: string; order: 'ascend' | 'descend' | null } }",
+            "description": "Requested sort state."
+          },
+          {
+            "name": "selectionchange",
+            "typeText": "{ selectedRowKeys: Array<string | number>; selectedRows: Record<string, unknown>[] }",
+            "description": "Requested row selection, excluding disabled rows from select-all."
+          },
+          {
+            "name": "filterchange",
+            "typeText": "{ filters: Record<string, string[]> }",
+            "description": "Requested column filters."
+          },
+          {
+            "name": "pagechange",
+            "typeText": "{ current: number; pageSize: number }",
+            "description": "Requested page and page size."
+          },
+          {
+            "name": "rowclick",
+            "typeText": "{ row: Record<string, unknown>; key: string | number; index: number }",
+            "description": "Original row and source index."
+          },
+          {
+            "name": "cellaction",
+            "typeText": "{ row: Record<string, unknown>; key: string | number; index: number; columnKey: string; detail: unknown }",
+            "description": "Action emitted from a native rich cell or custom cell-renderer Component."
+          },
+          {
+            "name": "retry",
+            "typeText": "{}",
+            "description": "Retry requested from the error state."
+          }
+        ],
+        "slots": [
+          {
+            "name": "error"
+          },
+          {
+            "name": "empty"
+          },
+          {
+            "name": "pagination"
+          },
+          {
+            "name": "footer"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-data-table\": \"minerva-design/dist/weapp/data-table/index\" }",
+        "bindings": []
+      }
+    },
+    {
+      "name": "Table",
+      "support": {
+        "status": "beta",
+        "notes": "Core sorting and fixed-column offsets, scroll extents, row selection defaults/controlled rejection/disabled callbacks, filtering and local paging, skeleton rows, variants/density; configure custom row keys/comparators/native rich cells and cell-renderer generic. Native generic Component receives row/value/column/index instead of a ReactNode render function; sticky scrolling requires device verification. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Core sorting and fixed-column offsets, scroll extents, row selection defaults/controlled rejection/disabled callbacks, filtering and local paging, skeleton rows, variants/density; configure custom row keys/comparators/native rich cells and cell-renderer generic. Native generic Component receives row/value/column/index instead of a ReactNode render function; sticky scrolling requires device verification. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/table/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "table",
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "columns",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "data",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "rowKey",
+            "typeText": "string",
+            "required": false,
+            "default": "id"
+          },
+          {
+            "name": "selectable",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "selectedRowKeys",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "sortState",
+            "typeText": "unknown",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "manualSort",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "emptyText",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "disabledRowKeys",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "filters",
+            "typeText": "object",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "manualFilter",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "size",
+            "typeText": "string",
+            "required": false,
+            "default": "medium"
+          },
+          {
+            "name": "variant",
+            "typeText": "string",
+            "required": false,
+            "default": "simple"
+          },
+          {
+            "name": "current",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "pageSize",
+            "typeText": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "serverPagination",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "defaultSelectedRowKeys",
+            "typeText": "unknown",
+            "required": false
+          },
+          {
+            "name": "rowSelection",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultSortState",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultCurrent",
+            "typeText": "number",
+            "required": false,
+            "default": 1
+          },
+          {
+            "name": "scroll",
+            "typeText": "unknown",
+            "required": false
+          },
+          {
+            "name": "pagination",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "hoverable",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": "Scrollable table"
+          },
+          {
+            "name": "loadingRows",
+            "typeText": "number",
+            "required": false,
+            "default": 5
+          },
+          {
+            "name": "customCellRenderer",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "retryable",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "retryLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "sortchange",
+            "typeText": "{ sortState: { key: string; order: 'ascend' | 'descend' | null } }",
+            "description": "Requested sort state."
+          },
+          {
+            "name": "selectionchange",
+            "typeText": "{ selectedRowKeys: Array<string | number>; selectedRows: Record<string, unknown>[] }",
+            "description": "Requested row selection, excluding disabled rows from select-all."
+          },
+          {
+            "name": "filterchange",
+            "typeText": "{ filters: Record<string, string[]> }",
+            "description": "Requested column filters."
+          },
+          {
+            "name": "pagechange",
+            "typeText": "{ current: number; pageSize: number }",
+            "description": "Requested page and page size."
+          },
+          {
+            "name": "rowclick",
+            "typeText": "{ row: Record<string, unknown>; key: string | number; index: number }",
+            "description": "Original row and source index."
+          },
+          {
+            "name": "cellaction",
+            "typeText": "{ row: Record<string, unknown>; key: string | number; index: number; columnKey: string; detail: unknown }",
+            "description": "Action emitted from a native rich cell or custom cell-renderer Component."
+          }
+        ],
+        "slots": [
+          {
+            "name": "empty"
+          },
+          {
+            "name": "pagination"
+          },
+          {
+            "name": "footer"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-table\": \"minerva-design/dist/weapp/table/index\" }",
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableBody",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: data records. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: data records. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "TableCell",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: row field keyed by column. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: row field keyed by column. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "TableCellContent",
+      "support": {
+        "status": "beta",
+        "notes": "Native bounded primary/secondary text and monospace content; default Table cell-renderer generic. Arbitrary ReactNode content uses native slots. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native bounded primary/secondary text and monospace content; default Table cell-renderer generic. Arbitrary ReactNode content uses native slots. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/table-cell-content/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "table-cell-content",
+        "props": [
+          {
+            "name": "primary",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "secondary",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "monospace",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "maxWidth",
+            "typeText": "unknown",
+            "required": false,
+            "default": 360
+          },
+          {
+            "name": "value",
+            "typeText": "unknown",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "row",
+            "typeText": "object",
+            "required": false
+          },
+          {
+            "name": "column",
+            "typeText": "object",
+            "required": false
+          },
+          {
+            "name": "rowKey",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "rowIndex",
+            "typeText": "number",
+            "required": false,
+            "default": 0
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-table-cell-content\": \"minerva-design/dist/weapp/table-cell-content/index\" }",
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableHead",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: columns[].header. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: columns[].header. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "TableHeader",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: column header label. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: column header label. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "TableRoot",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: columns/data. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: columns/data. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "TableRow",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: one data record. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Table: one data record. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Table props/slots for the native equivalent."
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Table": {
+      "kind": "cssVars",
+      "source": "react/src/components/Table",
+      "vars": [
+        {
+          "name": "--table-cell-padding-y",
+          "description": "Vertical padding of the cells (every size; follows the density by default)"
+        },
+        {
+          "name": "--table-cell-padding-x",
+          "description": "Horizontal padding of the cells (every size; follows the density by default)"
+        },
+        {
+          "name": "--table-font-size",
+          "description": "Font size of the body cells (every size)"
+        },
+        {
+          "name": "--table-header-bg",
+          "description": "Background color of the header row"
+        },
+        {
+          "name": "--table-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--table-radius",
+          "description": "Corner radius of the wrapper (defaults to --radius-lg)"
+        },
+        {
+          "name": "--table-stripe-bg",
+          "description": "Background color of the odd rows of a striped table"
+        },
+        {
+          "name": "--table-hover-bg",
+          "description": "Background color of the hovered row of a hoverable table"
+        },
+        {
+          "name": "--table-selected-bg",
+          "description": "Background color of the selected rows (row selection)"
+        },
+        {
+          "name": "--table-sort-icon-color",
+          "description": "Color of the sort indicator of an unsorted sortable column"
+        },
+        {
+          "name": "--table-focus-ring-color",
+          "description": "Outline color of the focused scroll region"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Table 表格",
+      "description": "展示数据行。常规场景用 Table（columns + data），自定义表头或合并单元格用 TableRoot 及其子组件，需要分页、加载与错误状态时用 DataTable。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "每列默认读取 row[key]，也可提供 render 函数。请为行提供稳定的 rowKey。"
+        },
+        "variants": {
+          "title": "变体与尺寸",
+          "description": "普通、斑马纹或带边框的行，三种密度（small / medium / large），可选悬停高亮。"
+        },
+        "fixed-columns": {
+          "title": "固定列与滚动",
+          "description": "scroll.x 设置最小宽度，scroll.y 限制高度并固定表头。固定列必须设置 width，并连续声明在开头（left）或末尾（right）；ellipsis 截断长文本。 当固定列的实测总宽度使滚动区域不足 120px 时，组件自动取消固定，所有字段和操作仍可通过横向滚动访问。"
+        },
+        "states": {
+          "title": "加载与空状态",
+          "description": "loading 渲染骨架行（对辅助技术隐藏）；data 为空时渲染 emptyText。"
+        },
+        "data-table": {
+          "title": "DataTable",
+          "description": "在表格下方添加分页；设置 error 时以提示和重试按钮替换表格。行数据需预先分页。"
+        },
+        "compound": {
+          "title": "组合子组件",
+          "description": "TableRoot、TableHead、TableBody、TableRow、TableHeader 与 TableCell 渲染原生表格元素，可实现多行表头或合并单元格。"
+        },
+        "cell-content": {
+          "title": "单元格内容",
+          "description": "TableCellContent 限制宽度并换行长内容，可附带弱化的第二行或等宽主文本。"
+        },
+        "sorting": {
+          "title": "排序",
+          "description": "sortable 让表头变成按钮，依次切换升序、降序和不排序（aria-sort 同步）。true 比较 row[key]；函数则比较两行。通过 sortState 和 onSortChange 受控，或用 manualSort 交由服务端排序。"
+        },
+        "selection": {
+          "title": "行选择",
+          "description": "rowSelection 添加复选框列和全选复选框（部分选中时为半选状态）。全选会跳过禁用行；选中行带有 aria-selected 和高亮。"
+        }
+      },
+      "api": {
+        "TableProps": {
+          "columns": "列定义",
+          "data": "要渲染的行",
+          "rowKey": "从行中提取稳定的 key（默认为行索引）",
+          "emptyText": "data 为空时显示的单行内容",
+          "loading": "以骨架占位行替代数据",
+          "loadingRows": "加载时渲染的骨架行数",
+          "sortState": "排序状态（受控）；null 表示不排序",
+          "defaultSortState": "初始排序状态（非受控）",
+          "onSortChange": "激活可排序表头时以下一个排序状态调用",
+          "manualSort": "跳过本地排序：按原样渲染 data（由数据持有方如服务端排序），表头仍反映排序状态",
+          "rowSelection": "添加用于选择行的首列复选框"
+        },
+        "TableColumn": {
+          "key": "列的唯一 key，也是默认读取的行字段",
+          "header": "表头内容",
+          "render": "渲染单元格，默认为 row[key]",
+          "width": "列宽（数字为像素），同时作为 width 与 min-width；固定列必填",
+          "align": "表头与单元格的水平对齐",
+          "ellipsis": "单行截断并显示省略号",
+          "fixed": "水平滚动时将列固定在左侧或右侧",
+          "sortable": "使列可排序：true 比较 row[key]（空值排在最后），函数 (a, b) => number 按升序比较两行"
+        },
+        "DataTableProps": {
+          "pagination": "表格下方分页的属性（行数据需预先分页）",
+          "error": "错误信息，以提示替换表格与分页",
+          "onRetry": "错误状态下重试按钮的回调",
+          "retryLabel": "重试按钮文本"
+        },
+        "TableRootProps": {
+          "size": "单元格密度",
+          "variant": "视觉样式：普通、斑马纹或带边框",
+          "hoverable": "悬停时高亮行",
+          "scroll": "滚动区域的横向最小宽度 / 纵向最大高度；滚动容器会成为以表格命名的可聚焦区域（默认：“可滚动表格”）",
+          "ref": "<table> 元素的 ref"
+        },
+        "TableScrollConfig": {
+          "x": "表格最小宽度，容器更窄时水平滚动",
+          "y": "最大可见高度，容器垂直滚动且表头固定"
+        },
+        "TableSortState": {
+          "key": "排序列的 key",
+          "order": "排序方向（\"ascend\" 或 \"descend\"）；null 表示不排序"
+        },
+        "TableRowSelection": {
+          "type": "选择模式（复选框多选）",
+          "selectedRowKeys": "选中行的 key（受控）",
+          "defaultSelectedRowKeys": "初始选中行的 key（非受控）",
+          "onChange": "以新的选中 key 和 data 中对应的行调用",
+          "getCheckboxProps": "每行复选框的选项；禁用行无法切换且会被全选跳过",
+          "getRowLabel": "在行复选框的无障碍标签中命名该行（“选择行 {name}”）；默认为行 key"
+        },
+        "TableCellContentProps": {
+          "primary": "主内容",
+          "secondary": "主内容下方的弱化次要内容",
+          "monospace": "以等宽字体的 <code> 渲染主内容",
+          "maxWidth": "最大宽度（数字为像素），长内容换行",
+          "ref": "根 <div> 元素的 ref"
+        },
+        "FixedColumnLayout": {
+          "leftOffsets": "每个左固定列的左偏移（px），按列 key 索引",
+          "rightOffsets": "每个右固定列的右偏移（px），按列 key 索引",
+          "lastLeftFixedKey": "开头左固定区的最后一列（显示边界阴影）",
+          "firstRightFixedKey": "末尾右固定区的第一列（显示边界阴影）"
+        }
+      },
+      "cssVars": {
+        "--table-cell-padding-y": "单元格垂直内边距（所有尺寸；默认跟随密度）",
+        "--table-cell-padding-x": "单元格水平内边距（所有尺寸；默认跟随密度）",
+        "--table-font-size": "表体单元格字号（所有尺寸）",
+        "--table-header-bg": "表头行的背景色",
+        "--table-border-color": "行分隔线的颜色",
+        "--table-radius": "外层容器的圆角（默认 --radius-lg）",
+        "--table-stripe-bg": "斑马纹表格奇数行的背景色",
+        "--table-hover-bg": "可悬停表格中悬停行的背景色",
+        "--table-selected-bg": "选中行的背景色（行选择）",
+        "--table-sort-icon-color": "未排序的可排序列的排序指示器颜色",
+        "--table-focus-ring-color": "聚焦的滚动区域的轮廓颜色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "columns 和 rows 是通过脚本设置的 JS 属性；row-key 指定作为键的字段。单元格的 render 函数可以返回 DOM 节点，这里返回一个两行的 <minerva-table-cell-content>。"
+          },
+          "sorting": {
+            "title": "排序",
+            "description": "sortable: true 按行字段排序，传入函数则作为自定义比较器。点击表头在升序、降序和不排序之间循环，并触发 minerva-sort-change；sortState 设置初始排序。"
+          },
+          "selection": {
+            "title": "行选择",
+            "description": "selectable 会添加一列复选框，表头带全选。isRowDisabled 锁定已支付的发票，getRowLabel 为每个复选框提供名称，minerva-selection-change 报告选中的键。"
+          },
+          "pagination": {
+            "title": "分页与加载",
+            "description": "pagination 属性会在表格下方渲染一个 <minerva-pagination>。表格不会切分 rows：请在 minerva-page-change 时加载对应页的数据；期间 loading 显示骨架行。"
+          }
+        },
+        "minerva-data-table": {
+          "props": {
+            "selectable": "添加一列复选框用于选择行。",
+            "scrollX": "横向滚动：表格的最小宽度（像素数值或 CSS 长度）。",
+            "scrollY": "纵向滚动：容器的最大高度；表头保持固定。",
+            "retryable": "在错误状态下显示重试按钮（触发 minerva-retry）。",
+            "rows": "行数据。",
+            "isRowDisabled": "对复选框被禁用的行返回 true。"
+          },
+          "events": {
+            "minerva-sort-change": "用户更改了排序（detail: { key, order }，order 为 null 表示不排序）。可取消：preventDefault() 保持当前排序。",
+            "minerva-selection-change": "用户更改了选中的行（detail: { selectedRowKeys, selectedRows }）。可取消：preventDefault() 保持当前选择。",
+            "minerva-page-change": "从分页组件转发的事件（detail: { page, pageSize }）。可取消。",
+            "minerva-retry": "错误状态中的重试按钮被激活。"
+          },
+          "slots": {
+            "empty": "空状态的内容（默认：empty-text 或本地化的“暂无数据”）。",
+            "error": "错误状态的内容（默认：error 文本）。"
+          },
+          "cssVars": {
+            "--button-height": "重试按钮的最小高度。",
+            "--button-padding-x": "重试按钮的水平内边距。",
+            "--button-radius": "重试按钮的圆角半径。",
+            "--button-font-size": "重试按钮的字号。",
+            "--button-font-weight": "重试按钮的字重。",
+            "--button-gap": "重试按钮中图标与文字之间的间距。",
+            "--button-label-white-space": "重试按钮文字的 white-space：nowrap（默认，截断）或 normal（换行）。"
+          }
+        },
+        "minerva-table-cell-content": {
+          "slots": {
+            "default": "主要内容（可替代 primary 属性）。",
+            "secondary": "次要行（可替代 secondary 属性）。"
+          },
+          "cssVars": {
+            "--button-height": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-padding-x": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-radius": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-font-size": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-font-weight": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-gap": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-label-white-space": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

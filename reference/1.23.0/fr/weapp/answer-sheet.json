@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "answer-sheet",
+  "title": "AnswerSheet",
+  "description": "Un navigateur de questions pour les entraînements et les examens : des pastilles numérotées groupées par section, indiquant si chaque question est sans réponse, répondue, correcte, incorrecte ou passée, avec un marqueur de relecture et la question courante mise en évidence.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "AnswerSheet",
+      "support": {
+        "status": "beta",
+        "notes": "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels with getItemLabel through configure(), summary, legend, size, disabled and readOnly. Items and groups are plain serializable arrays; selection is by tap. DOM roving keyboard focus is not a native mini-program interaction. layout=scroll centres the current pill through the scroll-view scroll-left, measured with createSelectorQuery after each change (RTL is not mirrored). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels with getItemLabel through configure(), summary, legend, size, disabled and readOnly. Items and groups are plain serializable arrays; selection is by tap. DOM roving keyboard focus is not a native mini-program interaction. layout=scroll centres the current pill through the scroll-view scroll-left, measured with createSelectorQuery after each change (RTL is not mirrored). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/answer-sheet/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "answer-sheet",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "groups",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "size",
+            "typeText": "string",
+            "required": false,
+            "default": "medium"
+          },
+          {
+            "name": "layout",
+            "typeText": "string",
+            "required": false,
+            "default": "wrap"
+          },
+          {
+            "name": "columns",
+            "typeText": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "showLegend",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "showSummary",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "{ value: unknown }",
+            "description": "Requested next value; a controlled owner must publish the accepted prop."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-answer-sheet\": \"minerva-design/dist/weapp/answer-sheet/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AnswerSheet": {
+      "kind": "cssVars",
+      "source": "react/src/components/AnswerSheet",
+      "vars": [
+        {
+          "name": "--answer-sheet-gap",
+          "description": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-item-size",
+          "description": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-radius",
+          "description": "Corner radius of the pills (defaults to --radius-md)"
+        },
+        {
+          "name": "--answer-sheet-item-background",
+          "description": "Background of an unanswered pill"
+        },
+        {
+          "name": "--answer-sheet-answered-background",
+          "description": "Background of an answered pill (defaults to --primary-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-answered-color",
+          "description": "Text color of an answered pill"
+        },
+        {
+          "name": "--answer-sheet-correct-background",
+          "description": "Background of a correct pill (defaults to --success-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-correct-color",
+          "description": "Text color of a correct pill"
+        },
+        {
+          "name": "--answer-sheet-wrong-background",
+          "description": "Background of a wrong pill (defaults to --danger-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-wrong-color",
+          "description": "Text color of a wrong pill"
+        },
+        {
+          "name": "--answer-sheet-current-background",
+          "description": "Background of the current pill (defaults to --primary-color)"
+        },
+        {
+          "name": "--answer-sheet-current-color",
+          "description": "Text color of the current pill"
+        },
+        {
+          "name": "--answer-sheet-flag-color",
+          "description": "Color of the flag dot (defaults to --warning-color)"
+        },
+        {
+          "name": "--answer-sheet-title-color",
+          "description": "Text color of the group titles and the summary"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AnswerSheet",
+      "description": "Un navigateur de questions pour les entraînements et les examens : des pastilles numérotées groupées par section, indiquant si chaque question est sans réponse, répondue, correcte, incorrecte ou passée, avec un marqueur de relecture et la question courante mise en évidence.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Une question courante contrôlée (value / onChange). La feuille est un repère nav de boutons ; la pastille courante porte aria-current=\"step\". Un seul arrêt de tabulation : les flèches et Début / Fin déplacent le focus, Entrée / Espace sélectionnent."
+        },
+        "groups": {
+          "title": "Sections, statuts et légende",
+          "description": "groups donne un titre aux sections (les questions vont dans le groupe dont la clé correspond à item.group, numérotées à travers les sections). Statuts : answered, correct, wrong, skipped ; flagged ajoute un point d'avertissement. showSummary compte les questions répondues et showLegend explique les statuts présents."
+        },
+        "scroll": {
+          "title": "Rangée défilante",
+          "description": "layout=\"scroll\" garde une seule rangée défilant horizontalement, pour un navigateur compact au-dessus de la question."
+        },
+        "sizes": {
+          "title": "Tailles, colonnes et désactivation",
+          "description": "Deux tailles de pastilles, une grille fixe avec columns (Haut / Bas changent de rangée ; sans columns ils vont à la pastille la plus proche de la rangée au-dessus / en dessous) et une feuille désactivée."
+        }
+      },
+      "api": {
+        "AnswerSheetProps": {
+          "items": "Les questions, dans l'ordre",
+          "groups": "Sections titrées, dans l'ordre d'affichage ; les questions vont dans le groupe dont la clé correspond à item.group",
+          "value": "Clé de la question courante (contrôlée ; avec onChange)",
+          "defaultValue": "Clé de la question courante initiale (non contrôlée)",
+          "onChange": "Appelé avec la clé de la question sélectionnée",
+          "size": "Densité des pastilles",
+          "layout": "\"wrap\" répartit les pastilles sur plusieurs rangées ; \"scroll\" garde une seule rangée défilante",
+          "columns": "Nombre fixe de colonnes (une grille ; Haut / Bas changent de rangée). Ignoré avec layout=\"scroll\".",
+          "showLegend": "Affiche une légende des statuts présents (et du marqueur)",
+          "showSummary": "Affiche le nombre de questions répondues (« 12 / 20 répondues »)",
+          "getItemLabel": "Nom accessible d'une pastille ; reçoit la question et son index d'affichage",
+          "disabled": "Désactive toute la feuille",
+          "aria-label": "Nom accessible du repère de navigation",
+          "className": "Classe supplémentaire de l'élément racine",
+          "ref": "Ref vers l'élément racine <nav>"
+        },
+        "AnswerSheetItem": {
+          "key": "Clé unique de la question (la valeur de la feuille)",
+          "label": "Libellé visible de la pastille (par défaut son numéro à travers les groupes)",
+          "status": "Statut de la question : unanswered, answered, correct, wrong ou skipped",
+          "flagged": "Marque la question pour relecture (un point d'avertissement dans un coin)",
+          "disabled": "La question ne peut pas être sélectionnée",
+          "group": "Clé de son groupe ; les questions sans groupe connu viennent en premier, dans une section sans titre"
+        },
+        "AnswerSheetGroup": {
+          "key": "Clé correspondant à item.group",
+          "title": "Titre visible de la section"
+        }
+      },
+      "cssVars": {
+        "--answer-sheet-gap": "Espace entre les pastilles (--space-2 par défaut ; --space-1-5 avec size=\"small\")",
+        "--answer-sheet-item-size": "Largeur et hauteur minimales d'une pastille (2rem par défaut ; 1.75rem avec size=\"small\")",
+        "--answer-sheet-radius": "Rayon des coins des pastilles (--radius-md par défaut)",
+        "--answer-sheet-item-background": "Fond d'une pastille sans réponse",
+        "--answer-sheet-answered-background": "Fond d'une pastille répondue (--primary-color-subtle par défaut)",
+        "--answer-sheet-answered-color": "Couleur du texte d'une pastille répondue",
+        "--answer-sheet-correct-background": "Fond d'une pastille correcte (--success-color-subtle par défaut)",
+        "--answer-sheet-correct-color": "Couleur du texte d'une pastille correcte",
+        "--answer-sheet-wrong-background": "Fond d'une pastille incorrecte (--danger-color-subtle par défaut)",
+        "--answer-sheet-wrong-color": "Couleur du texte d'une pastille incorrecte",
+        "--answer-sheet-current-background": "Fond de la pastille courante (--primary-color par défaut)",
+        "--answer-sheet-current-color": "Couleur du texte de la pastille courante",
+        "--answer-sheet-flag-color": "Couleur du point de marquage (--warning-color par défaut)",
+        "--answer-sheet-title-color": "Couleur du texte des titres de groupe et du résumé"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "items est une propriété ; value (la clé de la question courante) est un attribut et minerva-change signale la clé sélectionnée. Un seul arrêt de tabulation : les flèches et Début / Fin déplacent le focus, Entrée / Espace sélectionnent."
+          },
+          "groups": {
+            "title": "Sections, statuts et légende",
+            "description": "La propriété groups donne un titre aux sections ; show-summary et show-legend ajoutent le compte des réponses et une légende des statuts présents. Les pastilles exposent ::part(item item--status-wrong), item--flagged, item--current ..."
+          },
+          "scroll": {
+            "title": "Rangée défilante",
+            "description": "layout=\"scroll\" garde une seule rangée défilant horizontalement (aussi l'état personnalisé :state(layout-scroll))."
+          },
+          "sizes": {
+            "title": "Tailles, colonnes et désactivation",
+            "description": "size=\"small\", une grille fixe avec columns=\"5\" (Haut / Bas changent de rangée) et une feuille désactivée."
+          }
+        },
+        "minerva-answer-sheet": {
+          "events": {
+            "minerva-change": "L'utilisateur a sélectionné une question (detail : { value }, sa clé)."
+          },
+          "methods": {
+            "focus": "Donne le focus à la pastille qui porte l'arrêt de tabulation."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Interagissez avec le composant natif dans cet aperçu de téléphone."
+          }
+        }
+      }
+    }
+  }
+}

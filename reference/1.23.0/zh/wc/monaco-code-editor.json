@@ -1,0 +1,631 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "zh",
+  "renderer": "wc",
+  "page": "monaco-code-editor",
+  "title": "MonacoCodeEditor Monaco 代码编辑器",
+  "description": "带标签的 Monaco 编辑器，使用本地引擎（不走 CDN）并跟随页面主题。引擎无法及时加载或挂载时，降级为可编辑的文本框并提供重试按钮。从 minerva-design/monaco 引入；@monaco-editor/react 与 monaco-editor 为可选 peer 依赖。 Web Component <minerva-code-editor> 以可选入口 minerva-design/web-components/code-editor 发布（不在一体化入口和 CDN 包中），monaco-editor 是其可选 peer 依赖。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CodeEditor",
+      "support": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      }
+    },
+    {
+      "name": "MonacoCodeEditor",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/code-editor",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-code-editor",
+        "props": [
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "language",
+            "typeText": "string",
+            "attribute": "language",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "number",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "minHeight",
+            "typeText": "number",
+            "attribute": "min-height",
+            "required": false
+          },
+          {
+            "name": "maxHeight",
+            "typeText": "number",
+            "attribute": "max-height",
+            "required": false
+          },
+          {
+            "name": "theme",
+            "typeText": "\"light\" | \"dark\" | undefined",
+            "attribute": "theme",
+            "required": false
+          },
+          {
+            "name": "loadTimeout",
+            "typeText": "number",
+            "attribute": "load-timeout",
+            "required": false
+          },
+          {
+            "name": "unavailableText",
+            "typeText": "string | undefined",
+            "attribute": "unavailable-text",
+            "required": false
+          },
+          {
+            "name": "retryText",
+            "typeText": "string | undefined",
+            "attribute": "retry-text",
+            "required": false
+          },
+          {
+            "name": "retryLabel",
+            "typeText": "string | undefined",
+            "attribute": "retry-label",
+            "required": false
+          },
+          {
+            "name": "loadingLabel",
+            "typeText": "string | undefined",
+            "attribute": "loading-label",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "monaco",
+            "typeText": "CodeEditorEngine | undefined",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "input",
+            "typeText": "Event",
+            "description": "The value changed (each edit; composed)"
+          },
+          {
+            "name": "change",
+            "typeText": "Event",
+            "description": "The value was committed (the editor lost focus after an edit)"
+          },
+          {
+            "name": "minerva-input",
+            "typeText": "CustomEvent",
+            "description": "Same as `input`, with `detail: { value }` (the React library's `onChange`)"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent",
+            "description": "Same as `change`, with `detail: { value }`"
+          },
+          {
+            "name": "minerva-error",
+            "typeText": "CustomEvent",
+            "description": "The editor became unavailable and the textarea fallback is shown"
+          }
+        ],
+        "slots": [
+          {
+            "name": "editor",
+            "description": "Created by the element: the light DOM container Monaco renders into"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-code-editor": {
+      "kind": "element",
+      "source": "web-components/src/components/code-editor/code-editor.ts",
+      "className": "MinervaCodeEditor",
+      "summary": "Monaco code editor (local engine) with theme sync and a textarea fallback.",
+      "description": "A labelled Monaco code editor running on a local engine (never loaded from a CDN), following the theme of its scope (the React library's `MonacoCodeEditor`, published from `minerva-design/monaco`). When the engine is missing, cannot create the editor in time (`load-timeout`) or throws, it degrades to an editable `<textarea>` with a Retry button. Published as the optional entry `minerva-design/web-components/code-editor` (not part of the all-in-one entry nor the CDN bundle): it requires the optional peer dependency `monaco-editor`. Pass the engine as a property: `editor.monaco = monaco` (`import * as monaco from \"monaco-editor\"`; one engine per application, configure its workers in the host). Until it is set the element shows its loading state; without it after `load-timeout` it falls back to the textarea, and setting it later loads the editor. Monaco renders into a light DOM child (`<div slot=\"editor\">`, created by the element) so the stylesheets Monaco injects into the document apply. Theme: the `theme` attribute, else the closest `data-theme` (a `<minerva-config>` scope, then `<html>`), followed live. Monaco themes are global to the engine (as with React): the last editor to apply its theme wins for all editors of the page. Form-associated: submits `value` under `name`, supports `required`, `form.reset()` (back to the `value` attribute) and `<fieldset disabled>`.",
+      "properties": [
+        {
+          "name": "defaultValue",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Initial source text, restored by `form.reset()` (the `value` attribute)"
+        },
+        {
+          "name": "language",
+          "attribute": "language",
+          "type": "string",
+          "default": "\"plaintext\"",
+          "description": "Monaco language id"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Visible label, also the accessible name of the editor"
+        },
+        {
+          "name": "height",
+          "attribute": "height",
+          "type": "number",
+          "default": "420",
+          "description": "Height of the editor in pixels, clamped to [min-height, max-height]"
+        },
+        {
+          "name": "minHeight",
+          "attribute": "min-height",
+          "type": "number",
+          "default": "160",
+          "description": "Minimum height in pixels"
+        },
+        {
+          "name": "maxHeight",
+          "attribute": "max-height",
+          "type": "number",
+          "default": "800",
+          "description": "Maximum height in pixels"
+        },
+        {
+          "name": "theme",
+          "attribute": "theme",
+          "type": "\"light\" | \"dark\" | undefined",
+          "description": "Color theme; defaults to the theme of the element's scope"
+        },
+        {
+          "name": "loadTimeout",
+          "attribute": "load-timeout",
+          "type": "number",
+          "default": "10000",
+          "description": "Milliseconds to wait for the engine and the editor before showing the textarea fallback"
+        },
+        {
+          "name": "unavailableText",
+          "attribute": "unavailable-text",
+          "type": "string | undefined",
+          "description": "Message shown above the fallback (default: localized \"The editor is unavailable\")"
+        },
+        {
+          "name": "retryText",
+          "attribute": "retry-text",
+          "type": "string | undefined",
+          "description": "Text of the retry button (default: localized \"Retry\")"
+        },
+        {
+          "name": "retryLabel",
+          "attribute": "retry-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the retry button (default: localized \"Retry editor\")"
+        },
+        {
+          "name": "loadingLabel",
+          "attribute": "loading-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the loading indicator (default: localized \"Loading editor\")"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "monaco",
+          "type": "CodeEditorEngine | undefined",
+          "description": "Local Monaco engine (`import * as monaco from \"monaco-editor\"`); never loaded from a CDN"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Source text (property; the `value` attribute sets `defaultValue`)"
+        },
+        {
+          "name": "resolvedTheme",
+          "type": "\"light\" | \"dark\"",
+          "readonly": true,
+          "description": "Theme actually applied: `theme`, else the scope's."
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "retry",
+          "signature": "() => void",
+          "description": "Tries to load the editor again (what the Retry button does)."
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "input",
+          "description": "The value changed (each edit; composed)"
+        },
+        {
+          "name": "change",
+          "description": "The value was committed (the editor lost focus after an edit)"
+        },
+        {
+          "name": "minerva-input",
+          "description": "Same as `input`, with `detail: { value }` (the React library's `onChange`)"
+        },
+        {
+          "name": "minerva-change",
+          "description": "Same as `change`, with `detail: { value }`"
+        },
+        {
+          "name": "minerva-error",
+          "description": "The editor became unavailable and the textarea fallback is shown"
+        }
+      ],
+      "slots": [
+        {
+          "name": "editor",
+          "description": "Created by the element: the light DOM container Monaco renders into"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The `role=\"group\"` root"
+        },
+        {
+          "name": "label",
+          "description": "The visible label"
+        },
+        {
+          "name": "surface",
+          "description": "The editor surface (sized by `height`)"
+        },
+        {
+          "name": "loading",
+          "description": "The loading indicator (while the editor loads)"
+        },
+        {
+          "name": "error",
+          "description": "The unavailable message and retry action (when the editor failed)"
+        },
+        {
+          "name": "fallback",
+          "description": "The fallback `<textarea>` (when the editor failed)"
+        },
+        {
+          "name": "retry-button",
+          "description": "The retry `<minerva-button>`"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--monaco-code-editor-radius",
+          "description": "Corner radius of the editor surface (defaults to --radius-md)"
+        },
+        {
+          "name": "--monaco-code-editor-border-color",
+          "description": "Border color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-bg",
+          "description": "Background color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-label-gap",
+          "description": "Space between the label and the editor"
+        },
+        {
+          "name": "--monaco-code-editor-font-size",
+          "description": "Font size of the label, the messages and the plain-text fallback"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:MonacoCodeEditor": {
+      "kind": "cssVars",
+      "source": "react/src/components/MonacoCodeEditor",
+      "vars": [
+        {
+          "name": "--monaco-code-editor-radius",
+          "description": "Corner radius of the editor surface (defaults to --radius-md)"
+        },
+        {
+          "name": "--monaco-code-editor-border-color",
+          "description": "Border color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-bg",
+          "description": "Background color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-label-gap",
+          "description": "Space between the label and the editor"
+        },
+        {
+          "name": "--monaco-code-editor-font-size",
+          "description": "Font size of the label, the messages and the plain-text fallback"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/monaco-code-editor/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/monaco-code-editor/wc/basic.html": "<form id=\"source-form\" style=\"display: grid; gap: 8px\">\n  <minerva-code-editor\n    id=\"html-editor\"\n    name=\"source\"\n    label=\"HTML source\"\n    language=\"html\"\n    height=\"240\"\n    value=\"<h1>Hello</h1>&#10;<p>Edit me.</p>&#10;\"\n  ></minerva-code-editor>\n  <p style=\"margin: 0\">\n    <minerva-button type=\"submit\" size=\"small\">Submit</minerva-button>\n    <output id=\"html-length\"></output>\n  </p>\n</form>\n",
+        "apps/docs/src/docs/pages/monaco-code-editor/wc/basic.ts": "// The editor runs on the app's own Monaco engine (never a CDN): load the\n// optional entry and the engine, then pass it as the `monaco` property. It\n// follows the page / <minerva-config> theme and submits its value with the\n// form. In an app:\n//   import \"minerva-design/web-components/code-editor\";\n//   import * as monaco from \"monaco-editor\"; // + workers (MonacoEnvironment)\n//   editor.monaco = monaco;\nimport type { CodeEditorEngine } from \"minerva-design/web-components/code-editor\";\n\nexport function setup(root: HTMLElement) {\n  const editor = root.querySelector<\n    HTMLElement & { monaco?: CodeEditorEngine; value: string }\n  >(\"#html-editor\")!;\n  const form = root.querySelector<HTMLFormElement>(\"#source-form\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#html-length\")!;\n  let cancelled = false;\n  void Promise.all([\n    import(\"minerva-design/web-components/code-editor\"),\n    // If the engine cannot load, the editor falls back to its textarea\n    import(\"../engine\").then(\n      (m) => m.monaco,\n      () => undefined,\n    ),\n  ]).then(([, engine]) => {\n    if (!cancelled && engine) editor.monaco = engine;\n  });\n  const onInput = () => {\n    output.value = `${editor.value.length} characters`;\n  };\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    const source = String(new FormData(form).get(\"source\") ?? \"\");\n    output.value = `Submitted ${source.length} characters`;\n  };\n  editor.addEventListener(\"minerva-input\", onInput);\n  form.addEventListener(\"submit\", onSubmit);\n  return () => {\n    cancelled = true;\n    editor.removeEventListener(\"minerva-input\", onInput);\n    form.removeEventListener(\"submit\", onSubmit);\n  };\n}\n",
+        "apps/docs/src/docs/pages/monaco-code-editor/engine.ts": "// Local Monaco engine for the docs demo (never fetched from a CDN). Loaded\n// on demand by demos/basic.tsx, so it stays out of the docs page chunk.\nimport * as monaco from \"monaco-editor/esm/vs/editor/editor.api\";\nimport \"monaco-editor/esm/vs/basic-languages/html/html.contribution\";\nimport EditorWorker from \"monaco-editor/esm/vs/editor/editor.worker?worker\";\n\nself.MonacoEnvironment = { getWorker: () => new EditorWorker() };\n\nexport { monaco };\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "monaco-editor"
+      ],
+      "contextImports": [],
+      "title": "本地引擎、主题与表单",
+      "description": "加载可选入口 minerva-design/web-components/code-editor 和应用自己的 Monaco 引擎，然后将其设置为 monaco 属性。编辑器跟随页面 / <minerva-config> 主题，每次编辑触发 minerva-input（对应 React 的 onChange），并随表单提交其值。"
+    },
+    {
+      "id": "fallback",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/monaco-code-editor/wc/fallback.html",
+      "files": {
+        "apps/docs/src/docs/pages/monaco-code-editor/wc/fallback.html": "<minerva-code-editor\n  id=\"fallback-editor\"\n  label=\"JSON settings\"\n  language=\"json\"\n  height=\"180\"\n  load-timeout=\"1500\"\n  value='{ \"theme\": \"dark\" }'\n></minerva-code-editor>\n<p style=\"margin: 8px 0 0; display: flex; gap: 8px; align-items: center\">\n  <minerva-button\n    id=\"load-engine\"\n    size=\"small\"\n    variant=\"outline\"\n    color=\"neutral\"\n    >Provide the engine</minerva-button\n  >\n  <output id=\"fallback-status\">Waiting for an engine…</output>\n</p>\n",
+        "apps/docs/src/docs/pages/monaco-code-editor/wc/fallback.ts": "// Without an engine the editor shows its loading state, then (after\n// load-timeout) an editable textarea with a Retry button: the value is kept\n// and still submitted. Setting `monaco` later loads the editor with the\n// latest value.\nimport type { CodeEditorEngine } from \"minerva-design/web-components/code-editor\";\n\nexport function setup(root: HTMLElement) {\n  const editor = root.querySelector<\n    HTMLElement & { monaco?: CodeEditorEngine }\n  >(\"#fallback-editor\")!;\n  const button = root.querySelector<HTMLElement>(\"#load-engine\")!;\n  const status = root.querySelector<HTMLOutputElement>(\"#fallback-status\")!;\n  void import(\"minerva-design/web-components/code-editor\");\n  const onError = () => {\n    status.value = \"Engine unavailable: textarea fallback\";\n  };\n  const onClick = async () => {\n    const engine = await import(\"../engine\").then(\n      (m) => m.monaco,\n      () => undefined,\n    );\n    if (!engine) return;\n    editor.monaco = engine;\n    status.value = \"Engine provided\";\n  };\n  editor.addEventListener(\"minerva-error\", onError);\n  button.addEventListener(\"click\", onClick);\n  return () => {\n    editor.removeEventListener(\"minerva-error\", onError);\n    button.removeEventListener(\"click\", onClick);\n  };\n}\n",
+        "apps/docs/src/docs/pages/monaco-code-editor/engine.ts": "// Local Monaco engine for the docs demo (never fetched from a CDN). Loaded\n// on demand by demos/basic.tsx, so it stays out of the docs page chunk.\nimport * as monaco from \"monaco-editor/esm/vs/editor/editor.api\";\nimport \"monaco-editor/esm/vs/basic-languages/html/html.contribution\";\nimport EditorWorker from \"monaco-editor/esm/vs/editor/editor.worker?worker\";\n\nself.MonacoEnvironment = { getWorker: () => new EditorWorker() };\n\nexport { monaco };\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "monaco-editor"
+      ],
+      "contextImports": [],
+      "title": "加载、降级与延迟提供引擎",
+      "description": "没有引擎时，编辑器先显示加载状态，load-timeout 之后显示可编辑的 textarea 和“重试”按钮（触发 minerva-error）。之后再提供引擎会以最新的值加载编辑器。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "MonacoCodeEditor Monaco 代码编辑器",
+      "description": "带标签的 Monaco 编辑器，使用本地引擎（不走 CDN）并跟随页面主题。引擎无法及时加载或挂载时，降级为可编辑的文本框并提供重试按钮。从 minerva-design/monaco 引入；@monaco-editor/react 与 monaco-editor 为可选 peer 依赖。 Web Component <minerva-code-editor> 以可选入口 minerva-design/web-components/code-editor 发布（不在一体化入口和 CDN 包中），monaco-editor 是其可选 peer 依赖。",
+      "demos": {
+        "basic": {
+          "title": "懒加载编辑器",
+          "description": "编辑器与本地引擎（其 worker 由宿主配置）按需加载。没有引擎时显示文本框降级方案。"
+        }
+      },
+      "api": {
+        "MonacoCodeEditorProps": {
+          "monaco": "本地 Monaco 引擎（import * as monaco from \"monaco-editor\"），每个应用一个",
+          "value": "源码文本（受控）",
+          "onChange": "以新的源码文本调用",
+          "language": "Monaco 语言 id",
+          "label": "可见标签，也是编辑器的无障碍名称",
+          "height": "高度（像素），限制在 [minHeight, maxHeight]",
+          "minHeight": "最小高度（像素）",
+          "maxHeight": "最大高度（像素）",
+          "disabled": "编辑器（及降级文本框）只读",
+          "theme": "颜色主题，默认跟随页面主题（<html> 的 data-theme，其次 ConfigProvider）",
+          "loadTimeout": "显示降级方案前等待引擎的毫秒数",
+          "unavailableText": "降级文本框上方的提示",
+          "retryText": "重试按钮文本",
+          "retryLabel": "重试按钮的无障碍标签",
+          "loadingLabel": "加载指示器的无障碍标签",
+          "className": "额外的类名",
+          "style": "根元素的内联样式"
+        }
+      },
+      "cssVars": {
+        "--monaco-code-editor-radius": "编辑器外框的圆角（默认 --radius-md）",
+        "--monaco-code-editor-border-color": "编辑器外框的边框颜色",
+        "--monaco-code-editor-bg": "编辑器外框的背景色",
+        "--monaco-code-editor-label-gap": "标签与编辑器之间的间距",
+        "--monaco-code-editor-font-size": "标签、提示信息与纯文本回退编辑框的字号"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "本地引擎、主题与表单",
+            "description": "加载可选入口 minerva-design/web-components/code-editor 和应用自己的 Monaco 引擎，然后将其设置为 monaco 属性。编辑器跟随页面 / <minerva-config> 主题，每次编辑触发 minerva-input（对应 React 的 onChange），并随表单提交其值。"
+          },
+          "fallback": {
+            "title": "加载、降级与延迟提供引擎",
+            "description": "没有引擎时，编辑器先显示加载状态，load-timeout 之后显示可编辑的 textarea 和“重试”按钮（触发 minerva-error）。之后再提供引擎会以最新的值加载编辑器。"
+          }
+        },
+        "minerva-code-editor": {
+          "props": {
+            "name": "随表单提交时使用的字段名。",
+            "required": "必须有值，表单才能提交。",
+            "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与元素关联的 <label> 元素（只读）。",
+            "validity": "有效性状态，同 <input>.validity（只读）。",
+            "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+            "willValidate": "元素是否参与约束校验（只读）。",
+            "defaultValue": "初始源码（value 特性），由 form.reset() 恢复。在用户编辑之前修改它也会修改 value。",
+            "resolvedTheme": "实际应用的主题：theme，否则为最近的 data-theme（<minerva-config> 作用域，然后是 <html>）（只读）。",
+            "monaco": "本地 Monaco 引擎（import * as monaco from \"monaco-editor\"），以属性设置；每个应用一个。从不从 CDN 加载。",
+            "value": "源码（属性；value 特性设置的是 defaultValue）。每次编辑都会更新；设置它会以可撤销编辑的方式写入文本。",
+            "theme": "颜色主题（light 或 dark）；默认跟随元素所在作用域的主题（最近的 data-theme：<minerva-config>，然后是 <html>），实时同步。",
+            "disabled": "使编辑器（及其降级 textarea）只读；不提交、不参与校验。",
+            "loadTimeout": "显示 textarea 降级之前等待引擎和编辑器的毫秒数（尚未设置引擎时同样适用）。"
+          },
+          "events": {
+            "input": "值已改变（每次编辑；可穿透 shadow DOM）。",
+            "change": "值已提交：编辑后编辑器失去焦点。",
+            "minerva-input": "同 input，附带 detail: { value }（对应 React 的 onChange）。",
+            "minerva-change": "同 change，附带 detail: { value }。",
+            "minerva-error": "编辑器不可用（引擎未按时提供、引擎无效或抛出错误），已显示 textarea 降级。"
+          },
+          "slots": {
+            "editor": "由元素创建：Monaco 渲染所用的 light DOM <div>，以便 Monaco 添加到文档中的样式表生效。请勿自行填充。"
+          },
+          "methods": {
+            "focus": "聚焦编辑器（或其降级 textarea）。",
+            "retry": "重新尝试加载编辑器（与“重试”按钮相同）。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+            "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+            "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+            "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        },
+        "limitations": "原生 CodeEditor 是支持无障碍的多行源码编辑器，可接入格式化器。Monaco 依赖 DOM，不嵌入 iOS 或 Android。"
+      }
+    }
+  }
+}

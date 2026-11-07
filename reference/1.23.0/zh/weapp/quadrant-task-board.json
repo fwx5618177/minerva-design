@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "zh",
+  "renderer": "weapp",
+  "page": "quadrant-task-board",
+  "title": "QuadrantTaskBoard 四象限任务看板",
+  "description": "基于四象限矩阵（如艾森豪威尔矩阵）的任务看板：点击象限标题上的 +（或象限的空白区域）添加任务，活动任务上的紧凑编辑和删除按钮（React 中位于任务卡片内、名称旁边）可编辑或删除任务，在 + 按钮或任务旁直接弹出的面板用于填写任务名称并选择象限，删除前会就地确认；任务可通过拖放或 Shift + 方向键移动（双击即可编辑）。看板是受控的：通过 points 传入任务，并把 onPointsChange 收到的新列表回传。它还接受 QuadrantChart 的其他属性（坐标轴、象限标题、徽标和颜色、刻度、标签……），内置按钮和面板会跟随应用语言。由 minerva-design 导出，而非 minerva-design/charts。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "data": {
+      "tasks": {
+        "loginOutage": "修复登录故障",
+        "quarterlyPlanning": "季度规划",
+        "bookTravel": "预订差旅",
+        "inboxZero": "清空收件箱"
+      },
+      "doFirst": "立即做",
+      "schedule": "计划做",
+      "delegate": "委派",
+      "eliminate": "删除",
+      "important": "重要",
+      "notImportant": "不重要",
+      "urgent": "紧急",
+      "notUrgent": "不紧急",
+      "boardAria": "任务矩阵：在象限之间拖动任务",
+      "roadmap": {
+        "features": {
+          "darkMode": "深色模式",
+          "sso": "单点登录",
+          "csvExport": "CSV 导出",
+          "rewriteBilling": "重写计费系统"
+        },
+        "quickWins": "速赢",
+        "bigBets": "重点投入",
+        "fillIns": "有空再做",
+        "moneyPits": "无底洞",
+        "effort": "投入",
+        "impact": "影响",
+        "aria": "按投入和影响排列的路线图",
+        "add": "添加功能",
+        "edit": "编辑功能",
+        "delete": "移除功能",
+        "name": "功能名称",
+        "deleteConfirm": "将从路线图中移除“{name}”。",
+        "summary": "功能：{{features}} · 修改：{{changes}} 次"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "QuadrantTaskBoard",
+      "support": {
+        "status": "beta",
+        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, button and icon-button components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, plus-icon add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a name input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled while the name is blank), an inline danger confirmation before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete keep text glyphs (✎, ✕). Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the inline panel) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, button and icon-button components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, plus-icon add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a name input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled while the name is blank), an inline danger confirmation before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete keep text glyphs (✎, ✕). Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the inline panel) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/quadrant-task-board/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "quadrant-task-board",
+        "props": [
+          {
+            "name": "width",
+            "typeText": "unknown",
+            "required": false,
+            "default": "100%"
+          },
+          {
+            "name": "height",
+            "typeText": "unknown",
+            "required": false,
+            "default": 320
+          },
+          {
+            "name": "legend",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "tooltip",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "crosshair",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "annotations",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "interaction",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "padding",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "palette",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "locale",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "disableScroll",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "points",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "xDomain",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "yDomain",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "xSplit",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "ySplit",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "quadrants",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "xLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "yLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "axisLabels",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "showTicks",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "reverseX",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "showLabels",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "pointSize",
+            "typeText": "number",
+            "required": false,
+            "default": 12
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "draggable",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "showCounts",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "selectedIndex",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "selectedIndices",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "accessiblePoints",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "labels",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [
+          {
+            "name": "pointschange",
+            "typeText": "{ points: NativeQuadrantPoint[] }",
+            "description": "Tasks after an add, an edit, a delete or a move (controlled: update points)."
+          },
+          {
+            "name": "pointclick",
+            "typeText": "{ point: NativeQuadrantPoint; index: number }",
+            "description": "A task dot was tapped (it becomes the selected task)."
+          },
+          {
+            "name": "pointdrag",
+            "typeText": "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }",
+            "description": "A task dot is dragged (draggable)."
+          },
+          {
+            "name": "hover",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+            "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+          },
+          {
+            "name": "zoom",
+            "typeText": "{ x: [number, number]; y: [number, number] }",
+            "description": "Visible range after a pinch, a pan or a double-tap reset."
+          },
+          {
+            "name": "layout",
+            "typeText": "{ x: number; y: number; width: number; height: number }",
+            "description": "The plot area moved or was resized (px of the chart)."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-quadrant-task-board\": \"minerva-design/dist/weapp/quadrant-task-board/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:QuadrantTaskBoard": {
+      "kind": "cssVars",
+      "source": "react/src/components/QuadrantTaskBoard",
+      "vars": [
+        {
+          "name": "--quadrant-task-board-header-color",
+          "description": "Text color of the quadrant titles (defaults to --text-color)"
+        },
+        {
+          "name": "--quadrant-task-board-header-background",
+          "description": "Background of the quadrant headers (defaults to a translucent surface)"
+        },
+        {
+          "name": "--quadrant-task-board-count-background",
+          "description": "Background of the task count chips (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--quadrant-task-board-count-color",
+          "description": "Text color of the task count chips (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--quadrant-task-board-actions-background",
+          "description": "Background of the toolbar of the active task (defaults to --surface-elevated-color)"
+        },
+        {
+          "name": "--quadrant-task-board-actions-radius",
+          "description": "Corner radius of the toolbar of the active task (defaults to --radius-md)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-background",
+          "description": "Background of the inline add / edit / delete panel (defaults to a translucent elevated surface)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-border",
+          "description": "Border color of the inline panel (defaults to a translucent --border-color)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-radius",
+          "description": "Corner radius of the inline panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-width",
+          "description": "Width of the inline panel (defaults to 288px)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "QuadrantTaskBoard 四象限任务看板",
+      "description": "基于四象限矩阵（如艾森豪威尔矩阵）的任务看板：点击象限标题上的 +（或象限的空白区域）添加任务，活动任务上的紧凑编辑和删除按钮（React 中位于任务卡片内、名称旁边）可编辑或删除任务，在 + 按钮或任务旁直接弹出的面板用于填写任务名称并选择象限，删除前会就地确认；任务可通过拖放或 Shift + 方向键移动（双击即可编辑）。看板是受控的：通过 points 传入任务，并把 onPointsChange 收到的新列表回传。它还接受 QuadrantChart 的其他属性（坐标轴、象限标题、徽标和颜色、刻度、标签……），内置按钮和面板会跟随应用语言。由 minerva-design 导出，而非 minerva-design/charts。",
+      "demos": {
+        "basic": {
+          "title": "艾森豪威尔看板",
+          "description": "紧急任务在左侧（reverseX），重要任务在上方：点击 + 或象限的空白区域添加任务，选中任务后可编辑或删除，拖动任务（或按 Shift + 方向键）即可移到其他象限。示例任务名称会跟随页面语言，重命名后则保持不变。"
+        },
+        "custom-labels": {
+          "title": "自定义文案与徽标",
+          "description": "按投入和影响排列的产品路线图：labels 重命名了按钮、名称字段和删除确认文案（{name} 代表条目名称），quadrants 为每个标题加上编号徽标，并统计 onPointsChange 带来的每一次修改。"
+        }
+      },
+      "data": {
+        "tasks": {
+          "loginOutage": "修复登录故障",
+          "quarterlyPlanning": "季度规划",
+          "bookTravel": "预订差旅",
+          "inboxZero": "清空收件箱"
+        },
+        "doFirst": "立即做",
+        "schedule": "计划做",
+        "delegate": "委派",
+        "eliminate": "删除",
+        "important": "重要",
+        "notImportant": "不重要",
+        "urgent": "紧急",
+        "notUrgent": "不紧急",
+        "boardAria": "任务矩阵：在象限之间拖动任务",
+        "roadmap": {
+          "features": {
+            "darkMode": "深色模式",
+            "sso": "单点登录",
+            "csvExport": "CSV 导出",
+            "rewriteBilling": "重写计费系统"
+          },
+          "quickWins": "速赢",
+          "bigBets": "重点投入",
+          "fillIns": "有空再做",
+          "moneyPits": "无底洞",
+          "effort": "投入",
+          "impact": "影响",
+          "aria": "按投入和影响排列的路线图",
+          "add": "添加功能",
+          "edit": "编辑功能",
+          "delete": "移除功能",
+          "name": "功能名称",
+          "deleteConfirm": "将从路线图中移除“{name}”。",
+          "summary": "功能：{{features}} · 修改：{{changes}} 次"
+        }
+      },
+      "api": {
+        "QuadrantTaskBoardProps": {
+          "onPointsChange": "在添加、编辑、删除、拖放或键盘移动任务后调用，参数为新的任务列表（受控：将其作为 points 回传）",
+          "labels": "按钮和面板的文案（见 QuadrantTaskLabels）；未提供的项跟随语言设置"
+        },
+        "QuadrantTaskLabels": {
+          "add": "每个象限的添加按钮，以及添加面板的标题",
+          "edit": "活动任务的编辑按钮，以及编辑面板的标题",
+          "delete": "活动任务的删除按钮，以及删除确认框的标题",
+          "deleteConfirm": "删除确认的文案；{name} 会被替换为任务名称",
+          "confirmDelete": "删除确认的确认按钮",
+          "name": "名称字段的标签",
+          "quadrant": "象限字段的标签",
+          "save": "添加 / 编辑面板的保存按钮",
+          "cancel": "各面板的取消按钮",
+          "actions": "活动任务工具栏的无障碍名称"
+        },
+        "QuadrantConfig": {
+          "points": "任务 { x, y, label, color, size }：受控列表，通过 onPointsChange 更新",
+          "xDomain": "横轴的范围",
+          "yDomain": "纵轴的范围",
+          "xSplit": "竖直分隔线的 X 值（默认为 xDomain 中点）",
+          "ySplit": "水平分隔线的 Y 值（默认为 yDomain 中点）",
+          "quadrants": "各象限的标题、徽标和颜色；未设置标题的象限显示本地化的默认标题",
+          "xLabel": "横轴标题",
+          "yLabel": "纵轴标题",
+          "axisLabels": "分隔线两端的文字，绘制在绘图区内（如顶部的“重要”）",
+          "showTicks": "显示坐标轴的数值刻度；false 时只保留矩阵",
+          "reverseX": "反转横轴（如将紧急放在左侧）",
+          "showLabels": "在点旁绘制任务名称，跳过重叠项",
+          "pointSize": "点的直径，单位为像素",
+          "name": "提示框中任务的名称",
+          "draggable": "允许用户把任务拖到其他象限（看板默认开启；设为 false 关闭）",
+          "showCounts": "在每个象限标题后显示任务数（看板默认开启；false 隐藏，传入函数 (count, points) 则返回自定义文本）",
+          "selectedIndex": "选中任务的索引，用圆环标出（null：无）；默认由看板选中最近一次点击、移动或保存的任务",
+          "selectedIndices": "多个选中任务的索引，各自用圆环标出"
+        },
+        "native_QuadrantTaskBoardProps": {
+          "onPointsChange": "在添加、编辑、删除、拖放任务或执行“移到”无障碍操作后调用，参数为新的任务列表（受控：将其作为 points 回传）",
+          "labels": "按钮和面板的文案（add、edit、delete、deleteConfirm、confirmDelete、name、quadrant、save、cancel、actions）；未提供的项跟随语言设置"
+        }
+      },
+      "cssVars": {
+        "--quadrant-task-board-header-color": "象限标题的文字颜色（默认为 --text-color）",
+        "--quadrant-task-board-header-background": "象限标题区的背景（默认为半透明表面色）",
+        "--quadrant-task-board-count-background": "任务计数标签的背景（默认为 --surface-muted-color）",
+        "--quadrant-task-board-count-color": "任务计数标签的文字颜色（默认为 --text-secondary-color）",
+        "--quadrant-task-board-actions-background": "活动任务工具栏的背景（默认为 --surface-elevated-color）",
+        "--quadrant-task-board-actions-radius": "活动任务工具栏的圆角（默认为 --radius-md）",
+        "--quadrant-task-board-panel-background": "就地添加 / 编辑 / 删除面板的背景（默认为半透明的浮层表面）",
+        "--quadrant-task-board-panel-border": "面板的边框颜色（默认为半透明的 --border-color）",
+        "--quadrant-task-board-panel-radius": "面板的圆角（默认为 --radius-lg）",
+        "--quadrant-task-board-panel-width": "面板的宽度（默认为 288px）"
+      },
+      "native": {
+        "limitations": "在 React Native 中，任务通过拖放或读屏软件的“移到”操作移动：不支持 Shift + 方向键移动，也不支持双击编辑（请使用活动任务的编辑按钮）。按钮图标由 View 绘制，无需依赖 SVG。",
+        "demos": {
+          "basic": {
+            "title": "艾森豪威尔看板",
+            "description": "点按 + 或象限的空白区域添加任务，点按任务显示编辑和删除按钮，把任务拖到其他象限即可移动。示例任务名称会跟随应用语言，重命名后则保持不变。"
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "艾森豪威尔看板",
+            "description": "points、quadrants 和 axisLabels 作为属性设置，reverse-x、hide-ticks 和 height 作为特性设置；minerva-points-change 监听器把新列表回写到 points。"
+          }
+        },
+        "minerva-quadrant-task-board": {
+          "props": {
+            "points": "任务 { x, y, label, color, size }；把 minerva-points-change 的 detail 回写即可更新看板（受控）；仅作为属性设置",
+            "quadrants": "各象限的标题、徽标和颜色（topLeft、topRight、bottomLeft、bottomRight）；仅作为属性设置",
+            "axisLabels": "分隔线两端的文字，绘制在绘图区内（top、bottom、left、right）；仅作为属性设置",
+            "xDomain": "横轴的范围（默认 [0, 10]）；仅作为属性设置",
+            "yDomain": "纵轴的范围（默认 [0, 10]）；仅作为属性设置",
+            "hideTicks": "隐藏坐标轴的数值刻度（只保留矩阵）",
+            "hideLabels": "隐藏点旁边的任务名称",
+            "hideCounts": "隐藏象限标题中的任务数",
+            "height": "图表高度：像素值或任意 CSS 长度（默认 320）",
+            "locale": "内置文案、默认象限标题和数字所用的语言（如 \"fr\"）；默认跟随组件库语言",
+            "noAccessiblePoints": "不渲染视觉隐藏的任务列表（键盘和读屏访问、Shift + 方向键移动）",
+            "options": "图表的其他引擎选项（图例、提示框、内边距、调色板……）；仅作为属性设置"
+          },
+          "events": {
+            "minerva-points-change": "任务发生变化（添加、编辑、删除、拖放、键盘移动）；detail：{ points }，即要回写到 points 的新列表",
+            "minerva-point-click": "点击了一个任务（它会成为选中任务）；detail：{ point, index }",
+            "minerva-point-drag": "正在拖动一个任务（每次移动都会触发）；detail：{ point, index, x, y, quadrant }",
+            "minerva-hover": "悬停（或键盘聚焦）的任务发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
+            "minerva-zoom": "用户对图表进行了缩放或平移；detail：{ x, y }（可见范围）",
+            "minerva-renderer-change": "图表渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "empty",
+  "title": "Empty",
+  "description": "Placeholder shown when there is no data to display.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Empty",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/empty",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-empty",
+        "props": [
+          {
+            "name": "heading",
+            "typeText": "string",
+            "attribute": "heading",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string | undefined",
+            "attribute": "description",
+            "required": false
+          },
+          {
+            "name": "hideDescription",
+            "typeText": "boolean",
+            "attribute": "hide-description",
+            "required": false
+          },
+          {
+            "name": "hideIcon",
+            "typeText": "boolean",
+            "attribute": "hide-icon",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "useSvg",
+            "typeText": "boolean",
+            "attribute": "use-svg",
+            "required": false
+          },
+          {
+            "name": "width",
+            "typeText": "string | undefined",
+            "attribute": "width",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "showShadow",
+            "typeText": "boolean",
+            "attribute": "show-shadow",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Footer content"
+          },
+          {
+            "name": "icon",
+            "description": "Custom icon replacing the default one"
+          },
+          {
+            "name": "heading",
+            "description": "Heading (alternative to the `heading` attribute)"
+          },
+          {
+            "name": "description",
+            "description": "Description (alternative to the `description` attribute)"
+          },
+          {
+            "name": "action",
+            "description": "Primary call to action"
+          },
+          {
+            "name": "secondary-action",
+            "description": "Secondary action, after `action`"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-empty": {
+      "kind": "element",
+      "source": "web-components/src/components/empty/empty.ts",
+      "className": "MinervaEmpty",
+      "summary": "Empty state with icon, heading, description and actions.",
+      "description": "Empty state (`<Empty>` of React): an icon, an optional heading, a description (localized \"No Data\" by default), actions and footer content. It is a `role=\"status\"` region named by its heading (or its description) unless `aria-label` is set.",
+      "properties": [
+        {
+          "name": "heading",
+          "attribute": "heading",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Heading of the empty state; also its accessible name (the React library's `title`)"
+        },
+        {
+          "name": "description",
+          "attribute": "description",
+          "type": "string | undefined",
+          "description": "Description text (default: localized \"No Data\")"
+        },
+        {
+          "name": "hideDescription",
+          "attribute": "hide-description",
+          "type": "boolean",
+          "default": "false",
+          "description": "Hides the description (the React library's `description={null}`)"
+        },
+        {
+          "name": "hideIcon",
+          "attribute": "hide-icon",
+          "type": "boolean",
+          "default": "false",
+          "description": "Renders no icon at all (the React library's `icon={null}`)"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\" | undefined",
+          "description": "Unframed sized layout; omit for the classic surface layout"
+        },
+        {
+          "name": "useSvg",
+          "attribute": "use-svg",
+          "type": "boolean",
+          "default": "false",
+          "description": "Uses the built-in SVG illustration instead of the default icon"
+        },
+        {
+          "name": "width",
+          "attribute": "width",
+          "type": "string | undefined",
+          "description": "Width of the container (CSS value, numbers are pixels)"
+        },
+        {
+          "name": "height",
+          "attribute": "height",
+          "type": "string | undefined",
+          "description": "Height of the container (CSS value, numbers are pixels)"
+        },
+        {
+          "name": "showShadow",
+          "attribute": "show-shadow",
+          "type": "boolean",
+          "default": "false",
+          "description": "Adds a drop shadow"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Footer content"
+        },
+        {
+          "name": "icon",
+          "description": "Custom icon replacing the default one"
+        },
+        {
+          "name": "heading",
+          "description": "Heading (alternative to the `heading` attribute)"
+        },
+        {
+          "name": "description",
+          "description": "Description (alternative to the `description` attribute)"
+        },
+        {
+          "name": "action",
+          "description": "Primary call to action"
+        },
+        {
+          "name": "secondary-action",
+          "description": "Secondary action, after `action`"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The region (role=status); size only for the unframed sized layout"
+        },
+        {
+          "name": "icon",
+          "description": "The icon wrapper"
+        },
+        {
+          "name": "title",
+          "description": "The title (accessible name of the region)"
+        },
+        {
+          "name": "description",
+          "description": "The description"
+        },
+        {
+          "name": "actions",
+          "description": "The actions row"
+        },
+        {
+          "name": "footer",
+          "description": "The footer content"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--empty-padding",
+          "description": "Padding (every size; defaults to the padding of the size)"
+        },
+        {
+          "name": "--empty-gap",
+          "description": "Space between the icon, title, description and actions (sized layout)"
+        },
+        {
+          "name": "--empty-icon-size",
+          "description": "Size of the illustration icon (every size)"
+        },
+        {
+          "name": "--empty-color",
+          "description": "Text color of the description"
+        },
+        {
+          "name": "--empty-background",
+          "description": "Background of the framed (unsized) layout"
+        },
+        {
+          "name": "--empty-radius",
+          "description": "Corner radius of the framed (unsized) layout (defaults to --radius-sm)"
+        },
+        {
+          "name": "--empty-description-max-width",
+          "description": "Maximum width of the description (sized layout)"
+        },
+        {
+          "name": "--empty-icon-background",
+          "description": "Background of the icon tile (sized layout)"
+        },
+        {
+          "name": "--empty-icon-border-color",
+          "description": "Ring color of the icon tile (sized layout)"
+        },
+        {
+          "name": "--empty-icon-radius",
+          "description": "Corner radius of the icon tile (sized layout; defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Empty": {
+      "kind": "cssVars",
+      "source": "react/src/components/Empty",
+      "vars": [
+        {
+          "name": "--empty-padding",
+          "description": "Padding (every size; defaults to the padding of the size)"
+        },
+        {
+          "name": "--empty-gap",
+          "description": "Space between the icon, title, description and actions (sized layout)"
+        },
+        {
+          "name": "--empty-icon-size",
+          "description": "Size of the illustration icon (every size)"
+        },
+        {
+          "name": "--empty-color",
+          "description": "Text color of the description"
+        },
+        {
+          "name": "--empty-background",
+          "description": "Background of the framed (unsized) layout"
+        },
+        {
+          "name": "--empty-radius",
+          "description": "Corner radius of the framed (unsized) layout (defaults to --radius-sm)"
+        },
+        {
+          "name": "--empty-description-max-width",
+          "description": "Maximum width of the description (sized layout)"
+        },
+        {
+          "name": "--empty-icon-background",
+          "description": "Background of the icon tile (sized layout)"
+        },
+        {
+          "name": "--empty-icon-border-color",
+          "description": "Ring color of the icon tile (sized layout)"
+        },
+        {
+          "name": "--empty-icon-radius",
+          "description": "Corner radius of the icon tile (sized layout; defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "actions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/empty/wc/actions.html",
+      "files": {
+        "apps/docs/src/docs/pages/empty/wc/actions.html": "<minerva-empty\n  heading=\"No projects yet\"\n  description=\"Create your first project to start tracking work.\"\n>\n  <span slot=\"icon\" aria-hidden=\"true\" style=\"font-size: 40px\">📁</span>\n  <minerva-button slot=\"action\" id=\"create\">Create project</minerva-button>\n  <minerva-button slot=\"secondary-action\" variant=\"ghost\" color=\"neutral\"\n    >Import</minerva-button\n  >\n  <output id=\"status\"></output>\n</minerva-empty>\n",
+        "apps/docs/src/docs/pages/empty/wc/actions.ts": "// Actions are regular elements slotted into `action` / `secondary-action`;\n// the default slot is the footer.\nexport function setup(root: HTMLElement) {\n  const create = root.querySelector<HTMLElement>(\"#create\")!;\n  const status = root.querySelector<HTMLOutputElement>(\"#status\")!;\n  const onClick = () => (status.value = \"Project created\");\n  create.addEventListener(\"click\", onClick);\n  return () => create.removeEventListener(\"click\", onClick);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Heading, icon and actions",
+      "description": "heading and description set the text, the icon slot replaces the icon, action / secondary-action hold the buttons and the default slot is the footer."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/empty/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/empty/wc/basic.html": "<minerva-empty></minerva-empty>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "With no attributes: the default icon and the localized \"No Data\" description, in a status region."
+    },
+    {
+      "id": "sizes-styles",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/empty/wc/sizes-styles.html",
+      "files": {
+        "apps/docs/src/docs/pages/empty/wc/sizes-styles.html": "<div\n  style=\"\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n  \"\n>\n  <minerva-empty size=\"small\" heading=\"Small\" hide-description></minerva-empty>\n  <minerva-empty size=\"medium\" use-svg show-shadow>\n    <span slot=\"heading\">No results</span>\n    <span slot=\"description\">Try <em>another</em> search term.</span>\n  </minerva-empty>\n  <minerva-empty\n    size=\"large\"\n    hide-icon\n    heading=\"Inbox zero\"\n    description=\"You are all caught up.\"\n    width=\"100%\"\n    height=\"200px\"\n  ></minerva-empty>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Sizes and styles",
+      "description": "Three sizes, the illustration (use-svg), a shadow, custom width / height, rich heading and description slots, and hide-icon / hide-description."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Empty",
+      "description": "Placeholder shown when there is no data to display.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "The default icon with the \"No Data\" description."
+        },
+        "svg": {
+          "title": "SVG illustration",
+          "description": "useSvg switches to the built-in illustration."
+        },
+        "custom-icon": {
+          "title": "Custom icon and description",
+          "description": "Both icon and description accept any React node."
+        },
+        "with-action": {
+          "title": "With action",
+          "description": "Children are rendered in the footer, e.g. a call-to-action button."
+        },
+        "styled": {
+          "title": "Custom appearance",
+          "description": "Size and shadow have their own props; background and text colors go through style or className."
+        },
+        "sizes": {
+          "title": "Title, actions and sizes",
+          "description": "size switches to the unframed layout; title names the state and action / secondaryAction hold the calls to action."
+        }
+      },
+      "api": {
+        "EmptyProps": {
+          "icon": "Custom icon replacing the default one; null or false renders no icon",
+          "description": "Description text",
+          "className": "Additional class name",
+          "style": "Inline styles",
+          "children": "Footer content, e.g. an action button",
+          "useSvg": "Uses the built-in SVG illustration instead of the default icon",
+          "width": "Width of the container",
+          "height": "Height of the container",
+          "showShadow": "Adds a drop shadow",
+          "ref": "Ref to the root <div> element",
+          "title": "Heading of the empty state; also becomes its accessible name",
+          "action": "Primary call to action",
+          "secondaryAction": "Secondary action rendered after action",
+          "size": "Switches to the unframed sized layout (small, medium or large)"
+        }
+      },
+      "cssVars": {
+        "--empty-padding": "Padding (every size; defaults to the padding of the size)",
+        "--empty-gap": "Space between the icon, title, description and actions (sized layout)",
+        "--empty-icon-size": "Size of the illustration icon (every size)",
+        "--empty-color": "Text color of the description",
+        "--empty-background": "Background of the framed (unsized) layout",
+        "--empty-radius": "Corner radius of the framed (unsized) layout (defaults to --radius-sm)",
+        "--empty-description-max-width": "Maximum width of the description (sized layout)",
+        "--empty-icon-background": "Background of the icon tile (sized layout)",
+        "--empty-icon-border-color": "Ring color of the icon tile (sized layout)",
+        "--empty-icon-radius": "Corner radius of the icon tile (sized layout; defaults to --radius-lg)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "With no attributes: the default icon and the localized \"No Data\" description, in a status region."
+          },
+          "actions": {
+            "title": "Heading, icon and actions",
+            "description": "heading and description set the text, the icon slot replaces the icon, action / secondary-action hold the buttons and the default slot is the footer."
+          },
+          "sizes-styles": {
+            "title": "Sizes and styles",
+            "description": "Three sizes, the illustration (use-svg), a shadow, custom width / height, rich heading and description slots, and hide-icon / hide-description."
+          }
+        },
+        "minerva-empty": {
+          "props": {
+            "heading": "Heading of the empty state; also its accessible name.",
+            "hideDescription": "Hides the description.",
+            "hideIcon": "Renders no icon at all."
+          },
+          "slots": {
+            "default": "Footer content.",
+            "icon": "Custom icon replacing the default one.",
+            "heading": "Heading (alternative to the heading attribute).",
+            "description": "Description (alternative to the description attribute).",
+            "action": "Primary call to action.",
+            "secondary-action": "Secondary action, after action."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

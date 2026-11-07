@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "design-presets",
+  "title": "Design presets",
+  "description": "Switch the look of a whole app, or of one part of it, with a few props: a preset (minerva, editorial, compact, touch) or the individual design axes density, radius, shadow and font scale. Works with SSR and nested scopes.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "axes": {
+      "title": "Design axes",
+      "attribute": "Attribute",
+      "text": "The design axes are orthogonal to the color mode (theme) and the palette. Each one selects a block of design tokens through a data attribute; components read the tokens (control heights, paddings, radii, shadows, font sizes), so the whole library follows. A preset is a named combination of the four axes plus a default palette; explicit axes and an explicit palette win over the preset.",
+      "preset": "minerva: Minerva's default look. editorial: restrained and reading-oriented (editorial palette, comfortable density, small radius, subtle shadows, large type). compact: dense, data-heavy screens (compact density, small radius, small type). touch: consumer mobile apps (comfortable density with 44px minimum touch targets, large radius).",
+      "density": "Control heights and horizontal paddings (--control-height-*, --control-padding-x-*) and the padding of rows such as menu items, options and table cells (--row-padding-y / --row-padding-x), and the minimum size of touch targets (--touch-target-min: 24px compact, 32px standard, 44px comfortable).",
+      "radius": "Corner radius scale: --radius-sm, --radius-md, --radius-lg, --radius-xl and --radius-2xl.",
+      "shadow": "Elevation shadows --shadow-sm to --shadow-xl. standard keeps the shadows of the theme or palette.",
+      "fontScale": "Type scale: --font-size-* and the base / relaxed line heights. large is meant for reading."
+    },
+    "root": {
+      "title": "Whole app",
+      "text": "Set the props on the root ConfigProvider: it writes the non-standard axes as data attributes on <html> (and the preset's palette as data-palette), and restores <html> when it unmounts. useConfig().design returns the resolved axes."
+    },
+    "ssr": {
+      "title": "Server rendering",
+      "text": "The root provider applies the attributes after hydration. For a first paint with the right look, render them in the server HTML with designAttributes() from the server-safe minerva-design/theme-utils entry, and/or pass the same design to createThemeInitScript({ design }), which also uses the preset's palette as the default palette."
+    },
+    "nested": {
+      "title": "Nested scopes",
+      "text": "A nested ConfigProvider inherits the design of its parent and applies its overrides to its subtree only: a display: contents wrapper and the portal container of the scope carry every design attribute, so modals, popovers and toasts rendered from the subtree get the same look. A nested preset resets every axis it does not set."
+    },
+    "css": {
+      "title": "Using the tokens in your own CSS",
+      "text": "The axes only change design tokens, so your own styles can use the same variables and stay consistent with the components. Per-component tweaks are available through each component's CSS variables (see the \"CSS variables\" section of every component page)."
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { ConfigProvider } from \"minerva-design\";\nimport \"minerva-design/style.css\";\n\nexport default function App() {\n  // The whole app gets the editorial look: editorial palette, comfortable\n  // density, small radius, subtle shadows and a reading-oriented type scale.\n  return (\n    <ConfigProvider preset=\"editorial\" density=\"standard\">\n      {/* your app */}\n    </ConfigProvider>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/layout.tsx (React Server Component, e.g. Next.js App Router)\nimport {\n  createThemeInitScript,\n  designAttributes,\n} from \"minerva-design/theme-utils\";\nimport { Providers } from \"./providers\"; // \"use client\": <ConfigProvider preset=\"editorial\">\n\nconst design = { preset: \"editorial\" } as const;\nconst themeScript = createThemeInitScript({ design });\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    // data-density / data-radius / data-shadow / data-font-scale in the HTML:\n    // the first paint already has the right look\n    <html lang=\"en\" suppressHydrationWarning {...designAttributes(design)}>\n      <head>\n        <script dangerouslySetInnerHTML={{ __html: themeScript }} />\n      </head>\n      <body>\n        <Providers>{children}</Providers>\n      </body>\n    </html>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "<ConfigProvider preset=\"compact\">\n  {/* dense admin screens */}\n  <ConfigProvider preset=\"editorial\">\n    {/* an article preview: editorial look, portals (Modal, Popover...) included */}\n  </ConfigProvider>\n  <ConfigProvider radius=\"none\">\n    {/* inherits compact, only the radius changes */}\n  </ConfigProvider>\n</ConfigProvider>",
+      "language": "tsx"
+    },
+    {
+      "source": "/* The axes only set design tokens, so your own CSS can use them too */\n.panel {\n  border-radius: var(--radius-lg);\n  box-shadow: var(--shadow-md);\n  padding: var(--row-padding-y) var(--row-padding-x);\n  font-size: var(--font-size-md);\n}\n\n/* ...or react to the active design */\n[data-density=\"compact\"] .panel {\n  gap: var(--space-1);\n}",
+      "language": "css"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Design presets",
+      "description": "Switch the look of a whole app, or of one part of it, with a few props: a preset (minerva, editorial, compact, touch) or the individual design axes density, radius, shadow and font scale. Works with SSR and nested scopes.",
+      "axes": {
+        "title": "Design axes",
+        "attribute": "Attribute",
+        "text": "The design axes are orthogonal to the color mode (theme) and the palette. Each one selects a block of design tokens through a data attribute; components read the tokens (control heights, paddings, radii, shadows, font sizes), so the whole library follows. A preset is a named combination of the four axes plus a default palette; explicit axes and an explicit palette win over the preset.",
+        "preset": "minerva: Minerva's default look. editorial: restrained and reading-oriented (editorial palette, comfortable density, small radius, subtle shadows, large type). compact: dense, data-heavy screens (compact density, small radius, small type). touch: consumer mobile apps (comfortable density with 44px minimum touch targets, large radius).",
+        "density": "Control heights and horizontal paddings (--control-height-*, --control-padding-x-*) and the padding of rows such as menu items, options and table cells (--row-padding-y / --row-padding-x), and the minimum size of touch targets (--touch-target-min: 24px compact, 32px standard, 44px comfortable).",
+        "radius": "Corner radius scale: --radius-sm, --radius-md, --radius-lg, --radius-xl and --radius-2xl.",
+        "shadow": "Elevation shadows --shadow-sm to --shadow-xl. standard keeps the shadows of the theme or palette.",
+        "fontScale": "Type scale: --font-size-* and the base / relaxed line heights. large is meant for reading."
+      },
+      "root": {
+        "title": "Whole app",
+        "text": "Set the props on the root ConfigProvider: it writes the non-standard axes as data attributes on <html> (and the preset's palette as data-palette), and restores <html> when it unmounts. useConfig().design returns the resolved axes."
+      },
+      "ssr": {
+        "title": "Server rendering",
+        "text": "The root provider applies the attributes after hydration. For a first paint with the right look, render them in the server HTML with designAttributes() from the server-safe minerva-design/theme-utils entry, and/or pass the same design to createThemeInitScript({ design }), which also uses the preset's palette as the default palette."
+      },
+      "nested": {
+        "title": "Nested scopes",
+        "text": "A nested ConfigProvider inherits the design of its parent and applies its overrides to its subtree only: a display: contents wrapper and the portal container of the scope carry every design attribute, so modals, popovers and toasts rendered from the subtree get the same look. A nested preset resets every axis it does not set."
+      },
+      "css": {
+        "title": "Using the tokens in your own CSS",
+        "text": "The axes only change design tokens, so your own styles can use the same variables and stay consistent with the components. Per-component tweaks are available through each component's CSS variables (see the \"CSS variables\" section of every component page)."
+      },
+      "demos": {
+        "presets": {
+          "title": "Presets",
+          "description": "The same screen under each preset. A nested ConfigProvider scopes the preset to the demo; on the root provider it applies to the whole document."
+        },
+        "axes": {
+          "title": "Individual axes",
+          "description": "Each axis can be set on its own, and overrides the value of the preset."
+        }
+      },
+      "api": {
+        "DesignOptions": {
+          "preset": "Named combination of the design axes and a default palette.",
+          "density": "Spacing density of controls and rows.",
+          "radius": "Corner radius scale.",
+          "shadow": "Elevation shadow scale.",
+          "fontScale": "Type scale."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "nav-tree",
+  "title": "NavTree ナビゲーションツリー",
+  "description": "セクション、展開できる分岐、アクティブ項目、アイコンのみのコンパクトモードを備えたサイドバーナビゲーションです。矢印キーで項目間を移動し、分岐を開閉できます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "NavTree",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/nav-tree",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-nav-tree",
+        "props": [
+          {
+            "name": "activeId",
+            "typeText": "string | undefined",
+            "attribute": "active-id",
+            "required": false
+          },
+          {
+            "name": "collapsed",
+            "typeText": "boolean",
+            "attribute": "collapsed",
+            "required": false
+          },
+          {
+            "name": "wrapLabels",
+            "typeText": "boolean",
+            "attribute": "wrap-labels",
+            "required": false
+          },
+          {
+            "name": "sections",
+            "typeText": "NavTreeSection[]",
+            "required": false
+          },
+          {
+            "name": "expandedIds",
+            "typeText": "string[]",
+            "required": false
+          },
+          {
+            "name": "renderLink",
+            "typeText": "(item: NavTreeItem, content: TemplateResult, state: NavTreeItemState) => TemplateResult | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-select",
+            "typeText": "CustomEvent<NavTreeSelectDetail>",
+            "detailType": {
+              "typeText": "NavTreeSelectDetail",
+              "typeRef": "type:4954f5590962b8d8316b"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "A leaf link / action or a branch was activated (`detail: { value, item }`); cancelable: `preventDefault()` also prevents the link navigation (client-side routing)"
+          },
+          {
+            "name": "minerva-expanded-change",
+            "typeText": "CustomEvent<NavTreeExpandedChangeDetail>",
+            "detailType": {
+              "typeText": "NavTreeExpandedChangeDetail",
+              "typeRef": "type:31b2ed28c8fb78906e44"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "A branch was expanded / collapsed by the user (`detail: { expandedIds, item, expanded }`); cancelable: `preventDefault()` keeps the current state"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-nav-tree": {
+      "kind": "element",
+      "source": "web-components/src/components/nav-tree/nav-tree.ts",
+      "className": "MinervaNavTree",
+      "summary": "Sidebar navigation tree with sections, expandable branches and a compact mode.",
+      "description": "Sidebar navigation (`<NavTree>` of React) with sections, nested expandable branches, an active item and a compact (icon-only) mode. Data comes from the `sections` property. Disclosure navigation like React: every item is a link / button in the Tab sequence and branches are buttons with `aria-expanded`. ArrowDown / ArrowUp / Home / End move between the visible items, ArrowRight expands a branch (or enters it when expanded), ArrowLeft collapses a branch or moves to its parent (swapped in RTL), and typing a character moves to the next visible item starting with it (core typeahead).",
+      "properties": [
+        {
+          "name": "activeId",
+          "attribute": "active-id",
+          "type": "string | undefined",
+          "description": "Id of the active (current page) item; its ancestors expand"
+        },
+        {
+          "name": "collapsed",
+          "attribute": "collapsed",
+          "type": "boolean",
+          "default": "false",
+          "description": "Compact mode: icons only (labels, trailing content and children hidden)"
+        },
+        {
+          "name": "wrapLabels",
+          "attribute": "wrap-labels",
+          "type": "boolean",
+          "default": "false",
+          "description": "Wraps long labels and descriptions instead of truncating them"
+        },
+        {
+          "name": "sections",
+          "type": "NavTreeSection[]",
+          "default": "[]",
+          "description": "Sections of items"
+        },
+        {
+          "name": "expandedIds",
+          "type": "string[]",
+          "default": "[]",
+          "description": "Expanded branch ids"
+        },
+        {
+          "name": "renderLink",
+          "type": "(item: NavTreeItem, content: TemplateResult, state: NavTreeItemState) => TemplateResult | undefined",
+          "description": "Custom rendering of leaf links (e.g. router links). Render `content` inside and put `state.className` on the link"
+        }
+      ],
+      "methods": [],
+      "events": [
+        {
+          "name": "minerva-select",
+          "description": "A leaf link / action or a branch was activated (`detail: { value, item }`); cancelable: `preventDefault()` also prevents the link navigation (client-side routing)"
+        },
+        {
+          "name": "minerva-expanded-change",
+          "description": "A branch was expanded / collapsed by the user (`detail: { expandedIds, item, expanded }`); cancelable: `preventDefault()` keeps the current state"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The `<nav>` landmark"
+        },
+        {
+          "name": "group",
+          "description": "A section of items"
+        },
+        {
+          "name": "group-label",
+          "description": "The title of a section"
+        },
+        {
+          "name": "item",
+          "description": "A link / button row (aria-current=page when active, aria-expanded on branches; not rendered by renderLink)"
+        },
+        {
+          "name": "item--current",
+          "description": "Item state of `item`: current"
+        },
+        {
+          "name": "item--expanded",
+          "description": "Item state of `item`: expanded"
+        },
+        {
+          "name": "item--disabled",
+          "description": "Item state of `item`: disabled"
+        },
+        {
+          "name": "icon",
+          "description": "The icon of an item"
+        },
+        {
+          "name": "label",
+          "description": "The label of an item"
+        },
+        {
+          "name": "description",
+          "description": "The secondary text of an item"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--nav-tree-gap",
+          "description": "Space between the sections"
+        },
+        {
+          "name": "--nav-tree-item-height",
+          "description": "Minimum height of a top-level row (defaults to the density's control height)"
+        },
+        {
+          "name": "--nav-tree-item-padding-x",
+          "description": "Horizontal padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--nav-tree-item-radius",
+          "description": "Corner radius of a row (defaults to --radius-md)"
+        },
+        {
+          "name": "--nav-tree-indent",
+          "description": "Indentation of nested rows"
+        },
+        {
+          "name": "--nav-tree-active-background",
+          "description": "Background of the active row"
+        },
+        {
+          "name": "--nav-tree-active-color",
+          "description": "Accent color of the active row's icon"
+        },
+        {
+          "name": "--nav-tree-hover-background",
+          "description": "Background of a hovered row (defaults to --hover-color)"
+        },
+        {
+          "name": "--nav-tree-guide-color",
+          "description": "Color of the optional indent guide of an expanded branch (defaults to transparent)"
+        },
+        {
+          "name": "--nav-tree-guide-active-color",
+          "description": "Color of the indent guide of the branch holding the active row"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:NavTree": {
+      "kind": "cssVars",
+      "source": "react/src/components/NavTree",
+      "vars": [
+        {
+          "name": "--nav-tree-gap",
+          "description": "Space between the sections"
+        },
+        {
+          "name": "--nav-tree-item-height",
+          "description": "Minimum height of a top-level row (defaults to the density's control height)"
+        },
+        {
+          "name": "--nav-tree-item-padding-x",
+          "description": "Horizontal padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--nav-tree-item-radius",
+          "description": "Corner radius of a row (defaults to --radius-md)"
+        },
+        {
+          "name": "--nav-tree-indent",
+          "description": "Indentation of nested rows"
+        },
+        {
+          "name": "--nav-tree-active-background",
+          "description": "Background of the active row"
+        },
+        {
+          "name": "--nav-tree-active-color",
+          "description": "Accent color of the active row's icon"
+        },
+        {
+          "name": "--nav-tree-hover-background",
+          "description": "Background of a hovered row (defaults to --hover-color)"
+        },
+        {
+          "name": "--nav-tree-guide-color",
+          "description": "Color of the optional indent guide of an expanded branch (defaults to transparent)"
+        },
+        {
+          "name": "--nav-tree-guide-active-color",
+          "description": "Color of the indent guide of the branch holding the active row"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/nav-tree/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/nav-tree/wc/basic.html": "<minerva-nav-tree\n  id=\"nav\"\n  active-id=\"invoices\"\n  aria-label=\"Workspace\"\n  style=\"max-width: 280px\"\n></minerva-nav-tree>\n",
+        "apps/docs/src/docs/pages/nav-tree/wc/basic.ts": "// Sections come from a JS property. minerva-select is cancelable: prevent the\n// link navigation and route on the client, then move active-id.\ntype Item = {\n  id: string;\n  label: string;\n  description?: string;\n  href?: string;\n  icon?: string;\n  endContent?: string;\n  disabled?: boolean;\n  children?: Item[];\n};\ntype NavTree = HTMLElement & {\n  sections: { id: string; title?: string; items: Item[] }[];\n  activeId?: string;\n};\n\nexport function setup(root: HTMLElement) {\n  const nav = root.querySelector<NavTree>(\"#nav\")!;\n  nav.sections = [\n    {\n      id: \"main\",\n      items: [\n        { id: \"home\", label: \"Home\", href: \"/home\", icon: \"🏠\" },\n        {\n          id: \"inbox\",\n          label: \"Inbox\",\n          href: \"/inbox\",\n          icon: \"✉️\",\n          endContent: \"12\",\n        },\n      ],\n    },\n    {\n      id: \"finance\",\n      title: \"Finance\",\n      items: [\n        {\n          id: \"billing\",\n          label: \"Billing\",\n          description: \"Invoices and payments\",\n          icon: \"💳\",\n          children: [\n            { id: \"invoices\", label: \"Invoices\", href: \"/billing/invoices\" },\n            { id: \"payments\", label: \"Payments\", href: \"/billing/payments\" },\n            {\n              id: \"refunds\",\n              label: \"Refunds\",\n              href: \"/billing/refunds\",\n              disabled: true,\n            },\n          ],\n        },\n        { id: \"reports\", label: \"Reports\", href: \"/reports\", icon: \"📊\" },\n      ],\n    },\n  ];\n  const onSelect = (e: Event) => {\n    const { value, item } = (e as CustomEvent<{ value: string; item: Item }>)\n      .detail;\n    if (item.children) return; // a branch: it toggles\n    e.preventDefault();\n    nav.activeId = value;\n  };\n  nav.addEventListener(\"minerva-select\", onSelect);\n  return () => nav.removeEventListener(\"minerva-select\", onSelect);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "sections プロパティでセクション、アイコン、末尾の件数、ブランチを指定します。minerva-select をキャンセルしてクライアント側でルーティングし、active-id を移動します。"
+    },
+    {
+      "id": "collapsed",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/nav-tree/wc/collapsed.html",
+      "files": {
+        "apps/docs/src/docs/pages/nav-tree/wc/collapsed.html": "<div style=\"display: grid; gap: 12px; justify-items: start\">\n  <minerva-button id=\"toggle\" size=\"small\" variant=\"outline\" color=\"neutral\"\n    >Expand sidebar</minerva-button\n  >\n  <minerva-nav-tree\n    id=\"nav\"\n    collapsed\n    active-id=\"dashboard\"\n    aria-label=\"Compact navigation\"\n  ></minerva-nav-tree>\n</div>\n",
+        "apps/docs/src/docs/pages/nav-tree/wc/collapsed.ts": "// collapsed keeps the icons only (labels stay the accessible names).\ntype Item = { id: string; label: string; href?: string; icon?: string };\ntype NavTree = HTMLElement & {\n  sections: { id: string; items: Item[] }[];\n  collapsed: boolean;\n  activeId?: string;\n};\n\nexport function setup(root: HTMLElement) {\n  const nav = root.querySelector<NavTree>(\"#nav\")!;\n  const toggle = root.querySelector<HTMLElement>(\"#toggle\")!;\n  nav.sections = [\n    {\n      id: \"main\",\n      items: [\n        { id: \"dashboard\", label: \"Dashboard\", href: \"/\", icon: \"📈\" },\n        { id: \"projects\", label: \"Projects\", href: \"/projects\", icon: \"📁\" },\n        { id: \"settings\", label: \"Settings\", href: \"/settings\", icon: \"⚙️\" },\n      ],\n    },\n  ];\n  const onToggle = () => {\n    nav.collapsed = !nav.collapsed;\n    toggle.textContent = nav.collapsed ? \"Expand sidebar\" : \"Collapse sidebar\";\n  };\n  const onSelect = (e: Event) => {\n    e.preventDefault();\n    nav.activeId = (e as CustomEvent<{ value: string }>).detail.value;\n  };\n  toggle.addEventListener(\"click\", onToggle);\n  nav.addEventListener(\"minerva-select\", onSelect);\n  return () => {\n    toggle.removeEventListener(\"click\", onToggle);\n    nav.removeEventListener(\"minerva-select\", onSelect);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "コンパクトモード",
+      "description": "collapsed はアイコンだけを残し、幅の狭いサイドバーに使います。ラベルはアクセシブルな名前として残ります。"
+    },
+    {
+      "id": "expansion",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/nav-tree/wc/expansion.html",
+      "files": {
+        "apps/docs/src/docs/pages/nav-tree/wc/expansion.html": "<div style=\"display: grid; gap: 12px; max-width: 300px\">\n  <minerva-nav-tree\n    id=\"nav\"\n    wrap-labels\n    aria-label=\"Documentation\"\n  ></minerva-nav-tree>\n  <output id=\"log\">ArrowRight / ArrowLeft expand and collapse branches.</output>\n</div>\n",
+        "apps/docs/src/docs/pages/nav-tree/wc/expansion.ts": "// expandedIds is controlled through minerva-expanded-change (cancelable:\n// here \"Getting started\" stays open). wrap-labels wraps long labels.\ntype Item = { id: string; label: string; href?: string; children?: Item[] };\ntype NavTree = HTMLElement & {\n  sections: { id: string; title?: string; items: Item[] }[];\n  expandedIds: string[];\n};\ntype Detail = { expandedIds: string[]; item: Item; expanded: boolean };\n\nexport function setup(root: HTMLElement) {\n  const nav = root.querySelector<NavTree>(\"#nav\")!;\n  const log = root.querySelector<HTMLOutputElement>(\"#log\")!;\n  nav.sections = [\n    {\n      id: \"docs\",\n      title: \"Guides\",\n      items: [\n        {\n          id: \"start\",\n          label: \"Getting started\",\n          children: [\n            { id: \"install\", label: \"Installation\", href: \"/install\" },\n            {\n              id: \"first\",\n              label: \"Your first page with Web Components\",\n              href: \"/first\",\n            },\n          ],\n        },\n        {\n          id: \"theming\",\n          label: \"Theming\",\n          children: [\n            { id: \"tokens\", label: \"Design tokens\", href: \"/tokens\" },\n            {\n              id: \"palettes\",\n              label: \"Palettes and dark mode\",\n              href: \"/palettes\",\n            },\n          ],\n        },\n      ],\n    },\n  ];\n  nav.expandedIds = [\"start\"];\n  const onExpanded = (e: Event) => {\n    const { item, expanded } = (e as CustomEvent<Detail>).detail;\n    if (item.id === \"start\" && !expanded) {\n      e.preventDefault();\n      log.value = \"Getting started stays open (event canceled).\";\n      return;\n    }\n    log.value = `${item.label} ${expanded ? \"expanded\" : \"collapsed\"}`;\n  };\n  const onSelect = (e: Event) => {\n    const { item } = (e as CustomEvent<{ item: Item }>).detail;\n    if (!item.children) e.preventDefault();\n  };\n  nav.addEventListener(\"minerva-expanded-change\", onExpanded);\n  nav.addEventListener(\"minerva-select\", onSelect);\n  return () => {\n    nav.removeEventListener(\"minerva-expanded-change\", onExpanded);\n    nav.removeEventListener(\"minerva-select\", onSelect);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "展開状態の制御",
+      "description": "expandedIds で開いているブランチを指定し、minerva-expanded-change はキャンセル可能です（Getting started は開いたまま）。wrap-labels で長いラベルを折り返します。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "NavTree ナビゲーションツリー",
+      "description": "セクション、展開できる分岐、アクティブ項目、アイコンのみのコンパクトモードを備えたサイドバーナビゲーションです。矢印キーで項目間を移動し、分岐を開閉できます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "アクティブ項目を含む分岐は自動で開き、閉じた操作は記憶されます。項目にはアイコン・説明・末尾の内容を付けられます。"
+        },
+        "collapsed": {
+          "title": "コンパクトモードと折り返し",
+          "description": "collapsed はアイコンのみを表示し、wrapLabels は長いラベルを省略せず折り返します。"
+        },
+        "custom-link": {
+          "title": "ルーターのリンク",
+          "description": "renderLink で葉の項目をルーターのリンクとして描画し、state.className を付けます。展開状態は制御できます。"
+        }
+      },
+      "api": {
+        "NavTreeProps": {
+          "sections": "項目のセクション",
+          "activeId": "アクティブ（現在のページ）項目の id。祖先は展開されます",
+          "collapsed": "コンパクトモード：アイコンのみ",
+          "wrapLabels": "長いラベルと説明を省略せず折り返します",
+          "defaultExpandedIds": "最初に展開する分岐の id（非制御）",
+          "expandedIds": "展開している分岐の id（制御。onExpandedChange と併用）",
+          "onExpandedChange": "分岐の開閉時に展開中の id で呼ばれます",
+          "onItemSelect": "葉のリンクまたは分岐が選択されたときに呼ばれます",
+          "renderLink": "葉のリンクの独自描画（ルーターの Link など）。state.className を付けます",
+          "className": "追加のクラス名",
+          "style": "インラインスタイル",
+          "aria-label": "<nav> ランドマークのアクセシブルな名前",
+          "ref": "<nav> 要素への ref",
+          "aria-labelledby": "<nav> ランドマーク（既定のラベルを置き換え）のラベルとなる要素の id（複数可）",
+          "id": "<nav> 要素の id"
+        },
+        "NavTreeSection": {
+          "id": "セクションの一意な id",
+          "title": "任意のセクション見出し",
+          "items": "セクションの項目"
+        },
+        "NavTreeItem": {
+          "id": "一意な id（activeId や展開 id と照合）",
+          "label": "表示ラベル",
+          "description": "ラベルの下の補足行（入れ子の項目では非表示）",
+          "href": "葉の項目のリンク先",
+          "icon": "先頭のアイコン",
+          "endContent": "末尾の内容（バッジや件数など）",
+          "disabled": "項目を無効にします",
+          "children": "子項目。項目は展開できる分岐になります"
+        },
+        "NavTreeItemState": {
+          "active": "項目がアクティブです",
+          "ancestorActive": "子孫の項目がアクティブです",
+          "expanded": "分岐が展開されています",
+          "depth": "入れ子の深さ（最上位は 0）",
+          "collapsed": "ツリーがコンパクトモードです",
+          "hasChildren": "項目に子があります",
+          "disabled": "項目が無効です",
+          "className": "描画するリンクに付けるクラス名"
+        }
+      },
+      "cssVars": {
+        "--nav-tree-gap": "セクション間の間隔",
+        "--nav-tree-item-height": "最上位の行の最小の高さ（既定値は密度のコントロールの高さ）",
+        "--nav-tree-item-padding-x": "行の左右の余白（密度の行余白に連動）",
+        "--nav-tree-item-radius": "行の角丸（既定値は --radius-md）",
+        "--nav-tree-indent": "入れ子の行のインデント",
+        "--nav-tree-active-background": "アクティブな行の背景",
+        "--nav-tree-active-color": "アクティブな行のアイコンのアクセント色",
+        "--nav-tree-hover-background": "ホバー中の行の背景（既定は --hover-color）",
+        "--nav-tree-guide-color": "展開したブランチの任意のインデントガイドの色（既定は透明）",
+        "--nav-tree-guide-active-color": "アクティブな行を含むブランチのインデントガイドの色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "sections プロパティでセクション、アイコン、末尾の件数、ブランチを指定します。minerva-select をキャンセルしてクライアント側でルーティングし、active-id を移動します。"
+          },
+          "collapsed": {
+            "title": "コンパクトモード",
+            "description": "collapsed はアイコンだけを残し、幅の狭いサイドバーに使います。ラベルはアクセシブルな名前として残ります。"
+          },
+          "expansion": {
+            "title": "展開状態の制御",
+            "description": "expandedIds で開いているブランチを指定し、minerva-expanded-change はキャンセル可能です（Getting started は開いたまま）。wrap-labels で長いラベルを折り返します。"
+          }
+        },
+        "minerva-nav-tree": {
+          "events": {
+            "minerva-select": "葉のリンク / アクション、またはブランチが実行されました（detail: { value, item }）。キャンセル可能：preventDefault() でリンクの遷移も止まります（クライアントサイドルーティング）。",
+            "minerva-expanded-change": "ユーザーがブランチを展開または折りたたみました（detail: { expandedIds, item, expanded }）。キャンセル可能：preventDefault() で現在の状態を維持します。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

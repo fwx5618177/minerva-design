@@ -1,0 +1,348 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "alert",
+  "title": "Alert",
+  "description": "Affiche un message important dans la page, comme une annonce système ou le résultat d’une action.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Alert",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnAlert. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnAlert. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnAlert"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-alert",
+        "props": [
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "description",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "icon",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "color",
+            "typeText": "\"success\" | \"warning\" | \"danger\" | \"info\"",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "variant",
+            "typeText": "\"subtle\" | \"outline\" | \"solid\"",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "collapsible",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "closable",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "expanded",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "expandedChange",
+            "typeText": "boolean",
+            "required": false
+          },
+          {
+            "name": "closed",
+            "typeText": "void",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "void",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default"
+          },
+          {
+            "name": "[mnAction]"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "expanded",
+            "event": "expandedChange",
+            "syntax": "[(expanded)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Alert": {
+      "kind": "cssVars",
+      "source": "react/src/components/Alert",
+      "vars": [
+        {
+          "name": "--alert-padding",
+          "description": "Padding (every size; defaults to the padding of the size)"
+        },
+        {
+          "name": "--alert-radius",
+          "description": "Corner radius (defaults to --radius-sm, --radius-lg when rounded)"
+        },
+        {
+          "name": "--alert-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--alert-icon-size",
+          "description": "Size of the status icon (every size)"
+        },
+        {
+          "name": "--alert-gap",
+          "description": "Space between the icon, the content and the actions"
+        },
+        {
+          "name": "--alert-shadow",
+          "description": "Shadow of the elevated alert (defaults to --shadow-sm)"
+        },
+        {
+          "name": "--alert-margin-bottom",
+          "description": "Space below the alert"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "expandable-and-dismissible",
+      "title": "Expandable and dismissible",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAlert } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAlert],\n  template: `\n<mn-alert title=\"Scheduled maintenance\" description=\"The workspace will be unavailable for a few minutes tonight.\" color=\"warning\" collapsible closable/>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "semantic-colors",
+      "title": "Semantic colors",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAlert } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAlert],\n  template: `\n<mn-alert title=\"Changes saved\" color=\"success\"/><mn-alert title=\"Connection interrupted\" description=\"Check your network and try again.\" color=\"danger\"/>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Alert",
+      "description": "Affiche un message important dans la page, comme une annonce système ou le résultat d’une action.",
+      "demos": {
+        "colors": {
+          "title": "Couleurs",
+          "description": "color définit le statut : info (par défaut), success, warning et danger. Elle choisit aussi l’icône et le rôle."
+        },
+        "variants": {
+          "title": "Variantes",
+          "description": "variant définit le style visuel : subtle (par défaut, fond teinté), outline (bordure colorée) ou solid (rempli avec la couleur)."
+        },
+        "with-title": {
+          "title": "Avec titre",
+          "description": "Ajoutez un titre au-dessus du contenu. showIcon={false} masque l’icône."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Petite, moyenne (par défaut) et grande."
+        },
+        "closable": {
+          "title": "Fermable",
+          "description": "closable ajoute un bouton de fermeture ; closeIcon remplace son icône et onClose est appelé à la fermeture."
+        },
+        "with-action": {
+          "title": "Avec action",
+          "description": "Affichez des boutons ou des liens à droite avec action."
+        },
+        "collapsible": {
+          "title": "Repliable",
+          "description": "Avec un titre, collapsible permet de déplier et replier le contenu. Contrôlez-le avec expanded + onExpand, ou définissez seulement l’état initial avec defaultExpanded."
+        },
+        "banner": {
+          "title": "Bannière",
+          "description": "Mode bannière pour les annonces en haut de page."
+        },
+        "appearance": {
+          "title": "Apparence",
+          "description": "Icône personnalisée, élévation, variantes outline et solid et rayon des coins."
+        },
+        "animations": {
+          "title": "Animations",
+          "description": "Choisissez l’animation d’entrée ou désactivez-la."
+        },
+        "return-focus": {
+          "title": "Focus après fermeture",
+          "description": "Fermer une alerte avec son bouton de fermeture ne fait jamais tomber le focus sur la page : il passe à l'élément focalisable suivant l'alerte (sinon au précédent, sinon à son conteneur), ou à returnFocus (un élément, une ref ou une fonction)."
+        }
+      },
+      "api": {
+        "AlertProps": {
+          "title": "Titre de l’alerte",
+          "children": "Contenu de l’alerte",
+          "color": "Couleur sémantique (statut), qui définit aussi l’icône par défaut et le rôle",
+          "variant": "Style visuel : subtle (fond teinté), outline (fond transparent et bordure colorée) ou solid (rempli avec la couleur)",
+          "size": "Taille de l’alerte",
+          "showIcon": "Affiche l’icône de statut de la couleur",
+          "icon": "Icône personnalisée, remplaçant l’icône de statut",
+          "closable": "Affiche un bouton de fermeture",
+          "closeIcon": "Icône de fermeture personnalisée",
+          "onClose": "Appelé lors du clic sur le bouton de fermeture",
+          "animation": "Joue une animation d’entrée",
+          "animationName": "Nom de l’animation d’entrée",
+          "className": "Classe CSS supplémentaire",
+          "style": "Styles en ligne",
+          "action": "Zone d’action affichée à droite, par exemple des boutons",
+          "banner": "Mode bannière, adapté aux annonces en haut de page",
+          "elevation": "Ajoute une ombre portée",
+          "rounded": "Arrondit les coins",
+          "borderRadius": "Rayon des coins personnalisé",
+          "collapsible": "Permet de déplier et replier le contenu (nécessite un titre)",
+          "expanded": "Indique si le contenu est déplié (contrôlé) ; à utiliser avec onExpand",
+          "defaultExpanded": "Indique si le contenu est déplié au départ (non contrôlé)",
+          "onExpand": "Appelé avec le nouvel état lorsque le contenu est déplié ou replié",
+          "ref": "Ref vers l’élément racine <div>",
+          "closeLabel": "Libellé accessible du bouton de fermeture",
+          "expandLabel": "Libellé accessible du bouton de bascule lorsque le contenu est replié",
+          "collapseLabel": "Libellé accessible du bouton de bascule lorsque le contenu est déplié",
+          "iconLabel": "Libellé accessible de l’icône de statut",
+          "role": "Rôle ARIA de l’alerte. Danger et avertissements interrompent (\"alert\"), info et succès sont polis (\"status\")",
+          "returnFocus": "Élément recevant le focus après la fermeture par le bouton de fermeture : un élément, une ref ou une fonction. Sans lui, le focus passe à l'élément focalisable suivant l'alerte (sinon au précédent, sinon à son conteneur), jamais à <body>"
+        }
+      },
+      "cssVars": {
+        "--alert-padding": "Marge intérieure (toutes les tailles ; par défaut celle de la taille)",
+        "--alert-radius": "Rayon des coins (par défaut --radius-sm, --radius-lg si arrondi)",
+        "--alert-font-size": "Taille de police (toutes les tailles)",
+        "--alert-icon-size": "Taille de l'icône d'état (toutes les tailles)",
+        "--alert-gap": "Espace entre l'icône, le contenu et les actions",
+        "--alert-shadow": "Ombre de l'alerte surélevée (par défaut --shadow-sm)",
+        "--alert-margin-bottom": "Espace sous l'alerte"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Quatre couleurs de statut avec un titre. Les alertes danger et warning utilisent role=\"alert\", info et success role=\"status\"."
+          },
+          "variants-sizes": {
+            "title": "Variantes, tailles et apparence",
+            "description": "Trois variantes et tailles, hide-icon, elevation, coins carrés, animation-name / no-animation, un slot icon personnalisé et le mode bannière."
+          },
+          "closable": {
+            "title": "Fermable",
+            "description": "closable déclenche un minerva-close annulable : preventDefault() conserve l'alerte, sinon elle sort le focus et se masque. Le slot action accueille des boutons."
+          },
+          "collapsible": {
+            "title": "Repliable",
+            "description": "collapsible (avec un titre) ajoute une bascule ; collapsed définit l'état initial et minerva-expanded-change signale chaque changement."
+          }
+        },
+        "minerva-alert": {
+          "props": {
+            "heading": "Texte du titre (ou utilisez le slot heading).",
+            "hideIcon": "Masque l'icône de statut.",
+            "noAnimation": "Désactive l'animation d'entrée.",
+            "square": "Coins carrés.",
+            "collapsed": "Indique si le message est replié.",
+            "alertRole": "Rôle ARIA (par défaut : \"alert\" pour danger / warning, \"status\" sinon)."
+          },
+          "events": {
+            "minerva-close": "Le bouton de fermeture a été activé ; annulable : preventDefault() garde l'alerte visible.",
+            "minerva-expanded-change": "L'utilisateur a déplié / replié le message (detail : { expanded }) ; annulable."
+          },
+          "slots": {
+            "default": "Message.",
+            "heading": "Titre (alternative à l'attribut heading).",
+            "icon": "Icône personnalisée remplaçant l'icône de statut.",
+            "action": "Zone d'actions (par exemple des boutons) à la fin.",
+            "close-icon": "Icône de fermeture personnalisée."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

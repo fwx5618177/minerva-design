@@ -1,0 +1,187 @@
+# VirtualList 虚拟列表
+
+只挂载滚动容器中可见的行，从而高效渲染长列表。
+
+Package: minerva-design@1.23.0
+
+Renderer: weapp
+
+Locale: zh
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.23.0",
+  "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+  "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+  "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.23.0/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## VirtualList
+
+Support: beta
+
+Core fixed-row virtualization with native first-row measurement, explicit item height/padding, overscan, maxHeight, async loadMore lock/threshold/loading, scrollToIndex, itemclick, configured text renderer and native row-renderer generic. Rows have one shared measured or explicit height, matching the React fixed-row contract; DOM renderer/focus targets use native generic Components. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/dist/weapp/virtual-list/index",
+  "exports": [],
+  "kind": "usingComponents"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "items",
+    "typeText": "array",
+    "required": false
+  },
+  {
+    "name": "itemHeight",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "height",
+    "typeText": "number",
+    "required": false,
+    "default": 300
+  },
+  {
+    "name": "overscan",
+    "typeText": "number",
+    "required": false,
+    "default": 5
+  },
+  {
+    "name": "maxHeight",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "itemPadding",
+    "typeText": "number",
+    "required": false,
+    "default": 8
+  },
+  {
+    "name": "loadMoreThreshold",
+    "typeText": "number",
+    "required": false,
+    "default": 100
+  },
+  {
+    "name": "highPerformance",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "loading",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "ariaLabel",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "customRowRenderer",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "scroll",
+    "typeText": "{ scrollTop: number }",
+    "description": "Native scroll offset."
+  },
+  {
+    "name": "itemclick",
+    "typeText": "{ item: Record<string, unknown>; index: number }",
+    "description": "Original row and absolute item index."
+  },
+  {
+    "name": "loadmore",
+    "typeText": "{}",
+    "description": "Near-bottom downward scrolling requested more rows; completeLoadMore releases event-only requests."
+  },
+  {
+    "name": "loaderror",
+    "typeText": "{ message: string }",
+    "description": "Configured asynchronous loader rejected; a later scroll may retry."
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "footer"
+  }
+]
+```
+
+## CSS variables
+
+```json
+{
+  "css:VirtualList": {
+    "kind": "cssVars",
+    "source": "react/src/components/VirtualList",
+    "vars": [
+      {
+        "name": "--virtual-list-radius",
+        "description": "Corner radius (defaults to --radius-sm)"
+      },
+      {
+        "name": "--virtual-list-shadow",
+        "description": "Shadow at rest (defaults to --shadow-sm)"
+      },
+      {
+        "name": "--virtual-list-hover-shadow",
+        "description": "Shadow while hovered (defaults to --shadow-md)"
+      },
+      {
+        "name": "--virtual-list-scrollbar-size",
+        "description": "Width of the scrollbar (WebKit / Blink)"
+      },
+      {
+        "name": "--virtual-list-loading-padding",
+        "description": "Padding of the loading indicator row"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

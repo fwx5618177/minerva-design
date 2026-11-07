@@ -1,0 +1,834 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "zh",
+  "renderer": "native",
+  "page": "radial-bar-chart",
+  "title": "径向条形图",
+  "description": "用同心圆环展示进度：活动圆环、OKR 完成度、销售额与配额对比。每个条形按数值与最大值之比填充所在圆环，带有着色的背景轨道和圆角端点；标签位于圆的空白处，中心可显示汇总文字。悬停圆环或使用方向键可查看其数值、最大值和进度。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "data": {
+      "rings": {
+        "move": "活动",
+        "exercise": "锻炼",
+        "stand": "站立"
+      },
+      "dayLabel": "星期",
+      "closed": "个圆环已合拢",
+      "activityAria": "所选日期的活动圆环：活动、锻炼和站立与目标的对比",
+      "okr": {
+        "activation": "激活率",
+        "retention": "第 4 周留存",
+        "nps": "NPS 高于 50",
+        "latency": "p95 延迟",
+        "churn": "流失率降低"
+      },
+      "average": "平均完成度",
+      "okrAria": "本季度关键结果的完成度",
+      "regions": {
+        "north": "华北",
+        "south": "华南",
+        "east": "华东",
+        "west": "西部"
+      },
+      "ofQuota": "配额达成",
+      "quotaAria": "各区域季度销售额与配额的对比",
+      "resources": {
+        "cpu": "CPU",
+        "memory": "内存",
+        "disk": "磁盘",
+        "network": "网络"
+      },
+      "shapeLabel": "形状",
+      "shapes": {
+        "threeQuarter": "四分之三圆",
+        "full": "整圆",
+        "half": "半圆"
+      },
+      "rounded": "圆角端点",
+      "track": "背景轨道",
+      "resourcesAria": "服务器资源使用率，占容量的百分比",
+      "savings": {
+        "goals": {
+          "emergency": "应急资金",
+          "holiday": "暑假旅行",
+          "laptop": "新笔记本电脑",
+          "deposit": "购房首付"
+        },
+        "hint": "点击某个目标，查看还需要多长时间。",
+        "detail": "{{goal}}：已存 {{saved}}，目标 {{target}}。还差 {{remaining}}，按每月 {{monthly}} 约需 {{months}} 个月。",
+        "overall": "全部目标",
+        "aria": "各储蓄目标的已存金额与目标对比"
+      },
+      "leaderboard": {
+        "players": {
+          "silva": "席尔瓦",
+          "kowalski": "科瓦尔斯基",
+          "okafor": "奥卡福",
+          "moreau": "莫罗",
+          "tanaka": "田中",
+          "jensen": "延森"
+        },
+        "stats": {
+          "goals": "进球",
+          "assists": "助攻"
+        },
+        "stat": "排名依据",
+        "rank": "第 {{rank}} 名 {{name}}",
+        "tally": "{{stat}}：{{games}} 场 {{value}} 个",
+        "perGame": "场均 {{ratio}}",
+        "aria": "本赛季联赛{{stat}}排行",
+        "leader": "领先者：{{name}}（{{stat}}：{{value}}）"
+      },
+      "uploads": {
+        "files": {
+          "video": "发布会视频",
+          "photos": "活动照片",
+          "slides": "演示文稿",
+          "backup": "数据库备份"
+        },
+        "uploaded": "已上传",
+        "aria": "各文件的上传进度",
+        "restart": "重新开始",
+        "finished": "所有文件均已上传（{{size}}）。",
+        "progress": "已上传 {{done}}/{{files}} 个文件"
+      },
+      "survey": {
+        "statements": {
+          "valued": "我感到被重视",
+          "goals": "我的目标很明确",
+          "growth": "我在这里能成长",
+          "balance": "工作与生活平衡",
+          "manager": "我的经理支持我",
+          "recommend": "我会推荐来这里工作"
+        },
+        "order": "排序",
+        "orders": {
+          "survey": "问卷顺序",
+          "highest": "同意率从高到低",
+          "lowest": "同意率从低到高"
+        },
+        "average": "平均同意率",
+        "agree": "{{answered}} 位受访者中有 {{agree}} 位同意（{{share}}）",
+        "aria": "同意各调查陈述的员工比例"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "RadialBarChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "RadialBarChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "data",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly RadialBarDatum[]",
+            "typeRef": "type:b44e5b77c8884c754c38",
+            "required": true,
+            "description": "Bars, from the outermost ring inward: a name, a value, an optional `max` and color"
+          },
+          {
+            "name": "max",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Value of a full bar for the data without `max`"
+          },
+          {
+            "name": "innerRadius",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.3,
+            "required": false,
+            "description": "Radius of the innermost ring's inner edge, as a fraction of the outer radius"
+          },
+          {
+            "name": "startAngle",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Angle where the bars start, degrees clockwise from 12 o'clock"
+          },
+          {
+            "name": "sweep",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 270,
+            "required": false,
+            "description": "Angle of a full bar, degrees (360 = full rings)"
+          },
+          {
+            "name": "gap",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.28,
+            "required": false,
+            "description": "Gap between the rings, as a fraction of a ring's slot (0-0.9)"
+          },
+          {
+            "name": "track",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Background tracks behind the bars"
+          },
+          {
+            "name": "rounded",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Rounded bar ends"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Labels before the start of the bars (in the empty part of the circle)"
+          },
+          {
+            "name": "labelContent",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly (\"value\" | \"percent\" | \"name\")[] | undefined",
+            "typeRef": "type:02e073f60777a3ee9d5e",
+            "required": false,
+            "description": "What a label shows: name, value, percent of the bar's max (combinable)"
+          },
+          {
+            "name": "centerValue",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Big text in the center (e.g. the overall completion)"
+          },
+          {
+            "name": "centerLabel",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Small text under `centerValue`"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; tapping an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip shown while a mark is pressed; `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:541b024ed1104992e34e",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:d92c3cd66b7afc0213bc",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend taps then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back."
+          },
+          {
+            "name": "animation",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations (skipped when the theme reduces motion)"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "BCP 47 locale of the built-in texts (tooltip rows, accessible names, \"No data\") and of the numbers"
+          },
+          {
+            "name": "texts",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale`"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:9333c89b3161f5ff3652",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:fa632874a08b24956e5f",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted mark changes (press and drag over the chart)"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:8504b594a968c22eaac5",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is tapped"
+          },
+          {
+            "name": "onToggle",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:d096120cd0ab66afae24",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is tapped (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:RadialBarChartProps": {
+      "source": "native/src/components/ShapeChart/types.ts",
+      "description": "Props of RadialBarChart",
+      "kind": "interface",
+      "extends": [
+        "ShapeChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "type": "readonly RadialBarDatum[]",
+          "required": true,
+          "description": "Bars, from the outermost ring inward: a name, a value, an optional `max` and color"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "default": "the largest value",
+          "description": "Value of a full bar for the data without `max`"
+        },
+        {
+          "name": "innerRadius",
+          "type": "number",
+          "required": false,
+          "default": "0.3",
+          "description": "Radius of the innermost ring's inner edge, as a fraction of the outer radius"
+        },
+        {
+          "name": "startAngle",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Angle where the bars start, degrees clockwise from 12 o'clock"
+        },
+        {
+          "name": "sweep",
+          "type": "number",
+          "required": false,
+          "default": "270",
+          "description": "Angle of a full bar, degrees (360 = full rings)"
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "required": false,
+          "default": "0.28",
+          "description": "Gap between the rings, as a fraction of a ring's slot (0-0.9)"
+        },
+        {
+          "name": "track",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Background tracks behind the bars"
+        },
+        {
+          "name": "rounded",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Rounded bar ends"
+        },
+        {
+          "name": "labels",
+          "type": "boolean",
+          "required": false,
+          "default": "true when `sweep` leaves room for them (up to 300°)",
+          "description": "Labels before the start of the bars (in the empty part of the circle)"
+        },
+        {
+          "name": "labelContent",
+          "type": "readonly (\"name\" | \"value\" | \"percent\")[]",
+          "required": false,
+          "default": "[\"name\", \"value\"]",
+          "description": "What a label shows: name, value, percent of the bar's max (combinable)"
+        },
+        {
+          "name": "centerValue",
+          "type": "string",
+          "required": false,
+          "description": "Big text in the center (e.g. the overall completion)"
+        },
+        {
+          "name": "centerLabel",
+          "type": "string",
+          "required": false,
+          "description": "Small text under `centerValue`"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radial-bar-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/radial-bar-chart/native/basic.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { View } from \"react-native\";\nimport {\n  RadialBarChart,\n  Tabs,\n  type RadialBarDatum,\n} from \"minerva-design/native\";\n\ntype Ring = \"move\" | \"exercise\" | \"stand\";\n\n// Daily goals and a week of activity: Move in kcal, Exercise in minutes,\n// Stand in hours with at least one minute of standing\nconst GOALS: Record<Ring, number> = { move: 600, exercise: 30, stand: 12 };\nconst COLORS: Record<Ring, string> = {\n  move: \"#fa114f\",\n  exercise: \"#92e82a\",\n  stand: \"#1eeaef\",\n};\nconst WEEK: Record<Ring, number>[] = [\n  { move: 520, exercise: 34, stand: 11 },\n  { move: 610, exercise: 41, stand: 12 },\n  { move: 380, exercise: 12, stand: 8 },\n  { move: 705, exercise: 55, stand: 13 },\n  { move: 450, exercise: 28, stand: 10 },\n  { move: 820, exercise: 72, stand: 9 },\n  { move: 290, exercise: 6, stand: 6 },\n];\nconst RINGS: Ring[] = [\"move\", \"exercise\", \"stand\"];\nconst percent = (share: number) => `${Math.round(share * 100)}%`;\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.radial-bar-chart.data\",\n  });\n  const [day, setDay] = useState(\"0\");\n  const locale = i18n.language;\n  // Monday to Sunday, in the reader's language (2026-03-02 is a Monday)\n  const days = useMemo(() => {\n    const format = new Intl.DateTimeFormat(locale, {\n      weekday: \"narrow\",\n      timeZone: \"UTC\",\n    });\n    return WEEK.map((_, i) => ({\n      value: String(i),\n      label: format.format(Date.UTC(2026, 2, 2 + i)),\n    }));\n  }, [locale]);\n  const values = WEEK[Number(day)] ?? GOALS;\n  const data = useMemo(\n    (): RadialBarDatum[] =>\n      RINGS.map((ring) => ({\n        name: t(`rings.${ring}`),\n        value: values[ring],\n        max: GOALS[ring],\n        color: COLORS[ring],\n      })),\n    [t, values],\n  );\n  const closed = RINGS.filter((ring) => values[ring] >= GOALS[ring]).length;\n  return (\n    <View style={{ width: \"100%\", gap: 12 }}>\n      <Tabs\n        variant=\"pills\"\n        listLabel={t(\"dayLabel\")}\n        items={days}\n        value={day}\n        onChange={setDay}\n      />\n      <RadialBarChart\n        data={data}\n        labelContent={[\"name\", \"percent\"]}\n        percentFormat={percent}\n        centerValue={`${closed}/3`}\n        centerLabel={t(\"closed\")}\n        height={300}\n        ariaLabel={t(\"activityAria\")}\n      />\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "径向条形图",
+      "description": "用同心圆环展示进度：活动圆环、OKR 完成度、销售额与配额对比。每个条形按数值与最大值之比填充所在圆环，带有着色的背景轨道和圆角端点；标签位于圆的空白处，中心可显示汇总文字。悬停圆环或使用方向键可查看其数值、最大值和进度。",
+      "demos": {
+        "activity": {
+          "title": "活动圆环",
+          "description": "完整圆环（sweep={360}）分别表示活动、锻炼和站立，各自对照每日目标（max）。切换日期时圆环会以动画过渡；由于没有空间放置标签，改由图例标出各圆环。"
+        },
+        "okr": {
+          "title": "OKR 完成度",
+          "description": "各关键结果按目标的百分比显示（max={100}），每个条形起点前标出名称和百分比；中心显示平均完成度。"
+        },
+        "quota": {
+          "title": "销售额与配额",
+          "description": "半圆（sweep={180}、startAngle={-90}）只占一半高度；每个区域以各自的配额作为 max。labels={false} 改为显示图例，中心给出整体达成率。"
+        },
+        "styles": {
+          "title": "形状与样式",
+          "description": "sweep 和 startAngle 决定圆环形状，rounded 决定条形端点是否为圆角，track 决定是否绘制背景轨道。"
+        },
+        "savings-goals": {
+          "title": "储蓄目标",
+          "description": "每个储蓄罐以自己的目标作为 max，labelContent 显示名称和已存百分比。onClick 选择一个目标：下方文字给出剩余金额，以及按每月转入金额还需要几个月。"
+        },
+        "leaderboard": {
+          "title": "赛季排行榜",
+          "description": "通过 RadioGroup 按进球或助攻对球员排名；领先者位于最外圈并决定量程，前三名通过每个数据项的 color 获得金、银、铜色。renderTooltip 补充排名、出场次数和场均数据。"
+        },
+        "uploads": {
+          "title": "文件上传",
+          "description": "完整圆环（sweep={360}）跟踪四个上传任务，每次同时上传两个；setInterval 在全部上传完成或卸载时停止，animation={false} 让进度条跟上快速更新。labels={false} 让图例显示文件名，并且只播报已完成的文件。"
+        },
+        "survey": {
+          "title": "敬业度调查",
+          "description": "每条陈述的 max 是回答该题的人数，因此进度条显示表示同意的比例。通过 Select 按问卷顺序或得分重新排列圆环，percentFormat 格式化百分比，renderTooltip 给出具体人数。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "活动圆环",
+            "description": "活动、锻炼与站立相对每日目标的完成度；选择一周中的某一天，圆环会以动画过渡到当天的数值。"
+          }
+        }
+      },
+      "api": {
+        "RadialBarChartProps": {
+          "data": "条形，从最外圈向内：名称、数值，以及可选的 max 和颜色",
+          "max": "未指定 max 的数据对应的满格数值（默认为最大值）",
+          "innerRadius": "最内圈内边缘的半径占外半径的比例",
+          "startAngle": "条形的起始角度，从 12 点钟方向顺时针计，单位为度",
+          "sweep": "满格条形的角度，单位为度（360 为完整圆环）",
+          "gap": "圆环之间的间隙，占每圈宽度的比例（0 到 0.9）",
+          "track": "在条形后绘制背景轨道",
+          "rounded": "条形端点为圆角",
+          "labels": "在条形起点之前、圆的空白处显示标签（sweep 留有空间时默认开启，最大 300°）",
+          "labelContent": "标签显示的内容：名称、数值和 / 或占 max 的百分比",
+          "centerValue": "中心的大号文字（例如整体完成度）",
+          "centerLabel": "centerValue 下方的小号文字"
+        },
+        "RadialBarDatum": {
+          "name": "显示在标签、图例和提示框中的名称",
+          "value": "条形的数值（负数按 0 计）",
+          "color": "颜色（任意 CSS 颜色，包括 var(--x)）；省略时取自调色板",
+          "max": "满格对应的数值（例如目标）；省略时使用图表的 max"
+        }
+      },
+      "data": {
+        "rings": {
+          "move": "活动",
+          "exercise": "锻炼",
+          "stand": "站立"
+        },
+        "dayLabel": "星期",
+        "closed": "个圆环已合拢",
+        "activityAria": "所选日期的活动圆环：活动、锻炼和站立与目标的对比",
+        "okr": {
+          "activation": "激活率",
+          "retention": "第 4 周留存",
+          "nps": "NPS 高于 50",
+          "latency": "p95 延迟",
+          "churn": "流失率降低"
+        },
+        "average": "平均完成度",
+        "okrAria": "本季度关键结果的完成度",
+        "regions": {
+          "north": "华北",
+          "south": "华南",
+          "east": "华东",
+          "west": "西部"
+        },
+        "ofQuota": "配额达成",
+        "quotaAria": "各区域季度销售额与配额的对比",
+        "resources": {
+          "cpu": "CPU",
+          "memory": "内存",
+          "disk": "磁盘",
+          "network": "网络"
+        },
+        "shapeLabel": "形状",
+        "shapes": {
+          "threeQuarter": "四分之三圆",
+          "full": "整圆",
+          "half": "半圆"
+        },
+        "rounded": "圆角端点",
+        "track": "背景轨道",
+        "resourcesAria": "服务器资源使用率，占容量的百分比",
+        "savings": {
+          "goals": {
+            "emergency": "应急资金",
+            "holiday": "暑假旅行",
+            "laptop": "新笔记本电脑",
+            "deposit": "购房首付"
+          },
+          "hint": "点击某个目标，查看还需要多长时间。",
+          "detail": "{{goal}}：已存 {{saved}}，目标 {{target}}。还差 {{remaining}}，按每月 {{monthly}} 约需 {{months}} 个月。",
+          "overall": "全部目标",
+          "aria": "各储蓄目标的已存金额与目标对比"
+        },
+        "leaderboard": {
+          "players": {
+            "silva": "席尔瓦",
+            "kowalski": "科瓦尔斯基",
+            "okafor": "奥卡福",
+            "moreau": "莫罗",
+            "tanaka": "田中",
+            "jensen": "延森"
+          },
+          "stats": {
+            "goals": "进球",
+            "assists": "助攻"
+          },
+          "stat": "排名依据",
+          "rank": "第 {{rank}} 名 {{name}}",
+          "tally": "{{stat}}：{{games}} 场 {{value}} 个",
+          "perGame": "场均 {{ratio}}",
+          "aria": "本赛季联赛{{stat}}排行",
+          "leader": "领先者：{{name}}（{{stat}}：{{value}}）"
+        },
+        "uploads": {
+          "files": {
+            "video": "发布会视频",
+            "photos": "活动照片",
+            "slides": "演示文稿",
+            "backup": "数据库备份"
+          },
+          "uploaded": "已上传",
+          "aria": "各文件的上传进度",
+          "restart": "重新开始",
+          "finished": "所有文件均已上传（{{size}}）。",
+          "progress": "已上传 {{done}}/{{files}} 个文件"
+        },
+        "survey": {
+          "statements": {
+            "valued": "我感到被重视",
+            "goals": "我的目标很明确",
+            "growth": "我在这里能成长",
+            "balance": "工作与生活平衡",
+            "manager": "我的经理支持我",
+            "recommend": "我会推荐来这里工作"
+          },
+          "order": "排序",
+          "orders": {
+            "survey": "问卷顺序",
+            "highest": "同意率从高到低",
+            "lowest": "同意率从低到高"
+          },
+          "average": "平均同意率",
+          "agree": "{{answered}} 位受访者中有 {{agree}} 位同意（{{share}}）",
+          "aria": "同意各调查陈述的员工比例"
+        }
+      },
+      "wc": {
+        "demos": {
+          "activity": {
+            "title": "活动圆环",
+            "description": "三个完整圆环，各自有目标值（max）；中心显示当天汇总。"
+          },
+          "okr": {
+            "title": "关键结果完成度",
+            "description": "五个关键结果在同一刻度上的完成度；标签位于 270° 扫角留下的空白象限。"
+          }
+        },
+        "minerva-radial-bar-chart": {
+          "props": {
+            "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+            "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+          },
+          "events": {
+            "minerva-hover": "悬停（或键盘聚焦）的图形元素发生变化；detail：{ index, name, value, share }，无悬停时为 null",
+            "minerva-click": "点击、轻触或按 Enter 激活了一个图形元素；detail：{ index, name, value, share }",
+            "minerva-toggle": "点击了图例项（或调用了 toggle()）；detail：{ index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "按索引隐藏或显示扇区、阶段、雷达系列或树图的顶层节点",
+            "getRenderer": "绘制图形所用的后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null；可通过引擎选项 renderer 指定"
+          }
+        }
+      }
+    }
+  }
+}

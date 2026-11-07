@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "area-chart",
+  "title": "Graphique en aires",
+  "description": "Des aires remplies pour montrer un volume dans le temps : lissées par défaut, superposées, empilées en un total ou en parts de 100 %. Survolez pour lire toutes les séries à un même x ; zoomez avec Ctrl / ⌘ + molette ou en pinçant.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "data": {
+      "dau": "Utilisateurs actifs quotidiens",
+      "dauAria": "Utilisateurs actifs quotidiens, d'avril à juin 2026",
+      "others": "Autres",
+      "shareAria": "Part de marché par fabricant, de 2016 à 2026",
+      "sources": {
+        "organic": "Recherche naturelle",
+        "direct": "Accès direct",
+        "referral": "Sites référents",
+        "social": "Réseaux sociaux"
+      },
+      "visitsAria": "Visites mensuelles par source de trafic, empilées",
+      "instances": "Instances en service",
+      "quota": "Quota",
+      "instancesAria": "Instances lancées par l'autoscaler sur une journée",
+      "energy": {
+        "nuclear": "Nucléaire",
+        "hydro": "Hydraulique",
+        "wind": "Éolien",
+        "solar": "Solaire",
+        "gas": "Gaz"
+      },
+      "gw": "{{value}} GW",
+      "power": "Puissance",
+      "energyAria": "Production d'électricité par source sur une journée, empilée",
+      "actual": "Réalisé",
+      "plan": "Objectif",
+      "cumulativeAria": "Ventes cumulées de l'année face à l'objectif",
+      "download": "Téléchargement",
+      "upload": "Envoi",
+      "bandwidthAria": "Bande passante d'un serveur sur deux heures, téléchargement au-dessus de zéro et envoi en dessous",
+      "solarProduction": "Production solaire",
+      "kwh": "{{value}} kWh",
+      "solarAria": "Énergie quotidienne d'une installation solaire en toiture en 2026",
+      "resetZoom": "Réinitialiser le zoom",
+      "visibleTotal": "{{from}} – {{to}} : {{total}} au total, {{average}} par jour en moyenne",
+      "zoomHint": "Ctrl / ⌘ + molette ou pincement pour zoomer sur une saison, glisser pour se déplacer.",
+      "departments": {
+        "engineering": "Ingénierie",
+        "sales": "Ventes",
+        "support": "Support client",
+        "operations": "Opérations",
+        "admin": "Finance et RH"
+      },
+      "headcountAria": "Effectif mensuel par service, 2025 et 2026",
+      "headcountPanel": "Effectif du mois sélectionné",
+      "employees": "{{value}} salariés",
+      "lastYear": "L'an dernier",
+      "thisYear": "Cette année",
+      "blackFriday": "Black Friday",
+      "cyberMonday": "Cyber Monday",
+      "lastShipping": "Dernier jour d'expédition",
+      "seasonAria": "Commandes quotidiennes en novembre et décembre, cette année face à l'an dernier",
+      "seasonSummary": "{{total}} commandes cette saison, {{change}} par rapport à l'an dernier.",
+      "diskUsed": "Utilisé",
+      "diskForecast": "Tendance",
+      "gb": "{{value}} Go",
+      "capacity": "Capacité {{value}}",
+      "volume": "Volume",
+      "volumes": {
+        "database": "Base de données",
+        "logs": "Journaux",
+        "uploads": "Fichiers des utilisateurs"
+      },
+      "fullIn": "Plein dans environ {{days}}, vers le {{date}}",
+      "notFull": "Pas plein dans les {{days}} à venir",
+      "diskAria": "Usage du disque sur 60 jours et sa tendance jusqu'à la capacité"
+    }
+  },
+  "components": [
+    {
+      "name": "AreaChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/area-chart",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-area-chart",
+        "props": [
+          {
+            "name": "curve",
+            "typeText": "\"linear\" | \"smooth\" | \"step\"",
+            "attribute": "curve",
+            "required": false
+          },
+          {
+            "name": "stacked",
+            "typeText": "boolean",
+            "attribute": "stacked",
+            "required": false
+          },
+          {
+            "name": "percent",
+            "typeText": "boolean",
+            "attribute": "percent",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | number | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "series",
+            "typeText": "readonly ChartSeries[] | undefined",
+            "required": false
+          },
+          {
+            "name": "options",
+            "typeText": "ChartBaseOptions | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-hover",
+            "typeText": "CustomEvent",
+            "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+          },
+          {
+            "name": "minerva-point-click",
+            "typeText": "CustomEvent",
+            "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+          },
+          {
+            "name": "minerva-plot-click",
+            "typeText": "CustomEvent",
+            "description": "The plot area was clicked where there is no point; detail: { x, y }"
+          },
+          {
+            "name": "minerva-zoom",
+            "typeText": "CustomEvent",
+            "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+          },
+          {
+            "name": "minerva-renderer-change",
+            "typeText": "CustomEvent",
+            "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "percent",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/wc/percent.html",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/wc/percent.html": "<minerva-area-chart\n  id=\"mix\"\n  percent\n  curve=\"linear\"\n  height=\"280\"\n></minerva-area-chart>\n",
+        "apps/docs/src/docs/pages/area-chart/wc/percent.ts": "// `percent` scales every stack to 100%: the share of each source over time.\nimport type { MinervaAreaChart } from \"minerva-design/web-components/chart\";\n\nconst TEXT = {\n  en: {\n    solar: \"Solar\",\n    wind: \"Wind\",\n    hydro: \"Hydro\",\n    hours: [\"00:00\", \"04:00\", \"08:00\", \"12:00\", \"16:00\", \"20:00\"],\n  },\n  zh: {\n    solar: \"太阳能\",\n    wind: \"风能\",\n    hydro: \"水电\",\n    hours: [\"00:00\", \"04:00\", \"08:00\", \"12:00\", \"16:00\", \"20:00\"],\n  },\n  ja: {\n    solar: \"太陽光\",\n    wind: \"風力\",\n    hydro: \"水力\",\n    hours: [\"0:00\", \"4:00\", \"8:00\", \"12:00\", \"16:00\", \"20:00\"],\n  },\n  fr: {\n    solar: \"Solaire\",\n    wind: \"Éolien\",\n    hydro: \"Hydraulique\",\n    hours: [\"0 h\", \"4 h\", \"8 h\", \"12 h\", \"16 h\", \"20 h\"],\n  },\n};\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const chart = root.querySelector<MinervaAreaChart>(\"#mix\")!;\n  chart.series = [\n    { name: text.solar, data: [0, 5, 40, 62, 35, 2] },\n    { name: text.wind, data: [48, 52, 30, 22, 38, 55] },\n    { name: text.hydro, data: [30, 30, 28, 26, 28, 30] },\n  ];\n  chart.options = { xAxis: { type: \"category\", categories: text.hours } };\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Empilement à 100 %",
+      "description": "percent ramène chaque pile à 100 % : la part de chaque source d'énergie au fil de la journée, avec des bords droits."
+    },
+    {
+      "id": "stacked",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/area-chart/wc/stacked.html",
+      "files": {
+        "apps/docs/src/docs/pages/area-chart/wc/stacked.html": "<minerva-area-chart id=\"traffic\" stacked height=\"280\"></minerva-area-chart>\n",
+        "apps/docs/src/docs/pages/area-chart/wc/stacked.ts": "// `stacked` piles the areas up; the curve is smooth by default.\nimport type { MinervaAreaChart } from \"minerva-design/web-components/chart\";\n\nconst TEXT = {\n  en: {\n    organic: \"Organic\",\n    paid: \"Paid\",\n    referral: \"Referral\",\n    months: [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\"],\n  },\n  zh: {\n    organic: \"自然流量\",\n    paid: \"付费流量\",\n    referral: \"推荐流量\",\n    months: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  },\n  ja: {\n    organic: \"オーガニック\",\n    paid: \"有料\",\n    referral: \"参照元\",\n    months: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  },\n  fr: {\n    organic: \"Naturel\",\n    paid: \"Payant\",\n    referral: \"Référents\",\n    months: [\"janv.\", \"févr.\", \"mars\", \"avr.\", \"mai\", \"juin\"],\n  },\n};\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const chart = root.querySelector<MinervaAreaChart>(\"#traffic\")!;\n  chart.series = [\n    { name: text.organic, data: [320, 332, 301, 334, 390, 430] },\n    { name: text.paid, data: [120, 132, 101, 134, 190, 230] },\n    { name: text.referral, data: [60, 72, 71, 74, 90, 110] },\n  ];\n  chart.options = { xAxis: { type: \"category\", categories: text.months } };\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Aires empilées",
+      "description": "Trois sources de trafic empilées, aux bords lissés (la courbe par défaut)."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Graphique en aires",
+      "description": "Des aires remplies pour montrer un volume dans le temps : lissées par défaut, superposées, empilées en un total ou en parts de 100 %. Survolez pour lire toutes les séries à un même x ; zoomez avec Ctrl / ⌘ + molette ou en pinçant.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "Une série sur des valeurs x de type Date : le bord est une courbe lissée (monotone) qui ne dépasse jamais les données."
+        },
+        "stacked": {
+          "title": "Empilées",
+          "description": "stacked empile les aires pour que le bord supérieur donne le total ; à utiliser quand la somme des parties a un sens. Cliquez sur un élément de la légende pour masquer une source et réempiler les autres."
+        },
+        "percent": {
+          "title": "Empilées à 100 %",
+          "description": "percent ramène chaque x à 100 % pour comparer des parts plutôt que des quantités, comme des parts de marché ; l’infobulle affiche chaque valeur et sa part."
+        },
+        "step": {
+          "title": "En escalier",
+          "description": "curve=\"step\" maintient chaque valeur jusqu’à la suivante, ce qui convient aux effectifs qui changent à des instants précis ; une annotation marque le quota."
+        },
+        "energy-mix": {
+          "title": "Mix énergétique",
+          "description": "Production d'électricité par source sur une journée, empilée : le bord supérieur est la demande totale et la bosse du solaire montre quand les autres sources baissent. Chaque série fixe sa propre couleur."
+        },
+        "cumulative": {
+          "title": "Cumul et objectif",
+          "description": "Cumul des ventes face à un objectif qui croît régulièrement, tracé comme une série line ; des valeurs null laissent vides les mois à venir."
+        },
+        "mirrored": {
+          "title": "Entrant / sortant en miroir",
+          "description": "Le téléchargement au-dessus de zéro et l'envoi en dessous, sur la même échelle : une disposition courante en supervision réseau ; le format y retire le signe."
+        },
+        "zoom-total": {
+          "title": "Total de la plage visible",
+          "description": "onZoom transmet la plage x visible après chaque zoom et déplacement : le résumé additionne l'énergie solaire des jours affichés. Le bouton appelle resetZoom() sur la ref du graphique."
+        },
+        "hover-panel": {
+          "title": "Panneau de lecture",
+          "description": "tooltip={false} avec crosshair et onHover : un panneau latéral liste l'effectif de chaque service au mois survolé, du plus grand au plus petit, et revient au dernier mois quand le pointeur sort."
+        },
+        "year-over-year": {
+          "title": "D'une année sur l'autre",
+          "description": "La saison de l'an dernier en aire grise discrète derrière celle de cette année, sur les mêmes jours du calendrier ; des annotations text nomment les pics et une ligne x marque le dernier jour d'expédition avant Noël."
+        },
+        "disk-forecast": {
+          "title": "Prévision de capacité",
+          "description": "L'usage d'un disque en aire et une série line qui prolonge la tendance des 30 derniers jours jusqu'à la capacité, marquée par une annotation y ; un rect grise le futur et le résumé donne le jour où le volume sera plein."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Simple",
+            "description": "Utilisateurs actifs quotidiens sur 90 jours, sur un axe temporel : l'aire est lissée par défaut ; glissez sur le graphique pour lire chaque jour, pincez pour zoomer."
+          }
+        }
+      },
+      "data": {
+        "dau": "Utilisateurs actifs quotidiens",
+        "dauAria": "Utilisateurs actifs quotidiens, d'avril à juin 2026",
+        "others": "Autres",
+        "shareAria": "Part de marché par fabricant, de 2016 à 2026",
+        "sources": {
+          "organic": "Recherche naturelle",
+          "direct": "Accès direct",
+          "referral": "Sites référents",
+          "social": "Réseaux sociaux"
+        },
+        "visitsAria": "Visites mensuelles par source de trafic, empilées",
+        "instances": "Instances en service",
+        "quota": "Quota",
+        "instancesAria": "Instances lancées par l'autoscaler sur une journée",
+        "energy": {
+          "nuclear": "Nucléaire",
+          "hydro": "Hydraulique",
+          "wind": "Éolien",
+          "solar": "Solaire",
+          "gas": "Gaz"
+        },
+        "gw": "{{value}} GW",
+        "power": "Puissance",
+        "energyAria": "Production d'électricité par source sur une journée, empilée",
+        "actual": "Réalisé",
+        "plan": "Objectif",
+        "cumulativeAria": "Ventes cumulées de l'année face à l'objectif",
+        "download": "Téléchargement",
+        "upload": "Envoi",
+        "bandwidthAria": "Bande passante d'un serveur sur deux heures, téléchargement au-dessus de zéro et envoi en dessous",
+        "solarProduction": "Production solaire",
+        "kwh": "{{value}} kWh",
+        "solarAria": "Énergie quotidienne d'une installation solaire en toiture en 2026",
+        "resetZoom": "Réinitialiser le zoom",
+        "visibleTotal": "{{from}} – {{to}} : {{total}} au total, {{average}} par jour en moyenne",
+        "zoomHint": "Ctrl / ⌘ + molette ou pincement pour zoomer sur une saison, glisser pour se déplacer.",
+        "departments": {
+          "engineering": "Ingénierie",
+          "sales": "Ventes",
+          "support": "Support client",
+          "operations": "Opérations",
+          "admin": "Finance et RH"
+        },
+        "headcountAria": "Effectif mensuel par service, 2025 et 2026",
+        "headcountPanel": "Effectif du mois sélectionné",
+        "employees": "{{value}} salariés",
+        "lastYear": "L'an dernier",
+        "thisYear": "Cette année",
+        "blackFriday": "Black Friday",
+        "cyberMonday": "Cyber Monday",
+        "lastShipping": "Dernier jour d'expédition",
+        "seasonAria": "Commandes quotidiennes en novembre et décembre, cette année face à l'an dernier",
+        "seasonSummary": "{{total}} commandes cette saison, {{change}} par rapport à l'an dernier.",
+        "diskUsed": "Utilisé",
+        "diskForecast": "Tendance",
+        "gb": "{{value}} Go",
+        "capacity": "Capacité {{value}}",
+        "volume": "Volume",
+        "volumes": {
+          "database": "Base de données",
+          "logs": "Journaux",
+          "uploads": "Fichiers des utilisateurs"
+        },
+        "fullIn": "Plein dans environ {{days}}, vers le {{date}}",
+        "notFull": "Pas plein dans les {{days}} à venir",
+        "diskAria": "Usage du disque sur 60 jours et sa tendance jusqu'à la capacité"
+      },
+      "api": {
+        "AreaChartProps": {
+          "series": "Séries tracées en aires sauf si elles définissent un type",
+          "curve": "Forme des bords : \"linear\", \"smooth\" (monotone) ou \"step\"",
+          "stacked": "Empile les aires les unes sur les autres",
+          "percent": "Ramène les piles à 100 % à chaque x (implique stacked)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "stacked": {
+            "title": "Aires empilées",
+            "description": "Trois sources de trafic empilées, aux bords lissés (la courbe par défaut)."
+          },
+          "percent": {
+            "title": "Empilement à 100 %",
+            "description": "percent ramène chaque pile à 100 % : la part de chaque source d'énergie au fil de la journée, avec des bords droits."
+          }
+        },
+        "minerva-area-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}

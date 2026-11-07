@@ -1,0 +1,539 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "en",
+  "renderer": "native",
+  "page": "answer-sheet",
+  "title": "AnswerSheet",
+  "description": "A question navigator (答题卡) for practice and exam sessions: numbered pills grouped by section, each showing whether the question is unanswered, answered, correct, wrong or skipped, with a flag for review and the current question highlighted.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "AnswerSheet",
+      "support": {
+        "status": "beta",
+        "notes": "Pressable pills in wrapping rows (layout=scroll: a horizontal ScrollView that centres the current pill with scrollTo after layout); no arrow-key roving focus on native"
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Pressable pills in wrapping rows (layout=scroll: a horizontal ScrollView that centres the current pill with scrollTo after layout); no arrow-key roving focus on native",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "AnswerSheet"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "array",
+            "typeText": "readonly AnswerSheetItem[]",
+            "typeRef": "type:70ea9cf673375eea179f",
+            "required": true,
+            "description": "The questions, in order"
+          },
+          {
+            "name": "groups",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "array",
+            "typeText": "readonly AnswerSheetGroup[] | undefined",
+            "typeRef": "type:3a7615c74d545eeaf31d",
+            "required": false,
+            "description": "Titled sections, in display order (items render under the group whose key matches `item.group`)"
+          },
+          {
+            "name": "value",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Key of the current question (controlled; pair with onChange)"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Key of the initially current question (uncontrolled)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "enum",
+            "values": [
+              "medium",
+              "small"
+            ],
+            "typeText": "AnswerSheetSize | undefined",
+            "typeRef": "type:345531373672f1843ddb",
+            "default": "medium",
+            "required": false,
+            "description": "Density of the pills"
+          },
+          {
+            "name": "layout",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "enum",
+            "values": [
+              "scroll",
+              "wrap"
+            ],
+            "typeText": "AnswerSheetLayout | undefined",
+            "typeRef": "type:26401bff64a3d0ea3cb6",
+            "default": "wrap",
+            "required": false,
+            "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row"
+          },
+          {
+            "name": "columns",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Fixed number of columns (equal-width pills); ignored with layout=\"scroll\""
+          },
+          {
+            "name": "showLegend",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a legend of the statuses present (and of the flag)"
+          },
+          {
+            "name": "showSummary",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the number of answered questions (\"12 / 20 answered\")"
+          },
+          {
+            "name": "getItemLabel",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "function",
+            "typeText": "((item: AnswerSheetItem, index: number) => string) | undefined",
+            "typeRef": "type:2f9a43f9177bcb209fd1",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "AnswerSheetItem",
+                "typeRef": "type:b92414970fdc9bd1cca3"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Accessible name of a pill; receives the item and its display index"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the whole sheet"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/AnswerSheet/AnswerSheet.tsx",
+            "kind": "function",
+            "typeText": "((key: string) => void) | undefined",
+            "typeRef": "type:b97bf086cfd499544787",
+            "parameters": [
+              {
+                "name": "key",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the key of the selected question"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:AnswerSheetProps": {
+      "source": "native/src/components/AnswerSheet/AnswerSheet.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "items",
+          "type": "readonly AnswerSheetItem[]",
+          "required": true,
+          "description": "The questions, in order"
+        },
+        {
+          "name": "groups",
+          "type": "readonly AnswerSheetGroup[]",
+          "required": false,
+          "description": "Titled sections, in display order (items render under the group whose key matches `item.group`)"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Key of the current question (controlled; pair with onChange)"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "description": "Key of the initially current question (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(key: string) => void",
+          "required": false,
+          "description": "Called with the key of the selected question"
+        },
+        {
+          "name": "size",
+          "type": "AnswerSheetSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Density of the pills"
+        },
+        {
+          "name": "layout",
+          "type": "AnswerSheetLayout",
+          "required": false,
+          "default": "\"wrap\"",
+          "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row"
+        },
+        {
+          "name": "columns",
+          "type": "number",
+          "required": false,
+          "description": "Fixed number of columns (equal-width pills); ignored with layout=\"scroll\""
+        },
+        {
+          "name": "showLegend",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a legend of the statuses present (and of the flag)"
+        },
+        {
+          "name": "showSummary",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the number of answered questions (\"12 / 20 answered\")"
+        },
+        {
+          "name": "getItemLabel",
+          "type": "(item: AnswerSheetItem, index: number) => string",
+          "required": false,
+          "default": "\"Question <n>, <status>\" (translated)",
+          "description": "Accessible name of a pill; receives the item and its display index"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the whole sheet"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the sheet"
+        }
+      ]
+    },
+    "native:AnswerSheetItem": {
+      "source": "native/src/components/AnswerSheet/AnswerSheet.tsx",
+      "description": "A question of an AnswerSheet",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "key",
+          "type": "string",
+          "required": true,
+          "description": "Unique key of the question (the value of the sheet)"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Visible label; defaults to its number across all the groups"
+        },
+        {
+          "name": "status",
+          "type": "AnswerSheetStatus",
+          "required": false,
+          "default": "\"unanswered\"",
+          "description": "Status of the question"
+        },
+        {
+          "name": "flagged",
+          "type": "boolean",
+          "required": false,
+          "description": "Flags the question for review (a warning dot in a corner)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "description": "The question can't be selected"
+        },
+        {
+          "name": "group",
+          "type": "string",
+          "required": false,
+          "description": "Key of its group; items without a known group render first, untitled"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:AnswerSheet": {
+      "kind": "cssVars",
+      "source": "react/src/components/AnswerSheet",
+      "vars": [
+        {
+          "name": "--answer-sheet-gap",
+          "description": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-item-size",
+          "description": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-radius",
+          "description": "Corner radius of the pills (defaults to --radius-md)"
+        },
+        {
+          "name": "--answer-sheet-item-background",
+          "description": "Background of an unanswered pill"
+        },
+        {
+          "name": "--answer-sheet-answered-background",
+          "description": "Background of an answered pill (defaults to --primary-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-answered-color",
+          "description": "Text color of an answered pill"
+        },
+        {
+          "name": "--answer-sheet-correct-background",
+          "description": "Background of a correct pill (defaults to --success-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-correct-color",
+          "description": "Text color of a correct pill"
+        },
+        {
+          "name": "--answer-sheet-wrong-background",
+          "description": "Background of a wrong pill (defaults to --danger-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-wrong-color",
+          "description": "Text color of a wrong pill"
+        },
+        {
+          "name": "--answer-sheet-current-background",
+          "description": "Background of the current pill (defaults to --primary-color)"
+        },
+        {
+          "name": "--answer-sheet-current-color",
+          "description": "Text color of the current pill"
+        },
+        {
+          "name": "--answer-sheet-flag-color",
+          "description": "Color of the flag dot (defaults to --warning-color)"
+        },
+        {
+          "name": "--answer-sheet-title-color",
+          "description": "Text color of the group titles and the summary"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/answer-sheet/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/answer-sheet/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { AnswerSheet, type AnswerSheetItem } from \"minerva-design/native\";\n\nconst groups = [\n  { key: \"single\", title: \"Single choice\" },\n  { key: \"short\", title: \"Short answer\" },\n];\nconst items: AnswerSheetItem[] = [\n  { key: \"s1\", group: \"single\", status: \"correct\" },\n  { key: \"s2\", group: \"single\", status: \"wrong\", flagged: true },\n  { key: \"s3\", group: \"single\", status: \"correct\" },\n  { key: \"s4\", group: \"single\", status: \"skipped\" },\n  { key: \"s5\", group: \"single\", status: \"answered\" },\n  { key: \"a1\", group: \"short\", status: \"answered\" },\n  { key: \"a2\", group: \"short\" },\n  { key: \"a3\", group: \"short\" },\n];\n\nexport default function Basic() {\n  const [value, setValue] = useState(\"s2\");\n  return (\n    <View style={{ gap: 12 }}>\n      <AnswerSheet\n        items={items}\n        groups={groups}\n        value={value}\n        onChange={setValue}\n        showSummary\n        showLegend\n      />\n      <Text>Current: {value}</Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "A controlled current question (value / onChange). The sheet is a nav landmark of buttons; the current pill carries aria-current=\"step\". One tab stop: the arrow keys and Home / End move the focus, Enter / Space select."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AnswerSheet",
+      "description": "A question navigator (答题卡) for practice and exam sessions: numbered pills grouped by section, each showing whether the question is unanswered, answered, correct, wrong or skipped, with a flag for review and the current question highlighted.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "A controlled current question (value / onChange). The sheet is a nav landmark of buttons; the current pill carries aria-current=\"step\". One tab stop: the arrow keys and Home / End move the focus, Enter / Space select."
+        },
+        "groups": {
+          "title": "Sections, statuses and legend",
+          "description": "groups titles the sections (items render under the group whose key matches item.group, numbered across sections). Statuses: answered, correct, wrong, skipped; flagged adds a warning dot. showSummary counts the answered questions and showLegend explains the statuses present."
+        },
+        "scroll": {
+          "title": "Scrolling row",
+          "description": "layout=\"scroll\" keeps a single horizontally scrolling row, for a compact navigator above the question."
+        },
+        "sizes": {
+          "title": "Sizes, columns and disabled",
+          "description": "Two pill sizes, a fixed grid with columns (ArrowUp / ArrowDown move by a row; without columns they move to the nearest pill of the row above / below), and a disabled sheet."
+        }
+      },
+      "api": {
+        "AnswerSheetProps": {
+          "items": "The questions, in order",
+          "groups": "Titled sections, in display order; items render under the group whose key matches item.group",
+          "value": "Key of the current question (controlled; pair with onChange)",
+          "defaultValue": "Key of the initially current question (uncontrolled)",
+          "onChange": "Called with the key of the selected question",
+          "size": "Density of the pills",
+          "layout": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row",
+          "columns": "Fixed number of columns (a grid; ArrowUp / ArrowDown move by a row). Ignored with layout=\"scroll\".",
+          "showLegend": "Shows a legend of the statuses present (and of the flag)",
+          "showSummary": "Shows the number of answered questions (\"12 / 20 answered\")",
+          "getItemLabel": "Accessible name of a pill; receives the item and its display index",
+          "disabled": "Disables the whole sheet",
+          "aria-label": "Accessible name of the navigation landmark",
+          "className": "Additional class of the root element",
+          "ref": "Ref to the root <nav> element"
+        },
+        "AnswerSheetItem": {
+          "key": "Unique key of the question (the value of the sheet)",
+          "label": "Visible label of the pill (defaults to its number across all the groups)",
+          "status": "Status of the question: unanswered, answered, correct, wrong or skipped",
+          "flagged": "Flags the question for review (a warning dot in a corner)",
+          "disabled": "The question can't be selected",
+          "group": "Key of its group; items without a known group render first, in an untitled section"
+        },
+        "AnswerSheetGroup": {
+          "key": "Key matched by item.group",
+          "title": "Visible title of the section"
+        }
+      },
+      "cssVars": {
+        "--answer-sheet-gap": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")",
+        "--answer-sheet-item-size": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")",
+        "--answer-sheet-radius": "Corner radius of the pills (defaults to --radius-md)",
+        "--answer-sheet-item-background": "Background of an unanswered pill",
+        "--answer-sheet-answered-background": "Background of an answered pill (defaults to --primary-color-subtle)",
+        "--answer-sheet-answered-color": "Text color of an answered pill",
+        "--answer-sheet-correct-background": "Background of a correct pill (defaults to --success-color-subtle)",
+        "--answer-sheet-correct-color": "Text color of a correct pill",
+        "--answer-sheet-wrong-background": "Background of a wrong pill (defaults to --danger-color-subtle)",
+        "--answer-sheet-wrong-color": "Text color of a wrong pill",
+        "--answer-sheet-current-background": "Background of the current pill (defaults to --primary-color)",
+        "--answer-sheet-current-color": "Text color of the current pill",
+        "--answer-sheet-flag-color": "Color of the flag dot (defaults to --warning-color)",
+        "--answer-sheet-title-color": "Text color of the group titles and the summary"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "items is a property; value (the key of the current question) is an attribute and minerva-change reports the selected key. One tab stop: the arrow keys and Home / End move the focus, Enter / Space select."
+          },
+          "groups": {
+            "title": "Sections, statuses and legend",
+            "description": "The groups property titles the sections; show-summary and show-legend add the answered count and a legend of the statuses present. Pills expose ::part(item item--status-wrong), item--flagged, item--current ..."
+          },
+          "scroll": {
+            "title": "Scrolling row",
+            "description": "layout=\"scroll\" keeps a single horizontally scrolling row (also the :state(layout-scroll) custom state)."
+          },
+          "sizes": {
+            "title": "Sizes, columns and disabled",
+            "description": "size=\"small\", a fixed grid with columns=\"5\" (ArrowUp / ArrowDown move by a row) and a disabled sheet."
+          }
+        },
+        "minerva-answer-sheet": {
+          "events": {
+            "minerva-change": "The user selected a question (detail: { value }, its key)."
+          },
+          "methods": {
+            "focus": "Focuses the pill holding the tab stop."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

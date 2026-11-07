@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "ja",
+  "renderer": "react",
+  "page": "hooks",
+  "title": "フック",
+  "description": "ConfigProvider の内部で使われる低レベルのフック。テーマ、言語、React 版の翻訳を自分で管理できます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {
+    "reference": {
+      "title": "リファレンス",
+      "text": "すべてのフックとユーティリティは minerva-design からエクスポートされています。",
+      "hook": "フック",
+      "signature": "シグネチャ",
+      "useAutoTheme": "現在のテーマを state に保持し、ConfigProvider の外では CSS 変数として <html> に書き込みます。\"auto\" や { light, dark } の組では prefers-color-scheme を購読し、アンマウント時に購読を解除します。設定されたテーマ、その setter、現在のシステムのカラースキームを返します。ConfigProvider の内側では state の管理だけを行い、<html> はルート Provider が管理します。",
+      "useLocale": "ロケールを state に保持し、ConfigProvider の外では React 版内蔵テキストの言語（en、zh、ja、fr）を切り替えます。ロケールとその setter を返します。ConfigProvider の内側では state の管理だけを行い、グローバルな言語はルート Provider が管理します。",
+      "useI18n": "{ t, language } を返します。t は React 版内蔵の軽量トランスレーター（ネストしたキー、プレースホルダーの補間、count による複数形、defaultValue に対応）で React 版の組み込みテキストを翻訳し、language は t が翻訳する言語です。t は locale を指定した最も近い入れ子の ConfigProvider に従い、それがなければ React 版のグローバルな言語を使います。React 版は i18n ライブラリに依存しないため、アプリケーション自身の i18n の設定には影響しません。",
+      "useDisclosure": "オーバーレイ（Modal、Drawer、Popover など）の開閉状態。制御（isOpen + onChange）と非制御（defaultIsOpen）の両方に対応します。isOpen と、安定した onOpen、onClose、onToggle コールバックを返します。",
+      "cn": "クラス名を連結し、偽値（false、null、undefined、0、空文字列）をスキップします。条件付きクラスのための、依存関係のない小さな classnames の代替です。",
+      "global": "useAutoTheme と useLocale がグローバルな状態（<html> の CSS 変数、React 版の言語）を変更するのは、上に ConfigProvider がない場合だけです。このサイトはルートに Provider があるため、下のデモではフックの state を入れ子の ConfigProvider に渡し、プレビューにだけ適用しています。"
+    },
+    "standalone": {
+      "title": "ConfigProvider なしでフックを使う",
+      "text": "useConfig() が不要なら、Provider の代わりに useAutoTheme と useLocale を直接呼び出せます。Provider の内側では state を保持するだけなので、サブツリーに適用するには入れ子の ConfigProvider に渡してください。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "use-auto-theme",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-auto-theme.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-auto-theme.tsx": "import {\n  Button,\n  ConfigProvider,\n  HStack,\n  Tag,\n  type Theme,\n  useAutoTheme,\n  useConfig,\n} from \"minerva-design\";\n\nconst OPTIONS: Theme[] = [\"auto\", \"light\", \"dark\", \"github-dark\"];\n\n// Inside a ConfigProvider (this site has one at the root) useAutoTheme only\n// manages the state: the root provider owns <html>. The chosen theme is\n// applied to the preview below with a nested, scoped ConfigProvider.\nexport default function UseAutoThemeDemo() {\n  const { theme: appTheme = \"auto\" } = useConfig();\n  const [theme, setTheme, systemTheme] = useAutoTheme(appTheme);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <div\n        role=\"group\"\n        aria-label=\"Theme\"\n        style={{ display: \"flex\", flexWrap: \"wrap\", gap: 8 }}\n      >\n        {OPTIONS.map((option) => (\n          <Button\n            key={String(option)}\n            size=\"small\"\n            color={option === theme ? \"primary\" : \"neutral\"}\n            variant={option === theme ? \"solid\" : \"outline\"}\n            aria-pressed={option === theme}\n            onClick={() => setTheme(option)}\n          >\n            {String(option)}\n          </Button>\n        ))}\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"ghost\"\n          onClick={() => setTheme(appTheme)}\n        >\n          Reset\n        </Button>\n      </div>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 8,\n        }}\n      >\n        theme:{\" \"}\n        <Tag color=\"primary\">\n          {typeof theme === \"string\" ? theme : \"custom\"}\n        </Tag>{\" \"}\n        systemTheme: <Tag color=\"info\">{systemTheme}</Tag>\n      </div>\n      <ConfigProvider theme={theme}>\n        <div\n          style={{\n            padding: 16,\n            borderRadius: 8,\n            border: \"1px solid var(--border-color)\",\n            background: \"var(--background-color)\",\n            color: \"var(--text-color)\",\n          }}\n        >\n          <HStack gap={4} wrap>\n            <Button color=\"primary\">Primary</Button>\n            <Button color=\"neutral\" variant=\"outline\">\n              Secondary\n            </Button>\n            <Tag color=\"success\">preview</Tag>\n          </HStack>\n        </div>\n      </ConfigProvider>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useAutoTheme",
+      "description": "setTheme は入れ子の ConfigProvider が適用するプレビューのテーマを変更します。systemTheme は常に OS のカラースキームを示します。ページの他の部分はサイトのテーマのままです。"
+    },
+    {
+      "id": "use-disclosure",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-disclosure.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-disclosure.tsx": "import {\n  Alert,\n  Button,\n  cn,\n  HStack,\n  Tag,\n  useDisclosure,\n  VStack,\n} from \"minerva-design\";\n\n// useDisclosure keeps an open / closed state (uncontrolled here; pass isOpen\n// and onChange to control it). cn joins class names and skips falsy values.\nexport default function UseDisclosureDemo() {\n  const panel = useDisclosure({ defaultIsOpen: true });\n\n  return (\n    <VStack gap={4}>\n      <HStack gap={4} wrap>\n        <Button size=\"small\" color=\"primary\" onClick={panel.onToggle}>\n          Toggle\n        </Button>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={panel.onOpen}\n        >\n          Open\n        </Button>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={panel.onClose}\n        >\n          Close\n        </Button>\n        isOpen:{\" \"}\n        <Tag color={panel.isOpen ? \"success\" : \"info\"}>\n          {String(panel.isOpen)}\n        </Tag>\n      </HStack>\n      {panel.isOpen && (\n        <Alert\n          color=\"info\"\n          title=\"Details\"\n          className={cn(\"disclosure-panel\", panel.isOpen && \"is-open\")}\n        >\n          className = &quot;{cn(\"disclosure-panel\", panel.isOpen && \"is-open\")}\n          &quot;\n        </Alert>\n      )}\n    </VStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useDisclosure と cn",
+      "description": "useDisclosure が onToggle、onOpen、onClose でパネルを制御し、cn が条件付きの部分からクラス名を組み立てます。"
+    },
+    {
+      "id": "use-locale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-locale.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-locale.tsx": "import {\n  Button,\n  ConfigProvider,\n  Empty,\n  Tag,\n  useI18n,\n  useLocale,\n  type SupportedLanguage,\n} from \"minerva-design\";\n\n// a key from the React library's built-in translations\nconst AVATAR_KEY = \"avatar.default\";\nconst LANGUAGES: SupportedLanguage[] = [\"en\", \"zh\", \"ja\", \"fr\"];\n\nfunction Preview() {\n  // t() translates the React library's own strings with its built-in translator,\n  // in the language of the closest ConfigProvider\n  const { t, language } = useI18n();\n  return (\n    <>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 8,\n        }}\n      >\n        useI18n().language: <Tag color=\"primary\">{language}</Tag> {AVATAR_KEY}:{\" \"}\n        <Tag color=\"info\">{t(AVATAR_KEY)}</Tag>\n      </div>\n      {/* built-in component labels follow the language too */}\n      <Empty size=\"small\" />\n    </>\n  );\n}\n\n// Inside a ConfigProvider (this site has one at the root) useLocale only\n// manages the state: the root provider owns the React library's global language. The\n// chosen locale is applied to the preview with a nested ConfigProvider.\nexport default function UseLocaleDemo() {\n  const [locale, setLocale] = useLocale({ language: \"en\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <div\n        role=\"group\"\n        aria-label=\"Language\"\n        style={{ display: \"flex\", gap: 8 }}\n      >\n        {LANGUAGES.map((language) => (\n          <Button\n            key={language}\n            size=\"small\"\n            color={language === locale.language ? \"primary\" : \"neutral\"}\n            variant={language === locale.language ? \"solid\" : \"outline\"}\n            aria-pressed={language === locale.language}\n            onClick={() => setLocale({ language })}\n          >\n            {language}\n          </Button>\n        ))}\n      </div>\n      <ConfigProvider locale={locale}>\n        <Preview />\n      </ConfigProvider>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useLocale と useI18n",
+      "description": "setLocale は入れ子の ConfigProvider に渡すロケールを変更します。useI18n の t() はその言語で React 版の内蔵テキストを返します。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { Button, useAutoTheme, useLocale } from \"minerva-design\";\n\n// This is what ConfigProvider does internally. Use the hooks instead of\n// (not inside) a ConfigProvider: both write the same global state.\nexport function ThemeAndLanguage() {\n  const [theme, setTheme] = useAutoTheme(\"auto\");\n  const [locale, setLocale] = useLocale({ language: \"fr\" });\n\n  return (\n    <>\n      <Button onClick={() => setTheme(theme === \"dark\" ? \"light\" : \"dark\")}>\n        Toggle theme\n      </Button>\n      <Button onClick={() => setLocale({ language: \"en\" })}>\n        {locale.language}\n      </Button>\n    </>\n  );\n}",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "フック",
+      "description": "ConfigProvider の内部で使われる低レベルのフック。テーマ、言語、React 版の翻訳を自分で管理できます。",
+      "reference": {
+        "title": "リファレンス",
+        "text": "すべてのフックとユーティリティは minerva-design からエクスポートされています。",
+        "hook": "フック",
+        "signature": "シグネチャ",
+        "useAutoTheme": "現在のテーマを state に保持し、ConfigProvider の外では CSS 変数として <html> に書き込みます。\"auto\" や { light, dark } の組では prefers-color-scheme を購読し、アンマウント時に購読を解除します。設定されたテーマ、その setter、現在のシステムのカラースキームを返します。ConfigProvider の内側では state の管理だけを行い、<html> はルート Provider が管理します。",
+        "useLocale": "ロケールを state に保持し、ConfigProvider の外では React 版内蔵テキストの言語（en、zh、ja、fr）を切り替えます。ロケールとその setter を返します。ConfigProvider の内側では state の管理だけを行い、グローバルな言語はルート Provider が管理します。",
+        "useI18n": "{ t, language } を返します。t は React 版内蔵の軽量トランスレーター（ネストしたキー、プレースホルダーの補間、count による複数形、defaultValue に対応）で React 版の組み込みテキストを翻訳し、language は t が翻訳する言語です。t は locale を指定した最も近い入れ子の ConfigProvider に従い、それがなければ React 版のグローバルな言語を使います。React 版は i18n ライブラリに依存しないため、アプリケーション自身の i18n の設定には影響しません。",
+        "useDisclosure": "オーバーレイ（Modal、Drawer、Popover など）の開閉状態。制御（isOpen + onChange）と非制御（defaultIsOpen）の両方に対応します。isOpen と、安定した onOpen、onClose、onToggle コールバックを返します。",
+        "cn": "クラス名を連結し、偽値（false、null、undefined、0、空文字列）をスキップします。条件付きクラスのための、依存関係のない小さな classnames の代替です。",
+        "global": "useAutoTheme と useLocale がグローバルな状態（<html> の CSS 変数、React 版の言語）を変更するのは、上に ConfigProvider がない場合だけです。このサイトはルートに Provider があるため、下のデモではフックの state を入れ子の ConfigProvider に渡し、プレビューにだけ適用しています。"
+      },
+      "standalone": {
+        "title": "ConfigProvider なしでフックを使う",
+        "text": "useConfig() が不要なら、Provider の代わりに useAutoTheme と useLocale を直接呼び出せます。Provider の内側では state を保持するだけなので、サブツリーに適用するには入れ子の ConfigProvider に渡してください。"
+      },
+      "demos": {
+        "use-auto-theme": {
+          "title": "useAutoTheme",
+          "description": "setTheme は入れ子の ConfigProvider が適用するプレビューのテーマを変更します。systemTheme は常に OS のカラースキームを示します。ページの他の部分はサイトのテーマのままです。"
+        },
+        "use-locale": {
+          "title": "useLocale と useI18n",
+          "description": "setLocale は入れ子の ConfigProvider に渡すロケールを変更します。useI18n の t() はその言語で React 版の内蔵テキストを返します。"
+        },
+        "use-disclosure": {
+          "title": "useDisclosure と cn",
+          "description": "useDisclosure が onToggle、onOpen、onClose でパネルを制御し、cn が条件付きの部分からクラス名を組み立てます。"
+        }
+      }
+    }
+  }
+}

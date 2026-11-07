@@ -1,0 +1,599 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "en",
+  "renderer": "react",
+  "page": "form-control",
+  "title": "FormControl",
+  "description": "Field container that links a label, a control, help text and an error message, and shares invalid / required / disabled / read-only state with the control.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "FormControl",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "FormControl"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "invalid",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Marks the field as invalid: the control gets aria-invalid and the error message replaces the helper text"
+          },
+          {
+            "name": "required",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Marks the field as required (aria-required on the control, indicator on the label)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the control inside the field"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Makes the control inside the field read-only"
+          },
+          {
+            "name": "id",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the control; the label, helper and error ids derive from it (`${id}-label`, `${id}-helper`, `${id}-error`). Generated when omitted"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "FormErrorMessage",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "FormErrorMessage"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "FormField",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "FormField"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": true,
+            "description": "Label of the field"
+          },
+          {
+            "name": "helperText",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Help text below the control (hidden while the field is invalid)"
+          },
+          {
+            "name": "errorMessage",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Error message; makes the field invalid unless `invalid` is set explicitly"
+          },
+          {
+            "name": "invalid",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Marks the field as invalid: the control gets aria-invalid and the error message replaces the helper text"
+          },
+          {
+            "name": "required",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Marks the field as required (aria-required on the control, indicator on the label)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the control inside the field"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Makes the control inside the field read-only"
+          },
+          {
+            "name": "id",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the control; the label, helper and error ids derive from it (`${id}-label`, `${id}-helper`, `${id}-error`). Generated when omitted"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "FormHelperText",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "FormHelperText"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "FormLabel",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "FormLabel"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "requiredIndicator",
+            "source": "packages/react/src/components/FormControl/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "default": "*",
+            "required": false,
+            "description": "Indicator shown after the text when the field is required (hidden from assistive technology, which gets aria-required instead)"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "FormControlProps": {
+      "source": "react/src/components/FormControl/types.ts",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLDivElement>"
+      ],
+      "props": [
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Marks the field as invalid: the control gets aria-invalid and the error message replaces the helper text"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Marks the field as required (aria-required on the control, indicator on the label)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the control inside the field"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Makes the control inside the field read-only"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Id of the control; the label, helper and error ids derive from it (`${id}-label`, `${id}-helper`, `${id}-error`). Generated when omitted"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Field content: FormLabel, a control, FormHelperText, FormErrorMessage"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the container <div>"
+        }
+      ]
+    },
+    "FormLabelProps": {
+      "source": "react/src/components/FormControl/types.ts",
+      "kind": "interface",
+      "extends": [
+        "LabelHTMLAttributes<HTMLLabelElement>"
+      ],
+      "props": [
+        {
+          "name": "requiredIndicator",
+          "type": "ReactNode",
+          "required": false,
+          "default": "\"*\"",
+          "description": "Indicator shown after the text when the field is required (hidden from assistive technology, which gets aria-required instead)"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLLabelElement>",
+          "required": false,
+          "description": "Ref to the <label> element"
+        }
+      ]
+    },
+    "FormFieldProps": {
+      "source": "react/src/components/FormControl/types.ts",
+      "kind": "interface",
+      "extends": [
+        "FormControlProps"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Label of the field"
+        },
+        {
+          "name": "helperText",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Help text below the control (hidden while the field is invalid)"
+        },
+        {
+          "name": "errorMessage",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Error message; makes the field invalid unless `invalid` is set explicitly"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:FormControl": {
+      "kind": "cssVars",
+      "source": "react/src/components/FormControl",
+      "vars": [
+        {
+          "name": "--form-control-gap",
+          "description": "Space between the label, the field and the helper / error text"
+        },
+        {
+          "name": "--form-control-label-font-size",
+          "description": "Font size of the label"
+        },
+        {
+          "name": "--form-control-label-color",
+          "description": "Color of the label"
+        },
+        {
+          "name": "--form-control-helper-font-size",
+          "description": "Font size of the helper and error texts"
+        },
+        {
+          "name": "--form-control-required-color",
+          "description": "Color of the required marker"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-control/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/form-control/demos/basic.tsx": "import {\n  FormControl,\n  FormErrorMessage,\n  FormHelperText,\n  FormLabel,\n  Input,\n} from \"minerva-design\";\nimport { useState } from \"react\";\n\nexport default function BasicDemo() {\n  const [email, setEmail] = useState(\"\");\n  const invalid = email !== \"\" && !email.includes(\"@\");\n  return (\n    <FormControl invalid={invalid} required>\n      <FormLabel>Email</FormLabel>\n      <Input\n        type=\"email\"\n        value={email}\n        onChange={(event) => setEmail(event.target.value)}\n      />\n      <FormHelperText>Used to sign in.</FormHelperText>\n      <FormErrorMessage>Enter a valid email address.</FormErrorMessage>\n    </FormControl>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "FormLabel targets the control, the helper text describes it, and the error message replaces the helper while invalid."
+    },
+    {
+      "id": "custom-control",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-control/demos/custom-control.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/form-control/demos/custom-control.tsx": "import {\n  FormField,\n  useFormControlContext,\n  useFormControlProps,\n} from \"minerva-design\";\n\nfunction ColorInput() {\n  // id, aria-describedby, aria-invalid, aria-required, disabled, readOnly\n  const props = useFormControlProps({});\n  const field = useFormControlContext();\n  return (\n    <input\n      type=\"color\"\n      defaultValue=\"#2563eb\"\n      {...props}\n      style={{ outline: field?.invalid ? \"2px solid red\" : undefined }}\n    />\n  );\n}\n\nexport default function CustomControlDemo() {\n  return (\n    <FormField label=\"Brand color\" helperText=\"Wired by useFormControlProps.\">\n      <ColorInput />\n    </FormField>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Custom control",
+      "description": "useFormControlProps wires any control (id, aria attributes, disabled, readOnly); useFormControlContext reads the field state."
+    },
+    {
+      "id": "form-field",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-control/demos/form-field.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/form-control/demos/form-field.tsx": "import { FormField, Input, Textarea } from \"minerva-design\";\n\nexport default function FormFieldDemo() {\n  return (\n    <>\n      <FormField label=\"Title\" helperText=\"Shown on the public page.\">\n        <Input defaultValue=\"Draft\" />\n      </FormField>\n      <FormField label=\"Summary\" errorMessage=\"The summary is required.\">\n        <Textarea rows={3} />\n      </FormField>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "FormField",
+      "description": "FormField combines FormControl, FormLabel, helper text and error message; errorMessage makes the field invalid."
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-control/demos/states.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/form-control/demos/states.tsx": "import { FormField, Input } from \"minerva-design\";\n\nexport default function StatesDemo() {\n  return (\n    <>\n      <FormField label=\"Required\" required>\n        <Input />\n      </FormField>\n      <FormField label=\"Disabled\" disabled>\n        <Input defaultValue=\"Disabled value\" />\n      </FormField>\n      <FormField label=\"Read-only\" readOnly>\n        <Input defaultValue=\"Read-only value\" />\n      </FormField>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "States",
+      "description": "required adds an indicator and aria-required; disabled and readOnly reach the control."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "react-form",
+      "title": "React controlled project form",
+      "renderer": "react",
+      "pages": [
+        "input",
+        "switch",
+        "form-control",
+        "form-layout",
+        "button"
+      ],
+      "kind": "standalone-recipe",
+      "packageVersion": "1.23.0",
+      "files": {
+        "README.md": "# react-form\n\nStandalone React 19 recipe, using only public Minerva entries.\n\nRequires Node >=22.13 and pnpm 11. Copy the complete directory, then run:\n\n```sh\npnpm install\npnpm build\npnpm dev\n```\n\nThe package manifest pins the tested Minerva/framework/tool versions. The entry imports the global stylesheet once. App owns the provider and controlled state. No documentation translation setup or workspace aliases are required.\n",
+        "index.html": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n    <title>Minerva standalone recipe</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script type=\"module\" src=\"/src/main.tsx\"></script>\n  </body>\n</html>\n",
+        "package.json": "{\n  \"name\": \"minerva-recipe-react-form\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"packageManager\": \"pnpm@11.23.0\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"tsc --noEmit && vite build\"\n  },\n  \"dependencies\": {\n    \"minerva-design\": \"1.23.0\",\n    \"react\": \"19.3.0\",\n    \"react-dom\": \"19.3.0\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\",\n    \"vite\": \"8.3.3\",\n    \"@types/react\": \"19.3.0\",\n    \"@types/react-dom\": \"19.3.0\"\n  }\n}\n",
+        "src/App.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  ConfigProvider,\n  FormField,\n  Input,\n  Switch,\n  ToastProvider,\n  VStack,\n  toast,\n} from \"minerva-design\";\n\nexport default function App() {\n  const [name, setName] = useState(\"\");\n  const [subscribed, setSubscribed] = useState(false);\n  const [saved, setSaved] = useState(\"\");\n  return (\n    <ConfigProvider theme=\"light\">\n      <ToastProvider>\n        <VStack gap={4} align=\"start\">\n          <FormField label=\"Project name\" required>\n            <Input\n              name=\"project\"\n              value={name}\n              onChange={(event) => setName(event.target.value)}\n              clearable\n            />\n          </FormField>\n          <Switch\n            label=\"Newsletter\"\n            checked={subscribed}\n            onChange={setSubscribed}\n          />\n          <Button\n            disabled={!name.trim()}\n            onClick={() => {\n              setSaved(`${name}${subscribed ? \" · subscribed\" : \"\"}`);\n              toast.success(\"Project saved\");\n            }}\n          >\n            Save project\n          </Button>\n          <output aria-live=\"polite\">{saved || \"No project saved\"}</output>\n        </VStack>\n      </ToastProvider>\n    </ConfigProvider>\n  );\n}\n",
+        "src/main.tsx": "import { createRoot } from \"react-dom/client\";\nimport App from \"./App\";\nimport \"minerva-design/style.css\";\ncreateRoot(document.getElementById(\"app\")!).render(<App />);\n",
+        "src/vite-env.d.ts": "/// <reference types=\"vite/client\" />\n",
+        "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"Bundler\",\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"jsx\": \"react-jsx\",\n    \"noEmit\": true,\n    \"esModuleInterop\": true\n  },\n  \"include\": [\"src\"]\n}\n"
+      },
+      "dependencies": {
+        "minerva-design": "1.23.0",
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
+        "typescript": "6.0.3",
+        "vite": "8.3.3",
+        "@types/react": "19.3.0",
+        "@types/react-dom": "19.3.0"
+      },
+      "url": "/minerva-design/reference/1.23.0/recipes/react-form/README.md"
+    }
+  ],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "FormControl",
+      "description": "Field container that links a label, a control, help text and an error message, and shares invalid / required / disabled / read-only state with the control.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "FormLabel targets the control, the helper text describes it, and the error message replaces the helper while invalid."
+        },
+        "form-field": {
+          "title": "FormField",
+          "description": "FormField combines FormControl, FormLabel, helper text and error message; errorMessage makes the field invalid."
+        },
+        "states": {
+          "title": "States",
+          "description": "required adds an indicator and aria-required; disabled and readOnly reach the control."
+        },
+        "custom-control": {
+          "title": "Custom control",
+          "description": "useFormControlProps wires any control (id, aria attributes, disabled, readOnly); useFormControlContext reads the field state."
+        }
+      },
+      "api": {
+        "FormControlProps": {
+          "invalid": "Marks the field as invalid: the control gets aria-invalid and the error message replaces the helper text",
+          "required": "Marks the field as required (aria-required on the control, indicator on the label)",
+          "disabled": "Disables the control inside the field",
+          "readOnly": "Makes the control inside the field read-only",
+          "id": "Id of the control; the label, helper and error ids derive from it (`${id}-label`, `${id}-helper`, `${id}-error`). Generated when omitted",
+          "children": "Field content: FormLabel, a control, FormHelperText, FormErrorMessage",
+          "ref": "Ref to the container <div>"
+        },
+        "FormLabelProps": {
+          "requiredIndicator": "Indicator shown after the text when the field is required (hidden from assistive technology, which gets aria-required instead)",
+          "ref": "Ref to the <label> element"
+        },
+        "FormFieldProps": {
+          "label": "Label of the field",
+          "helperText": "Help text below the control (hidden while the field is invalid)",
+          "errorMessage": "Error message; makes the field invalid unless `invalid` is set explicitly"
+        }
+      },
+      "cssVars": {
+        "--form-control-gap": "Space between the label, the field and the helper / error text",
+        "--form-control-label-font-size": "Font size of the label",
+        "--form-control-label-color": "Color of the label",
+        "--form-control-helper-font-size": "Font size of the helper and error texts",
+        "--form-control-required-color": "Color of the required marker"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Wraps one control, Minerva or native: the label names it, the helper text describes it and required adds the indicator. Clicking the label focuses the control or toggles a switch."
+          },
+          "states": {
+            "title": "States",
+            "description": "invalid swaps the helper text for the error message and marks the control; readonly, disabled and required are forwarded to the control, and required-indicator changes the marker."
+          },
+          "slots": {
+            "title": "Rich content slots",
+            "description": "The label, helper-text and error-message slots accept markup instead of the plain-text attributes."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "With novalidate, the submit handler checks each control's checkValidity() and shows the field's own error message (invalid) instead of the browser bubbles; editing clears it and reset clears everything."
+          }
+        },
+        "minerva-form-control": {
+          "props": {
+            "readOnly": "Makes the slotted control read-only (readonly / readOnly and aria-readonly).",
+            "controlElement": "The slotted control (read-only)."
+          },
+          "slots": {
+            "default": "The control: one Minerva form control or native <input> / <select> / <textarea>.",
+            "label": "Rich label content (alternative to the label attribute).",
+            "helper-text": "Rich helper text (alternative to helper-text).",
+            "error-message": "Rich error message (alternative to error-message)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

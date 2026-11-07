@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "en",
+  "renderer": "native",
+  "page": "progress",
+  "title": "ProgressIndicator",
+  "description": "Indicates progress: an indeterminate progressbar drawn as a spinner, circle, wave, bar or dotted bar, or — with value — a determinate bar or circle.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "ProgressIndicator",
+      "support": {
+        "status": "beta",
+        "notes": "Value-based line / circle progress"
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Value-based line / circle progress",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Progress"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Completion, from 0 to 100 (clamped); ignored while `indeterminate`"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "line"
+            ],
+            "typeText": "ProgressVariant | undefined",
+            "typeRef": "type:94931007aab3fad61c02",
+            "default": "line",
+            "required": false,
+            "description": "Shape: a horizontal bar or a ring"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "NativeColor | undefined",
+            "typeRef": "type:c1c4fb1afcf9f8ec5869",
+            "default": "primary",
+            "required": false,
+            "description": "Color of the filled part"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "ProgressSize | undefined",
+            "typeRef": "type:2eb6a0bb7131c92d9438",
+            "default": "medium",
+            "required": false,
+            "description": "Thickness of the bar / diameter of the ring"
+          },
+          {
+            "name": "strokeWidth",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Thickness of the bar or ring stroke in dp, overriding the size"
+          },
+          {
+            "name": "showValue",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the value as text (after the bar, inside the ring)"
+          },
+          {
+            "name": "format",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "node",
+            "typeText": "((value: number) => ReactNode) | undefined",
+            "typeRef": "type:8233afc1317fc609c480",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "Formats the shown value"
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Visible label above the bar (beside the ring); also the accessible name"
+          },
+          {
+            "name": "indeterminate",
+            "source": "packages/native/src/components/Progress/Progress.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Unknown completion: an animated looping indicator without a value"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:ProgressProps": {
+      "source": "native/src/components/Progress/Progress.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Completion, from 0 to 100 (clamped); ignored while `indeterminate`"
+        },
+        {
+          "name": "variant",
+          "type": "ProgressVariant",
+          "required": false,
+          "default": "\"line\"",
+          "description": "Shape: a horizontal bar or a ring"
+        },
+        {
+          "name": "color",
+          "type": "NativeColor",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Color of the filled part"
+        },
+        {
+          "name": "size",
+          "type": "ProgressSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Thickness of the bar / diameter of the ring"
+        },
+        {
+          "name": "strokeWidth",
+          "type": "number",
+          "required": false,
+          "description": "Thickness of the bar or ring stroke in dp, overriding the size"
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the value as text (after the bar, inside the ring)"
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => ReactNode",
+          "required": false,
+          "default": "`${value}%`",
+          "description": "Formats the shown value"
+        },
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Visible label above the bar (beside the ring); also the accessible name"
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Unknown completion: an animated looping indicator without a value"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the root view"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:ProgressIndicator": {
+      "kind": "cssVars",
+      "source": "react/src/components/ProgressIndicator",
+      "vars": [
+        {
+          "name": "--progress-width",
+          "description": "Width of a linear indicator with the default width"
+        },
+        {
+          "name": "--progress-bar-height",
+          "description": "Thickness of the bar (every size)"
+        },
+        {
+          "name": "--progress-track-color",
+          "description": "Color of the bar track (and of the determinate circle track)"
+        },
+        {
+          "name": "--progress-radius",
+          "description": "Corner radius of the bar track (defaults to --radius-sm)"
+        },
+        {
+          "name": "--progress-size",
+          "description": "Size of the round indicators (spinner / circle / wave; every size)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/progress/native/basic.tsx": "import { useState } from \"react\";\nimport { View } from \"react-native\";\nimport { ProgressIndicator, Button } from \"minerva-design/native\";\nexport default function Basic() {\n  const [value, setValue] = useState(40);\n  return (\n    <View style={{ gap: 12 }}>\n      <ProgressIndicator value={value} />\n      <Button\n        onPress={() =>\n          setValue((current) => (current >= 100 ? 0 : current + 20))\n        }\n      >\n        Advance\n      </Button>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ProgressIndicator",
+      "description": "Indicates progress: an indeterminate progressbar drawn as a spinner, circle, wave, bar or dotted bar, or — with value — a determinate bar or circle.",
+      "demos": {
+        "variants": {
+          "title": "Variants",
+          "description": "variant picks the style: spinner (default), circle, wave, bar or dotted bar."
+        },
+        "sizes": {
+          "title": "Sizes",
+          "description": "Five sizes from xsmall to xlarge: the diameter of round indicators or the thickness of bars."
+        },
+        "colors": {
+          "title": "Colors",
+          "description": "Semantic color: primary (default), neutral or a status color (success, warning, danger, info); the special value current follows the surrounding text color (currentColor), e.g. inside buttons."
+        },
+        "label": {
+          "title": "Visible label",
+          "description": "A visible label sits next to the indicator and names the progressbar."
+        },
+        "width": {
+          "title": "Width",
+          "description": "Set a fixed width, or use full to fill the container."
+        },
+        "with-icon": {
+          "title": "With icon",
+          "description": "Show an icon before the indicator. Always describe what is loading with aria-label."
+        },
+        "determinate": {
+          "title": "Determinate",
+          "description": "Set value (and optionally max) to fill the bar or the circle and expose aria-valuenow; showValue prints a percentage, format customizes it. Status colors (success, warning, danger, info) convey state. Other variants ignore value."
+        }
+      },
+      "api": {
+        "ProgressIndicatorProps": {
+          "variant": "Indicator style",
+          "size": "Indicator size",
+          "color": "Semantic color of the indicator: theme primary, neutral gray or a status color (success, warning, danger, info). The special value current follows the surrounding text color (currentColor)",
+          "value": "Current progress: switches the bar and circle variants to determinate mode (a filled bar / arc and aria-valuenow), clamped between 0 and max. Other variants ignore it",
+          "max": "Value that represents completion (non-positive values fall back to 100)",
+          "showValue": "Shows the formatted value (a percentage by default) next to a determinate indicator",
+          "format": "Formats the value shown by showValue; a string or number result is also used as aria-valuetext",
+          "icon": "Icon displayed before the indicator",
+          "label": "Visible text shown next to the indicator; it also names the progressbar unless aria-label is set",
+          "aria-label": "Accessible label describing what is loading (default \"Loading\", or \"Progress\" in determinate mode)",
+          "decorative": "Purely visual: drops the progressbar role and hides the indicator from assistive technologies",
+          "className": "Additional class name",
+          "width": "Custom width (ignored when full is set); bars default to 200px",
+          "full": "Stretches the indicator to the full width of its container",
+          "ref": "Ref to the root <div> element"
+        }
+      },
+      "cssVars": {
+        "--progress-width": "Width of a linear indicator with the default width",
+        "--progress-bar-height": "Thickness of the bar (every size)",
+        "--progress-track-color": "Color of the bar track (and of the determinate circle track)",
+        "--progress-radius": "Corner radius of the bar track (defaults to --radius-sm)",
+        "--progress-size": "Size of the round indicators (spinner / circle / wave; every size)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Five indeterminate indicators. Each is a progressbar named by its label or the localized \"Loading\"."
+          },
+          "sizes-colors": {
+            "title": "Sizes and colors",
+            "description": "Five sizes; color=\"current\" follows the surrounding text color."
+          },
+          "label-width": {
+            "title": "Label, icon and width",
+            "description": "A visible label (attribute or slot), an icon slot, a custom width, full width, and a decorative indicator inside a button."
+          },
+          "determinate": {
+            "title": "Determinate",
+            "description": "value, max and show-value turn the bar and circle into determinate indicators; the format JS property customizes the text."
+          }
+        },
+        "minerva-progress": {
+          "slots": {
+            "icon": "Icon displayed before the indicator.",
+            "label": "Visible label (alternative to the label attribute)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

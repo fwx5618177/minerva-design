@@ -1,0 +1,661 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.0",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "switch",
+  "title": "Switch 开关",
+  "description": "用于在开启和关闭两种状态之间切换，操作即时生效。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.0",
+    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
+    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
+    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Switch",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Switch"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "boolean",
+            "required": false,
+            "description": "Whether the switch is on (controlled, `v-model`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultChecked",
+            "type": "boolean",
+            "required": false,
+            "description": "Initial state (uncontrolled)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": "Disables the switch. Inherited from an enclosing FormControl when not\nset; an explicit `false` overrides the FormControl",
+            "typeText": "boolean"
+          },
+          {
+            "name": "size",
+            "type": "\"medium\" | \"small\" | \"large\"",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Switch size",
+            "typeText": "\"medium\" | \"small\" | \"large\""
+          },
+          {
+            "name": "color",
+            "type": "\"info\" | \"primary\" | \"success\" | \"warning\" | \"danger\"",
+            "default": "\"primary\"",
+            "required": false,
+            "description": "Semantic color of the \"on\" state",
+            "typeText": "\"info\" | \"primary\" | \"success\" | \"warning\" | \"danger\""
+          },
+          {
+            "name": "shape",
+            "type": "\"square\" | \"round\"",
+            "default": "\"round\"",
+            "required": false,
+            "description": "Shape of the track and thumb",
+            "typeText": "\"square\" | \"round\""
+          },
+          {
+            "name": "variant",
+            "type": "SwitchVariant",
+            "default": "\"slider\"",
+            "required": false,
+            "description": "\"slider\" is the classic track + thumb; \"segmented\" renders two pressable\nsegments (requires offLabel and onLabel, otherwise falls back to slider)",
+            "typeText": "SwitchVariant"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": "Label displayed next to the switch (or the `label` / default slot)",
+            "typeText": "string"
+          },
+          {
+            "name": "offLabel",
+            "type": "string",
+            "required": false,
+            "description": "Label of the \"off\" state (or the `off-label` slot). With onLabel, both\nlabels are rendered as buttons on each side of the slider (they replace\n`label`) or as the segments of the segmented variant",
+            "typeText": "string"
+          },
+          {
+            "name": "onLabel",
+            "type": "string",
+            "required": false,
+            "description": "Label of the \"on\" state (or the `on-label` slot; see offLabel)",
+            "typeText": "string"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": false,
+            "description": "Name of the input, used in forms",
+            "typeText": "string"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "description": "id of the input (defaults to the enclosing FormControl's id)",
+            "typeText": "string"
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": false,
+            "description": "Value submitted with the form when on",
+            "typeText": "string"
+          },
+          {
+            "name": "labelPlacement",
+            "type": "\"start\" | \"end\" | \"bottom\" | \"top\"",
+            "default": "\"end\"",
+            "required": false,
+            "description": "Position of the label relative to the switch",
+            "typeText": "\"start\" | \"end\" | \"bottom\" | \"top\""
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a loading state and blocks interaction",
+            "typeText": "boolean"
+          },
+          {
+            "name": "ripple",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Shows a ripple effect on click",
+            "typeText": "boolean"
+          },
+          {
+            "name": "trackStyle",
+            "type": "CSSProperties",
+            "required": false,
+            "description": "Inline styles of the track",
+            "typeText": "CSSProperties"
+          },
+          {
+            "name": "thumbStyle",
+            "type": "CSSProperties",
+            "required": false,
+            "description": "Inline styles of the thumb",
+            "typeText": "CSSProperties"
+          },
+          {
+            "name": "iconPlacement",
+            "type": "\"start\" | \"end\"",
+            "default": "\"start\"",
+            "required": false,
+            "description": "Icon position (the `icon` slot): inside the thumb (\"start\") or after the\nswitch (\"end\")",
+            "typeText": "\"start\" | \"end\""
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[checked: boolean]",
+            "typeText": "[checked: boolean]",
+            "parameters": [
+              {
+                "name": "checked",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[checked: boolean, event: Event]",
+            "typeText": "[checked: boolean, event: Event]",
+            "parameters": [
+              {
+                "name": "checked",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              },
+              {
+                "name": "event",
+                "position": 1,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "focus",
+            "type": "[event: FocusEvent]",
+            "typeText": "[event: FocusEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "FocusEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "blur",
+            "type": "[event: FocusEvent]",
+            "typeText": "[event: FocusEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "FocusEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Label content (alternative to the `label` prop / slot)",
+            "typeText": "any"
+          },
+          {
+            "name": "label",
+            "type": "any",
+            "description": "Label content (the `label` prop)",
+            "typeText": "any"
+          },
+          {
+            "name": "icon",
+            "type": "any",
+            "description": "Custom icon (inside the thumb or after the switch: `iconPlacement`)",
+            "typeText": "any"
+          },
+          {
+            "name": "off-label",
+            "type": "any",
+            "description": "Label of the \"off\" state (the `offLabel` prop)",
+            "typeText": "any"
+          },
+          {
+            "name": "on-label",
+            "type": "any",
+            "description": "Label of the \"on\" state (the `onLabel` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Switch": {
+      "kind": "cssVars",
+      "source": "react/src/components/Switch",
+      "vars": [
+        {
+          "name": "--switch-track-width",
+          "description": "Width of the track (every size)"
+        },
+        {
+          "name": "--switch-track-height",
+          "description": "Height of the track (every size)"
+        },
+        {
+          "name": "--switch-thumb-size",
+          "description": "Width and height of the thumb (every size)"
+        },
+        {
+          "name": "--switch-track-color",
+          "description": "Background of the unchecked track"
+        },
+        {
+          "name": "--switch-thumb-color",
+          "description": "Background of the unchecked thumb"
+        },
+        {
+          "name": "--switch-checked-color",
+          "description": "Accent of the checked thumb, track and active segment (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--switch-label-gap",
+          "description": "Space between the switch and its label"
+        },
+        {
+          "name": "--switch-label-font-size",
+          "description": "Font size of the label (every size)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Switch, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Switch label=\"Wi-Fi\" default-checked /><Switch label=\"Bluetooth\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/colors.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/colors.vue": "<script setup lang=\"ts\">\nimport { Switch, VStack } from \"minerva-design/vue\";\nconst colors = [\"primary\", \"success\", \"info\", \"warning\", \"danger\"] as const;\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Switch\n      v-for=\"color in colors\"\n      :key=\"color\"\n      :color=\"color\"\n      :label=\"color\"\n      default-checked\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "colors",
+      "description": ""
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/controlled.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/controlled.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Switch, VStack } from \"minerva-design/vue\";\nconst enabled = ref(false);\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Switch label=\"Email notifications\" v-model=\"enabled\" /><span\n      >Notifications are {{ enabled ? \"on\" : \"off\" }}</span\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "controlled",
+      "description": ""
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/form.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/form.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Switch, FormField } from \"minerva-design/vue\";\nconst enabled = ref(true);\n</script>\n<template>\n  <FormField label=\"Notifications\" helper-text=\"Receive updates by email\"\n    ><Switch\n      v-model=\"enabled\"\n      label=\"Email updates\"\n      name=\"notifications\" /></FormField\n  ><output>{{ enabled ? \"Enabled\" : \"Disabled\" }}</output>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "form",
+      "description": ""
+    },
+    {
+      "id": "label-placement",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/label-placement.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/label-placement.vue": "<script setup lang=\"ts\">\nimport { Switch, VStack } from \"minerva-design/vue\";\nconst placements = [\"start\", \"end\", \"top\", \"bottom\"] as const;\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Switch\n      v-for=\"placement in placements\"\n      :key=\"placement\"\n      :label=\"`Label at ${placement}`\"\n      :label-placement=\"placement\"\n      default-checked\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "label-placement",
+      "description": ""
+    },
+    {
+      "id": "side-labels",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/side-labels.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/side-labels.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Switch, VStack } from \"minerva-design/vue\";\nconst enabled = ref(false);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Switch v-model=\"enabled\" off-label=\"Monthly\" on-label=\"Annual\" /><Switch\n      v-model=\"enabled\"\n      variant=\"segmented\"\n      off-label=\"Light\"\n      on-label=\"Dark\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "side-labels",
+      "description": ""
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/sizes.vue": "<script setup lang=\"ts\">\nimport { Switch, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Switch size=\"small\" label=\"Small\" default-checked /><Switch\n      size=\"medium\"\n      label=\"Medium\"\n      default-checked /><Switch size=\"large\" label=\"Large\" default-checked\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes",
+      "description": ""
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/states.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/states.vue": "<script setup lang=\"ts\">\nimport { Switch, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><Switch label=\"Loading\" loading default-checked /><Switch\n      label=\"Disabled\"\n      disabled /><Switch label=\"Disabled (on)\" disabled default-checked\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "states",
+      "description": ""
+    },
+    {
+      "id": "styles-states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/vue/styles-states.vue",
+      "files": {
+        "apps/docs/src/docs/pages/switch/vue/styles-states.vue": "<script setup lang=\"ts\">\nimport { Switch, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Switch\n      label=\"Square\"\n      shape=\"square\"\n      color=\"success\"\n      default-checked /><Switch label=\"Working\" loading /><Switch\n      label=\"Disabled\"\n      disabled /><Switch label=\"Large\" size=\"large\"\n  /></HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "styles-states",
+      "description": ""
+    }
+  ],
+  "recipes": [
+    {
+      "id": "vue-form",
+      "title": "Vue controlled project form",
+      "renderer": "vue",
+      "pages": [
+        "input",
+        "switch",
+        "form-control",
+        "form-layout",
+        "button"
+      ],
+      "kind": "standalone-recipe",
+      "packageVersion": "1.23.0",
+      "files": {
+        "README.md": "# vue-form\n\nStandalone Vue 3 recipe, using only public Minerva entries.\n\nRequires Node >=22.13 and pnpm 11. Copy the complete directory, then run:\n\n```sh\npnpm install\npnpm build\npnpm dev\n```\n\nThe package manifest pins the tested Minerva/framework/tool versions. The entry imports the global stylesheet once. App owns the provider and controlled state. No documentation translation setup or workspace aliases are required.\n",
+        "index.html": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n    <title>Minerva standalone recipe</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script type=\"module\" src=\"/src/main.ts\"></script>\n  </body>\n</html>\n",
+        "package.json": "{\n  \"name\": \"minerva-recipe-vue-form\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"packageManager\": \"pnpm@11.23.0\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"vue-tsc --noEmit && vite build\"\n  },\n  \"dependencies\": {\n    \"minerva-design\": \"1.23.0\",\n    \"vue\": \"3.5.43\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\",\n    \"vite\": \"8.3.3\",\n    \"@vitejs/plugin-vue\": \"6.0.9\",\n    \"vue-tsc\": \"3.3.12\"\n  }\n}\n",
+        "src/App.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  Button,\n  ConfigProvider,\n  FormField,\n  Input,\n  Switch,\n  VStack,\n} from \"minerva-design/vue\";\nconst name = ref(\"\");\nconst subscribed = ref(false);\nconst saved = ref(\"\");\n</script>\n<template>\n  <ConfigProvider theme=\"light\"\n    ><VStack :gap=\"4\" align=\"start\">\n      <FormField label=\"Project name\" required\n        ><Input name=\"project\" v-model=\"name\" clearable\n      /></FormField>\n      <Switch label=\"Newsletter\" v-model=\"subscribed\" />\n      <Button\n        :disabled=\"!name.trim()\"\n        @click=\"saved = `${name}${subscribed ? ' · subscribed' : ''}`\"\n        >Save project</Button\n      >\n      <output aria-live=\"polite\">{{ saved || \"No project saved\" }}</output>\n    </VStack></ConfigProvider\n  >\n</template>\n",
+        "src/main.ts": "import { createApp } from \"vue\";\nimport App from \"./App.vue\";\nimport \"minerva-design/style.css\";\ncreateApp(App).mount(\"#app\");\n",
+        "src/vite-env.d.ts": "/// <reference types=\"vite/client\" />\n",
+        "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"Bundler\",\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"jsx\": \"react-jsx\",\n    \"noEmit\": true,\n    \"esModuleInterop\": true\n  },\n  \"include\": [\"src\"]\n}\n",
+        "vite.config.ts": "import { defineConfig } from \"vite\";\nimport vue from \"@vitejs/plugin-vue\";\nexport default defineConfig({ plugins: [vue()] });\n"
+      },
+      "dependencies": {
+        "minerva-design": "1.23.0",
+        "vue": "3.5.43",
+        "typescript": "6.0.3",
+        "vite": "8.3.3",
+        "@vitejs/plugin-vue": "6.0.9",
+        "vue-tsc": "3.3.12"
+      },
+      "url": "/minerva-design/reference/1.23.0/recipes/vue-form/README.md"
+    }
+  ],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Switch 开关",
+      "description": "用于在开启和关闭两种状态之间切换，操作即时生效。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "带标签的非受控开关，通过 defaultChecked 设置初始状态。"
+        },
+        "controlled": {
+          "title": "受控模式",
+          "description": "同时使用 checked 和 onChange，由外部状态控制开关。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "提供 small、medium（默认）和 large 三种尺寸。"
+        },
+        "colors": {
+          "title": "颜色",
+          "description": "color 设置开启状态的语义色：primary（默认）、success、info、warning 或 danger。"
+        },
+        "label-placement": {
+          "title": "标签位置",
+          "description": "通过 labelPlacement 将标签放在开关之前（\"start\"）、之后（\"end\"，默认）、上方（\"top\"）或下方（\"bottom\"）。"
+        },
+        "states": {
+          "title": "加载与禁用",
+          "description": "loading 显示加载状态，与 disabled 一样会阻止交互。"
+        },
+        "icons": {
+          "title": "图标",
+          "description": "通过 icon 在滑块内显示一个小图标。"
+        },
+        "custom-style": {
+          "title": "形状与自定义样式",
+          "description": "方形开关、关闭涟漪效果，以及自定义 trackStyle / thumbStyle。"
+        },
+        "bilateral-and-segmented": {
+          "title": "双侧标签与分段",
+          "description": "offLabel 与 onLabel 会在滑块两侧渲染可点击的标签；variant=\"segmented\" 则变为两段式分段控件。"
+        }
+      },
+      "api": {
+        "SwitchProps": {
+          "checked": "是否开启（受控）",
+          "defaultChecked": "初始状态（非受控）",
+          "disabled": "是否禁用",
+          "size": "开关尺寸",
+          "color": "开启状态的语义色（选中时的滑块与轨道、激活的侧边标签 / 分段）",
+          "shape": "轨道和滑块的形状",
+          "label": "显示在开关旁的标签",
+          "aria-label": "无障碍标签；开关没有可见标签时必填",
+          "name": "输入框的 name，用于表单",
+          "labelPlacement": "标签相对开关的位置",
+          "loading": "显示加载状态并阻止交互",
+          "ripple": "点击时显示涟漪效果",
+          "className": "额外的类名",
+          "style": "根元素的内联样式",
+          "trackStyle": "轨道的内联样式",
+          "thumbStyle": "滑块的内联样式",
+          "onChange": "状态变化时的回调",
+          "onFocus": "获得焦点时的回调",
+          "onBlur": "失去焦点时的回调",
+          "icon": "自定义图标",
+          "iconPlacement": "图标位置：滑块内（\"start\"）或开关之后（\"end\"）",
+          "ref": "指向底层 <input role=\"switch\"> 元素的 ref",
+          "variant": "\"slider\" 为经典滑块；\"segmented\" 渲染两个可按下的分段（需同时提供 offLabel 与 onLabel）",
+          "children": "标签内容（label 的替代写法；未设置 label 时使用）",
+          "offLabel": "\"关\"状态的标签；与 onLabel 一起使用时渲染为两侧按钮或分段",
+          "onLabel": "\"开\"状态的标签（见 offLabel）",
+          "id": "input 的 id（默认取外层 FormControl 的 id）",
+          "value": "开启时随表单提交的值",
+          "aria-labelledby": "为开关（分段样式时为分段组）提供标签的元素 id（可多个）",
+          "aria-describedby": "描述开关（分段样式时为分段组）的额外元素 id（与帮助 / 错误文本合并）"
+        }
+      },
+      "cssVars": {
+        "--switch-track-width": "轨道宽度（所有尺寸）",
+        "--switch-track-height": "轨道高度（所有尺寸）",
+        "--switch-thumb-size": "滑块的宽高（所有尺寸）",
+        "--switch-track-color": "未开启时轨道的背景色",
+        "--switch-thumb-color": "未开启时滑块的背景色",
+        "--switch-checked-color": "开启时滑块、轨道及激活分段的强调色（默认取 color 属性的强调色）",
+        "--switch-label-gap": "开关与标签之间的间距",
+        "--switch-label-font-size": "标签字号（所有尺寸）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "带 role=\"switch\" 的原生复选框：空格和回车均可切换，minerva-change 报告新状态。"
+          },
+          "styles-states": {
+            "title": "样式与状态",
+            "description": "尺寸、方形、颜色、标签位置、滑块中的图标，以及只读、无效和无波纹效果。切换 Sync 可查看加载状态。"
+          },
+          "side-labels": {
+            "title": "两侧标签与分段",
+            "description": "off-label 与 on-label 在滑块两侧添加可点击的标签；variant=\"segmented\" 将其变为两段式控件。"
+          },
+          "form": {
+            "title": "在表单中",
+            "description": "与复选框相同：开启时提交 value，required 在开启前使表单无效，reset 恢复 checked 属性。"
+          }
+        },
+        "minerva-switch": {
+          "props": {
+            "noRipple": "禁用点击时的波纹效果。",
+            "readOnly": "只读：可聚焦并会提交，但用户无法切换。",
+            "invalid": "错误状态（设置 aria-invalid）。",
+            "required": "开关必须处于开启状态，表单才能提交。",
+            "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与元素关联的 <label> 元素（只读）。",
+            "validity": "有效性状态，同 <input>.validity（只读）。",
+            "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+            "willValidate": "元素是否参与约束校验（只读）。"
+          },
+          "events": {
+            "change": "状态已改变（由内部 input 重新派发）。",
+            "minerva-change": "用户切换了开关；detail: { checked, value }。"
+          },
+          "slots": {
+            "default": "标签内容（可替代 label 属性）。",
+            "icon": "滑块内（icon-placement=\"start\"）或开关之后（\"end\"）的图标。"
+          },
+          "methods": {
+            "focus": "聚焦内部控件。",
+            "blur": "使内部控件失去焦点。",
+            "click": "点击内部 input（未被阻止时切换开关）。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+            "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+            "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+            "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "states": {
+            "title": "加载与禁用",
+            "description": "loading 显示加载状态，与 disabled 一样会阻止交互。"
+          },
+          "colors": {
+            "title": "颜色",
+            "description": "color 设置开启状态的语义色：primary（默认）、success、info、warning 或 danger。"
+          },
+          "controlled": {
+            "title": "受控模式",
+            "description": "同时使用 checked 和 onChange，由外部状态控制开关。"
+          },
+          "basic": {
+            "title": "基础用法",
+            "description": "带标签的非受控开关，通过 defaultChecked 设置初始状态。"
+          },
+          "sizes": {
+            "title": "尺寸",
+            "description": "提供 small、medium（默认）和 large 三种尺寸。"
+          },
+          "label-placement": {
+            "title": "标签位置",
+            "description": "通过 labelPlacement 将标签放在开关之前（\"start\"）、之后（\"end\"，默认）、上方（\"top\"）或下方（\"bottom\"）。"
+          }
+        }
+      }
+    }
+  }
+}
