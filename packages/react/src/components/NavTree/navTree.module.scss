@@ -9,7 +9,7 @@
 // @css-var --nav-tree-active-background Background of the active row
 // @css-var --nav-tree-active-color Accent color of the active row's icon
 // @css-var --nav-tree-hover-background Background of a hovered row (defaults to --hover-color)
-// @css-var --nav-tree-guide-color Color of the indent guide of an expanded branch (defaults to --border-color)
+// @css-var --nav-tree-guide-color Color of the optional indent guide of an expanded branch (defaults to transparent)
 // @css-var --nav-tree-guide-active-color Color of the indent guide of the branch holding the active row
 
 .navTree {
@@ -65,14 +65,14 @@
   // Indent guide: a 1px rounded shape (not a border) under the parent's
   // icon, accented when the branch holds the active row
   &::before {
-    @include separator(inline-start, var(--nav-tree-guide-color, var(--border-color)), 2px);
+    @include separator(inline-start, var(--nav-tree-guide-color, transparent), 2px);
     inset-inline-start: calc(var(--nav-tree-indent, calc(var(--space-3) + 10px)) / 2);
     border-radius: var(--radius-full);
     transition: background-color var(--transition-fast);
   }
 
   &:has(.active)::before {
-    background-color: var(--nav-tree-guide-active-color, var(--primary-color-border));
+    background-color: var(--nav-tree-guide-active-color, var(--nav-tree-guide-color, transparent));
   }
 }
 

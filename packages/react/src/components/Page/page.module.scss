@@ -2,14 +2,18 @@
 
 // Public CSS variables (set them on the page or any ancestor):
 // @css-var --page-padding Padding around the page content (smaller on narrow screens by default)
+// @css-var --page-max-width Maximum readable page width (defaults to 90rem)
 // @css-var --page-gap Space between the header and the sections
 // @css-var --page-title-font-size Font size of the page title
 // @css-var --page-section-gap Space between the blocks of a section
+// @css-var --page-section-padding Inner spacing of a framed page section
 // @css-var --page-stat-card-padding Inner padding of a stat card
 // @css-var --page-stat-card-radius Corner radius of a stat card (defaults to --radius-lg)
 
 .page {
   width: 100%;
+  max-width: var(--page-max-width, 90rem);
+  margin-inline: auto;
   min-width: 0;
   padding: var(--page-padding, var(--space-6));
   color: var(--text-color);
@@ -66,6 +70,8 @@
   p {
     margin-top: var(--space-2);
     color: var(--text-muted-color);
+    max-width: 68ch;
+    font-size: var(--font-size-sm);
   }
 }
 
@@ -89,12 +95,10 @@
 .section {
   position: relative;
   min-width: 0;
-  padding-top: var(--space-6);
-
-  // section separator: a 1px separator shape, not a one-sided border
-  &::before {
-    @include separator(top);
-  }
+  padding: var(--page-section-padding, var(--space-5));
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--surface-color);
   display: flex;
   flex-direction: column;
   gap: var(--page-section-gap, var(--space-4));
@@ -208,6 +212,10 @@
 @media (max-width: 48rem) {
   .page {
     padding: var(--page-padding, var(--space-4));
+  }
+
+  .section {
+    padding: var(--page-section-padding, var(--space-4));
   }
 }
 
