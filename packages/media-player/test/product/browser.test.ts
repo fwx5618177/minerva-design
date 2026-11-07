@@ -88,12 +88,21 @@ for (const profile of profiles) {
         try {
           await page.goto(consumer.url);
           await page.getByRole("button", { name: format, exact: true }).click();
+          const expectedEngines =
+            format === "hls"
+              ? ["hls", "native"]
+              : [["mp4", "audio"].includes(format) ? "native" : format];
           await page.waitForFunction(
-            () => {
+            (engines) => {
               const video = document.querySelector("video");
-              return video && video.readyState >= 2;
+              const engine = document
+                .querySelector("[data-media]")
+                ?.getAttribute("data-engine");
+              return (
+                video && video.readyState >= 2 && engines.includes(engine ?? "")
+              );
             },
-            undefined,
+            expectedEngines,
             { timeout: 20_000 },
           );
           await page
@@ -116,13 +125,12 @@ for (const profile of profiles) {
             host.playerHandle().pause();
             host.playerHandle().seek(3);
           });
-          await expect
-            .poll(() =>
-              page
-                .locator("video")
-                .evaluate((video) => (video as HTMLVideoElement).currentTime),
-            )
-            .toBeGreaterThan(2.5);
+          await page.waitForFunction(() => {
+            const video = document.querySelector("video")!;
+            return (
+              !video.seeking && video.readyState >= 2 && video.currentTime > 2.5
+            );
+          });
           if (format !== "audio")
             await page.waitForFunction(
               () => document.querySelector("video")!.videoWidth > 0,
@@ -201,9 +209,15 @@ for (const profile of profiles) {
               ),
             });
           await page.getByRole("button", { name: "mp4", exact: true }).click();
-          await page.waitForFunction(
-            () => document.querySelector('[data-engine="native"]') !== null,
-          );
+          await page.waitForFunction(() => {
+            const video = document.querySelector("video")!;
+            return (
+              document.querySelector('[data-engine="native"]') !== null &&
+              video.currentSrc.endsWith("/sample.mp4") &&
+              video.readyState >= 2 &&
+              !video.seeking
+            );
+          });
           await page
             .getByRole("button", { name: "Unmount", exact: true })
             .click();
@@ -232,6 +246,31 @@ for (const profile of profiles) {
               ),
             })
             .catch(() => undefined);
+          const media = await page
+            .evaluate(() => {
+              const video = document.querySelector("video");
+              return {
+                source: video?.currentSrc,
+                time: video?.currentTime,
+                paused: video?.paused,
+                readyState: video?.readyState,
+                networkState: video?.networkState,
+                mediaError: video?.error && {
+                  code: video.error.code,
+                  message: video.error.message,
+                },
+                playbackErrors: (
+                  window as unknown as { playbackErrors: unknown[] }
+                ).playbackErrors,
+              };
+            })
+            .catch(() => null);
+          console.error(
+            "Playback failure",
+            profile.name,
+            format,
+            JSON.stringify(media),
+          );
           throw error;
         } finally {
           await context.close();

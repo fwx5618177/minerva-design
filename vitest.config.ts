@@ -51,7 +51,8 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       // Coverage thresholds measure core, DOM, React, Web Components and Vue.
-      // All projects above still run; native/Angular/mini host tests are not
+      // Source projects run here; the installed-browser product project runs
+      // separately in CI. Native/Angular/mini host tests are not
       // included in this percentage, nor is the documentation application.
       include: [
         "packages/core/src/**/*.ts",

@@ -62,11 +62,18 @@ function App() {
               },
             ]
           : undefined,
-        onError: (error) =>
+        onError: (error) => {
+          const media = document.querySelector("video, audio");
           window.playbackErrors.push({
             code: error?.code,
             message: error?.message,
-          }),
+            src: media?.currentSrc,
+            time: media?.currentTime,
+            seeking: media?.seeking,
+            readyState: media?.readyState,
+            nativeError: media?.error?.message,
+          });
+        },
       }),
     h("button", { onClick: () => player.current?.play() }, "Start"),
     h("button", { onClick: () => setMounted(false) }, "Unmount"),

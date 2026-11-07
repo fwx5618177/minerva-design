@@ -72,8 +72,27 @@ jobs:
       - name: Install media playback browser engines
         run: pnpm --filter @minerva/media-player exec playwright install --with-deps chromium firefox webkit
 
+      - name: Configure headless audio output
+        run: |
+          sudo apt-get install --yes pulseaudio
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=browser_tests
+          pactl set-default-sink browser_tests
+
       - name: Test with coverage
         run: pnpm test:coverage
+
+      # Real browsers run without competing source-test workers.
+      - name: Test installed media player in real browsers
+        run: pnpm test:media-player:product
+
+      - name: Save media playback diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-playback
+          path: packages/media-player/test-results
+          if-no-files-found: ignore
 
       - name: Check mini-program API documentation against source
         run: pnpm --filter @minerva/docs check:mini-api

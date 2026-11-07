@@ -21,7 +21,7 @@
     "test:watch": "vitest",
     "hooks:lock": "pnpm --filter @minerva/core hooks:lock",
     "gen:contracts": "node tools/generate-contracts.mjs",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage --project=\"!media-player-product\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "pnpm -r typecheck && tsc -p tests/e2e --noEmit && tsc -p tests/docs --noEmit && tsc -p tests/contracts --noEmit && tsc -p tests/e2e-native --noEmit",
@@ -40,7 +40,8 @@
     "test:tools": "node --test tools/import-ts.test.mjs tools/portable-types.test.mjs apps/docs/scripts/reference.test.mjs apps/docs/scripts/reference-output.test.mjs tools/type-contracts.test.mjs",
     "test:recipes": "node tools/verify-recipes.mjs",
     "test:browser:ui": "node tools/browser-ui-issues.mjs",
-    "test:media-player": "pnpm exec vitest run --project media-player --project media-player-product"
+    "test:media-player": "pnpm exec vitest run --project media-player --project media-player-product",
+    "test:media-player:product": "vitest run --project media-player-product"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",

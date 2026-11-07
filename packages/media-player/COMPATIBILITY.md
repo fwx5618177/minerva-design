@@ -7,3 +7,5 @@ Minerva's React component delegates to this implementation and uses a presentati
 Product validation installs the actual `minerva-design` tarball outside this workspace, typechecks public imports and SSR, then plays local H.264/AAC MP4, HLS, DASH, FLV and audio streams in Chromium, Firefox, WebKit, Android-viewport Chromium and iPhone-viewport WebKit. Additional cases cover SRT, English controls, light theme and the compatibility entry. React 18.3 and React 19 consumers are checked.
 
 Mobile browser emulation does not certify physical iPhone/Android devices. Native apps, mini-programs, production DRM, every codec and live-network conditions require their own validation. Source unit tests cover failures, cancellation and native presentation events. Existing framework/native adapters keep their platform-specific limitations.
+
+Headless Linux validation configures PulseAudio with a null output sink. Without an audio device Firefox can report `OnMediaSinkAudioError` even for a plain native media element. Browser product tests run separately from source coverage and retain all playback-error assertions.
