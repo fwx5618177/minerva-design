@@ -2,7 +2,7 @@
 // @css-var --media-player-radius Corner radius of the player (defaults to --radius-lg)
 // @css-var --media-player-accent Color of the played range and the slider thumbs (defaults to --primary-color)
 // @css-var --media-player-video-background Letterbox color behind a video (defaults to black)
-// @css-var --media-player-overlay-background Background of the video control bar (defaults to a gradient to --overlay-color)
+// @css-var --media-player-overlay-background Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)
 // @css-var --media-player-overlay-color Text and icon color over a video (defaults to white)
 // @css-var --media-player-bar-background Background of the audio bar (defaults to --surface-color)
 // @css-var --media-player-bar-color Text and icon color of the audio bar (defaults to --text-color)
@@ -30,6 +30,7 @@
 }
 
 .video {
+  container-type: inline-size;
   background: var(--media-player-video-background, #000);
   color: var(--media-player-overlay-color, #fff);
 
@@ -72,7 +73,7 @@
   position: absolute;
   inset: 0 0 auto;
   padding: var(--space-3) var(--space-4) var(--space-6);
-  background: linear-gradient(to bottom, var(--overlay-color), transparent);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 80%), rgb(0 0 0 / 72%) 60%, transparent);
   font-size: var(--font-size-md);
   pointer-events: none;
 }
@@ -93,7 +94,9 @@
   position: absolute;
   inset: auto 0 0;
   padding-top: var(--space-6);
-  background: var(--media-player-overlay-background, linear-gradient(to top, var(--overlay-color), transparent));
+  // Video luminance is independent of the application theme. The opaque stops
+  // cover the actual controls; only the empty top padding fades to the footage.
+  background: var(--media-player-overlay-background, linear-gradient(to top, rgb(0 0 0 / 88%), rgb(0 0 0 / 72%) 72%, transparent));
 }
 
 // Video chrome fades out while playing; it shows on hover, on focus, while
@@ -360,6 +363,24 @@
 
 .spacer {
   flex: 1 1 0;
+}
+
+// Adapt to the player's own width, including cards and split panes. Secondary
+// transport controls yield space before the primary action row would wrap.
+// Keyboard seeking and volume shortcuts remain available; audio is unchanged.
+@container (max-width: 480px) {
+  .video .controls {
+    column-gap: var(--space-1);
+
+    .skipButton,
+    .volume {
+      display: none;
+    }
+
+    .rate {
+      min-width: 2.5rem;
+    }
+  }
 }
 
 .spinner {

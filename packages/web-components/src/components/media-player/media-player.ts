@@ -1008,12 +1008,12 @@ export class MinervaMediaPlayer extends MinervaElement {
                 t("mediaPlayer.skipBack", { count: skip }),
                 icon("skipBack"),
                 () => this.seek(this.currentTime - skip),
-                { disabled: failed },
+                { disabled: failed, extra: "skipButton" },
               )}${this.button(
                 t("mediaPlayer.skipForward", { count: skip }),
                 icon("skipForward"),
                 () => this.seek(this.currentTime + skip),
-                { disabled: failed },
+                { disabled: failed, extra: "skipButton" },
               )}`
             : nothing
         }

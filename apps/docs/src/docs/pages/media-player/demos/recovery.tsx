@@ -22,6 +22,7 @@ export default function RecoveryDemo() {
         {t(`docs.media-player.demos.recovery.${valid ? "break" : "restore"}`)}
       </Button>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={`${import.meta.env.BASE_URL}media-player/${valid ? "sample.mp4" : "missing.mp4"}`}
         title={t("docs.media-player.demos.recovery.title")}
         locale={i18n.language}

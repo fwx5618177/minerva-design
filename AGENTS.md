@@ -29,6 +29,8 @@ Treat exported props, events, CSS tokens, public parts / states and entry points
 
 The shared web implementation lives in [packages/media-player](packages/media-player). The React [MediaPlayer adapter](packages/react/src/components/MediaPlayer) owns only Minerva presentation/API compatibility; playback state and engines have one implementation. Advanced consumers import `minerva-design/media-player` and its CSS subpath. Framework/native hosts keep their declared limitations.
 
+Documentation uses the approved film and poster in [docs playback assets](apps/docs/public/media-player/README.md), regenerated with [generate-player-media.mjs](apps/docs/scripts/generate-player-media.mjs) and FFmpeg. Synthetic [product-test fixtures](packages/media-player/test/product/media/README.md) remain independent. The [presentation checks](tools/browser-media-player-presentation.mjs) verify real decoding dimensions, painted contrast, compact control layout and keyboard interaction; inspect the captured screenshots as well.
+
 Run `pnpm test:media-player` after the aggregate build for unit tests and real installed-tarball browser playback. Use an installed Chrome/Chromium or set `CHROME_PATH`; browser tests use Node WebSocket and Chrome DevTools Protocol without browser automation dependencies. Desktop, Android and iPhone viewport checks run in Chrome; Firefox, WebKit and physical devices are explicitly unverified. CI runs `pnpm test:media-player:product` separately from source coverage so real browsers do not compete with hundreds of source-test workers. Headless Linux needs a working audio output: CI starts PulseAudio with a null sink; codec errors must still fail the tests. It checks browser/device emulation, not physical native devices.
 
 ## Before merging

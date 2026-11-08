@@ -22,9 +22,10 @@ function onPause() {
   <VStack
     :gap="3"
     align="stretch"
-    style="width: 100%; min-width: 0; max-width: 560px"
+    style="width: 100%; min-width: 0; max-width: 640px"
   >
     <MediaPlayer
+      poster="media-player/poster.jpg"
       ref="player"
       :src="src"
       :start-time="saved"

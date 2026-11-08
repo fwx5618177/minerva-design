@@ -7,10 +7,10 @@ const base = `${import.meta.env.BASE_URL}media-player/`;
 const source: PlayerSource = {
   src: `${base}sample.mp4`,
   type: "mp4",
-  defaultQuality: "144p",
+  defaultQuality: "720p",
   qualities: [
-    { id: "144p", label: "144p", height: 144, src: `${base}sample.mp4` },
-    { id: "72p", label: "72p", height: 72, src: `${base}sample-small.mp4` },
+    { id: "720p", label: "720p", height: 720, src: `${base}sample.mp4` },
+    { id: "360p", label: "360p", height: 360, src: `${base}sample-small.mp4` },
   ],
 };
 export default function QualityDemo() {
@@ -19,6 +19,7 @@ export default function QualityDemo() {
   return (
     <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={source}
         title={t("docs.media-player.data.pattern")}
         locale={i18n.language}

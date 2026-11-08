@@ -57,10 +57,11 @@ export default function CaptionsDemo() {
         gap: 12,
         width: "100%",
         minWidth: 0,
-        maxWidth: 560,
+        maxWidth: 640,
       }}
     >
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={VIDEO_SRC}
         title={t("docs.media-player.data.pattern")}
         tracks={tracks}

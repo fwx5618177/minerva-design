@@ -753,7 +753,7 @@ const icons = MEDIA_ICON_PATHS;
         <template v-if="skipSeconds > 0">
           <button
             type="button"
-            :class="styles.button"
+            :class="[styles.button, styles.skipButton]"
             :aria-label="t('mediaPlayer.skipBack', { count: skipSeconds })"
             :disabled="failed"
             v-bind="hooks('media-player', 'button')"
@@ -765,7 +765,7 @@ const icons = MEDIA_ICON_PATHS;
           </button>
           <button
             type="button"
-            :class="styles.button"
+            :class="[styles.button, styles.skipButton]"
             :aria-label="t('mediaPlayer.skipForward', { count: skipSeconds })"
             :disabled="failed"
             v-bind="hooks('media-player', 'button')"

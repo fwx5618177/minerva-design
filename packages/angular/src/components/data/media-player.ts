@@ -302,7 +302,7 @@ const cssSize = (value: number | string) =>
             type="button"
             mnHook="media-player"
             mnPart="button"
-            [class]="s.button"
+            [class]="s.button + ' ' + s.skipButton"
             [attr.aria-label]="
               scope.t('mediaPlayer.skipBack', { count: skipSeconds() })
             "
@@ -317,7 +317,7 @@ const cssSize = (value: number | string) =>
             type="button"
             mnHook="media-player"
             mnPart="button"
-            [class]="s.button"
+            [class]="s.button + ' ' + s.skipButton"
             [attr.aria-label]="
               scope.t('mediaPlayer.skipForward', { count: skipSeconds() })
             "

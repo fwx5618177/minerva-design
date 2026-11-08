@@ -52,10 +52,11 @@ const choice = ref<string | null>(null);
       gap: 12px;
       width: 100%;
       min-width: 0;
-      max-width: 560px;
+      max-width: 640px;
     "
   >
     <MediaPlayer
+      poster="media-player/poster.jpg"
       :src="src"
       title="Video playback"
       :tracks="tracks"

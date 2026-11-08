@@ -266,7 +266,7 @@ export function MinervaChrome({
           <>
             <button
               type="button"
-              className={styles.button}
+              className={cn(styles.button, styles.skipButton)}
               aria-label={t("mediaPlayer.skipBack", { count: skipSeconds })}
               disabled={!!error}
               onClick={() => seek(currentTime - skipSeconds)}
@@ -276,7 +276,7 @@ export function MinervaChrome({
             </button>
             <button
               type="button"
-              className={styles.button}
+              className={cn(styles.button, styles.skipButton)}
               aria-label={t("mediaPlayer.skipForward", { count: skipSeconds })}
               disabled={!!error}
               onClick={() => seek(currentTime + skipSeconds)}

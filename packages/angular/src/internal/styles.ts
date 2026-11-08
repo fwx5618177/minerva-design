@@ -1049,6 +1049,7 @@ export const mediaPlayerStyles: ClassMap<
   | "buffered"
   | "button"
   | "captions"
+  | "captionsCheck"
   | "captionsControl"
   | "captionsMenu"
   | "captionsOn"
@@ -1063,6 +1064,7 @@ export const mediaPlayerStyles: ClassMap<
   | "playing"
   | "rate"
   | "seek"
+  | "skipButton"
   | "slider"
   | "spacer"
   | "spinner"
@@ -1078,6 +1080,7 @@ export const mediaPlayerStyles: ClassMap<
   buffered: "buffered",
   button: "button",
   captions: "captions",
+  captionsCheck: "captionsCheck",
   captionsControl: "captionsControl",
   captionsMenu: "captionsMenu",
   captionsOn: "captionsOn",
@@ -1092,6 +1095,7 @@ export const mediaPlayerStyles: ClassMap<
   playing: "playing",
   rate: "rate",
   seek: "seek",
+  skipButton: "skipButton",
   slider: "slider",
   spacer: "spacer",
   spinner: "spinner",

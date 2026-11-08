@@ -9,6 +9,7 @@ export default function CaptureDemo() {
   return (
     <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}
         title={t("docs.media-player.data.pattern")}
         locale={i18n.language}

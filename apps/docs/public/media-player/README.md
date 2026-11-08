@@ -1,21 +1,13 @@
-# Local playback test media
+# Documentation playback assets
 
-Synthetic 8-second test pattern and 440Hz sine audio, generated locally with FFmpeg. No third-party footage, credentials or external stream service is used. H.264 baseline, yuv420p, 24 fps, 256x144; AAC 48kHz. Tests use the checked-in bytes and do not require FFmpeg at runtime.
+The documentation plays the existing, approved Minerva Design film and its soundtrack. The source is `../media/promo-v4/Film-en-landscape-1080p.mp4` (60 seconds, 1080p). These are presentation assets, independent of the synthetic automation fixtures in `packages/media-player/test/product/media`.
 
-To reproduce (from this directory, with FFmpeg installed):
+The main MP4, HLS, DASH and FLV renditions are 1280×720 H.264 baseline / AAC at 24 fps. `sample-small.mp4` is a real 640×360 rendition for quality switching. `sample.m4a` is the film's AAC soundtrack. `poster.jpg` shows the component UI at thirty seconds. Everything is served locally and excluded from the npm package.
 
-```sh
-ffmpeg -f lavfi -i testsrc2=size=256x144:rate=24 -f lavfi -i sine=frequency=440:sample_rate=48000 -t 8 -c:v libx264 -profile:v baseline -pix_fmt yuv420p -g 24 -preset ultrafast -b:v 120k -c:a aac -b:a 32k -movflags +faststart sample.mp4
-ffmpeg -i sample.mp4 -c copy -f hls -hls_time 2 -hls_playlist_type vod -hls_segment_filename hls/segment-%d.m2ts hls/index.m3u8
-ffmpeg -i sample.mp4 -c copy -f dash -seg_duration 2 dash/index.mpd
-ffmpeg -i sample.mp4 -c copy -f flv sample.flv
-ffmpeg -i sample.mp4 -vn -c:a copy sample.m4a
-```
-
-`.m2ts` identifies transport-stream media without confusing formatters and type checkers with TypeScript source. Binary encoder output may differ across FFmpeg versions; semantic playback is the contract. These samples are excluded from the published package.
-
-Documentation also serves `sample-small.mp4`, a 128×72 rendition for demonstrating a real source-quality switch:
+Regenerate from the repository root with FFmpeg installed:
 
 ```sh
-ffmpeg -i sample.mp4 -vf scale=128:72 -c:v libx264 -profile:v baseline -pix_fmt yuv420p -preset ultrafast -b:v 60k -c:a copy -movflags +faststart sample-small.mp4
+node apps/docs/scripts/generate-player-media.mjs
 ```
+
+The script replaces derived streaming segments so old assets do not remain. `.m2ts` avoids confusing transport-stream segments with TypeScript source. Encoder bytes can differ between FFmpeg versions; browser decoding, dimensions, duration, seeking and source switching are the verified contracts.

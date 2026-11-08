@@ -1,4 +1,10 @@
 import assert from "node:assert/strict";
+import {
+  checkPresentationMedia,
+  checkVideoKeyboard,
+  checkVideoControlLayout,
+  checkVideoControlContrast,
+} from "./browser-media-player-presentation.mjs";
 
 /** Real layout, decoding and user gestures in the production docs, not a DOM mock. */
 export async function checkMediaPlayerDocs({
@@ -29,10 +35,31 @@ export async function checkMediaPlayerDocs({
       clickCount: 1,
     });
   };
-  for (const width of [1440, 390]) {
+  for (const width of [1440, 1024, 768, 390]) {
     await page("media-player", width);
     await wait(
       `document.querySelectorAll('[data-demo-preview] video').length>=8`,
+    );
+    await wait(`document.querySelector('#demo-video video')?.readyState>=2`);
+    for (const [variant, root] of [
+      [
+        "basic",
+        `document.querySelector('#demo-video [data-minerva="media-player"][data-part="root"]')`,
+      ],
+      ["advanced", `document.querySelector('#demo-desktop [data-media]')`],
+    ]) {
+      results.push(
+        await checkVideoControlContrast({
+          call,
+          evaluate,
+          root,
+          label: `${variant}-${width}`,
+        }),
+      );
+    }
+    if (width === 1440) results.push(await checkPresentationMedia(evaluate));
+    results.push(
+      await checkVideoControlLayout(evaluate, undefined, `react-${width}`),
     );
     const layout =
       await evaluate(`([...document.querySelectorAll('[data-demo-preview]')].map(preview=>{
@@ -44,6 +71,11 @@ export async function checkMediaPlayerDocs({
     }))`);
     if (capture)
       await capture(`media-player-${width}`, "#demo-recovery [data-media]");
+    if (capture)
+      await capture(
+        `media-player-basic-${width}`,
+        '#demo-video [data-minerva="media-player"][data-part="root"]',
+      );
     for (const demo of layout) {
       assert.ok(
         demo.width >= demo.expected - 1,
@@ -129,12 +161,96 @@ export async function checkMediaPlayerDocs({
         recovery: true,
         formats,
       });
+      const qualityRoot = `document.querySelector('#demo-quality')`;
+      const qualityMedia = `${qualityRoot}.querySelector('video')`;
+      await evaluate(`${qualityMedia}.pause();${qualityMedia}.currentTime=12`);
+      await wait(`!${qualityMedia}.seeking`);
+      const renditions = [];
+      for (const height of [360, 720]) {
+        await click(
+          `[...${qualityRoot}.querySelectorAll('button')].find(b=>['设置','Settings'].includes(b.getAttribute('aria-label')))`,
+        );
+        await wait(`${qualityRoot}.querySelector('[role="menu"]')`);
+        await click(
+          `[...${qualityRoot}.querySelectorAll('[role="menuitem"]')].find(b=>/清晰度|Quality/.test(b.textContent))`,
+        );
+        await wait(`${qualityRoot}.querySelector('[role="menuitemradio"]')`);
+        await click(
+          `[...${qualityRoot}.querySelectorAll('[role="menuitemradio"]')].find(b=>b.textContent.includes('${height}p'))`,
+        );
+        await wait(
+          `${qualityMedia}.videoHeight===${height} && ${qualityMedia}.readyState>=2 && !${qualityMedia}.seeking`,
+        );
+        const current = await evaluate(`${qualityMedia}.currentTime`);
+        assert.ok(
+          Math.abs(current - 12) < 1,
+          "Quality switching must preserve playback position",
+        );
+        renditions.push({ height, current });
+      }
+      results.push({ check: "media-player-docs-quality", renditions });
     }
     results.push({
       check: "media-player-layout",
       viewport: width,
       demos: layout,
     });
+    if (width === 390)
+      results.push(
+        await checkVideoKeyboard({
+          call,
+          evaluate,
+          wait,
+          root: `document.querySelector('#demo-video [data-part="root"]')`,
+          label: "react-390",
+        }),
+      );
+  }
+  const originalTheme = await evaluate(
+    "localStorage.getItem('minerva-docs-theme')",
+  );
+  try {
+    await evaluate("localStorage.setItem('minerva-docs-theme','dark')");
+    for (const width of [1440, 390]) {
+      await page("media-player", width);
+      await call("Page.reload");
+      await wait(`document.querySelector('#demo-video video')?.readyState>=2`);
+      for (const [variant, root] of [
+        [
+          "basic",
+          `document.querySelector('#demo-video [data-minerva="media-player"][data-part="root"]')`,
+        ],
+        ["advanced", `document.querySelector('#demo-desktop [data-media]')`],
+      ])
+        results.push(
+          await checkVideoControlContrast({
+            call,
+            evaluate,
+            root,
+            label: `${variant}-dark-${width}`,
+          }),
+        );
+      results.push(
+        await checkVideoControlLayout(
+          evaluate,
+          undefined,
+          `react-dark-${width}`,
+        ),
+      );
+      if (capture)
+        await capture(
+          `media-player-basic-dark-${width}`,
+          '#demo-video [data-minerva="media-player"][data-part="root"]',
+        );
+    }
+  } finally {
+    await evaluate(
+      originalTheme === null
+        ? "localStorage.removeItem('minerva-docs-theme')"
+        : `localStorage.setItem('minerva-docs-theme',${JSON.stringify(originalTheme)})`,
+    );
+    await call("Page.reload");
+    await wait(`document.querySelector('#demo-video video')?.readyState>=2`);
   }
   for (const framework of ["vue", "angular", "html"]) {
     await page("media-player", 1440, framework);
@@ -181,6 +297,39 @@ export async function checkMediaPlayerDocs({
       framework,
       played: count,
     });
+    await call("Emulation.setDeviceMetricsOverride", {
+      width: 390,
+      height: 900,
+      deviceScaleFactor: 1,
+      mobile: false,
+    });
+    await evaluate(
+      "new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))",
+    );
+    const videos = await evaluate(
+      `window.__mediaDocs.items.map((media,index)=>media.tagName==='VIDEO'?index:null).filter(index=>index!==null)`,
+    );
+    for (const index of videos) {
+      const host = `window.__mediaDocs.rootOf(window.__mediaDocs.items[${index}])`;
+      const controls = `window.__mediaDocs.deep(${host}.shadowRoot||${host},'[data-part="controls"], [part~="controls"]')[0]`;
+      results.push(
+        await checkVideoControlLayout(
+          evaluate,
+          controls,
+          `${framework}-390-${index}`,
+        ),
+      );
+    }
+    if (videos.length)
+      results.push(
+        await checkVideoKeyboard({
+          call,
+          evaluate,
+          wait,
+          root: `window.__mediaDocs.rootOf(window.__mediaDocs.items[${videos[0]}])`,
+          label: `${framework}-390`,
+        }),
+      );
     await evaluate("delete window.__mediaDocs");
   }
 }

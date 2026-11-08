@@ -10,6 +10,7 @@ export default function PlaylistDemo() {
   return (
     <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         title={t("docs.media-player.demos.playlist.title")}
         locale={i18n.language}
         theme={resolvedTheme}

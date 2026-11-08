@@ -15,10 +15,11 @@ export default function RatesSkipDemo() {
         gap: 12,
         width: "100%",
         minWidth: 0,
-        maxWidth: 560,
+        maxWidth: 640,
       }}
     >
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         title={t("docs.media-player.data.pattern")}
         src={VIDEO_SRC}
         playbackRates={[1, 1.5, 2]}

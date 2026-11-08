@@ -39,6 +39,7 @@ export default function StreamsDemo() {
         ))}
       </div>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         title={format.toUpperCase()}
         src={sources[format]}
         locale={i18n.language}
