@@ -1,3 +1,4 @@
+import "minerva-design/media-player/style.css";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "minerva-design";
 import { MediaPlayer, type PlayerSource } from "minerva-design/media-player";

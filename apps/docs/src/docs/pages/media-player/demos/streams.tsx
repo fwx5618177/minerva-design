@@ -1,3 +1,4 @@
+import "minerva-design/media-player/style.css";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, useTheme } from "minerva-design";

@@ -1889,6 +1889,10 @@ export const docPages: DocPageMeta[] = [
     exports: ["MediaPlayer"],
     api: ["MediaPlayerProps", "MediaPlayerHandle", "MediaPlayerTrack"],
     demos: [
+      "desktop",
+      "audio-waveform",
+      "compact",
+      "recovery",
       "streams",
       "quality",
       "playlist",

@@ -22,6 +22,9 @@ const MediaPlayerDoc: React.FC = () => {
   return (
     <DocPage
       id="media-player"
+      importCode={
+        'import { MediaPlayer } from "minerva-design/media-player";\nimport "minerva-design/media-player/style.css";'
+      }
       demos={demos}
       intro={
         <section className={styles.section} aria-labelledby="player-package">
@@ -34,7 +37,7 @@ const MediaPlayerDoc: React.FC = () => {
           <CodeBlock
             language="tsx"
             code={
-              'import { MediaPlayer } from "minerva-design/media-player";\nimport "minerva-design/media-player/style.css";'
+              'import { MediaPlayer as CompatibleMediaPlayer } from "minerva-design";'
             }
           />
           <h3 id="player-capabilities">

@@ -187,6 +187,21 @@ try {
     await sleep(300);
   };
   const results = [];
+  await page("media-player");
+  await wait(`document.querySelector('[data-media]')`);
+  const mediaPlayers = await evaluate(
+    `(()=>[...document.querySelectorAll('[data-media]')].map(root=>({position:getComputedStyle(root).position,width:root.getBoundingClientRect().width,media:root.getAttribute('data-media')})))()`,
+  );
+  assert.ok(
+    mediaPlayers.every((player) => player.position === "relative"),
+    "Advanced player CSS must load in the actual docs preview: " +
+      JSON.stringify(mediaPlayers),
+  );
+  assert.ok(
+    mediaPlayers.length >= 13,
+    "The full PC-style and advanced player examples must render",
+  );
+  results.push({ check: "media-player-styles", players: mediaPlayers });
   await checkModalIframeFocus({ call, evaluate, wait, page, results });
   await checkCdnFiles({ call, evaluate, wait, results });
   for (const width of [320, 390, 1280]) {
