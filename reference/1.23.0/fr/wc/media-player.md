@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.0",
-  "sourceCommit": "413e3d54e2177f8469c443a6547c4472e608839c",
-  "sourceDigest": "sha256:8c8e874e213d698b4d05cabed92eed392c90c5b0fa91c66def67eab19184e86c",
-  "referenceSourceDigest": "sha256:e694adbf6015cdc21809df819193e0a84c030845fb2910749dbd1c4c15ccca99"
+  "sourceCommit": "19d3efc34af8ba4e23df0f24d9fbb0a587e1b452",
+  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+  "referenceSourceDigest": "sha256:ec29900df0d5b5c8d741436acb4a250ec29e5f40ce1f4110def33ac2d66baaa5"
 }
 ```
 
@@ -56,7 +56,7 @@ La ref expose play/pause/seek, element/video, setPlaybackRate, setQuality, next/
 
 ##### Apparence et capacités
 
-locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM.
+locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM. Dans une disposition flex ou grid, définissez la largeur du conteneur parent ; maxWidth fixe seulement une limite.
 
 Motif de test synthétique
 
@@ -678,12 +678,9 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/wc/audio.html
 
 ```html
-<div style="max-width: 480px">
-  <minerva-media-player
-    src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
-    skip-seconds="0"
-  >
-    <span slot="heading">T-Rex roar</span>
+<div style="width: 100%; min-width: 0; max-width: 480px">
+  <minerva-media-player src="media-player/sample.m4a" skip-seconds="0">
+    <span slot="heading">Audio playback</span>
   </minerva-media-player>
 </div>
 
@@ -702,12 +699,11 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/wc/captions.html
 
 ```html
-<div style="display: grid; gap: 12px; max-width: 560px">
-  <minerva-media-player
-    id="player"
-    src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
-  >
-    <span slot="heading">Flower</span>
+<div
+  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px"
+>
+  <minerva-media-player id="player" src="media-player/sample.mp4">
+    <span slot="heading">Video playback</span>
   </minerva-media-player>
   <output id="choice" aria-live="polite">Captions: default track</output>
 </div>
@@ -728,25 +724,25 @@ import type {
 const ENGLISH_VTT = `WEBVTT
 
 00:00.000 --> 00:01.800
-A flower bud in the morning light
+A locally hosted playback sample
 
 00:01.800 --> 00:03.600
-Its petals slowly <i>unfold</i>
+Video and audio share the <i>same player</i>
 
 00:03.600 --> 00:06.000
-…and the bloom opens to the bees.
+Captions follow the playback position.
 `;
 const FRENCH_SRT = `1
 00:00:00,000 --> 00:00:01,800
-Un bouton de fleur dans la lumière du matin
+Un exemple de lecture hébergé localement
 
 2
 00:00:01,800 --> 00:00:03,600
-Ses pétales s'ouvrent lentement
+La vidéo et l’audio partagent le même lecteur
 
 3
 00:00:03,600 --> 00:00:06,000
-…et la fleur s'offre aux abeilles.
+Les sous-titres suivent la lecture.
 `;
 const tracks: MediaPlayerTrack[] = [
   {
@@ -792,10 +788,12 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/wc/rates-skip.html
 
 ```html
-<div style="display: grid; gap: 12px; max-width: 560px">
+<div
+  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px"
+>
   <minerva-media-player
     id="player"
-    src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+    src="media-player/sample.mp4"
     skip-seconds="3"
     aspect-ratio="4 / 3"
     aria-label="Flower, speed and skip"
@@ -839,10 +837,12 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/wc/resume.html
 
 ```html
-<div style="display: grid; gap: 12px; max-width: 560px">
+<div
+  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px"
+>
   <minerva-media-player
     id="player"
-    src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+    src="media-player/sample.mp4"
     start-time="2"
   ></minerva-media-player>
   <div style="display: flex; gap: 8px; flex-wrap: wrap">
@@ -918,12 +918,9 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/wc/video.html
 
 ```html
-<div style="max-width: 560px">
-  <minerva-media-player
-    src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
-    picture-in-picture
-  >
-    <span slot="heading">Flower</span>
+<div style="width: 100%; min-width: 0; max-width: 560px">
+  <minerva-media-player src="media-player/sample.mp4" picture-in-picture>
+    <span slot="heading">Video playback</span>
   </minerva-media-player>
 </div>
 

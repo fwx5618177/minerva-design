@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.0",
-  "sourceCommit": "413e3d54e2177f8469c443a6547c4472e608839c",
-  "sourceDigest": "sha256:8c8e874e213d698b4d05cabed92eed392c90c5b0fa91c66def67eab19184e86c",
-  "referenceSourceDigest": "sha256:e694adbf6015cdc21809df819193e0a84c030845fb2910749dbd1c4c15ccca99"
+  "sourceCommit": "19d3efc34af8ba4e23df0f24d9fbb0a587e1b452",
+  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+  "referenceSourceDigest": "sha256:ec29900df0d5b5c8d741436acb4a250ec29e5f40ce1f4110def33ac2d66baaa5"
 }
 ```
 
@@ -56,7 +56,7 @@ The ref exposes play/pause/seek and element/video, plus setPlaybackRate, setQual
 
 ##### Appearance and capability boundaries
 
-locale supports en/zh/ja/fr and messages overrides control text; theme selects light/dark. Import the player CSS once. PiP, recording, screenshot, volume and fullscreen depend on the host; cross-origin capture requires suitable CORS headers. DRM licensing is not configured by the built-in adapters.
+locale supports en/zh/ja/fr and messages overrides control text; theme selects light/dark. Import the player CSS once. PiP, recording, screenshot, volume and fullscreen depend on the host; cross-origin capture requires suitable CORS headers. DRM licensing is not configured by the built-in adapters. In flex or grid layouts, give the surrounding container a width; maxWidth only limits its size.
 
 Synthetic test pattern
 
@@ -444,13 +444,11 @@ Documentation context imports: none
 ```vue
 <script setup lang="ts">
 import { MediaPlayer } from "minerva-design/vue";
-// CC0 sample from MDN's interactive examples
-const src =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
+const src = "media-player/sample.m4a";
 </script>
 <template>
-  <div style="max-width: 480px">
-    <MediaPlayer :src="src" title="T-Rex roar" :skip-seconds="0" />
+  <div style="width: 100%; min-width: 0; max-width: 480px">
+    <MediaPlayer :src="src" title="Audio playback" :skip-seconds="0" />
   </div>
 </template>
 
@@ -471,9 +469,7 @@ Documentation context imports: none
 import { ref } from "vue";
 import { MediaPlayer, type MediaPlayerTrack } from "minerva-design/vue";
 
-// CC0 sample from MDN's interactive examples
-const src =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const src = "media-player/sample.mp4";
 
 // Caption files are usually served next to the video (cross-origin ones need
 // cross-origin="anonymous" and CORS headers); data: URLs keep this demo
@@ -481,25 +477,25 @@ const src =
 const englishVtt = `WEBVTT
 
 00:00.000 --> 00:01.800
-A flower bud in the morning light
+A locally hosted playback sample
 
 00:01.800 --> 00:03.600
-Its petals slowly <i>unfold</i>
+Video and audio share the <i>same player</i>
 
 00:03.600 --> 00:06.000
-…and the bloom opens to the bees.
+Captions follow the playback position.
 `;
 const frenchSrt = `1
 00:00:00,000 --> 00:00:01,800
-Un bouton de fleur dans la lumière du matin
+Un exemple de lecture hébergé localement
 
 2
 00:00:01,800 --> 00:00:03,600
-Ses pétales s'ouvrent lentement
+La vidéo et l’audio partagent le même lecteur
 
 3
 00:00:03,600 --> 00:00:06,000
-…et la fleur s'offre aux abeilles.
+Les sous-titres suivent la lecture.
 `;
 const tracks: MediaPlayerTrack[] = [
   {
@@ -517,10 +513,18 @@ const tracks: MediaPlayerTrack[] = [
 const choice = ref<string | null>(null);
 </script>
 <template>
-  <div style="display: grid; gap: 12px; max-width: 560px">
+  <div
+    style="
+      display: grid;
+      gap: 12px;
+      width: 100%;
+      min-width: 0;
+      max-width: 560px;
+    "
+  >
     <MediaPlayer
       :src="src"
-      title="Flower"
+      title="Video playback"
       :tracks="tracks"
       @track-change="choice = $event.track?.label ?? 'Off'"
     />
@@ -546,12 +550,15 @@ Documentation context imports: none
 <script setup lang="ts">
 import { ref } from "vue";
 import { MediaPlayer, VStack } from "minerva-design/vue";
-const src =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const src = "media-player/sample.mp4";
 const rate = ref(1);
 </script>
 <template>
-  <VStack :gap="3" align="stretch" style="max-width: 560px">
+  <VStack
+    :gap="3"
+    align="stretch"
+    style="width: 100%; min-width: 0; max-width: 560px"
+  >
     <MediaPlayer
       :src="src"
       :playback-rates="[1, 1.5, 2]"
@@ -585,8 +592,7 @@ import {
   VStack,
   type MediaPlayerExpose,
 } from "minerva-design/vue";
-const src =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const src = "media-player/sample.mp4";
 const player = ref<MediaPlayerExpose | null>(null);
 // e.g. the position saved by the last session
 const saved = ref(2);
@@ -599,7 +605,11 @@ function onPause() {
 }
 </script>
 <template>
-  <VStack :gap="3" align="stretch" style="max-width: 560px">
+  <VStack
+    :gap="3"
+    align="stretch"
+    style="width: 100%; min-width: 0; max-width: 560px"
+  >
     <MediaPlayer
       ref="player"
       :src="src"
@@ -639,13 +649,11 @@ Documentation context imports: none
 ```vue
 <script setup lang="ts">
 import { MediaPlayer } from "minerva-design/vue";
-// CC0 sample from MDN's interactive examples
-const src =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const src = "media-player/sample.mp4";
 </script>
 <template>
-  <div style="max-width: 560px">
-    <MediaPlayer :src="src" title="Flower" picture-in-picture />
+  <div style="width: 100%; min-width: 0; max-width: 560px">
+    <MediaPlayer :src="src" title="Video playback" picture-in-picture />
   </div>
 </template>
 

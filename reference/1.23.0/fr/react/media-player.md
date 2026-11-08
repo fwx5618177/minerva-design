@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.0",
-  "sourceCommit": "413e3d54e2177f8469c443a6547c4472e608839c",
-  "sourceDigest": "sha256:8c8e874e213d698b4d05cabed92eed392c90c5b0fa91c66def67eab19184e86c",
-  "referenceSourceDigest": "sha256:e694adbf6015cdc21809df819193e0a84c030845fb2910749dbd1c4c15ccca99"
+  "sourceCommit": "19d3efc34af8ba4e23df0f24d9fbb0a587e1b452",
+  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+  "referenceSourceDigest": "sha256:ec29900df0d5b5c8d741436acb4a250ec29e5f40ce1f4110def33ac2d66baaa5"
 }
 ```
 
@@ -56,7 +56,7 @@ La ref expose play/pause/seek, element/video, setPlaybackRate, setQuality, next/
 
 ##### Apparence et capacités
 
-locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM.
+locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM. Dans une disposition flex ou grid, définissez la largeur du conteneur parent ; maxWidth fixe seulement une limite.
 
 Motif de test synthétique
 
@@ -858,7 +858,7 @@ export default function Demo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ width: "100%", maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         kind="audio"
         src={`${base}sample.m4a`}
@@ -881,23 +881,27 @@ Le type est déduit du MIME ou de l’URL. L’audio affiche une pochette et une
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design
+External dependencies: minerva-design, react-i18next
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/media-player/demos/audio.tsx
 
 ```tsx
+import { useTranslation } from "react-i18next";
 import { MediaPlayer } from "minerva-design";
 
-// CC0 sample from MDN's interactive examples
-const ROAR =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
+const AUDIO_SRC = `${import.meta.env.BASE_URL}media-player/sample.m4a`;
 
 export default function AudioDemo() {
+  const { t } = useTranslation();
   return (
-    <div style={{ maxWidth: 480 }}>
-      <MediaPlayer src={ROAR} title="T-Rex roar" skipSeconds={0} />
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 480 }}>
+      <MediaPlayer
+        src={AUDIO_SRC}
+        title={t("docs.media-player.data.tone")}
+        skipSeconds={0}
+      />
     </div>
   );
 }
@@ -910,19 +914,18 @@ tracks accepte WebVTT/SRT (src, srclang, label, kind, default). Les sous-titres 
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react
+External dependencies: minerva-design, react, react-i18next
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/media-player/demos/captions.tsx
 
 ```tsx
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { MediaPlayer, type MediaPlayerTrack } from "minerva-design";
 
-// CC0 sample from MDN's interactive examples
-const FLOWER =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 
 // Caption files are usually served next to the video (cross-origin ones need
 // crossOrigin="anonymous" on the player and CORS headers on their server).
@@ -930,26 +933,26 @@ const FLOWER =
 const ENGLISH_VTT = `WEBVTT
 
 00:00.000 --> 00:01.800
-A flower bud in the morning light
+A locally hosted playback sample
 
 00:01.800 --> 00:03.600
-Its petals slowly <i>unfold</i>
+Video and audio share the <i>same player</i>
 
 00:03.600 --> 00:06.000
-…and the bloom opens to the bees.
+Captions follow the playback position.
 `;
 
 const FRENCH_SRT = `1
 00:00:00,000 --> 00:00:01,800
-Un bouton de fleur dans la lumière du matin
+Un exemple de lecture hébergé localement
 
 2
 00:00:01,800 --> 00:00:03,600
-Ses pétales s'ouvrent lentement
+La vidéo et l’audio partagent le même lecteur
 
 3
 00:00:03,600 --> 00:00:06,000
-…et la fleur s'offre aux abeilles.
+Les sous-titres suivent la lecture.
 `;
 
 const tracks: MediaPlayerTrack[] = [
@@ -968,18 +971,27 @@ const tracks: MediaPlayerTrack[] = [
 ];
 
 export default function CaptionsDemo() {
+  const { t } = useTranslation();
   const [choice, setChoice] = useState<string | null>(null);
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 560,
+      }}
+    >
       <MediaPlayer
-        src={FLOWER}
-        title="Flower"
+        src={VIDEO_SRC}
+        title={t("docs.media-player.data.pattern")}
         tracks={tracks}
         onTrackChange={({ track }) => setChoice(track?.label ?? "Off")}
       />
       <MediaPlayer
-        src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
-        title="Audio with the same captions"
+        src={`${import.meta.env.BASE_URL}media-player/sample.m4a`}
+        title={t("docs.media-player.data.tone")}
         skipSeconds={0}
         tracks={tracks}
       />
@@ -1014,7 +1026,7 @@ export default function CaptureDemo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}
         title={t("docs.media-player.data.pattern")}
@@ -1051,7 +1063,7 @@ export default function Demo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ width: "100%", maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         src={`${base}sample.mp4`}
         title={t("docs.media-player.demos.compact.title")}
@@ -1090,7 +1102,7 @@ export default function Demo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ width: "100%", maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         src={`${base}sample.mp4`}
         title={t("docs.media-player.demos.desktop.title")}
@@ -1134,7 +1146,7 @@ export default function PlaylistDemo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         title={t("docs.media-player.demos.playlist.title")}
         locale={i18n.language}
@@ -1186,7 +1198,7 @@ export default function QualityDemo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         src={source}
         title={t("docs.media-player.data.pattern")}
@@ -1205,26 +1217,36 @@ playbackRates configure Paramètres → Vitesse de lecture ; onRateChange signal
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react
+External dependencies: minerva-design, react, react-i18next
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/media-player/demos/rates-skip.tsx
 
 ```tsx
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { MediaPlayer } from "minerva-design";
 
-const FLOWER =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 
 export default function RatesSkipDemo() {
+  const { t } = useTranslation();
   const [rate, setRate] = useState(1);
 
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 560,
+      }}
+    >
       <MediaPlayer
-        src={FLOWER}
+        title={t("docs.media-player.data.pattern")}
+        src={VIDEO_SRC}
         playbackRates={[1, 1.5, 2]}
         skipSeconds={3}
         aspectRatio="4 / 3"
@@ -1262,7 +1284,15 @@ export default function RecoveryDemo() {
   const { resolvedTheme } = useTheme();
   const [valid, setValid] = useState(true);
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 640 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 640,
+      }}
+    >
       <Button onClick={() => setValid(!valid)}>
         {t(`docs.media-player.demos.recovery.${valid ? "break" : "restore"}`)}
       </Button>
@@ -1284,30 +1314,40 @@ startTime est appliqué une fois les métadonnées chargées (reprendre là où 
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react
+External dependencies: minerva-design, react, react-i18next
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/media-player/demos/resume.tsx
 
 ```tsx
+import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
 import { Button, MediaPlayer, type MediaPlayerHandle } from "minerva-design";
 
-const FLOWER =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 
 export default function ResumeDemo() {
+  const { t } = useTranslation();
   const player = useRef<MediaPlayerHandle>(null);
   // e.g. the position saved by the last session
   const [saved, setSaved] = useState(2);
   const [progress, setProgress] = useState("Not started");
 
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 560,
+      }}
+    >
       <MediaPlayer
+        title={t("docs.media-player.data.pattern")}
         ref={player}
-        src={FLOWER}
+        src={VIDEO_SRC}
         startTime={saved}
         onLoadedMetadata={({ duration }) =>
           setProgress(`Resumed at ${saved}s of ${duration.toFixed(1)}s`)
@@ -1374,7 +1414,15 @@ export default function StreamsDemo() {
   const { i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 640 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 640,
+      }}
+    >
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         {(Object.keys(sources) as (keyof typeof sources)[]).map((name) => (
           <Button
@@ -1406,23 +1454,27 @@ Une <video> avec une barre de commandes sombre et translucide qui s’efface pen
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design
+External dependencies: minerva-design, react-i18next
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/media-player/demos/video.tsx
 
 ```tsx
+import { useTranslation } from "react-i18next";
 import { MediaPlayer } from "minerva-design";
 
-// CC0 sample from MDN's interactive examples
-const FLOWER =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 
 export default function VideoDemo() {
+  const { t } = useTranslation();
   return (
-    <div style={{ maxWidth: 560 }}>
-      <MediaPlayer src={FLOWER} title="Flower" pictureInPicture />
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 560 }}>
+      <MediaPlayer
+        src={VIDEO_SRC}
+        title={t("docs.media-player.data.pattern")}
+        pictureInPicture
+      />
     </div>
   );
 }

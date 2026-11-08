@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.0",
-  "sourceCommit": "413e3d54e2177f8469c443a6547c4472e608839c",
-  "sourceDigest": "sha256:8c8e874e213d698b4d05cabed92eed392c90c5b0fa91c66def67eab19184e86c",
-  "referenceSourceDigest": "sha256:e694adbf6015cdc21809df819193e0a84c030845fb2910749dbd1c4c15ccca99"
+  "sourceCommit": "19d3efc34af8ba4e23df0f24d9fbb0a587e1b452",
+  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+  "referenceSourceDigest": "sha256:ec29900df0d5b5c8d741436acb4a250ec29e5f40ce1f4110def33ac2d66baaa5"
 }
 ```
 
@@ -56,7 +56,7 @@ La ref expose play/pause/seek, element/video, setPlaybackRate, setQuality, next/
 
 ##### Apparence et capacités
 
-locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM.
+locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM. Dans une disposition flex ou grid, définissez la largeur du conteneur parent ; maxWidth fixe seulement une limite.
 
 Motif de test synthétique
 
@@ -444,7 +444,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" title="Flower" pictureInPicture/>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" title="Video playback" pictureInPicture/></div>
   `,
 })
 export class Example {
@@ -473,7 +473,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" title="T-Rex roar" [skipSeconds]="0"/>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.m4a" title="Audio playback" [skipSeconds]="0"/></div>
   `,
 })
 export class Example {
@@ -496,13 +496,13 @@ Documentation context imports: none
 
 ```tsx
 import { Component } from '@angular/core';
-import { MnMediaPlayer } from 'minerva-design/angular';
+import { MnMediaPlayer, MnButton } from 'minerva-design/angular';
 
 @Component({
   selector: 'app-example',
-  imports: [MnMediaPlayer],
+  imports: [MnMediaPlayer, MnButton],
   template: `
-<mn-media-player #player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player #player src="media-player/sample.mp4" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button mnButton type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output></div>
   `,
 })
 export class Example {
@@ -530,7 +530,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output></div>
   `,
 })
 export class Example {
@@ -559,20 +559,20 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" title="Flower" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" title="Video playback" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output></div>
   `,
 })
 export class Example {
   choice = "default track";
   tracks = [
   {
-    "src": "data:text/vtt,WEBVTT%0A%0A00%3A00.000%20--%3E%2000%3A02.500%0AA%20flower%20bud%20in%20the%20morning%20light%0A%0A00%3A02.500%20--%3E%2000%3A06.000%0AIts%20petals%20slowly%20unfold%0A",
+    "src": "data:text/vtt,WEBVTT%0A%0A00%3A00.000%20--%3E%2000%3A02.500%0AA%20locally%20hosted%20playback%20sample%0A%0A00%3A02.500%20--%3E%2000%3A06.000%0AVideo%20and%20audio%20share%20the%20same%20player%0A",
     "srclang": "en",
     "label": "English",
     "default": true
   },
   {
-    "src": "data:application/x-subrip,1%0A00%3A00%3A00%2C000%20--%3E%2000%3A00%3A02%2C500%0AUn%20bouton%20de%20fleur%20au%20matin%0A%0A2%0A00%3A00%3A02%2C500%20--%3E%2000%3A00%3A06%2C000%0ASes%20p%C3%A9tales%20s'ouvrent%20lentement%0A",
+    "src": "data:application/x-subrip,1%0A00%3A00%3A00%2C000%20--%3E%2000%3A00%3A02%2C500%0AUn%20exemple%20de%20lecture%20local%0A%0A2%0A00%3A00%3A02%2C500%20--%3E%2000%3A00%3A06%2C000%0ALa%20vid%C3%A9o%20et%20l%E2%80%99audio%20partagent%20le%20m%C3%AAme%20lecteur%0A",
     "srclang": "fr",
     "label": "Français"
   }
