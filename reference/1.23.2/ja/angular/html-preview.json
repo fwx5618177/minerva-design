@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "html-preview",
+  "title": "HtmlPreview HTML プレビュー",
+  "description": "メールテンプレートなどの信頼できない HTML を、完全にサンドボックス化された iframe でプレビューします。マークアップは DOMPurify で無害化され（失敗時は空）、スクリプトとネットワークを遮断する CSP の下で描画されます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "HtmlPreview",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnHtmlPreview. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnHtmlPreview. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnHtmlPreview"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-html-preview",
+        "props": [
+          {
+            "name": "html",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/data/index.ts"
+          },
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/data/index.ts"
+          },
+          {
+            "name": "viewport",
+            "typeText": "\"desktop\" | \"mobile\"",
+            "required": false,
+            "source": "packages/angular/src/components/data/index.ts"
+          },
+          {
+            "name": "mobileWidth",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/data/index.ts"
+          },
+          {
+            "name": "height",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/data/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:HtmlPreview": {
+      "kind": "cssVars",
+      "source": "react/src/components/HtmlPreview",
+      "vars": [
+        {
+          "name": "--html-preview-bg",
+          "description": "Background color around the frame"
+        },
+        {
+          "name": "--html-preview-frame-bg",
+          "description": "Background color of the frame"
+        },
+        {
+          "name": "--html-preview-frame-border-color",
+          "description": "Border color of the frame"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "sandboxed-document",
+      "title": "Sandboxed document",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnHtmlPreview } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnHtmlPreview],\n  template: `\n<mn-html-preview title=\"Email preview\" [html]=\"html\" [height]=\"200\"/>\n  `,\n})\nexport class Example {\n  html = \"<h1>Welcome to Minerva</h1><p>Your workspace is ready.</p>\";\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "mobile-viewport",
+      "title": "Mobile viewport",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnHtmlPreview } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnHtmlPreview],\n  template: `\n<mn-html-preview title=\"Mobile preview\" viewport=\"mobile\" [mobileWidth]=\"280\" [height]=\"200\" [html]=\"html\"/>\n  `,\n})\nexport class Example {\n  html = \"<h2>Monthly update</h2><p>A bounded preview of a mobile email.</p>\";\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "HtmlPreview HTML プレビュー",
+      "description": "メールテンプレートなどの信頼できない HTML を、完全にサンドボックス化された iframe でプレビューします。マークアップは DOMPurify で無害化され（失敗時は空）、スクリプトとネットワークを遮断する CSP の下で描画されます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "インラインスタイルと data: 画像は残り、スクリプト・フォーム・リンク・外部画像は削除されます。"
+        },
+        "viewports": {
+          "title": "ビューポート",
+          "description": "viewport=\"mobile\" は固定幅（mobileWidth）で表示し、desktop はコンテナ幅いっぱいに表示します。"
+        }
+      },
+      "api": {
+        "HtmlPreviewProps": {
+          "html": "プレビューする信頼できない HTML（ブラウザで無害化）",
+          "title": "iframe のアクセシブルなタイトル",
+          "viewport": "全幅のデスクトップ表示または固定幅のモバイル表示",
+          "mobileWidth": "モバイル表示の幅（ピクセル）",
+          "height": "iframe の高さ（ピクセル）",
+          "className": "ルート要素の追加クラス名",
+          "style": "ルート要素のインラインスタイル",
+          "ref": "ルート <div> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--html-preview-bg": "フレーム周囲の背景色",
+        "--html-preview-frame-bg": "フレームの背景色",
+        "--html-preview-frame-border-color": "フレームの枠線の色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "html 属性はサニタイズされ、サンドボックス化された iframe に描画されます。label はフレームのアクセシブルなタイトルになります。"
+          },
+          "viewport": {
+            "title": "デスクトップとモバイル",
+            "description": "viewport=\"mobile\" は mobile-width ピクセルの固定幅フレームを描画します。マークアップは html プロパティで設定します。"
+          },
+          "sanitized": {
+            "title": "信頼できない入力",
+            "description": "ソースを編集してみてください。スクリプトとイベントハンドラーは削除されて何も実行されず、インラインスタイルは残ります。"
+          }
+        },
+        "minerva-html-preview": {
+          "props": {
+            "label": "iframe のアクセシブルなタイトル（React 版の title に相当。未指定時は aria-label）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        },
+        "limitations": "ドキュメントはサンドボックス iframe を使用します。iOS と Android では Expo の例にある react-native-webview アダプターを使用し、スクリプトと外部遷移は無効です。"
+      }
+    }
+  }
+}

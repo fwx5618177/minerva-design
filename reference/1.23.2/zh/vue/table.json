@@ -1,0 +1,1156 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "table",
+  "title": "Table 表格",
+  "description": "展示数据行。常规场景用 Table（columns + data），自定义表头或合并单元格用 TableRoot 及其子组件，需要分页、加载与错误状态时用 DataTable。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DataTable",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DataTable"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "pagination",
+            "type": "DataTablePagination",
+            "required": false,
+            "description": "Pagination rendered under the table (or the `pagination` slot). Rows\nare expected to be already paginated: fetching / slicing belongs to the\ndata owner",
+            "typeText": "DataTablePagination"
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "required": false,
+            "description": "Error message (or the `error` slot); replaces the table (and\npagination) with an alert",
+            "typeText": "string"
+          },
+          {
+            "name": "onRetry",
+            "type": "(() => void)",
+            "required": false,
+            "description": "Called by the retry button shown with `error` (`@retry`; no button\nwithout a listener)",
+            "typeText": "(() => void)"
+          },
+          {
+            "name": "retryLabel",
+            "type": "string",
+            "required": false,
+            "description": "Text of the retry button",
+            "typeText": "string"
+          },
+          {
+            "name": "columns",
+            "type": "TableColumn<T>[]",
+            "required": true,
+            "description": "Column definitions",
+            "typeText": "TableColumn<T>[]"
+          },
+          {
+            "name": "data",
+            "type": "T[]",
+            "required": true,
+            "description": "Rows to render",
+            "typeText": "T[]"
+          },
+          {
+            "name": "rowKey",
+            "type": "((row: T, index: number) => TableRowKey)",
+            "required": false,
+            "description": "Extracts a stable key from a row (defaults to the row index)",
+            "typeText": "((row: T, index: number) => TableRowKey)"
+          },
+          {
+            "name": "emptyText",
+            "type": "string",
+            "required": false,
+            "description": "Content of the single row shown when `data` is empty (or the `empty`\nslot)",
+            "typeText": "string"
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Renders placeholder skeleton rows instead of the data",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loadingRows",
+            "type": "number",
+            "default": "5",
+            "required": false,
+            "description": "Number of skeleton rows rendered while loading",
+            "typeText": "number"
+          },
+          {
+            "name": "sortState",
+            "type": "TableSortState | null",
+            "required": false,
+            "description": "Sort state (controlled, `v-model:sortState`); `null` means unsorted",
+            "typeText": "TableSortState | null"
+          },
+          {
+            "name": "defaultSortState",
+            "type": "TableSortState | null",
+            "default": "null",
+            "required": false,
+            "description": "Initial sort state (uncontrolled)",
+            "typeText": "TableSortState | null"
+          },
+          {
+            "name": "manualSort",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Skips local sorting: `data` is rendered as given (sorted by the data\nowner, e.g. a server) while the headers still reflect the sort state",
+            "typeText": "boolean"
+          },
+          {
+            "name": "rowSelection",
+            "type": "TableRowSelection<T>",
+            "required": false,
+            "description": "Adds a leading checkbox column to select rows",
+            "typeText": "TableRowSelection<T>"
+          },
+          {
+            "name": "selectedRowKeys",
+            "type": "TableRowKey[]",
+            "required": false,
+            "description": "Keys of the selected rows (controlled, `v-model:selectedRowKeys`; wins\nover `rowSelection.selectedRowKeys`). Setting it (or\n`defaultSelectedRowKeys`) also enables the selection column",
+            "typeText": "TableRowKey[]"
+          },
+          {
+            "name": "defaultSelectedRowKeys",
+            "type": "TableRowKey[]",
+            "required": false,
+            "description": "Keys of the initially selected rows (uncontrolled; wins over\n`rowSelection.defaultSelectedRowKeys`)",
+            "typeText": "TableRowKey[]"
+          },
+          {
+            "name": "size",
+            "type": "TableSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Density of the cells",
+            "typeText": "TableSize"
+          },
+          {
+            "name": "variant",
+            "type": "TableVariant",
+            "default": "\"simple\"",
+            "required": false,
+            "description": "Visual style: plain rows, zebra stripes or bordered cells",
+            "typeText": "TableVariant"
+          },
+          {
+            "name": "hoverable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Highlights body rows on hover",
+            "typeText": "boolean"
+          },
+          {
+            "name": "scroll",
+            "type": "TableScrollConfig",
+            "required": false,
+            "description": "Horizontal minimum width / vertical maximum height of the scroll area.\nWhen set (or when the content overflows), the scroll area becomes a\nfocusable region named by the table's `aria-label` / `aria-labelledby`\n(default: \"Scrollable table\", localized) so keyboard users can scroll it",
+            "typeText": "TableScrollConfig"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:sortState",
+            "type": "[sortState: TableSortState | null]",
+            "typeText": "[sortState: TableSortState | null]",
+            "parameters": [
+              {
+                "name": "sortState",
+                "position": 0,
+                "typeText": "TableSortState | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "sortChange",
+            "type": "[sortState: TableSortState]",
+            "typeText": "[sortState: TableSortState]",
+            "parameters": [
+              {
+                "name": "sortState",
+                "position": 0,
+                "typeText": "TableSortState",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:selectedRowKeys",
+            "type": "[selectedRowKeys: TableRowKey[]]",
+            "typeText": "[selectedRowKeys: TableRowKey[]]",
+            "parameters": [
+              {
+                "name": "selectedRowKeys",
+                "position": 0,
+                "typeText": "TableRowKey[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "selectionChange",
+            "type": "[selectedRowKeys: TableRowKey[], selectedRows: T[]]",
+            "typeText": "[selectedRowKeys: TableRowKey[], selectedRows: T[]]",
+            "parameters": [
+              {
+                "name": "selectedRowKeys",
+                "position": 0,
+                "typeText": "TableRowKey[]",
+                "required": true,
+                "rest": false
+              },
+              {
+                "name": "selectedRows",
+                "position": 1,
+                "typeText": "T[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "error",
+            "type": "any",
+            "description": "Error message (the `error` prop); shows the error state",
+            "typeText": "any"
+          },
+          {
+            "name": "pagination",
+            "type": "any",
+            "description": "Content under the table, replacing the `pagination` prop",
+            "typeText": "any"
+          },
+          {
+            "name": "empty",
+            "type": "any",
+            "description": "Content of the empty row (the `emptyText` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "sortState",
+            "event": "update:sortState",
+            "syntax": "v-model:sortState"
+          },
+          {
+            "prop": "selectedRowKeys",
+            "event": "update:selectedRowKeys",
+            "syntax": "v-model:selectedRowKeys"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Table",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Table"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "columns",
+            "type": "TableColumn<T>[]",
+            "required": true,
+            "description": "Column definitions",
+            "typeText": "TableColumn<T>[]"
+          },
+          {
+            "name": "data",
+            "type": "T[]",
+            "required": true,
+            "description": "Rows to render",
+            "typeText": "T[]"
+          },
+          {
+            "name": "rowKey",
+            "type": "((row: T, index: number) => TableRowKey)",
+            "required": false,
+            "description": "Extracts a stable key from a row (defaults to the row index)",
+            "typeText": "((row: T, index: number) => TableRowKey)"
+          },
+          {
+            "name": "emptyText",
+            "type": "string",
+            "required": false,
+            "description": "Content of the single row shown when `data` is empty (or the `empty`\nslot)",
+            "typeText": "string"
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Renders placeholder skeleton rows instead of the data",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loadingRows",
+            "type": "number",
+            "default": "5",
+            "required": false,
+            "description": "Number of skeleton rows rendered while loading",
+            "typeText": "number"
+          },
+          {
+            "name": "sortState",
+            "type": "TableSortState | null",
+            "required": false,
+            "description": "Sort state (controlled, `v-model:sortState`); `null` means unsorted",
+            "typeText": "TableSortState | null"
+          },
+          {
+            "name": "defaultSortState",
+            "type": "TableSortState | null",
+            "default": "null",
+            "required": false,
+            "description": "Initial sort state (uncontrolled)",
+            "typeText": "TableSortState | null"
+          },
+          {
+            "name": "manualSort",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Skips local sorting: `data` is rendered as given (sorted by the data\nowner, e.g. a server) while the headers still reflect the sort state",
+            "typeText": "boolean"
+          },
+          {
+            "name": "rowSelection",
+            "type": "TableRowSelection<T>",
+            "required": false,
+            "description": "Adds a leading checkbox column to select rows",
+            "typeText": "TableRowSelection<T>"
+          },
+          {
+            "name": "selectedRowKeys",
+            "type": "TableRowKey[]",
+            "required": false,
+            "description": "Keys of the selected rows (controlled, `v-model:selectedRowKeys`; wins\nover `rowSelection.selectedRowKeys`). Setting it (or\n`defaultSelectedRowKeys`) also enables the selection column",
+            "typeText": "TableRowKey[]"
+          },
+          {
+            "name": "defaultSelectedRowKeys",
+            "type": "TableRowKey[]",
+            "required": false,
+            "description": "Keys of the initially selected rows (uncontrolled; wins over\n`rowSelection.defaultSelectedRowKeys`)",
+            "typeText": "TableRowKey[]"
+          },
+          {
+            "name": "size",
+            "type": "TableSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Density of the cells",
+            "typeText": "TableSize"
+          },
+          {
+            "name": "variant",
+            "type": "TableVariant",
+            "default": "\"simple\"",
+            "required": false,
+            "description": "Visual style: plain rows, zebra stripes or bordered cells",
+            "typeText": "TableVariant"
+          },
+          {
+            "name": "hoverable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Highlights body rows on hover",
+            "typeText": "boolean"
+          },
+          {
+            "name": "scroll",
+            "type": "TableScrollConfig",
+            "required": false,
+            "description": "Horizontal minimum width / vertical maximum height of the scroll area.\nWhen set (or when the content overflows), the scroll area becomes a\nfocusable region named by the table's `aria-label` / `aria-labelledby`\n(default: \"Scrollable table\", localized) so keyboard users can scroll it",
+            "typeText": "TableScrollConfig"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:sortState",
+            "type": "[sortState: TableSortState | null]",
+            "typeText": "[sortState: TableSortState | null]",
+            "parameters": [
+              {
+                "name": "sortState",
+                "position": 0,
+                "typeText": "TableSortState | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "sortChange",
+            "type": "[sortState: TableSortState]",
+            "typeText": "[sortState: TableSortState]",
+            "parameters": [
+              {
+                "name": "sortState",
+                "position": 0,
+                "typeText": "TableSortState",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:selectedRowKeys",
+            "type": "[selectedRowKeys: TableRowKey[]]",
+            "typeText": "[selectedRowKeys: TableRowKey[]]",
+            "parameters": [
+              {
+                "name": "selectedRowKeys",
+                "position": 0,
+                "typeText": "TableRowKey[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "selectionChange",
+            "type": "[selectedRowKeys: TableRowKey[], selectedRows: T[]]",
+            "typeText": "[selectedRowKeys: TableRowKey[], selectedRows: T[]]",
+            "parameters": [
+              {
+                "name": "selectedRowKeys",
+                "position": 0,
+                "typeText": "TableRowKey[]",
+                "required": true,
+                "rest": false
+              },
+              {
+                "name": "selectedRows",
+                "position": 1,
+                "typeText": "T[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "empty",
+            "type": "any",
+            "description": "Content of the empty row (the `emptyText` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "sortState",
+            "event": "update:sortState",
+            "syntax": "v-model:sortState"
+          },
+          {
+            "prop": "selectedRowKeys",
+            "event": "update:selectedRowKeys",
+            "syntax": "v-model:selectedRowKeys"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TableBody",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TableBody"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableCell",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TableCell"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableCellContent",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TableCellContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "primary",
+            "type": "string | number",
+            "required": false,
+            "description": "Main content (or the default slot)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "secondary",
+            "type": "string | number",
+            "required": false,
+            "description": "Secondary, muted content rendered under the primary content (or the `secondary` slot)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "monospace",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Renders the primary content as `<code>` in the monospace font",
+            "typeText": "boolean"
+          },
+          {
+            "name": "maxWidth",
+            "type": "string | number",
+            "default": "360",
+            "required": false,
+            "description": "Maximum width (numbers are pixels); long content wraps",
+            "typeText": "string | number"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Main content (the `primary` prop)",
+            "typeText": "any"
+          },
+          {
+            "name": "secondary",
+            "type": "any",
+            "description": "Secondary, muted line (the `secondary` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableHead",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TableHead"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableHeader",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TableHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableRoot",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TableRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "size",
+            "type": "TableSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Density of the cells",
+            "typeText": "TableSize"
+          },
+          {
+            "name": "variant",
+            "type": "TableVariant",
+            "default": "\"simple\"",
+            "required": false,
+            "description": "Visual style: plain rows, zebra stripes or bordered cells",
+            "typeText": "TableVariant"
+          },
+          {
+            "name": "hoverable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Highlights body rows on hover",
+            "typeText": "boolean"
+          },
+          {
+            "name": "scroll",
+            "type": "TableScrollConfig",
+            "required": false,
+            "description": "Horizontal minimum width / vertical maximum height of the scroll area.\nWhen set (or when the content overflows), the scroll area becomes a\nfocusable region named by the table's `aria-label` / `aria-labelledby`\n(default: \"Scrollable table\", localized) so keyboard users can scroll it",
+            "typeText": "TableScrollConfig"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Table sections (`TableHead`, `TableBody`...)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableRow",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TableRow"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Table": {
+      "kind": "cssVars",
+      "source": "react/src/components/Table",
+      "vars": [
+        {
+          "name": "--table-cell-padding-y",
+          "description": "Vertical padding of the cells (every size; follows the density by default)"
+        },
+        {
+          "name": "--table-cell-padding-x",
+          "description": "Horizontal padding of the cells (every size; follows the density by default)"
+        },
+        {
+          "name": "--table-font-size",
+          "description": "Font size of the body cells (every size)"
+        },
+        {
+          "name": "--table-header-bg",
+          "description": "Background color of the header row"
+        },
+        {
+          "name": "--table-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--table-radius",
+          "description": "Corner radius of the wrapper (defaults to --radius-lg)"
+        },
+        {
+          "name": "--table-stripe-bg",
+          "description": "Background color of the odd rows of a striped table"
+        },
+        {
+          "name": "--table-hover-bg",
+          "description": "Background color of the hovered row of a hoverable table"
+        },
+        {
+          "name": "--table-selected-bg",
+          "description": "Background color of the selected rows (row selection)"
+        },
+        {
+          "name": "--table-sort-icon-color",
+          "description": "Color of the sort indicator of an unsorted sortable column"
+        },
+        {
+          "name": "--table-focus-ring-color",
+          "description": "Outline color of the focused scroll region"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Table } from \"minerva-design/vue\";\nconst columns = [\n  { key: \"name\", header: \"Name\" },\n  { key: \"role\", header: \"Role\" },\n];\nconst data = [\n  { id: 1, name: \"Ada\", role: \"Designer\" },\n  { id: 2, name: \"Grace\", role: \"Engineer\" },\n  { id: 3, name: \"Alan\", role: \"Researcher\" },\n];\n</script>\n<template>\n  <Table\n    :columns=\"columns\"\n    :data=\"data\"\n    :row-key=\"(row) => row.id\"\n    variant=\"striped\"\n    aria-label=\"Team members\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "cell-content",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/cell-content.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/cell-content.vue": "<script setup lang=\"ts\">\nimport {\n  Table,\n  TableCellContent,\n  Badge,\n  type TableColumn,\n} from \"minerva-design/vue\";\ntype Row = { id: number; name: string; role: string; email: string };\nconst data: Row[] = [\n  { id: 1, name: \"Ada Lovelace\", role: \"Designer\", email: \"ada@example.com\" },\n  { id: 2, name: \"Grace Hopper\", role: \"Engineer\", email: \"grace@example.com\" },\n  { id: 3, name: \"Alan Turing\", role: \"Researcher\", email: \"alan@example.com\" },\n];\nconst columns: TableColumn<Row>[] = [\n  { key: \"name\", header: \"Name\" },\n  { key: \"role\", header: \"Role\" },\n];\n</script>\n<template>\n  <Table\n    :columns=\"columns\"\n    :data=\"data\"\n    :row-key=\"(row) => row.id\"\n    aria-label=\"Rich team cells\"\n    ><template #cell-name=\"{ row }\"\n      ><TableCellContent\n        :primary=\"row.name\"\n        :secondary=\"row.email\"\n        :max-width=\"260\" /></template\n    ><template #cell-role=\"{ row }\"><Badge :content=\"row.role\" /></template\n  ></Table>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "cell-content",
+      "description": ""
+    },
+    {
+      "id": "compound",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/compound.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/compound.vue": "<script setup lang=\"ts\">\nimport {\n  TableRoot,\n  TableHead,\n  TableBody,\n  TableRow,\n  TableHeader,\n  TableCell,\n  TableCellContent,\n} from \"minerva-design/vue\";\n</script>\n<template>\n  <TableRoot variant=\"bordered\" aria-label=\"Release checklist\"\n    ><TableHead\n      ><TableRow\n        ><TableHeader scope=\"col\">Package</TableHeader\n        ><TableHeader scope=\"col\">Status</TableHeader></TableRow\n      ></TableHead\n    ><TableBody\n      ><TableRow\n        ><TableCell\n          ><TableCellContent\n            primary=\"Core\"\n            secondary=\"Shared contracts and tokens\" /></TableCell\n        ><TableCell>Ready</TableCell></TableRow\n      ><TableRow\n        ><TableCell\n          ><TableCellContent\n            primary=\"Vue\"\n            secondary=\"Accessible browser components\" /></TableCell\n        ><TableCell>Ready</TableCell></TableRow\n      ></TableBody\n    ></TableRoot\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "compound",
+      "description": ""
+    },
+    {
+      "id": "data-table",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/data-table.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/data-table.vue": "<script setup lang=\"ts\">\nimport { ref, computed } from \"vue\";\nimport { DataTable, Button } from \"minerva-design/vue\";\nconst page = ref(1);\nconst error = ref(\"\");\nconst rows = Array.from({ length: 18 }, (_, index) => ({\n  id: index + 1,\n  name: `Project ${index + 1}`,\n  status: index % 3 === 0 ? \"Review\" : \"Ready\",\n}));\nconst data = computed(() => rows.slice((page.value - 1) * 5, page.value * 5));\nconst columns = [\n  { key: \"name\", header: \"Project\" },\n  { key: \"status\", header: \"Status\" },\n];\n</script>\n<template>\n  <div style=\"display: grid; gap: 12px\">\n    <Button\n      variant=\"outline\"\n      @click=\"error = 'The request failed. Retry to restore the projects.'\"\n      >Simulate request failure</Button\n    ><DataTable\n      :columns=\"columns\"\n      :data=\"data\"\n      :row-key=\"(row) => row.id\"\n      :error=\"error\"\n      :pagination=\"{\n        total: rows.length,\n        current: page,\n        pageSize: 5,\n        onChange: (next: number) => (page = next),\n      }\"\n      aria-label=\"Projects\"\n      @retry=\"error = ''\"\n    />\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "data-table",
+      "description": ""
+    },
+    {
+      "id": "fixed-columns",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/fixed-columns.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/fixed-columns.vue": "<script setup lang=\"ts\">\nimport { Table, Button, type TableColumn } from \"minerva-design/vue\";\ntype Row = { id: number; name: string; role: string; email: string };\nconst data: Row[] = [\n  { id: 1, name: \"Ada Lovelace\", role: \"Designer\", email: \"ada@example.com\" },\n  { id: 2, name: \"Grace Hopper\", role: \"Engineer\", email: \"grace@example.com\" },\n  { id: 3, name: \"Alan Turing\", role: \"Researcher\", email: \"alan@example.com\" },\n];\nconst columns: TableColumn<Row>[] = [\n  { key: \"name\", header: \"Name\" },\n  { key: \"role\", header: \"Role\" },\n];\nconst fixed: TableColumn<Row>[] = [\n  { key: \"name\", header: \"Name\", width: 180, fixed: \"left\" },\n  { key: \"email\", header: \"Email\", width: 350 },\n  { key: \"role\", header: \"Role\", width: 250 },\n  { key: \"id\", header: \"ID\", width: 100, fixed: \"right\" },\n];\n</script>\n<template>\n  <div style=\"max-width: 520px\">\n    <Table\n      :columns=\"fixed\"\n      :data=\"data\"\n      :row-key=\"(row) => row.id\"\n      :scroll=\"{ x: 880, y: 240 }\"\n      hoverable\n      aria-label=\"Horizontally scrollable team\"\n    />\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "fixed-columns",
+      "description": ""
+    },
+    {
+      "id": "pagination",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/pagination.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/pagination.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { DataTable } from \"minerva-design/vue\";\nconst columns = [\n  { key: \"name\", header: \"Name\" },\n  { key: \"role\", header: \"Role\" },\n];\nconst data = [\n  { id: 1, name: \"Ada\", role: \"Designer\" },\n  { id: 2, name: \"Grace\", role: \"Engineer\" },\n  { id: 3, name: \"Alan\", role: \"Researcher\" },\n];\nconst page = ref(1);\nconst rows = Array.from({ length: 24 }, (_, index) => ({\n  id: index + 1,\n  name: `Member ${index + 1}`,\n  role: index % 2 ? \"Designer\" : \"Engineer\",\n}));\n</script>\n<template>\n  <DataTable\n    :columns=\"columns\"\n    :data=\"rows.slice((page - 1) * 5, page * 5)\"\n    :row-key=\"(row) => row.id\"\n    :pagination=\"{\n      current: page,\n      pageSize: 5,\n      total: rows.length,\n      onChange: (next) => (page = next),\n    }\"\n    aria-label=\"Paginated members\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "pagination",
+      "description": ""
+    },
+    {
+      "id": "selection",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/selection.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/selection.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Table, VStack } from \"minerva-design/vue\";\nconst columns = [\n  { key: \"name\", header: \"Name\" },\n  { key: \"role\", header: \"Role\" },\n];\nconst data = [\n  { id: 1, name: \"Ada\", role: \"Designer\" },\n  { id: 2, name: \"Grace\", role: \"Engineer\" },\n  { id: 3, name: \"Alan\", role: \"Researcher\" },\n];\nconst selected = ref<(string | number)[]>([]);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Table\n      v-model:selected-row-keys=\"selected\"\n      :columns=\"columns\"\n      :data=\"data\"\n      :row-key=\"(row) => row.id\"\n      :row-selection=\"{ getRowLabel: (row) => row.name }\"\n      aria-label=\"Select members\"\n    /><output>Selected IDs: {{ selected.join(\", \") || \"none\" }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "selection",
+      "description": ""
+    },
+    {
+      "id": "sorting",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/sorting.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/sorting.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Table, VStack } from \"minerva-design/vue\";\nimport type { TableSortState } from \"minerva-design/vue\";\nconst sort = ref<TableSortState | null>(null);\nconst columns = [\n  { key: \"name\", header: \"Name\", sortable: true },\n  { key: \"score\", header: \"Score\", sortable: true },\n];\nconst data = [\n  { id: 1, name: \"Grace\", score: 92 },\n  { id: 2, name: \"Ada\", score: 98 },\n  { id: 3, name: \"Alan\", score: 87 },\n];\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Table\n      v-model:sort-state=\"sort\"\n      :columns=\"columns\"\n      :data=\"data\"\n      :row-key=\"(row) => row.id\"\n      aria-label=\"Sortable members\"\n    /><output\n      >{{ sort?.key || \"No column\" }}: {{ sort?.order || \"unsorted\" }}</output\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "sorting",
+      "description": ""
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/states.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/states.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Table, Button, type TableColumn } from \"minerva-design/vue\";\nconst loading = ref(true);\nconst columns = [\n  { key: \"name\", header: \"Name\" },\n  { key: \"status\", header: \"Status\" },\n];\n</script>\n<template>\n  <div style=\"display: grid; gap: 12px\">\n    <Button variant=\"outline\" @click=\"loading = !loading\">{{\n      loading ? \"Show empty state\" : \"Show loading state\"\n    }}</Button\n    ><Table\n      :columns=\"columns\"\n      :data=\"[]\"\n      :loading=\"loading\"\n      :loading-rows=\"3\"\n      empty-text=\"No jobs yet\"\n      aria-label=\"Jobs\"\n    />\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "states",
+      "description": ""
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/vue/variants.vue",
+      "files": {
+        "apps/docs/src/docs/pages/table/vue/variants.vue": "<script setup lang=\"ts\">\nimport { Table, Button, type TableColumn } from \"minerva-design/vue\";\ntype Row = { id: number; name: string; role: string; email: string };\nconst data: Row[] = [\n  { id: 1, name: \"Ada Lovelace\", role: \"Designer\", email: \"ada@example.com\" },\n  { id: 2, name: \"Grace Hopper\", role: \"Engineer\", email: \"grace@example.com\" },\n  { id: 3, name: \"Alan Turing\", role: \"Researcher\", email: \"alan@example.com\" },\n];\nconst columns: TableColumn<Row>[] = [\n  { key: \"name\", header: \"Name\" },\n  { key: \"role\", header: \"Role\" },\n];\nconst variants = [\"simple\", \"striped\", \"bordered\"] as const;\n</script>\n<template>\n  <div style=\"display: grid; gap: 20px\">\n    <section v-for=\"variant in variants\" :key=\"variant\">\n      <h4>{{ variant }}</h4>\n      <Table\n        :columns=\"columns\"\n        :data=\"data\"\n        :row-key=\"(row) => row.id\"\n        :variant=\"variant\"\n        hoverable\n        :aria-label=\"`${variant} team table`\"\n      />\n    </section>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Table 表格",
+      "description": "展示数据行。常规场景用 Table（columns + data），自定义表头或合并单元格用 TableRoot 及其子组件，需要分页、加载与错误状态时用 DataTable。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "每列默认读取 row[key]，也可提供 render 函数。请为行提供稳定的 rowKey。"
+        },
+        "variants": {
+          "title": "变体与尺寸",
+          "description": "普通、斑马纹或带边框的行，三种密度（small / medium / large），可选悬停高亮。"
+        },
+        "fixed-columns": {
+          "title": "固定列与滚动",
+          "description": "scroll.x 设置最小宽度，scroll.y 限制高度并固定表头。固定列必须设置 width，并连续声明在开头（left）或末尾（right）；ellipsis 截断长文本。 当固定列的实测总宽度使滚动区域不足 120px 时，组件自动取消固定，所有字段和操作仍可通过横向滚动访问。"
+        },
+        "states": {
+          "title": "加载与空状态",
+          "description": "loading 渲染骨架行（对辅助技术隐藏）；data 为空时渲染 emptyText。"
+        },
+        "data-table": {
+          "title": "DataTable",
+          "description": "在表格下方添加分页；设置 error 时以提示和重试按钮替换表格。行数据需预先分页。"
+        },
+        "compound": {
+          "title": "组合子组件",
+          "description": "TableRoot、TableHead、TableBody、TableRow、TableHeader 与 TableCell 渲染原生表格元素，可实现多行表头或合并单元格。"
+        },
+        "cell-content": {
+          "title": "单元格内容",
+          "description": "TableCellContent 限制宽度并换行长内容，可附带弱化的第二行或等宽主文本。"
+        },
+        "sorting": {
+          "title": "排序",
+          "description": "sortable 让表头变成按钮，依次切换升序、降序和不排序（aria-sort 同步）。true 比较 row[key]；函数则比较两行。通过 sortState 和 onSortChange 受控，或用 manualSort 交由服务端排序。"
+        },
+        "selection": {
+          "title": "行选择",
+          "description": "rowSelection 添加复选框列和全选复选框（部分选中时为半选状态）。全选会跳过禁用行；选中行带有 aria-selected 和高亮。"
+        }
+      },
+      "api": {
+        "TableProps": {
+          "columns": "列定义",
+          "data": "要渲染的行",
+          "rowKey": "从行中提取稳定的 key（默认为行索引）",
+          "emptyText": "data 为空时显示的单行内容",
+          "loading": "以骨架占位行替代数据",
+          "loadingRows": "加载时渲染的骨架行数",
+          "sortState": "排序状态（受控）；null 表示不排序",
+          "defaultSortState": "初始排序状态（非受控）",
+          "onSortChange": "激活可排序表头时以下一个排序状态调用",
+          "manualSort": "跳过本地排序：按原样渲染 data（由数据持有方如服务端排序），表头仍反映排序状态",
+          "rowSelection": "添加用于选择行的首列复选框"
+        },
+        "TableColumn": {
+          "key": "列的唯一 key，也是默认读取的行字段",
+          "header": "表头内容",
+          "render": "渲染单元格，默认为 row[key]",
+          "width": "列宽（数字为像素），同时作为 width 与 min-width；固定列必填",
+          "align": "表头与单元格的水平对齐",
+          "ellipsis": "单行截断并显示省略号",
+          "fixed": "水平滚动时将列固定在左侧或右侧",
+          "sortable": "使列可排序：true 比较 row[key]（空值排在最后），函数 (a, b) => number 按升序比较两行"
+        },
+        "DataTableProps": {
+          "pagination": "表格下方分页的属性（行数据需预先分页）",
+          "error": "错误信息，以提示替换表格与分页",
+          "onRetry": "错误状态下重试按钮的回调",
+          "retryLabel": "重试按钮文本"
+        },
+        "TableRootProps": {
+          "size": "单元格密度",
+          "variant": "视觉样式：普通、斑马纹或带边框",
+          "hoverable": "悬停时高亮行",
+          "scroll": "滚动区域的横向最小宽度 / 纵向最大高度；滚动容器会成为以表格命名的可聚焦区域（默认：“可滚动表格”）",
+          "ref": "<table> 元素的 ref"
+        },
+        "TableScrollConfig": {
+          "x": "表格最小宽度，容器更窄时水平滚动",
+          "y": "最大可见高度，容器垂直滚动且表头固定"
+        },
+        "TableSortState": {
+          "key": "排序列的 key",
+          "order": "排序方向（\"ascend\" 或 \"descend\"）；null 表示不排序"
+        },
+        "TableRowSelection": {
+          "type": "选择模式（复选框多选）",
+          "selectedRowKeys": "选中行的 key（受控）",
+          "defaultSelectedRowKeys": "初始选中行的 key（非受控）",
+          "onChange": "以新的选中 key 和 data 中对应的行调用",
+          "getCheckboxProps": "每行复选框的选项；禁用行无法切换且会被全选跳过",
+          "getRowLabel": "在行复选框的无障碍标签中命名该行（“选择行 {name}”）；默认为行 key"
+        },
+        "TableCellContentProps": {
+          "primary": "主内容",
+          "secondary": "主内容下方的弱化次要内容",
+          "monospace": "以等宽字体的 <code> 渲染主内容",
+          "maxWidth": "最大宽度（数字为像素），长内容换行",
+          "ref": "根 <div> 元素的 ref"
+        },
+        "FixedColumnLayout": {
+          "leftOffsets": "每个左固定列的左偏移（px），按列 key 索引",
+          "rightOffsets": "每个右固定列的右偏移（px），按列 key 索引",
+          "lastLeftFixedKey": "开头左固定区的最后一列（显示边界阴影）",
+          "firstRightFixedKey": "末尾右固定区的第一列（显示边界阴影）"
+        }
+      },
+      "cssVars": {
+        "--table-cell-padding-y": "单元格垂直内边距（所有尺寸；默认跟随密度）",
+        "--table-cell-padding-x": "单元格水平内边距（所有尺寸；默认跟随密度）",
+        "--table-font-size": "表体单元格字号（所有尺寸）",
+        "--table-header-bg": "表头行的背景色",
+        "--table-border-color": "行分隔线的颜色",
+        "--table-radius": "外层容器的圆角（默认 --radius-lg）",
+        "--table-stripe-bg": "斑马纹表格奇数行的背景色",
+        "--table-hover-bg": "可悬停表格中悬停行的背景色",
+        "--table-selected-bg": "选中行的背景色（行选择）",
+        "--table-sort-icon-color": "未排序的可排序列的排序指示器颜色",
+        "--table-focus-ring-color": "聚焦的滚动区域的轮廓颜色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "columns 和 rows 是通过脚本设置的 JS 属性；row-key 指定作为键的字段。单元格的 render 函数可以返回 DOM 节点，这里返回一个两行的 <minerva-table-cell-content>。"
+          },
+          "sorting": {
+            "title": "排序",
+            "description": "sortable: true 按行字段排序，传入函数则作为自定义比较器。点击表头在升序、降序和不排序之间循环，并触发 minerva-sort-change；sortState 设置初始排序。"
+          },
+          "selection": {
+            "title": "行选择",
+            "description": "selectable 会添加一列复选框，表头带全选。isRowDisabled 锁定已支付的发票，getRowLabel 为每个复选框提供名称，minerva-selection-change 报告选中的键。"
+          },
+          "pagination": {
+            "title": "分页与加载",
+            "description": "pagination 属性会在表格下方渲染一个 <minerva-pagination>。表格不会切分 rows：请在 minerva-page-change 时加载对应页的数据；期间 loading 显示骨架行。"
+          }
+        },
+        "minerva-data-table": {
+          "props": {
+            "selectable": "添加一列复选框用于选择行。",
+            "scrollX": "横向滚动：表格的最小宽度（像素数值或 CSS 长度）。",
+            "scrollY": "纵向滚动：容器的最大高度；表头保持固定。",
+            "retryable": "在错误状态下显示重试按钮（触发 minerva-retry）。",
+            "rows": "行数据。",
+            "isRowDisabled": "对复选框被禁用的行返回 true。"
+          },
+          "events": {
+            "minerva-sort-change": "用户更改了排序（detail: { key, order }，order 为 null 表示不排序）。可取消：preventDefault() 保持当前排序。",
+            "minerva-selection-change": "用户更改了选中的行（detail: { selectedRowKeys, selectedRows }）。可取消：preventDefault() 保持当前选择。",
+            "minerva-page-change": "从分页组件转发的事件（detail: { page, pageSize }）。可取消。",
+            "minerva-retry": "错误状态中的重试按钮被激活。"
+          },
+          "slots": {
+            "empty": "空状态的内容（默认：empty-text 或本地化的“暂无数据”）。",
+            "error": "错误状态的内容（默认：error 文本）。"
+          },
+          "cssVars": {
+            "--button-height": "重试按钮的最小高度。",
+            "--button-padding-x": "重试按钮的水平内边距。",
+            "--button-radius": "重试按钮的圆角半径。",
+            "--button-font-size": "重试按钮的字号。",
+            "--button-font-weight": "重试按钮的字重。",
+            "--button-gap": "重试按钮中图标与文字之间的间距。",
+            "--button-label-white-space": "重试按钮文字的 white-space：nowrap（默认，截断）或 normal（换行）。"
+          }
+        },
+        "minerva-table-cell-content": {
+          "slots": {
+            "default": "主要内容（可替代 primary 属性）。",
+            "secondary": "次要行（可替代 secondary 属性）。"
+          },
+          "cssVars": {
+            "--button-height": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-padding-x": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-radius": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-font-size": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-font-weight": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-gap": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。",
+            "--button-label-white-space": "由于该模块与表格共用 Button 样式表而列出的 Button 变量；此元素不使用它。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "en",
+  "renderer": "native",
+  "page": "pull-refresh",
+  "title": "PullRefresh",
+  "description": "Native mobile pull to refresh with accessible controls and shared design tokens.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "PullRefresh",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "PullRefresh"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "refreshing",
+            "source": "packages/native/src/components/PullRefresh/PullRefresh.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Controlled refreshing state; unset, it follows the promise returned by `onRefresh`"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/PullRefresh/PullRefresh.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the pull"
+          },
+          {
+            "name": "pullingText",
+            "source": "packages/native/src/components/PullRefresh/PullRefresh.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Text while pulling (iOS)"
+          },
+          {
+            "name": "loosingText",
+            "source": "packages/native/src/components/PullRefresh/PullRefresh.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Text when releasing would refresh (iOS)"
+          },
+          {
+            "name": "loadingText",
+            "source": "packages/native/src/components/PullRefresh/PullRefresh.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Text while refreshing"
+          },
+          {
+            "name": "successText",
+            "source": "packages/native/src/components/PullRefresh/PullRefresh.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Text after a refresh"
+          },
+          {
+            "name": "successDuration",
+            "source": "packages/native/src/components/PullRefresh/PullRefresh.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 500,
+            "required": false,
+            "description": "How long the success text stays, in ms (0: none)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onRefresh",
+            "source": "packages/native/src/components/PullRefresh/PullRefresh.tsx",
+            "kind": "function",
+            "typeText": "(() => unknown) | undefined",
+            "typeRef": "type:33cf6ad5836c837fcc29",
+            "parameters": [],
+            "returnType": {
+              "typeText": "unknown",
+              "typeRef": "type:dc96c0cac9f2d6c9a926"
+            },
+            "required": false,
+            "description": "Called on a pull; may return a promise (refreshing until it settles)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:PullRefreshProps": {
+      "source": "native/src/components/PullRefresh/PullRefresh.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ScrollViewProps, \"refreshControl\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "refreshing",
+          "type": "boolean",
+          "required": false,
+          "description": "Controlled refreshing state; unset, it follows the promise returned by `onRefresh`"
+        },
+        {
+          "name": "onRefresh",
+          "type": "() => unknown",
+          "required": false,
+          "description": "Called on a pull; may return a promise (refreshing until it settles)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the pull"
+        },
+        {
+          "name": "pullingText",
+          "type": "string",
+          "required": false,
+          "default": "the \"pullRefresh.pulling\" message",
+          "description": "Text while pulling (iOS)"
+        },
+        {
+          "name": "loosingText",
+          "type": "string",
+          "required": false,
+          "default": "the \"pullRefresh.loosing\" message",
+          "description": "Text when releasing would refresh (iOS)"
+        },
+        {
+          "name": "loadingText",
+          "type": "string",
+          "required": false,
+          "default": "the \"pullRefresh.loading\" message",
+          "description": "Text while refreshing"
+        },
+        {
+          "name": "successText",
+          "type": "string",
+          "required": false,
+          "default": "the \"pullRefresh.success\" message",
+          "description": "Text after a refresh"
+        },
+        {
+          "name": "successDuration",
+          "type": "number",
+          "required": false,
+          "default": "500",
+          "description": "How long the success text stays, in ms (0: none)"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Scrollable content"
+        }
+      ]
+    },
+    "native:UsePullRefreshOptions": {
+      "source": "native/src/components/PullRefresh/PullRefresh.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "refreshing",
+          "type": "boolean",
+          "required": false,
+          "description": "Controlled refreshing state (unset: follows the `onRefresh` promise)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the pull"
+        },
+        {
+          "name": "successDuration",
+          "type": "number",
+          "required": false,
+          "default": "500",
+          "description": "How long the success status stays, in ms (0: none)"
+        }
+      ]
+    },
+    "native:UsePullRefreshResult": {
+      "source": "native/src/components/PullRefresh/PullRefresh.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "refreshing",
+          "type": "boolean",
+          "required": true,
+          "description": "Whether a refresh is running"
+        },
+        {
+          "name": "status",
+          "type": "Exclude<PullRefreshStatus, \"pulling\" | \"loosing\">",
+          "required": true,
+          "description": "Current status (\"success\" for `successDuration` after a refresh)"
+        },
+        {
+          "name": "refresh",
+          "type": "() => void",
+          "required": true,
+          "description": "Starts a refresh (what a pull does)"
+        },
+        {
+          "name": "refreshControl",
+          "type": "ReactElement<RefreshControlProps>",
+          "required": true,
+          "description": "A themed `RefreshControl`: pass it as the `refreshControl` of a `FlatList`, `SectionList` or `ScrollView`"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/pull-refresh/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/pull-refresh/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Button, Cell, PullRefresh, useTheme } from \"minerva-design/native\";\n\nconst DEALS = [\"Pizza -30%\", \"Free delivery\", \"Sushi 2 for 1\", \"Tacos -20%\"];\n\nexport default function Basic() {\n  const { colors } = useTheme();\n  const [refreshing, setRefreshing] = useState(false);\n  const [round, setRound] = useState(1);\n  const reload = () => {\n    setRefreshing(true);\n    setTimeout(() => {\n      setRound((n) => n + 1);\n      setRefreshing(false);\n    }, 1500);\n  };\n  return (\n    <View style={{ gap: 12 }}>\n      <Button size=\"small\" onPress={reload} disabled={refreshing}>\n        Refresh deals\n      </Button>\n      <PullRefresh\n        refreshing={refreshing}\n        onRefresh={reload}\n        loadingText=\"Finding new deals...\"\n        successText=\"Deals updated\"\n        successDuration={1200}\n        style={{ height: 300 }}\n      >\n        <Text style={{ color: colors[\"text-muted-color\"], padding: 12 }}>\n          Pull down to refresh · update #{round}\n        </Text>\n        {DEALS.map((deal) => (\n          <Cell key={deal} title={deal} value={`Round ${round}`} />\n        ))}\n      </PullRefresh>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "use-pull-refresh",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/pull-refresh/native/use-pull-refresh.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/pull-refresh/native/use-pull-refresh.tsx": "import { useState } from \"react\";\nimport { FlatList, Text, View } from \"react-native\";\nimport { Button, Cell, usePullRefresh, useTheme } from \"minerva-design/native\";\n\nconst wait = (ms: number) => new Promise((done) => setTimeout(done, ms));\n\nexport default function UsePullRefresh() {\n  const { colors } = useTheme();\n  const [messages, setMessages] = useState([\"Anna: See you at 7?\"]);\n  const { refreshControl, refresh, status } = usePullRefresh(\n    async () => {\n      await wait(1200);\n      setMessages((list) => [`New message #${list.length + 1}`, ...list]);\n    },\n    { successDuration: 1000 },\n  );\n  const label = {\n    idle: \"Pull the list or press the button\",\n    loading: \"Checking for messages...\",\n    success: \"Inbox up to date\",\n  }[status];\n  return (\n    <View style={{ gap: 12 }}>\n      <Button size=\"small\" onPress={refresh} loading={status === \"loading\"}>\n        Check messages\n      </Button>\n      <Text style={{ color: colors[\"text-secondary-color\"] }}>{label}</Text>\n      <FlatList\n        style={{ height: 260 }}\n        data={messages}\n        keyExtractor={(item) => item}\n        refreshControl={refreshControl}\n        renderItem={({ item }) => <Cell title={item} isLink />}\n      />\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "use-pull-refresh",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "PullRefresh",
+      "description": "Native mobile pull to refresh with accessible controls and shared design tokens.",
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Basic usage using PullRefresh; the preview follows the selected site theme and palette."
+          },
+          "use-pull-refresh": {
+            "title": "Refresh hook",
+            "description": "Refresh hook using PullRefresh; the preview follows the selected site theme and palette."
+          }
+        }
+      }
+    }
+  }
+}

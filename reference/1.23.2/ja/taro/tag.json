@@ -1,0 +1,484 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "ja",
+  "renderer": "taro",
+  "page": "tag",
+  "title": "Tag タグ",
+  "description": "コンテンツのマーキングや分類に使う小さなラベル。閉じたりクリックしたりできます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {
+    "accessibility": {
+      "title": "アクセシビリティ",
+      "clickable": "clickable を指定するとタグに role=\"button\" と tabIndex=0 が付き、Enter または Space でマウスクリックと同様に onClick が呼ばれます。操作や切り替えに使い、ページ遷移にはリンクを使ってください。",
+      "closable": "閉じるボタンはネイティブの <button> で、独立したタブ位置を持ちます。アクセシブルな名前は既定で「Close」です。どのタグを削除するか分かるよう closeLabel（例：「Remove React」）を設定してください。",
+      "disabled": "無効なクリック可能タグは role=\"button\" と aria-disabled=\"true\" を保持し、Tab ではスキップされます。選択状態が重要な場合は、色だけでなくテキストや aria 属性でも伝えてください。"
+    }
+  },
+  "components": [
+    {
+      "name": "Tag",
+      "support": {
+        "status": "beta",
+        "notes": "Semantic roles/colors/variants/sizes, title/actions/custom icons, alert collapse/close/animations/banner/rounding/elevation and guarded tag actions/loading/shape/elevation and native measured touch-origin ripples. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Tag ripple coordinates use native touch/tap data and measured bounds, falling back to center for keyboard activation or hosts without coordinates. DOM focus-return behavior is not reproduced. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Semantic roles/colors/variants/sizes, title/actions/custom icons, alert collapse/close/animations/banner/rounding/elevation and guarded tag actions/loading/shape/elevation and native measured touch-origin ripples. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Tag ripple coordinates use native touch/tap data and measured bounds, falling back to center for keyboard activation or hosts without coordinates. DOM focus-return behavior is not reproduced. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "Tag"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "color",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "enum",
+            "values": [
+              "outline",
+              "soft",
+              "solid",
+              "subtle"
+            ],
+            "typeText": "\"solid\" | \"outline\" | \"subtle\" | \"soft\" | undefined",
+            "typeRef": "type:3ba043d969fe8a297d5d",
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "rounded",
+              "square"
+            ],
+            "typeText": "\"square\" | \"rounded\" | \"circle\" | undefined",
+            "typeRef": "type:bc311df462bffff00236",
+            "required": false
+          },
+          {
+            "name": "closable",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "union",
+            "typeText": "string | ((label: string) => string) | undefined",
+            "typeRef": "type:00d7ba7ef2048742b2b0",
+            "parameters": [
+              {
+                "name": "label",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false
+          },
+          {
+            "name": "closeIcon",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "clickable",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "pressed",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "icon",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "avatar",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "elevation",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "ripple",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onClose",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "function",
+            "typeText": "((event: ITouchEvent) => void) | undefined",
+            "typeRef": "type:f7b40babd9b6eccb005d",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ITouchEvent",
+                "typeRef": "type:7276d9ff893f9fea3df5"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onClick",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "function",
+            "typeText": "((event: ITouchEvent) => void) | undefined",
+            "typeRef": "type:f7b40babd9b6eccb005d",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ITouchEvent",
+                "typeRef": "type:7276d9ff893f9fea3df5"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onPressedChange",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "function",
+            "typeText": "((pressed: boolean) => void) | undefined",
+            "typeRef": "type:41adf7d71d70b15a6506",
+            "parameters": [
+              {
+                "name": "pressed",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "pressed",
+            "event": "onPressedChange",
+            "syntax": "pressed={pressed} onPressedChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Tag": {
+      "kind": "cssVars",
+      "source": "react/src/components/Tag",
+      "vars": [
+        {
+          "name": "--tag-height",
+          "description": "Minimum height (every size; default: the content height)"
+        },
+        {
+          "name": "--tag-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--tag-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--tag-radius",
+          "description": "Corner radius of the rounded shape (defaults to --radius-sm)"
+        },
+        {
+          "name": "--tag-gap",
+          "description": "Space between the icon, the label and the close button"
+        },
+        {
+          "name": "--tag-ring-color",
+          "description": "Color of the hairline ring of the tinted (default) variant (defaults to the text color at 16%)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tag タグ",
+      "description": "コンテンツのマーキングや分類に使う小さなラベル。閉じたりクリックしたりできます。",
+      "demos": {
+        "colors": {
+          "title": "カラー",
+          "description": "color で意味を表します：neutral（既定）、primary、success、warning、danger、info。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを指定します：subtle（既定・淡い背景）、outline（枠線を追加）、solid（色で塗りつぶし）。elevation はどのバリアントにも影を付けます。"
+        },
+        "sizes-shapes": {
+          "title": "サイズと形状",
+          "description": "3 つのサイズと 3 つの形状：square、rounded（既定）、circle。"
+        },
+        "with-icon": {
+          "title": "アイコン付き",
+          "description": "icon は内容の前に表示されます。"
+        },
+        "closable": {
+          "title": "閉じられるタグ",
+          "description": "Tag 1、Tag 2、Tag 3 を削除します。すべて削除すると Reset で復元できます。"
+        },
+        "clickable": {
+          "title": "クリック可能（選択式）",
+          "description": "clickable は内容をネイティブのボタンとして描画します。Tab でフォーカスし、クリック・Enter・Space で実行します。ここではタグで選択を切り替え、pressed で支援技術に状態を伝えます。"
+        },
+        "avatar-loading": {
+          "title": "アバターと読み込み中",
+          "description": "avatar は内容の前にアバターを表示します。loading はアイコン / アバターをスピナーに置き換え、タグをビジー状態にして操作を無効にし、閉じるボタンを隠します。"
+        },
+        "custom-colors": {
+          "title": "カスタムカラー",
+          "description": "CSS カスタムプロパティ --tag-<color>-bg と --tag-<color>-text で各カラーの配色を上書きします（インライン、クラス、テーマで指定可能）。ripple={false} でクリック時のリップルを無効にします。"
+        },
+        "disabled": {
+          "title": "無効状態",
+          "description": "無効なタグはクリックを無視し、タブ順から外れ、閉じるボタンも無効になります。"
+        }
+      },
+      "accessibility": {
+        "title": "アクセシビリティ",
+        "clickable": "clickable を指定するとタグに role=\"button\" と tabIndex=0 が付き、Enter または Space でマウスクリックと同様に onClick が呼ばれます。操作や切り替えに使い、ページ遷移にはリンクを使ってください。",
+        "closable": "閉じるボタンはネイティブの <button> で、独立したタブ位置を持ちます。アクセシブルな名前は既定で「Close」です。どのタグを削除するか分かるよう closeLabel（例：「Remove React」）を設定してください。",
+        "disabled": "無効なクリック可能タグは role=\"button\" と aria-disabled=\"true\" を保持し、Tab ではスキップされます。選択状態が重要な場合は、色だけでなくテキストや aria 属性でも伝えてください。"
+      },
+      "api": {
+        "TagProps": {
+          "children": "タグの内容",
+          "color": "タグのセマンティックカラー",
+          "variant": "見た目のスタイル：subtle（淡い背景）、outline（淡い背景＋枠線）、solid（色で塗りつぶし、反転した文字色）",
+          "size": "タグのサイズ",
+          "shape": "タグの形状",
+          "closable": "閉じるボタンを表示します",
+          "onClose": "閉じるボタンのクリック時に呼び出されます",
+          "clickable": "タグの内容をネイティブのボタンとして描画します（フォーカス可能、Enter / Space で実行）。closable と併用すると、閉じるボタンは兄弟要素の別ボタンになります",
+          "onClick": "タグが実行されたときに呼び出されます（clickable が必要）",
+          "pressed": "トグル型タグの押下（選択）状態。選択式フィルターなどに使います（clickable が必要）。aria-pressed と選択スタイルを設定します",
+          "icon": "内容の前に表示するアイコン",
+          "avatar": "内容の前に表示するアバター（小さな Avatar や画像など）",
+          "loading": "アイコン / アバターの代わりにスピナーを表示し、ビジー状態にして操作を無効にします。閉じるボタンは非表示になります",
+          "elevation": "影を表示します",
+          "className": "追加のクラス名",
+          "style": "インラインスタイル",
+          "disabled": "タグと閉じるボタンを無効にします",
+          "closeIcon": "カスタムの閉じるアイコン",
+          "closeLabel": "閉じるボタンのアクセシブルなラベル：文字列、またはタグのテキストを受け取る関数。既定は「{label} を削除」（ローカライズ済み）、テキストがない場合は「閉じる」",
+          "ripple": "クリック時にリップル効果を表示します",
+          "ref": "ルート要素への ref"
+        }
+      },
+      "cssVars": {
+        "--tag-height": "最小高さ（全サイズ。既定値は内容の高さ）",
+        "--tag-padding-x": "左右のパディング（全サイズ）",
+        "--tag-font-size": "フォントサイズ（全サイズ）",
+        "--tag-radius": "rounded 形状の角丸（既定値は --radius-sm）",
+        "--tag-gap": "アイコン・ラベル・閉じるボタンの間隔",
+        "--tag-ring-color": "既定（淡色塗り）バリアントの細いリングの色（既定は文字色の 16%）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "小さなラベル。color で意味的な色調を設定します。"
+          },
+          "variants-sizes": {
+            "title": "バリアント・サイズ・内容",
+            "description": "3 種類のバリアント、サイズ、形状、elevation、icon と avatar スロット、loading と disabled。"
+          },
+          "closable": {
+            "title": "閉じられるタグ",
+            "description": "closable は minerva-close を発火する閉じるボタンを追加します。リスナーでタグを削除し、フォーカスを隣の要素に移してください。close-label と close-icon スロットでカスタマイズできます。"
+          },
+          "toggle": {
+            "title": "トグルフィルター",
+            "description": "clickable toggle のタグはトグルボタン（aria-pressed）です。クリックで pressed が反転し minerva-change が発火します。通常のクリック可能なタグは click を発火します。"
+          }
+        },
+        "minerva-tag": {
+          "props": {
+            "toggle": "クリック可能なタグをトグルにします。クリックで pressed が反転し minerva-change が発火します。",
+            "noRipple": "クリック可能なタグのリップル効果を無効にします。"
+          },
+          "events": {
+            "minerva-close": "閉じるボタンが実行されました。",
+            "minerva-change": "トグルタグが切り替えられました（detail: { pressed }）。"
+          },
+          "slots": {
+            "default": "タグのラベル。",
+            "icon": "ラベルの前に表示するアイコン。",
+            "avatar": "ラベルの前のアバター（小さな <minerva-avatar> または画像）。",
+            "close-icon": "カスタムの閉じるアイコン。"
+          },
+          "methods": {
+            "focus": "タグのボタン（クリック可能なタグならアクションボタン、それ以外は閉じるボタン）にフォーカスします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "closable": {
+            "title": "閉じられるタグ",
+            "description": "Tag 1、Tag 2、Tag 3 を削除します。すべて削除すると Reset で復元できます。"
+          },
+          "colors-variants": {
+            "title": "色とバリエーション",
+            "description": "Tag の「色とバリエーション」の例。プレビューはサイトのテーマとパレットに追従します。"
+          },
+          "selectable": {
+            "title": "選択できるタグ",
+            "description": "Tag の「選択できるタグ」の例。プレビューはサイトのテーマとパレットに追従します。"
+          }
+        }
+      }
+    }
+  }
+}

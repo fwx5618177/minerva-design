@@ -1,0 +1,654 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "auto-complete",
+  "title": "AutoComplete",
+  "description": "A text input that suggests matching options while the user types.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {
+    "keyboard": {
+      "title": "Keyboard and accessibility",
+      "arrows": "Arrow Down / Arrow Up move through the visible options (wrapping around).",
+      "enter": "Enter selects the active option (disabled options are skipped) without submitting the surrounding form.",
+      "escape": "Escape closes the dropdown and keeps focus in the input; with the dropdown already closed it clears the text (onChange receives \"\"). Inside a Modal or Popover only the dropdown closes.",
+      "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options."
+    }
+  },
+  "components": [
+    {
+      "name": "AutoComplete",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "AutoComplete"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": false,
+            "description": "Name of the input",
+            "typeText": "string"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": "Label of the input (without it, give the input an accessible name with\ninputProps[\"aria-label\"] or an enclosing FormControl label)",
+            "typeText": "string"
+          },
+          {
+            "name": "mode",
+            "type": "\"basic\" | \"custom\"",
+            "default": "\"basic\"",
+            "required": false,
+            "description": "\"basic\" renders icon / label / description; \"custom\" uses the `option`\nslot",
+            "typeText": "\"basic\" | \"custom\""
+          },
+          {
+            "name": "modelValue",
+            "type": "string",
+            "required": false,
+            "description": "Input text (controlled, `v-model`)",
+            "typeText": "string"
+          },
+          {
+            "name": "options",
+            "type": "AutoCompleteOption[]",
+            "default": "[]",
+            "required": false,
+            "description": "Options to suggest",
+            "typeText": "AutoCompleteOption[]"
+          },
+          {
+            "name": "defaultValue",
+            "type": "string",
+            "required": false,
+            "description": "Initial input value (uncontrolled)",
+            "typeText": "string"
+          },
+          {
+            "name": "groupBy",
+            "type": "((option: AutoCompleteOption) => string)",
+            "required": false,
+            "description": "Returns the group name of an option; options are grouped under headings",
+            "typeText": "((option: AutoCompleteOption) => string)"
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a loading indicator in the dropdown",
+            "typeText": "boolean"
+          },
+          {
+            "name": "inputProps",
+            "type": "Record<string, unknown>",
+            "required": false,
+            "description": "Props / attributes forwarded to the underlying Input (native\nattributes, aria-label, size, variant, prefix / suffix, clearable,\ndisabled, readOnly, listeners...)",
+            "typeText": "Record<string, unknown>"
+          },
+          {
+            "name": "emptyProps",
+            "type": "Partial<EmptyProps>",
+            "required": false,
+            "description": "Props forwarded to the default Empty state",
+            "typeText": "Partial<EmptyProps>"
+          },
+          {
+            "name": "dropdownClassName",
+            "type": "string",
+            "required": false,
+            "description": "Additional class name of the dropdown (teleported) element. It can set\nthe CSS custom properties `--auto-complete-dropdown-background`,\n`--auto-complete-option-hover-background` and\n`--auto-complete-option-highlight-background`",
+            "typeText": "string"
+          },
+          {
+            "name": "placement",
+            "type": "\"bottom\" | \"top\" | \"left\" | \"right\"",
+            "default": "\"bottom\"",
+            "required": false,
+            "description": "Preferred dropdown side; the dropdown is aligned with the input's start\nedge, is at least as wide as the input, and flips / shifts to stay in the\nviewport",
+            "typeText": "\"bottom\" | \"top\" | \"left\" | \"right\""
+          },
+          {
+            "name": "offset",
+            "type": "{ x: number; y: number; }",
+            "default": "{ x: 0, y: 4 }",
+            "required": false,
+            "description": "Dropdown offset in pixels. For top / bottom placements `y` is the gap to\nthe input and `x` shifts along it; for left / right placements `x` is\nthe gap and `y` shifts along it",
+            "typeText": "{ x: number; y: number; }"
+          },
+          {
+            "name": "animation",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Animates the dropdown when it opens",
+            "typeText": "boolean"
+          },
+          {
+            "name": "filterOption",
+            "type": "((inputValue: string, option: AutoCompleteOption) => boolean)",
+            "required": false,
+            "description": "Custom filter; by default options whose label contains the input (case-insensitive) are shown",
+            "typeText": "((inputValue: string, option: AutoCompleteOption) => boolean)"
+          },
+          {
+            "name": "sortOption",
+            "type": "((a: AutoCompleteOption, b: AutoCompleteOption) => number)",
+            "required": false,
+            "description": "Compare function used to sort the filtered options",
+            "typeText": "((a: AutoCompleteOption, b: AutoCompleteOption) => number)"
+          },
+          {
+            "name": "autoHighlight",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Makes the first enabled option active whenever the dropdown opens or the\noptions change, so Enter picks it right away",
+            "typeText": "boolean"
+          },
+          {
+            "name": "fillOnSelect",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Writes the label of the picked option into the input. Set to false to\nkeep the typed text, e.g. when picking navigates away",
+            "typeText": "boolean"
+          },
+          {
+            "name": "groupMode",
+            "type": "\"first\" | \"adjacent\"",
+            "default": "\"first\"",
+            "required": false,
+            "description": "How groupBy groups options: \"first\" collects each group at its first\nappearance; \"adjacent\" groups runs of consecutive options (a group can\nappear several times). Options whose group is \"\" get no heading",
+            "typeText": "\"first\" | \"adjacent\""
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "select",
+            "type": "[option: AutoCompleteOption]",
+            "typeText": "[option: AutoCompleteOption]",
+            "parameters": [
+              {
+                "name": "option",
+                "position": 0,
+                "typeText": "AutoCompleteOption",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "optionClick",
+            "type": "[option: AutoCompleteOption]",
+            "typeText": "[option: AutoCompleteOption]",
+            "parameters": [
+              {
+                "name": "option",
+                "position": 0,
+                "typeText": "AutoCompleteOption",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "dropdownVisibleChange",
+            "type": "[visible: boolean]",
+            "typeText": "[visible: boolean]",
+            "parameters": [
+              {
+                "name": "visible",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "submit",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "option",
+            "type": "{ option: AutoCompleteOption; }",
+            "description": "Custom option content (`mode=\"custom\"`, React `renderOption`)",
+            "typeText": "{ option: AutoCompleteOption; }"
+          },
+          {
+            "name": "empty",
+            "type": "any",
+            "description": "Custom content shown when no option matches (React `renderEmpty`)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AutoComplete": {
+      "kind": "cssVars",
+      "source": "react/src/components/AutoComplete",
+      "vars": [
+        {
+          "name": "--auto-complete-dropdown-background",
+          "description": "Background of the dropdown"
+        },
+        {
+          "name": "--auto-complete-dropdown-radius",
+          "description": "Corner radius of the dropdown (defaults to --radius-lg)"
+        },
+        {
+          "name": "--auto-complete-dropdown-max-height",
+          "description": "Maximum height of the option list before it scrolls"
+        },
+        {
+          "name": "--auto-complete-font-size",
+          "description": "Font size of the dropdown"
+        },
+        {
+          "name": "--auto-complete-option-padding-y",
+          "description": "Vertical padding of an option (follows the density's row padding)"
+        },
+        {
+          "name": "--auto-complete-option-padding-x",
+          "description": "Horizontal padding of an option and of a group label"
+        },
+        {
+          "name": "--auto-complete-option-hover-background",
+          "description": "Background of the hovered / keyboard-focused option"
+        },
+        {
+          "name": "--auto-complete-option-highlight-background",
+          "description": "Background of options with `highlight: true`"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "appearance",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/appearance.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/appearance.vue": "<script setup lang=\"ts\">\nimport { AutoComplete, type AutoCompleteOption } from \"minerva-design/vue\";\nconst options = [\n  { label: \"Low\", value: \"low\" },\n  { label: \"Medium\", value: \"medium\", highlight: true },\n  { label: \"High\", value: \"high\" },\n];\n</script>\n<template>\n  <div style=\"padding-top: 160px\">\n    <AutoComplete\n      label=\"Priority (opens above)\"\n      :options=\"options\"\n      placement=\"top\"\n      :offset=\"{ x: 0, y: 8 }\"\n      :animation=\"false\"\n      dropdown-class-name=\"vue-priority-dropdown\"\n    />\n  </div>\n</template>\n<style>\n.vue-priority-dropdown {\n  --auto-complete-dropdown-background: var(--surface-color);\n  --auto-complete-option-highlight-background: var(--warning-color-subtle);\n  --auto-complete-option-hover-background: var(--primary-color-subtle);\n}\n</style>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "appearance",
+      "description": ""
+    },
+    {
+      "id": "async-loading",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/async-loading.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/async-loading.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { AutoComplete, Button, VStack } from \"minerva-design/vue\";\nconst options = [\n  {\n    label: \"Vue\",\n    value: \"vue\",\n    description: \"Progressive framework\",\n    group: \"Frontend\",\n  },\n  {\n    label: \"Angular\",\n    value: \"angular\",\n    description: \"Application platform\",\n    group: \"Frontend\",\n  },\n  {\n    label: \"Node.js\",\n    value: \"node\",\n    description: \"JavaScript runtime\",\n    group: \"Backend\",\n  },\n];\nconst query = ref(\"\");\nconst loaded = ref(false);\nconst loading = ref(false);\nasync function load() {\n  loading.value = true;\n  await new Promise((resolve) => setTimeout(resolve, 500));\n  loaded.value = true;\n  loading.value = false;\n}\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><AutoComplete\n      v-model=\"query\"\n      label=\"Remote suggestions\"\n      :options=\"loaded ? options : []\"\n      :loading=\"loading\"\n    /><Button @click=\"load\" :loading=\"loading\">Load suggestions</Button></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "async-loading",
+      "description": ""
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { AutoComplete, VStack } from \"minerva-design/vue\";\nconst options = [\n  {\n    label: \"Vue\",\n    value: \"vue\",\n    description: \"Progressive framework\",\n    group: \"Frontend\",\n  },\n  {\n    label: \"Angular\",\n    value: \"angular\",\n    description: \"Application platform\",\n    group: \"Frontend\",\n  },\n  {\n    label: \"Node.js\",\n    value: \"node\",\n    description: \"JavaScript runtime\",\n    group: \"Backend\",\n  },\n];\nconst query = ref(\"\");\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><AutoComplete\n      v-model=\"query\"\n      label=\"Framework\"\n      :options=\"options\"\n    /><output>Search: {{ query }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/controlled.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/controlled.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { AutoComplete, type AutoCompleteOption } from \"minerva-design/vue\";\nconst text = ref(\"\");\nconst selected = ref<string | number>(\"none\");\nconst open = ref(false);\nconst options = [\n  { label: \"Paris\", value: \"par\" },\n  { label: \"London\", value: \"lon\" },\n  { label: \"Tokyo\", value: \"tyo\" },\n];\n</script>\n<template>\n  <div style=\"display: grid; gap: 8px; max-width: 320px\">\n    <AutoComplete\n      v-model=\"text\"\n      label=\"City\"\n      name=\"city\"\n      :options=\"options\"\n      @select=\"(option) => (selected = option.value)\"\n      @dropdown-visible-change=\"(value) => (open = value)\"\n    /><output\n      >Input: {{ text }} · Selected: {{ selected }} · Dropdown:\n      {{ open ? \"open\" : \"closed\" }}</output\n    >\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "controlled",
+      "description": ""
+    },
+    {
+      "id": "custom-render",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/custom-render.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/custom-render.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { AutoComplete, Badge } from \"minerva-design/vue\";\nconst options = [\n  {\n    label: \"Vue\",\n    value: \"vue\",\n    description: \"Progressive framework\",\n    group: \"Frontend\",\n  },\n  {\n    label: \"Angular\",\n    value: \"angular\",\n    description: \"Application platform\",\n    group: \"Frontend\",\n  },\n  {\n    label: \"Node.js\",\n    value: \"node\",\n    description: \"JavaScript runtime\",\n    group: \"Backend\",\n  },\n];\nconst query = ref(\"\");\n</script>\n<template>\n  <AutoComplete\n    v-model=\"query\"\n    label=\"Custom suggestions\"\n    :options=\"options\"\n    mode=\"custom\"\n    ><template #option=\"{ option }\"\n      ><strong>{{ option.label }}</strong> <Badge>{{ option.group }}</Badge>\n      <p>{{ option.description }}</p></template\n    ></AutoComplete\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "custom-render",
+      "description": ""
+    },
+    {
+      "id": "filter-sort",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/filter-sort.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/filter-sort.vue": "<script setup lang=\"ts\">\nimport { AutoComplete, type AutoCompleteOption } from \"minerva-design/vue\";\nconst options = [\n  { label: \"Germany\", value: \"de\" },\n  { label: \"Denmark\", value: \"dk\" },\n  { label: \"France\", value: \"fr\" },\n  { label: \"Finland\", value: \"fi\" },\n  { label: \"Greece\", value: \"gr\" },\n];\nconst filter = (text: string, option: AutoCompleteOption) =>\n  option.label.toLowerCase().startsWith(text.toLowerCase());\nconst sort = (a: AutoCompleteOption, b: AutoCompleteOption) =>\n  a.label.localeCompare(b.label);\n</script>\n<template>\n  <AutoComplete\n    label=\"Country (starts with)\"\n    :options=\"options\"\n    :filter-option=\"filter\"\n    :sort-option=\"sort\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "filter-sort",
+      "description": ""
+    },
+    {
+      "id": "grouped",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/grouped.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/grouped.vue": "<script setup lang=\"ts\">\nimport { AutoComplete, type AutoCompleteOption } from \"minerva-design/vue\";\nconst options = [\n  { label: \"Apple\", value: \"apple\", group: \"Fruits\" },\n  { label: \"Carrot\", value: \"carrot\", group: \"Vegetables\" },\n  { label: \"Banana\", value: \"banana\", group: \"Fruits\" },\n  { label: \"Almond\", value: \"almond\", group: \"Nuts\" },\n];\n</script>\n<template>\n  <div style=\"display: grid; gap: 16px\">\n    <AutoComplete\n      label=\"Collect matching groups\"\n      :options=\"options\"\n      :group-by=\"(option) => option.group ?? 'Other'\"\n      group-mode=\"first\"\n    /><AutoComplete\n      label=\"Preserve adjacent groups\"\n      :options=\"options\"\n      :group-by=\"(option) => option.group ?? 'Other'\"\n      group-mode=\"adjacent\"\n    />\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "grouped",
+      "description": ""
+    },
+    {
+      "id": "rich-options",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/rich-options.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/rich-options.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { AutoComplete } from \"minerva-design/vue\";\nconst options = [\n  {\n    label: \"Vue\",\n    value: \"vue\",\n    description: \"Progressive framework\",\n    group: \"Frontend\",\n  },\n  {\n    label: \"Angular\",\n    value: \"angular\",\n    description: \"Application platform\",\n    group: \"Frontend\",\n  },\n  {\n    label: \"Node.js\",\n    value: \"node\",\n    description: \"JavaScript runtime\",\n    group: \"Backend\",\n  },\n];\nconst query = ref(\"\");\n</script>\n<template>\n  <AutoComplete\n    v-model=\"query\"\n    label=\"Technology\"\n    :options=\"options\"\n    :group-by=\"(option) => option.group || 'Other'\"\n    auto-highlight\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "rich-options",
+      "description": ""
+    },
+    {
+      "id": "search-box",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/auto-complete/vue/search-box.vue",
+      "files": {
+        "apps/docs/src/docs/pages/auto-complete/vue/search-box.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { AutoComplete, type AutoCompleteOption } from \"minerva-design/vue\";\nconst query = ref(\"\");\nconst result = ref(\"\");\nconst options = [\n  { label: \"Lord of the Mysteries\", value: \"1\", description: \"Cuttlefish\" },\n  { label: \"Sword of Coming\", value: \"2\", description: \"Fenghuo\" },\n  { label: \"A Record of a Mortal\", value: \"3\", description: \"Wangyu\" },\n];\n</script>\n<template>\n  <div style=\"display: grid; gap: 8px\">\n    <AutoComplete\n      v-model=\"query\"\n      :options=\"options\"\n      auto-highlight\n      :fill-on-select=\"false\"\n      :input-props=\"{\n        'aria-label': 'Search books',\n        placeholder: 'Title or author',\n        clearable: true,\n      }\"\n      :filter-option=\"\n        (text, option) =>\n          (option.label + option.description)\n            .toLowerCase()\n            .includes(text.toLowerCase())\n      \"\n      @select=\"(book) => (result = `Open book #${book.value}`)\"\n      @submit=\"(text) => (result = `Search for ${text}`)\"\n    /><output>{{ result }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "search-box",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AutoComplete",
+      "description": "A text input that suggests matching options while the user types.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Options whose label contains the typed text are suggested; inputProps are forwarded to the input."
+        },
+        "controlled": {
+          "title": "Controlled",
+          "description": "value / onChange control the input text, onSelect reports the chosen option and onDropdownVisibleChange the dropdown state."
+        },
+        "rich-options": {
+          "title": "Icons, descriptions and states",
+          "description": "In basic mode an option can have an icon and a description, and can be highlighted or disabled."
+        },
+        "custom-render": {
+          "title": "Custom rendering",
+          "description": "Set mode=\"custom\" and renderOption to fully control how options look; renderEmpty replaces the empty state."
+        },
+        "grouped": {
+          "title": "Grouped options",
+          "description": "groupBy returns a group name for each option; groups are shown under headings in order of appearance."
+        },
+        "filter-sort": {
+          "title": "Custom filter and sort",
+          "description": "filterOption replaces the default \"contains\" matching and sortOption orders the results."
+        },
+        "async-loading": {
+          "title": "Remote search",
+          "description": "Fetch options as the user types and show loading while the request is pending."
+        },
+        "appearance": {
+          "title": "Dropdown placement and colors",
+          "description": "Customize placement, offset and animation, and recolor the dropdown, hovered and highlighted options with the --auto-complete-dropdown-background, --auto-complete-option-hover-background and --auto-complete-option-highlight-background CSS custom properties set through dropdownClassName. The dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport."
+        },
+        "search-box": {
+          "title": "Search box",
+          "description": "autoHighlight makes Enter pick the first suggestion, fillOnSelect={false} keeps the typed text, and onSubmit runs a search when no option is active."
+        }
+      },
+      "keyboard": {
+        "title": "Keyboard and accessibility",
+        "arrows": "Arrow Down / Arrow Up move through the visible options (wrapping around).",
+        "enter": "Enter selects the active option (disabled options are skipped) without submitting the surrounding form.",
+        "escape": "Escape closes the dropdown and keeps focus in the input; with the dropdown already closed it clears the text (onChange receives \"\"). Inside a Modal or Popover only the dropdown closes.",
+        "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options."
+      },
+      "api": {
+        "AutoCompleteProps": {
+          "name": "Name of the input",
+          "label": "Label of the input",
+          "mode": "\"basic\" renders icon / label / description; \"custom\" uses renderOption",
+          "value": "Input text (controlled; pair with onChange)",
+          "onChange": "Called when the input text changes (typing or selecting an option)",
+          "options": "Options to suggest",
+          "defaultValue": "Initial input value (uncontrolled)",
+          "onSelect": "Called when an option is picked (mouse or keyboard)",
+          "groupBy": "Returns the group name of an option; options are grouped under headings",
+          "renderOption": "Custom option renderer (used when mode is \"custom\")",
+          "renderEmpty": "Custom content shown when no option matches",
+          "loading": "Shows a loading indicator in the dropdown",
+          "inputProps": "Props forwarded to the underlying Input (native attributes, aria-label, size, prefix / suffix, clearable...)",
+          "emptyProps": "Props forwarded to the default Empty state",
+          "dropdownClassName": "Additional class name of the dropdown (portalled) element. It can set the --auto-complete-dropdown-background, --auto-complete-option-hover-background and --auto-complete-option-highlight-background CSS custom properties to recolor the dropdown, hovered options and highlighted options",
+          "placement": "Preferred dropdown side; the dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport",
+          "offset": "Dropdown offset in pixels: for top / bottom placements y is the gap to the input and x shifts along it; for left / right placements x is the gap",
+          "animation": "Animates the dropdown when it opens",
+          "filterOption": "Custom filter; by default options whose label contains the input (case-insensitive) are shown",
+          "sortOption": "Compare function used to sort the filtered options",
+          "onOptionClick": "Called when an option is clicked with the mouse",
+          "onDropdownVisibleChange": "Called when the dropdown opens or closes (not on mount)",
+          "ref": "Ref to the inner <input> element",
+          "onSubmit": "Called with the trimmed text when Enter is pressed while no option is active (e.g. to search)",
+          "autoHighlight": "Makes the first enabled option active whenever the dropdown opens or the options change",
+          "fillOnSelect": "Writes the label of the picked option into the input",
+          "className": "Additional class name of the root element",
+          "groupMode": "\"first\" groups options at their first appearance, \"adjacent\" groups runs of consecutive options; group \"\" has no heading"
+        },
+        "AutoCompleteOption": {
+          "label": "Text displayed for the option and written to the input when selected",
+          "value": "Unique value of the option",
+          "disabled": "Prevents the option from being selected",
+          "highlight": "Highlights the option (e.g. as a recommendation)",
+          "icon": "Icon displayed before the label (basic mode)",
+          "description": "Secondary text displayed under the label (basic mode)",
+          "group": "Free-form group identifier, typically read by groupBy",
+          "style": "Inline styles of the option"
+        }
+      },
+      "cssVars": {
+        "--auto-complete-dropdown-background": "Background of the dropdown",
+        "--auto-complete-dropdown-radius": "Corner radius of the dropdown (defaults to --radius-lg)",
+        "--auto-complete-dropdown-max-height": "Maximum height of the option list before it scrolls",
+        "--auto-complete-font-size": "Font size of the dropdown",
+        "--auto-complete-option-padding-y": "Vertical padding of an option (follows the density's row padding)",
+        "--auto-complete-option-padding-x": "Horizontal padding of an option and of a group label",
+        "--auto-complete-option-hover-background": "Background of the hovered / keyboard-focused option",
+        "--auto-complete-option-highlight-background": "Background of options with highlight: true"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Set the options JS property; typing filters them by label. Picking an option fills the input and fires minerva-select; Enter with no active option fires minerva-submit with the typed text."
+          },
+          "rich-options": {
+            "title": "Rich and grouped options",
+            "description": "Options can have an icon, a description, a highlight or be disabled; groupBy puts them under headings. auto-highlight makes the first enabled option active so Enter picks it; variant and size style the input."
+          },
+          "custom-render": {
+            "title": "Custom rendering and filtering",
+            "description": "With mode=\"custom\", renderOption returns each option's content (string, DOM node or Lit template). filterOption here also matches the email, sortOption orders by name and renderEmpty replaces the empty state."
+          },
+          "async-loading": {
+            "title": "Asynchronous loading",
+            "description": "Listen to minerva-input to fetch matches as the user types and set loading meanwhile. The prefix slot holds an icon; minerva-change reports the committed text."
+          }
+        },
+        "minerva-autocomplete": {
+          "props": {
+            "open": "Whether the dropdown is open.",
+            "placeholder": "Placeholder of the input.",
+            "size": "Size of the input.",
+            "variant": "Visual style of the input: outline, filled or unstyled.",
+            "invalid": "Error state; sets aria-invalid.",
+            "readOnly": "Read-only: focusable and submitted, but no dropdown.",
+            "noAnimation": "Disables the opening animation.",
+            "noFillOnSelect": "Keeps the typed text when an option is picked (no fill-in).",
+            "required": "The control must have a value for the form to be submitted.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled fieldset (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "<label> elements associated with the element (read-only).",
+            "validity": "Validity state, as <input>.validity (read-only).",
+            "validationMessage": "Message describing the current validation error, empty when valid (read-only).",
+            "willValidate": "Whether the element is a candidate for constraint validation (read-only)."
+          },
+          "events": {
+            "change": "The native change of the input, re-dispatched from the host (on blur after editing).",
+            "minerva-input": "The input text changed: typing, picking an option or Escape clearing (detail: { value }).",
+            "minerva-change": "The text was committed: an option filled it in, Escape cleared it, or the native change on blur (detail: { value }).",
+            "minerva-select": "An option was picked with the mouse or the keyboard (detail: { value, option }).",
+            "minerva-submit": "Enter was pressed with no active option and non-blank text (detail: { value }, trimmed).",
+            "minerva-open-change": "The dropdown opens or closes (detail: { open }); cancelable: preventDefault() keeps the current state."
+          },
+          "slots": {
+            "prefix": "Content before the text (icon).",
+            "suffix": "Content after the text."
+          },
+          "cssVars": {
+            "--input-height": "Minimum height of the field, for every size (defaults to the density's control height of the size).",
+            "--input-padding-x": "Horizontal padding of the text, for every size.",
+            "--input-radius": "Corner radius (defaults to --radius-lg).",
+            "--input-font-size": "Font size, for every size.",
+            "--input-background": "Background color of the outline variant.",
+            "--input-border-color": "Border color at rest.",
+            "--input-focus-color": "Border color while hovered or focused."
+          },
+          "methods": {
+            "focus": "Focuses the input.",
+            "blur": "Removes focus from the input.",
+            "checkValidity": "Checks validity; fires invalid when invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets (or clears, with \"\") a custom validation error.",
+            "formResetCallback": "Form lifecycle callback called by the browser on form.reset(): restores the value attribute.",
+            "formDisabledCallback": "Form lifecycle callback called by the browser when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called by the browser to restore the value (back/forward cache, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

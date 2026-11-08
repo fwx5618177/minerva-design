@@ -1,0 +1,571 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "en",
+  "renderer": "taro",
+  "page": "area-chart",
+  "title": "Area chart",
+  "description": "Filled areas that show a volume over time: smooth by default, overlapping, stacked into a total or as 100% shares. Hover to read every series at one x; zoom with Ctrl / ⌘ + wheel or a pinch.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {
+    "data": {
+      "dau": "Daily active users",
+      "dauAria": "Daily active users, April to June 2026",
+      "others": "Others",
+      "shareAria": "Market share by vendor, 2016 to 2026",
+      "sources": {
+        "organic": "Organic search",
+        "direct": "Direct",
+        "referral": "Referral",
+        "social": "Social"
+      },
+      "visitsAria": "Monthly visits by traffic source, stacked",
+      "instances": "Running instances",
+      "quota": "Quota",
+      "instancesAria": "Instances started by the autoscaler over one day",
+      "energy": {
+        "nuclear": "Nuclear",
+        "hydro": "Hydro",
+        "wind": "Wind",
+        "solar": "Solar",
+        "gas": "Gas"
+      },
+      "gw": "{{value}} GW",
+      "power": "Power",
+      "energyAria": "Electricity generation by source over one day, stacked",
+      "actual": "Actual",
+      "plan": "Plan",
+      "cumulativeAria": "Cumulative sales of the year against the plan",
+      "download": "Download",
+      "upload": "Upload",
+      "bandwidthAria": "Server bandwidth over two hours, download above zero and upload below",
+      "solarProduction": "Solar production",
+      "kwh": "{{value}} kWh",
+      "solarAria": "Daily energy of a rooftop solar installation in 2026",
+      "resetZoom": "Reset zoom",
+      "visibleTotal": "{{from}} – {{to}}: {{total}} in total, {{average}} per day on average",
+      "zoomHint": "Ctrl / ⌘ + wheel or pinch to zoom on a season, drag to pan.",
+      "departments": {
+        "engineering": "Engineering",
+        "sales": "Sales",
+        "support": "Customer support",
+        "operations": "Operations",
+        "admin": "Finance & HR"
+      },
+      "headcountAria": "Headcount per department, monthly, 2025 and 2026",
+      "headcountPanel": "Headcount of the selected month",
+      "employees": "{{value}} employees",
+      "lastYear": "Last year",
+      "thisYear": "This year",
+      "blackFriday": "Black Friday",
+      "cyberMonday": "Cyber Monday",
+      "lastShipping": "Last shipping day",
+      "seasonAria": "Daily orders in November and December, this year against last year",
+      "seasonSummary": "{{total}} orders this season, {{change}} against last year.",
+      "diskUsed": "Used",
+      "diskForecast": "Trend",
+      "gb": "{{value}} GB",
+      "capacity": "Capacity {{value}}",
+      "volume": "Volume",
+      "volumes": {
+        "database": "Database",
+        "logs": "Logs",
+        "uploads": "User uploads"
+      },
+      "fullIn": "Full in about {{days}}, around {{date}}",
+      "notFull": "Not full within the next {{days}}",
+      "diskAria": "Disk usage over 60 days with its trend up to the capacity"
+    }
+  },
+  "components": [
+    {
+      "name": "AreaChart",
+      "support": {
+        "status": "beta",
+        "notes": "Cartesian charts drawn on a Canvas 2D node by the DOM-free engine (minerva-design/charts presets): the web component props mapped to the same engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset, H5 mouse hover; ref exposes resetZoom/getView/setView/getInstance/resize. No WebGPU / WebGL renderer (one Canvas 2D path), no keyboard navigation and no React tooltip content: tooltip.render may only return text. QuadrantChart accessible points: a visually hidden list of the points (role / aria-role, aria-label with name, quadrant and values; a tap is onPointClick) with 'Move to …' buttons calling onPointDrop with the center of the neighbouring quadrant. Mini-program views take no keyboard focus, so there is no focus ring nor Shift + arrow moves, and no live region: the move is announced (role=status) on H5 only. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Cartesian charts drawn on a Canvas 2D node by the DOM-free engine (minerva-design/charts presets): the web component props mapped to the same engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset, H5 mouse hover; ref exposes resetZoom/getView/setView/getInstance/resize. No WebGPU / WebGL renderer (one Canvas 2D path), no keyboard navigation and no React tooltip content: tooltip.render may only return text. QuadrantChart accessible points: a visually hidden list of the points (role / aria-role, aria-label with name, quadrant and values; a tap is onPointClick) with 'Move to …' buttons calling onPointDrop with the center of the neighbouring quadrant. Mini-program views take no keyboard focus, so there is no focus ring nor Shift + arrow moves, and no live region: the move is announced (role=status) on H5 only. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "AreaChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as areas unless they set a `type`"
+          },
+          {
+            "name": "curve",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "enum",
+            "values": [
+              "linear",
+              "smooth",
+              "step"
+            ],
+            "typeText": "ChartCurve | undefined",
+            "typeRef": "type:9a03680a65f827285385",
+            "default": "smooth",
+            "required": false,
+            "description": "Shape of the edges: straight, smooth (monotone) or steps"
+          },
+          {
+            "name": "stacked",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stacks the areas on top of each other"
+          },
+          {
+            "name": "percent",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Scales the stacks to 100% (implies `stacked`)"
+          },
+          {
+            "name": "height",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch zoom, pan (drag when zoomed) and double-tap reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes). Mini-programs have no `<html lang>`: pass the app language"
+          },
+          {
+            "name": "labels",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "disableScroll",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Keeps the page from scrolling while a finger moves on the chart (needed to pan a zoomed chart or drag points)"
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the `<Canvas>` (generated by default)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:980cbee566a575ab834d",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the touched (or hovered) points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:054b6d565969c517cbb1",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:02c2f014ba9839a6e936",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:6871f590139907a5872c",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Area chart",
+      "description": "Filled areas that show a volume over time: smooth by default, overlapping, stacked into a total or as 100% shares. Hover to read every series at one x; zoom with Ctrl / ⌘ + wheel or a pinch.",
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "One series over Date x values: the edge is a smooth (monotone) curve that never overshoots the data."
+        },
+        "stacked": {
+          "title": "Stacked",
+          "description": "stacked piles the areas so the top edge is the total; use it when the parts add up to a meaningful whole. Click a legend item to hide a source and restack the others."
+        },
+        "percent": {
+          "title": "100% stacked",
+          "description": "percent scales every x to 100% to compare shares rather than amounts, such as a market share; the tooltip shows each value and its share."
+        },
+        "step": {
+          "title": "Step",
+          "description": "curve=\"step\" holds each value until the next one, which suits counts that change at discrete moments; an annotation marks the quota."
+        },
+        "energy-mix": {
+          "title": "Energy mix",
+          "description": "Electricity generation by source over a day, stacked: the top edge is the total demand and the solar bump shows when the other sources ramp down. Each series sets its own color."
+        },
+        "cumulative": {
+          "title": "Cumulative vs plan",
+          "description": "Running total of sales against an evenly growing plan drawn as a line series; null values leave the months still to come empty."
+        },
+        "mirrored": {
+          "title": "Mirrored in / out",
+          "description": "Download above zero and upload below it on the same scale, a common layout for network monitoring; the y format drops the sign."
+        },
+        "zoom-total": {
+          "title": "Total of the visible range",
+          "description": "onZoom reports the visible x range after every zoom and pan: the readout sums the solar energy of the days in view. The button calls resetZoom() on the chart ref."
+        },
+        "hover-panel": {
+          "title": "Readout panel",
+          "description": "tooltip={false} with crosshair and onHover: a side panel lists the headcount of every department at the hovered month, largest first, and shows the latest month when the pointer leaves."
+        },
+        "year-over-year": {
+          "title": "Year over year",
+          "description": "Last year's season drawn as a faint grey area behind this year's, on the same calendar days; text annotations name the spikes and an x line marks the last shipping day before Christmas."
+        },
+        "disk-forecast": {
+          "title": "Capacity forecast",
+          "description": "Disk usage as an area and a line series extending the trend of the last 30 days up to the capacity, marked by a y annotation; a rect shades the future and the readout gives the day the volume fills up."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Daily active users over 90 days on a time axis: the area is smooth by default; scrub along the chart to read each day, pinch to zoom."
+          }
+        }
+      },
+      "data": {
+        "dau": "Daily active users",
+        "dauAria": "Daily active users, April to June 2026",
+        "others": "Others",
+        "shareAria": "Market share by vendor, 2016 to 2026",
+        "sources": {
+          "organic": "Organic search",
+          "direct": "Direct",
+          "referral": "Referral",
+          "social": "Social"
+        },
+        "visitsAria": "Monthly visits by traffic source, stacked",
+        "instances": "Running instances",
+        "quota": "Quota",
+        "instancesAria": "Instances started by the autoscaler over one day",
+        "energy": {
+          "nuclear": "Nuclear",
+          "hydro": "Hydro",
+          "wind": "Wind",
+          "solar": "Solar",
+          "gas": "Gas"
+        },
+        "gw": "{{value}} GW",
+        "power": "Power",
+        "energyAria": "Electricity generation by source over one day, stacked",
+        "actual": "Actual",
+        "plan": "Plan",
+        "cumulativeAria": "Cumulative sales of the year against the plan",
+        "download": "Download",
+        "upload": "Upload",
+        "bandwidthAria": "Server bandwidth over two hours, download above zero and upload below",
+        "solarProduction": "Solar production",
+        "kwh": "{{value}} kWh",
+        "solarAria": "Daily energy of a rooftop solar installation in 2026",
+        "resetZoom": "Reset zoom",
+        "visibleTotal": "{{from}} – {{to}}: {{total}} in total, {{average}} per day on average",
+        "zoomHint": "Ctrl / ⌘ + wheel or pinch to zoom on a season, drag to pan.",
+        "departments": {
+          "engineering": "Engineering",
+          "sales": "Sales",
+          "support": "Customer support",
+          "operations": "Operations",
+          "admin": "Finance & HR"
+        },
+        "headcountAria": "Headcount per department, monthly, 2025 and 2026",
+        "headcountPanel": "Headcount of the selected month",
+        "employees": "{{value}} employees",
+        "lastYear": "Last year",
+        "thisYear": "This year",
+        "blackFriday": "Black Friday",
+        "cyberMonday": "Cyber Monday",
+        "lastShipping": "Last shipping day",
+        "seasonAria": "Daily orders in November and December, this year against last year",
+        "seasonSummary": "{{total}} orders this season, {{change}} against last year.",
+        "diskUsed": "Used",
+        "diskForecast": "Trend",
+        "gb": "{{value}} GB",
+        "capacity": "Capacity {{value}}",
+        "volume": "Volume",
+        "volumes": {
+          "database": "Database",
+          "logs": "Logs",
+          "uploads": "User uploads"
+        },
+        "fullIn": "Full in about {{days}}, around {{date}}",
+        "notFull": "Not full within the next {{days}}",
+        "diskAria": "Disk usage over 60 days with its trend up to the capacity"
+      },
+      "api": {
+        "AreaChartProps": {
+          "series": "Series drawn as areas unless they set a type",
+          "curve": "Shape of the edges: \"linear\", \"smooth\" (monotone) or \"step\"",
+          "stacked": "Stacks the areas on top of each other",
+          "percent": "Scales the stacks to 100% at each x (implies stacked)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "stacked": {
+            "title": "Stacked areas",
+            "description": "Three traffic sources piled up with smooth edges (the default curve)."
+          },
+          "percent": {
+            "title": "100% stacked",
+            "description": "percent scales every stack to 100%: the share of each energy source through the day, with straight edges."
+          }
+        },
+        "minerva-area-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

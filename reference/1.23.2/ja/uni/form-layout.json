@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "ja",
+  "renderer": "uni",
+  "page": "form-layout",
+  "title": "FormLayout フォームレイアウト",
+  "description": "フィールドをレスポンシブグリッドに配置するネイティブ form。送信・リセット・検証はネイティブの挙動のままです。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "FormLayout",
+      "support": {
+        "status": "beta",
+        "notes": "Native form submit/reset detail and all ResponsiveGrid responsive column/gap props. Native form serialization/event detail replaces browser FormData and HTMLFormElement refs. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native form submit/reset detail and all ResponsiveGrid responsive column/gap props. Native form serialization/event detail replaces browser FormData and HTMLFormElement refs. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "FormLayout"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "columns",
+            "typeText": "number | { base?: number | undefined; sm?: number | undefined; md?: number | undefined; lg?: number | undefined; } | undefined",
+            "required": false
+          },
+          {
+            "name": "gap",
+            "typeText": "string | number | undefined",
+            "required": false
+          },
+          {
+            "name": "rowGap",
+            "typeText": "string | number | undefined",
+            "required": false
+          },
+          {
+            "name": "columnGap",
+            "typeText": "string | number | undefined",
+            "required": false
+          },
+          {
+            "name": "reportSubmit",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "submit",
+            "typeText": "[detail: unknown]",
+            "parameters": [
+              {
+                "name": "detail",
+                "position": 0,
+                "typeText": "unknown",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "reset",
+            "typeText": "[]",
+            "parameters": []
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:FormLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/FormLayout",
+      "vars": [
+        {
+          "name": "--form-layout-max-width",
+          "description": "Maximum width of the form (none by default)"
+        },
+        {
+          "name": "--form-layout-margin-inline",
+          "description": "Inline margin of the form (set auto with a max width to center it)"
+        },
+        {
+          "name": "--form-layout-padding",
+          "description": "Inner padding of the form"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "FormLayout フォームレイアウト",
+      "description": "フィールドをレスポンシブグリッドに配置するネイティブ form。送信・リセット・検証はネイティブの挙動のままです。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "columns はフォーム自身の幅に従い、GridItem fullWidth asChild はラッパーなしで FormField を行全体に広げます。"
+        },
+        "gaps": {
+          "title": "間隔",
+          "description": "gap・rowGap・columnGap はスペーシングトークンまたは CSS 値を受け付けます。"
+        }
+      },
+      "api": {
+        "FormLayoutProps": {
+          "columns": "内部 ResponsiveGrid の列数：数値または `{ base, sm, md, lg }`（コンテナ幅 480 / 768 / 1200px）。1〜12 の整数",
+          "gap": "フィールド間の間隔：数値と数値文字列はスペーシングトークン、その他の文字列は CSS 値",
+          "rowGap": "行間隔。既定は `gap`",
+          "columnGap": "列間隔。既定は `gap`",
+          "ref": "<form> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--form-layout-max-width": "フォームの最大幅（既定は制限なし）",
+        "--form-layout-margin-inline": "フォームのインライン方向のマージン（最大幅と組み合わせて auto にすると中央寄せ）",
+        "--form-layout-padding": "フォームの内側の余白"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "レイアウトはネイティブの <form> の中に置きます。送信・リセット・検証はネイティブのままです。columns=\"1 2\" は狭いコンテナーで 1 列、480px 以上で 2 列。minerva-grid-item full-width は 1 行全体を占めます。"
+          },
+          "gaps": {
+            "title": "列と間隔",
+            "description": "gap は両方向の間隔を設定し、row-gap と column-gap で個別に上書きできます（スペーシングトークンの数値または CSS の長さ）。ネイティブのフィールドでも使えます。"
+          }
+        },
+        "minerva-form-layout": {
+          "slots": {
+            "default": "フィールド。"
+          },
+          "cssVars": {
+            "--responsive-grid-align-items": "行内でのフィールドの垂直方向の配置（既定値: stretch）。",
+            "--responsive-grid-justify-items": "列内でのフィールドの水平方向の配置（既定値: stretch）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

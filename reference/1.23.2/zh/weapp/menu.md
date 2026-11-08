@@ -1,0 +1,355 @@
+# Menu 菜单
+
+从按钮（Menu）或右键（ContextMenu）打开的操作菜单：支持图标、快捷键、分隔线、分组、复选项、单选组、子菜单、输入查找和完整的键盘操作（Enter、Space 或 ArrowDown 打开并聚焦第一项，ArrowUp 聚焦最后一项；方向键循环并跳过禁用项，Home / End，Tab 关闭菜单，Escape 将焦点还给触发器）。如需从列表中选择值，请使用 Select。
+
+Package: minerva-design@1.23.2
+
+Renderer: weapp
+
+Locale: zh
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.23.2",
+  "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+  "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+  "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.23.2/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## ContextMenu
+
+Support: beta
+
+Long-press native context anchor with measured viewport clamping; full Menu nested/action/checkbox/radio-group/group/separator schema and configure callbacks. Native long press replaces browser right-click and keyboard context-menu event; no DOM focus trap. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/dist/weapp/context-menu/index",
+  "exports": [],
+  "kind": "usingComponents"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "items",
+    "typeText": "array",
+    "required": false
+  },
+  {
+    "name": "disabled",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "closeOnSelect",
+    "typeText": "boolean",
+    "required": false,
+    "default": true
+  },
+  {
+    "name": "open",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "defaultOpen",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "triggered",
+    "typeText": "boolean",
+    "required": false,
+    "default": true
+  },
+  {
+    "name": "size",
+    "typeText": "string",
+    "required": false,
+    "default": "medium"
+  },
+  {
+    "name": "modal",
+    "typeText": "boolean",
+    "required": false,
+    "default": true
+  },
+  {
+    "name": "dir",
+    "typeText": "string",
+    "required": false,
+    "default": "ltr"
+  },
+  {
+    "name": "ariaLabel",
+    "typeText": "string",
+    "required": false,
+    "default": "Context menu"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "change",
+    "typeText": "{ value: unknown }",
+    "description": "Requested next value; a controlled owner must publish the accepted prop."
+  },
+  {
+    "name": "openchange",
+    "typeText": "{ open: boolean }",
+    "description": "Requested visible state; controlled owners may reject it."
+  },
+  {
+    "name": "select",
+    "typeText": "{ value: string; item: unknown }",
+    "description": "Original activated action item."
+  },
+  {
+    "name": "checkedchange",
+    "typeText": "{ key: string; checked: boolean; item: unknown }",
+    "description": "Checkbox item state request."
+  },
+  {
+    "name": "valuechange",
+    "typeText": "{ key: string; value: string; item: unknown }",
+    "description": "Radio group state request."
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "default"
+  }
+]
+```
+
+## Menu
+
+Support: beta
+
+Nested action expansion; groups/separators; controlled/default checkbox and radio-group ownership; original item select payload; disabled/danger/icon/shortcut rows; optional trigger slot and controlled/default open; configure callbacks. Use triggered=true with the trigger slot for a popup, or the default inline native menu panel. Pointer-hover submenus, DOM portals and focus traps are not native mini interactions. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/dist/weapp/menu/index",
+  "exports": [],
+  "kind": "usingComponents"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "disabled",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "readOnly",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "items",
+    "typeText": "array",
+    "required": false
+  },
+  {
+    "name": "value",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "open",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "defaultOpen",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "triggered",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "closeOnSelect",
+    "typeText": "boolean",
+    "required": false,
+    "default": true
+  },
+  {
+    "name": "size",
+    "typeText": "string",
+    "required": false,
+    "default": "medium"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "change",
+    "typeText": "{ value: unknown }",
+    "description": "Requested next value; a controlled owner must publish the accepted prop."
+  },
+  {
+    "name": "openchange",
+    "typeText": "{ open: boolean }",
+    "description": "Requested visible state; controlled owners may reject it."
+  },
+  {
+    "name": "select",
+    "typeText": "{ value: string; item: unknown }",
+    "description": "Original activated action item."
+  },
+  {
+    "name": "checkedchange",
+    "typeText": "{ key: string; checked: boolean; item: unknown }",
+    "description": "Checkbox item state request."
+  },
+  {
+    "name": "valuechange",
+    "typeText": "{ key: string; value: string; item: unknown }",
+    "description": "Radio group state request."
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "trigger"
+  },
+  {
+    "name": "default"
+  }
+]
+```
+
+## MenuCheckboxItem
+
+Support: n/a
+
+Data API rather than a standalone component. Menu.items entries with type: "checkbox", checked/defaultChecked and disabled; uni emits checkedChange and WeApp emits checkedchange (or configure({ onCheckedChange })).
+
+## MenuGroup
+
+Support: n/a
+
+Data API rather than a standalone component. Menu.items entries with type: "group", label and nested items.
+
+## MenuItem
+
+Support: n/a
+
+Data API rather than a standalone component. Menu.items: { key, label, disabled, shortcut, children }; children opens a submenu and the parent emits select/change.
+
+## MenuLabel
+
+Support: n/a
+
+Data API rather than a standalone component. A noninteractive heading in Menu.items: { type: "group", key, label, items: [] }; it is rendered as text, not a selectable action.
+
+## MenuRadioItem
+
+Support: n/a
+
+Data API rather than a standalone component. Menu.items entries with type: "radio-group" and items: [{ value, label, disabled }]; the group owns value/defaultValue; uni emits valueChange and WeApp emits valuechange (or configure({ onValueChange })).
+
+## MenuSeparator
+
+Support: n/a
+
+Data API rather than a standalone component. Menu.items entries with type: "separator" render a noninteractive separator.
+
+## CSS variables
+
+```json
+{
+  "css:Menu": {
+    "kind": "cssVars",
+    "source": "react/src/components/Menu",
+    "vars": [
+      {
+        "name": "--menu-min-width",
+        "description": "Minimum width of the menu panel"
+      },
+      {
+        "name": "--menu-max-width",
+        "description": "Maximum width of the menu panel"
+      },
+      {
+        "name": "--menu-max-height",
+        "description": "Maximum height of the menu panel (scrolls beyond)"
+      },
+      {
+        "name": "--menu-padding",
+        "description": "Inner padding of the menu panel"
+      },
+      {
+        "name": "--menu-radius",
+        "description": "Corner radius of the menu panel (defaults to --radius-lg)"
+      },
+      {
+        "name": "--menu-shadow",
+        "description": "Shadow of the menu panel (defaults to --shadow-md)"
+      },
+      {
+        "name": "--menu-item-height",
+        "description": "Minimum height of an item (every size; defaults to the density's control height)"
+      },
+      {
+        "name": "--menu-z-index",
+        "description": "Stacking order of the menu panel (defaults to --z-popover)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

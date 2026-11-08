@@ -1,0 +1,580 @@
+# Histogram
+
+The distribution of raw samples in bins of equal width, from a few hundred values to millions.
+
+Package: minerva-design@1.23.2
+
+Renderer: native
+
+Locale: en
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.23.2",
+  "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+  "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+  "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.23.2/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+Requests
+
+Distribution of one million request latencies with p50, p95 and p99
+
+Binning rule
+
+Auto
+
+Sturges
+
+10 bins
+
+40 bins
+
+Students
+
+Score
+
+Distribution of the exam scores
+
+Customers
+
+Age
+
+Age distribution of the customers
+
+Control
+
+New onboarding
+
+Session duration (minutes)
+
+Session durations of the two groups of an A/B test
+
+Normal fit
+
+LSL
+
+USL
+
+Nominal
+
+Tool adjusted
+
+Mean {{mean}}, σ {{sd}}, Cpk {{cpk}}, {{ppm}} ppm out of tolerance:
+
+capable
+
+not capable
+
+Parts
+
+Diameter
+
+Distribution of the shaft diameters with the specification limits and a fitted normal curve
+
+Free shipping
+
+Median {{value}}
+
+p99 {{value}}
+
+{{share}} of the orders reach the free shipping threshold of {{threshold}}.
+
+Orders
+
+Order value (log scale)
+
+Distribution of the order values on a logarithmic scale
+
+Pause
+
+Resume
+
+Reset
+
+{{share}} of the calls answered within {{target}}, p90 {{p90}}:
+
+target met
+
+target missed
+
+Calls
+
+Wait time
+
+Target
+
+p90
+
+Live distribution of the wait times of the last 600 support calls
+
+{{share}} of the employees
+
+{{value}} employees ({{share}})
+
+Click for the cumulative share
+
+Click a bar to see the share of employees with a shorter commute.
+
+{{share}} of the employees ({{employees}}) commute {{limit}} or less.
+
+Employees
+
+One-way commute
+
+Distribution of the commute times of the employees
+
+## HistogramChart
+
+Support: beta
+
+Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/native",
+  "exports": [
+    "HistogramChart"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "values",
+    "source": "packages/native/src/components/Charts/types.ts",
+    "kind": "object",
+    "typeText": "ArrayLike<number>",
+    "typeRef": "type:44dd641637ae8002a767",
+    "required": true,
+    "description": "Raw samples (typed arrays are counted without copies)"
+  },
+  {
+    "name": "name",
+    "source": "packages/native/src/components/Charts/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "default": "Count",
+    "required": false,
+    "description": "Name of the counts (legend, tooltip)"
+  },
+  {
+    "name": "color",
+    "source": "packages/native/src/components/Charts/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Bar color (any CSS color)"
+  },
+  {
+    "name": "formatBin",
+    "source": "packages/native/src/components/Charts/types.ts",
+    "kind": "function",
+    "typeText": "((value: number) => string) | undefined",
+    "typeRef": "type:27fc14e3f8aa07e4097e",
+    "parameters": [
+      {
+        "name": "value",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "number",
+        "typeRef": "type:7d1137535c313783dadd"
+      }
+    ],
+    "returnType": {
+      "typeText": "string",
+      "typeRef": "type:e15e314d298fc0d116fc"
+    },
+    "required": false,
+    "description": "Formats the edges of the bins in the tooltip"
+  },
+  {
+    "name": "series",
+    "source": "packages/native/src/components/Charts/types.ts",
+    "kind": "array",
+    "typeText": "readonly ChartSeries[] | undefined",
+    "typeRef": "type:f8b682a7983af505585d",
+    "required": false,
+    "description": "More series drawn over the bins (e.g. a density `line`)"
+  },
+  {
+    "name": "height",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "union",
+    "typeText": "DimensionValue | undefined",
+    "typeRef": "type:cd08f9fa3f57e56425b7",
+    "default": 320,
+    "required": false,
+    "description": "Height of the chart (the legend included)"
+  },
+  {
+    "name": "width",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "union",
+    "typeText": "DimensionValue | undefined",
+    "typeRef": "type:cd08f9fa3f57e56425b7",
+    "default": "100%",
+    "required": false,
+    "description": "Width of the chart"
+  },
+  {
+    "name": "xAxis",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "object",
+    "typeText": "ChartAxisOptions | undefined",
+    "typeRef": "type:6eb50d4f419370a826a4",
+    "required": false,
+    "description": "X axis"
+  },
+  {
+    "name": "yAxis",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "object",
+    "typeText": "ChartAxisOptions | undefined",
+    "typeRef": "type:6eb50d4f419370a826a4",
+    "required": false,
+    "description": "Y axis"
+  },
+  {
+    "name": "legend",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "union",
+    "typeText": "boolean | ChartLegendOptions | undefined",
+    "typeRef": "type:860fa553ee4deaac43f8",
+    "required": false,
+    "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+  },
+  {
+    "name": "tooltip",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "union",
+    "typeText": "boolean | ChartTooltipOptions | undefined",
+    "typeRef": "type:c08795b3492e4547d570",
+    "required": false,
+    "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+  },
+  {
+    "name": "crosshair",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "required": false,
+    "description": "Vertical guide line following the finger"
+  },
+  {
+    "name": "annotations",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "array",
+    "typeText": "readonly ChartAnnotation[] | undefined",
+    "typeRef": "type:f440eb8a958892b1b0c2",
+    "required": false,
+    "description": "Background areas, reference lines and texts"
+  },
+  {
+    "name": "interaction",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "union",
+    "typeText": "boolean | ChartInteractionOptions | undefined",
+    "typeRef": "type:f4b160d7dd18649fd178",
+    "default": true,
+    "required": false,
+    "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+  },
+  {
+    "name": "padding",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "object",
+    "typeText": "ChartPadding | undefined",
+    "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+    "required": false,
+    "description": "Space around the plot area, in pixels"
+  },
+  {
+    "name": "palette",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "array",
+    "typeText": "readonly string[] | undefined",
+    "typeRef": "type:88dcb55e82bb1c501478",
+    "required": false,
+    "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+  },
+  {
+    "name": "ariaLabel",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Accessible name of the chart"
+  },
+  {
+    "name": "locale",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+  },
+  {
+    "name": "labels",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "object",
+    "typeText": "Partial<ChartLabels> | undefined",
+    "typeRef": "type:14c31fd72a2c2ac7a7fd",
+    "required": false,
+    "description": "Overrides of the built-in texts of the `locale`"
+  },
+  {
+    "name": "renderTooltip",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "node",
+    "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+    "typeRef": "type:66d650d38e6b7d308d32",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ChartHoverEvent",
+        "typeRef": "type:9ad3ae3816f8ca4e3894"
+      }
+    ],
+    "returnType": {
+      "typeText": "ReactNode",
+      "typeRef": "type:d947e2db6b7ed3e4c192"
+    },
+    "required": false,
+    "description": "React content of the tooltip (replaces the default content)"
+  },
+  {
+    "name": "testID",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Test identifier of the root view"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "onHover",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "function",
+    "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+    "typeRef": "type:170f27b8f07028fffd08",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ChartHoverEvent | null",
+        "typeRef": "type:92ec77c4587c7e27430b"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called when the highlighted points change"
+  },
+  {
+    "name": "onPointClick",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "function",
+    "typeText": "((event: ChartHoverEvent) => void) | undefined",
+    "typeRef": "type:d586363317763d2fd3f3",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ChartHoverEvent",
+        "typeRef": "type:9ad3ae3816f8ca4e3894"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called when a point (or bar) is tapped"
+  },
+  {
+    "name": "onPlotClick",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "function",
+    "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+    "typeRef": "type:3ab7d8ab926fce010082",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ChartPlotClickEvent",
+        "typeRef": "type:db60e2cf00fabb558740"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called when the plot area is tapped where there is no point"
+  },
+  {
+    "name": "onZoom",
+    "source": "packages/native/src/components/Chart/types.ts",
+    "kind": "function",
+    "typeText": "((view: ChartView) => void) | undefined",
+    "typeRef": "type:e6c98e88ed542ed60f34",
+    "parameters": [
+      {
+        "name": "view",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ChartView",
+        "typeRef": "type:f1de933b453f8db86ff3"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called when the user zooms or pans"
+  }
+]
+```
+
+## API
+
+```json
+{
+  "native:HistogramChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of HistogramChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps",
+      "BinOptions"
+    ],
+    "props": [
+      {
+        "name": "values",
+        "type": "ArrayLike<number>",
+        "required": true,
+        "description": "Raw samples (typed arrays are counted without copies)"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "\"Count\"",
+        "description": "Name of the counts (legend, tooltip)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Bar color (any CSS color)"
+      },
+      {
+        "name": "formatBin",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the edges of the bins in the tooltip"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": false,
+        "description": "More series drawn over the bins (e.g. a density `line`)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: basic
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/histogram-chart/native/basic.tsx
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { HistogramChart } from "minerva-design/native";
+
+// Ages of 5,000 customers (a deterministic pseudo-random sample)
+const ages = (() => {
+  let seed = 21;
+  const random = () => {
+    seed = (seed * 16807) % 2147483647;
+    return seed / 2147483647;
+  };
+  return Int32Array.from({ length: 5000 }, () =>
+    Math.round(
+      random() < 0.6 ? 22 + random() * 18 + random() * 6 : 35 + random() * 40,
+    ),
+  );
+})();
+
+export default function Basic() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.histogram-chart.data",
+  });
+  return (
+    <HistogramChart
+      height={260}
+      locale={i18n.language}
+      values={ages}
+      domain={[15, 85]}
+      bins={14}
+      name={t("customers")}
+      color="var(--chart-series-2, #10b981)"
+      xAxis={{ title: t("age") }}
+      ariaLabel={t("agesAria")}
+    />
+  );
+}
+
+```

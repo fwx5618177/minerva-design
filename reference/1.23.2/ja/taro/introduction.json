@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "ja",
+  "renderer": "taro",
+  "page": "introduction",
+  "title": "はじめに",
+  "description": "Minerva の考え方、コンポーネントページの読み方、すべてのコンポーネントに共通する規約。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {
+    "principles": {
+      "title": "設計原則",
+      "tokens": {
+        "title": "トークン駆動",
+        "text": "色・角丸・影は CSS カスタムプロパティから取得されるため、どのコンポーネントも現在のテーマ（独自テーマを含む）に追従します。"
+      },
+      "accessible": {
+        "title": "標準でアクセシブル",
+        "text": "ネイティブでセマンティックな要素を描画し、キーボード操作に対応し、見やすいフォーカスリングを表示し、表示ラベルがない場合に備えて aria-label を提供します。"
+      },
+      "predictable": {
+        "title": "予測しやすい API",
+        "text": "同じプロパティ名（variant、size、shape、disabled、loading など）はどのコンポーネントでも同じ意味を持ちます。"
+      },
+      "small": {
+        "title": "小さく組み合わせやすい",
+        "text": "コンポーネントは 1 つの役割に集中し、className と style を受け付けるため、独自のレイアウトやスタイルと簡単に組み合わせられます。"
+      }
+    },
+    "reading": {
+      "title": "コンポーネントページの読み方",
+      "text": "各コンポーネントページは同じ構成になっています：",
+      "import": "コンポーネントの正確な import 文。グローバルスタイルシートはここでは繰り返しません。アプリのエントリで一度だけ読み込みます（「インストール」を参照）。",
+      "examples": "各機能を網羅したライブデモ。「コードを表示」で完全なソースを確認できます。各デモは自己完結しており、そのままコピーして使えます。デモは操作の結果を Minerva 自身のコンポーネント（トースト、ダイアログ、インラインの結果表示）でページ上に示し、ブラウザのアラートやコンソールは使いません。",
+      "api": "コンポーネントの TypeScript 型から生成された表。各プロパティの型、デフォルト値、説明を記載しています。"
+    },
+    "conventions": {
+      "title": "規約",
+      "controlled": {
+        "title": "制御・非制御",
+        "text": "フォーム系コンポーネントは自身で状態を管理する（defaultChecked / defaultValue を渡すか何も渡さない）ことも、制御する（checked / value と onChange を一緒に渡す）こともできます。コンポーネントの生存中に 2 つのモードを切り替えないでください。"
+      },
+      "passthrough": {
+        "title": "className と style",
+        "text": "コンポーネントはルート要素で className（多くの場合 style も）を受け付けます。Button のようにネイティブ要素をラップするコンポーネントは、ネイティブ属性（type、name、data-*、aria-* など）もそのまま渡します。"
+      },
+      "aria": {
+        "title": "アクセシブルな名前",
+        "text": "表示テキストのないコントロール（アイコンボタン、検索ボタン、閉じるアイコンなど）には、aria-label プロパティでアクセシブルな名前を付けてください。操作可能な要素にそのまま渡されます。"
+      }
+    },
+    "browsers": {
+      "title": "ブラウザサポート",
+      "text": "Minerva は現行のエバーグリーンブラウザ（Chrome・Edge 111+、Firefox 113+、Safari 16.2+）を対象としています。テーマは CSS カスタムプロパティと color-mix() に依存しており、Internet Explorer はサポートしません。サーバーサイドレンダリングも可能で、テーマは React のマウント後にクライアントで適用されます。"
+    },
+    "contributing": {
+      "title": "コントリビュート",
+      "text": "Minerva は MIT ライセンスのオープンソースです。バグ報告、アイデア、プルリクエストを GitHub でお待ちしています："
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { useState } from \"react\";\nimport { Switch } from \"minerva-design\";\n\n// Uncontrolled: the component keeps its own state\n<Switch label=\"Wi-Fi\" defaultChecked />;\n\n// Controlled: you own the state and update it in onChange\nfunction Controlled() {\n  const [on, setOn] = useState(false);\n  return <Switch label=\"Bluetooth\" checked={on} onChange={setOn} />;\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Button, IconButton } from \"minerva-design\";\nimport { IoTrashOutline } from \"react-icons/io5\";\n\n<Button className=\"my-button\" style={{ minWidth: 120 }} type=\"submit\">\n  Save\n</Button>;\n\n// icon-only controls need an accessible name\n<IconButton icon={<IoTrashOutline />} aria-label=\"Delete item\" />;",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "はじめに",
+      "description": "Minerva の考え方、コンポーネントページの読み方、すべてのコンポーネントに共通する規約。",
+      "principles": {
+        "title": "設計原則",
+        "tokens": {
+          "title": "トークン駆動",
+          "text": "色・角丸・影は CSS カスタムプロパティから取得されるため、どのコンポーネントも現在のテーマ（独自テーマを含む）に追従します。"
+        },
+        "accessible": {
+          "title": "標準でアクセシブル",
+          "text": "ネイティブでセマンティックな要素を描画し、キーボード操作に対応し、見やすいフォーカスリングを表示し、表示ラベルがない場合に備えて aria-label を提供します。"
+        },
+        "predictable": {
+          "title": "予測しやすい API",
+          "text": "同じプロパティ名（variant、size、shape、disabled、loading など）はどのコンポーネントでも同じ意味を持ちます。"
+        },
+        "small": {
+          "title": "小さく組み合わせやすい",
+          "text": "コンポーネントは 1 つの役割に集中し、className と style を受け付けるため、独自のレイアウトやスタイルと簡単に組み合わせられます。"
+        }
+      },
+      "reading": {
+        "title": "コンポーネントページの読み方",
+        "text": "各コンポーネントページは同じ構成になっています：",
+        "import": "コンポーネントの正確な import 文。グローバルスタイルシートはここでは繰り返しません。アプリのエントリで一度だけ読み込みます（「インストール」を参照）。",
+        "examples": "各機能を網羅したライブデモ。「コードを表示」で完全なソースを確認できます。各デモは自己完結しており、そのままコピーして使えます。デモは操作の結果を Minerva 自身のコンポーネント（トースト、ダイアログ、インラインの結果表示）でページ上に示し、ブラウザのアラートやコンソールは使いません。",
+        "api": "コンポーネントの TypeScript 型から生成された表。各プロパティの型、デフォルト値、説明を記載しています。"
+      },
+      "conventions": {
+        "title": "規約",
+        "controlled": {
+          "title": "制御・非制御",
+          "text": "フォーム系コンポーネントは自身で状態を管理する（defaultChecked / defaultValue を渡すか何も渡さない）ことも、制御する（checked / value と onChange を一緒に渡す）こともできます。コンポーネントの生存中に 2 つのモードを切り替えないでください。"
+        },
+        "passthrough": {
+          "title": "className と style",
+          "text": "コンポーネントはルート要素で className（多くの場合 style も）を受け付けます。Button のようにネイティブ要素をラップするコンポーネントは、ネイティブ属性（type、name、data-*、aria-* など）もそのまま渡します。"
+        },
+        "aria": {
+          "title": "アクセシブルな名前",
+          "text": "表示テキストのないコントロール（アイコンボタン、検索ボタン、閉じるアイコンなど）には、aria-label プロパティでアクセシブルな名前を付けてください。操作可能な要素にそのまま渡されます。"
+        }
+      },
+      "browsers": {
+        "title": "ブラウザサポート",
+        "text": "Minerva は現行のエバーグリーンブラウザ（Chrome・Edge 111+、Firefox 113+、Safari 16.2+）を対象としています。テーマは CSS カスタムプロパティと color-mix() に依存しており、Internet Explorer はサポートしません。サーバーサイドレンダリングも可能で、テーマは React のマウント後にクライアントで適用されます。"
+      },
+      "contributing": {
+        "title": "コントリビュート",
+        "text": "Minerva は MIT ライセンスのオープンソースです。バグ報告、アイデア、プルリクエストを GitHub でお待ちしています："
+      }
+    }
+  }
+}

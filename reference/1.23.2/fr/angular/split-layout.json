@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "split-layout",
+  "title": "SplitLayout",
+  "description": "Contenu principal avec un panneau latéral facultatif placé à côté dès que la largeur de la mise en page atteint un seuil.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SplitLayout",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSplitLayout. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSplitLayout. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSplitLayout"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-split-layout, [mnSplitLayout]",
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          },
+          {
+            "name": "[mnAside]"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:SplitLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/SplitLayout",
+      "vars": [
+        {
+          "name": "--split-layout-align-items",
+          "description": "Vertical alignment of the main and aside columns (default: start)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "content-and-aside",
+      "title": "Content and aside",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSplitLayout } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSplitLayout],\n  template: `\n<mn-split-layout><article><h3>Main content</h3><p>The primary reading area grows with its container.</p></article><aside mnAside>Related details and navigation.</aside></mn-split-layout>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "operational-sidebar",
+      "title": "Operational sidebar",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSplitLayout, MnCard } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSplitLayout, MnCard],\n  template: `\n<mn-split-layout><mn-card>Project overview</mn-card><mn-card mnAside variant=\"filled\">Status: Active</mn-card></mn-split-layout>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SplitLayout",
+      "description": "Contenu principal avec un panneau latéral facultatif placé à côté dès que la largeur de la mise en page atteint un seuil.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Un panneau de 320px se place à côté à partir de 768px de conteneur et s'empile en dessous ; le contenu principal reste premier dans le DOM."
+        },
+        "options": {
+          "title": "Largeur, seuil et espace",
+          "description": "asideWidth, collapseBelow=\"lg\" (1200px) et gap personnalisent la division."
+        }
+      },
+      "api": {
+        "SplitLayoutProps": {
+          "ref": "Ref vers le div externe",
+          "aside": "Contenu secondaire après la zone principale ; null, undefined et false l'omettent (0 est un contenu valide)",
+          "asideWidth": "Largeur du panneau en pixels en mode divisé (piste min(asideWidth, 50%)) ; doit être finie et positive",
+          "collapseBelow": "Divise à partir de 768px (md) ou 1200px (lg) de conteneur et empile en dessous",
+          "gap": "Espace entre les zones (jeton ou valeur CSS)"
+        }
+      },
+      "cssVars": {
+        "--split-layout-align-items": "Alignement vertical des colonnes principale et latérale (par défaut start)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Le contenu principal dans le slot par défaut, le contenu secondaire dans le slot aside. L'aside se place à côté dès que la mise en page atteint 768px de large, et s'empile après en dessous."
+          },
+          "options": {
+            "title": "Largeur, point de rupture et espacement",
+            "description": "aside-width fixe la colonne secondaire (50 % au maximum), collapse-below=\"lg\" attend 1200px pour séparer, gap utilise les jetons d'espacement. Faites glisser le curseur pour redimensionner le conteneur."
+          }
+        },
+        "minerva-split-layout": {
+          "slots": {
+            "default": "Contenu principal.",
+            "aside": "Contenu secondaire, après le principal dans l'ordre de lecture."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

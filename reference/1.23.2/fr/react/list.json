@@ -1,0 +1,452 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "list",
+  "title": "List",
+  "description": "Listes opérationnelles sobres sur ul / li natifs, avec texte principal et secondaire, icône décorative et actions en fin de ligne.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Cell",
+      "support": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      }
+    },
+    {
+      "name": "CellGroup",
+      "support": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      }
+    },
+    {
+      "name": "List",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "List"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "density",
+            "source": "packages/react/src/components/List/types.ts",
+            "kind": "enum",
+            "values": [
+              "comfortable",
+              "compact",
+              "default"
+            ],
+            "typeText": "ListDensity | undefined",
+            "typeRef": "type:a6dbabc2f84a66e7026d",
+            "default": "default",
+            "required": false,
+            "description": "Minimum row height and vertical padding (56px / 12px, 40px / 8px or 72px / 16px)"
+          },
+          {
+            "name": "bordered",
+            "source": "packages/react/src/components/List/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Frames the list as a card (full border, rounded corners, surface background) whose rows are tinted on hover and while a control inside them has the focus"
+          },
+          {
+            "name": "dividers",
+            "source": "packages/react/src/components/List/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Draws token-colored separators between adjacent rows"
+          },
+          {
+            "name": "role",
+            "source": "packages/react/src/components/List/types.ts",
+            "kind": "union",
+            "typeText": "AriaRole | undefined",
+            "typeRef": "type:40806c1dba45f4ea6730",
+            "default": "list",
+            "required": false,
+            "description": "List role; kept explicit so Safari / VoiceOver keep list semantics after the markers are removed"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ListItem",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "ListItem"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "primary",
+            "source": "packages/react/src/components/List/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": true,
+            "description": "Main content (medium weight)"
+          },
+          {
+            "name": "secondary",
+            "source": "packages/react/src/components/List/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Supporting content, muted and smaller (0 is rendered)"
+          },
+          {
+            "name": "icon",
+            "source": "packages/react/src/components/List/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Decorative leading slot, hidden from assistive technologies"
+          },
+          {
+            "name": "actions",
+            "source": "packages/react/src/components/List/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Trailing controls, owned by the caller (bounded to 50% of the row)"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "ListProps": {
+      "source": "react/src/components/List/types.ts",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLUListElement>"
+      ],
+      "props": [
+        {
+          "name": "density",
+          "type": "ListDensity",
+          "required": false,
+          "default": "\"default\"",
+          "description": "Minimum row height and vertical padding (56px / 12px, 40px / 8px or 72px / 16px)"
+        },
+        {
+          "name": "bordered",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Frames the list as a card (full border, rounded corners, surface background) whose rows are tinted on hover and while a control inside them has the focus"
+        },
+        {
+          "name": "dividers",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Draws token-colored separators between adjacent rows"
+        },
+        {
+          "name": "role",
+          "type": "React.AriaRole",
+          "required": false,
+          "default": "\"list\"",
+          "description": "List role; kept explicit so Safari / VoiceOver keep list semantics after the markers are removed"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLUListElement>",
+          "required": false,
+          "description": "Ref to the <ul> element"
+        }
+      ]
+    },
+    "ListItemProps": {
+      "source": "react/src/components/List/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<LiHTMLAttributes<HTMLLIElement>, \"children\">"
+      ],
+      "props": [
+        {
+          "name": "primary",
+          "type": "React.ReactNode",
+          "required": true,
+          "description": "Main content (medium weight)"
+        },
+        {
+          "name": "secondary",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Supporting content, muted and smaller (0 is rendered)"
+        },
+        {
+          "name": "icon",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Decorative leading slot, hidden from assistive technologies"
+        },
+        {
+          "name": "actions",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Trailing controls, owned by the caller (bounded to 50% of the row)"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLLIElement>",
+          "required": false,
+          "description": "Ref to the <li> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:List": {
+      "kind": "cssVars",
+      "source": "react/src/components/List",
+      "vars": [
+        {
+          "name": "--list-item-min-height",
+          "description": "Minimum height of an item (follows the density; compact lists are shorter)"
+        },
+        {
+          "name": "--list-item-padding-y",
+          "description": "Vertical padding of an item (follows the density's row padding)"
+        },
+        {
+          "name": "--list-item-padding-x",
+          "description": "Horizontal padding of an item (follows the density's row padding)"
+        },
+        {
+          "name": "--list-item-gap",
+          "description": "Space between the icon, the content and the actions"
+        },
+        {
+          "name": "--list-divider-color",
+          "description": "Color of the dividers between items"
+        },
+        {
+          "name": "--list-icon-size",
+          "description": "Size of the leading icon slot"
+        },
+        {
+          "name": "--list-border-color",
+          "description": "Border color of a bordered list (defaults to --border-color)"
+        },
+        {
+          "name": "--list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--list-item-hover-background",
+          "description": "Background of a row of a bordered list on hover / while a control inside it has the focus"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/list/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/list/demos/basic.tsx": "import { useState } from \"react\";\nimport { IconButton, List, ListItem } from \"minerva-design\";\nimport { LuSmartphone, LuTrash2 } from \"react-icons/lu\";\n\nconst initialDevices = [\n  { id: \"phone\", name: \"iPhone 16\", lastUsed: \"Used 2 hours ago\" },\n  { id: \"laptop\", name: \"MacBook Air\", lastUsed: \"Used yesterday\" },\n];\n\nexport default function BasicDemo() {\n  const [devices, setDevices] = useState(initialDevices);\n  return (\n    <List aria-label=\"Registered devices\" style={{ width: \"100%\" }}>\n      {devices.map((device) => (\n        <ListItem\n          key={device.id}\n          icon={<LuSmartphone />}\n          primary={<span id={`device-${device.id}`}>{device.name}</span>}\n          secondary={device.lastUsed}\n          actions={\n            <IconButton\n              aria-label={`Delete ${device.name}`}\n              onClick={() =>\n                setDevices((prev) => prev.filter((d) => d.id !== device.id))\n              }\n              aria-describedby={`device-${device.id}`}\n            >\n              <LuTrash2 />\n            </IconButton>\n          }\n        />\n      ))}\n    </List>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "La liste contient iPhone 16 et MacBook Air. Chaque action Delete retire uniquement son appareil."
+    },
+    {
+      "id": "bordered",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/list/demos/bordered.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/list/demos/bordered.tsx": "import { Button, List, ListItem } from \"minerva-design\";\nimport { LuGitBranch } from \"react-icons/lu\";\n\nconst branches = [\n  { id: \"main\", name: \"main\", meta: \"Production · deployed 3 min ago\" },\n  { id: \"preview\", name: \"feat/checkout\", meta: \"Preview · 2 commits ahead\" },\n  { id: \"docs\", name: \"docs/install\", meta: \"Preview · building\" },\n];\n\nexport default function BorderedDemo() {\n  return (\n    <List\n      bordered\n      density=\"comfortable\"\n      aria-label=\"Branches\"\n      style={{ maxWidth: 560 }}\n    >\n      {branches.map((branch) => (\n        <ListItem\n          key={branch.id}\n          icon={<LuGitBranch />}\n          primary={<span id={`branch-${branch.id}`}>{branch.name}</span>}\n          secondary={branch.meta}\n          actions={\n            <Button\n              size=\"small\"\n              variant=\"outline\"\n              aria-describedby={`branch-${branch.id}`}\n            >\n              Visit\n            </Button>\n          }\n        />\n      ))}\n    </List>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Carte encadrée",
+      "description": "bordered encadre la liste comme une carte dont les lignes se teintent au survol et quand un contrôle qu'elles contiennent a le focus ; density=\"comfortable\" donne des lignes plus hautes."
+    },
+    {
+      "id": "compact",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/list/demos/compact.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/list/demos/compact.tsx": "import { List, ListItem } from \"minerva-design\";\n\nexport default function CompactDemo() {\n  return (\n    <List density=\"compact\" dividers={false} aria-label=\"Queue totals\">\n      <ListItem primary=\"Pending\" secondary={0} />\n      <ListItem primary=\"Completed\" secondary={24} />\n    </List>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Densité compacte",
+      "description": "density=\"compact\" réduit la hauteur minimale des lignes ; les séparateurs peuvent être désactivés."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "List",
+      "description": "Listes opérationnelles sobres sur ul / li natifs, avec texte principal et secondaire, icône décorative et actions en fin de ligne.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "La liste contient iPhone 16 et MacBook Air. Chaque action Delete retire uniquement son appareil."
+        },
+        "compact": {
+          "title": "Densité compacte",
+          "description": "density=\"compact\" réduit la hauteur minimale des lignes ; les séparateurs peuvent être désactivés."
+        },
+        "bordered": {
+          "title": "Carte encadrée",
+          "description": "bordered encadre la liste comme une carte dont les lignes se teintent au survol et quand un contrôle qu'elles contiennent a le focus ; density=\"comfortable\" donne des lignes plus hautes."
+        }
+      },
+      "api": {
+        "ListProps": {
+          "density": "Hauteur minimale des lignes et marge verticale",
+          "dividers": "Trace des séparateurs entre lignes adjacentes",
+          "role": "Rôle de liste, conservé pour que Safari / VoiceOver gardent la sémantique de liste",
+          "ref": "Ref vers l'élément <ul>",
+          "bordered": "Encadre la liste comme une carte dont les lignes se teintent au survol / au focus"
+        },
+        "ListItemProps": {
+          "primary": "Contenu principal",
+          "secondary": "Contenu secondaire, atténué et plus petit",
+          "icon": "Emplacement décoratif en tête, masqué aux technologies d'assistance",
+          "actions": "Contrôles en fin de ligne gérés par l'appelant",
+          "ref": "Ref vers l'élément <li>"
+        }
+      },
+      "cssVars": {
+        "--list-item-min-height": "Hauteur minimale d'un élément (suit la densité ; les listes compact sont plus basses)",
+        "--list-item-padding-y": "Marge intérieure verticale d'un élément (suit la marge de ligne de la densité)",
+        "--list-item-padding-x": "Marge intérieure horizontale d'un élément (suit la marge de ligne de la densité)",
+        "--list-item-gap": "Espace entre l'icône, le contenu et les actions",
+        "--list-divider-color": "Couleur des séparateurs entre les éléments",
+        "--list-icon-size": "Taille de l'emplacement de l'icône de tête",
+        "--list-border-color": "Couleur de la bordure d'une liste encadrée (par défaut --border-color)",
+        "--list-radius": "Rayon des coins d'une liste encadrée (par défaut --radius-lg)",
+        "--list-background": "Fond d'une liste encadrée (par défaut --surface-color)",
+        "--list-item-hover-background": "Fond d'une ligne d'une liste encadrée au survol / quand un contrôle qu'elle contient a le focus"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Lignes <minerva-list-item> avec les attributs primary et secondary ; des séparateurs divisent les éléments adjacents."
+          },
+          "slots": {
+            "title": "Icônes, texte riche et actions",
+            "description": "Les slots icon, par défaut, secondary et actions. Les lignes n'ont pas de commande : Remove est un bouton ordinaire du slot actions."
+          },
+          "density": {
+            "title": "Densité et séparateurs",
+            "description": "density=\"compact\" raccourcit les lignes, no-dividers retire les séparateurs, des variables CSS règlent couleur et marges."
+          },
+          "bordered": {
+            "title": "Carte encadrée",
+            "description": "L'attribut bordered encadre la liste comme une carte (lignes teintées au survol / au focus) ; density=\"comfortable\" donne des lignes plus hautes."
+          }
+        },
+        "minerva-list": {
+          "props": {
+            "noDividers": "Retire les séparateurs entre les éléments (dividers={false} de la bibliothèque React)."
+          },
+          "slots": {
+            "default": "Lignes <minerva-list-item>."
+          }
+        },
+        "minerva-list-item": {
+          "slots": {
+            "default": "Contenu principal (alternative à l'attribut primary).",
+            "secondary": "Contenu secondaire (alternative à l'attribut secondary).",
+            "icon": "Icône décorative en tête (masquée aux technologies d'assistance).",
+            "actions": "Contrôles en fin de ligne."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "La liste contient iPhone 16 et MacBook Air. Chaque action Delete retire uniquement son appareil."
+          },
+          "inset-groups": {
+            "title": "Groupes en retrait",
+            "description": "Groupes en retrait avec Cell ; l’aperçu suit le thème et la palette du site."
+          },
+          "rich-rows": {
+            "title": "Lignes enrichies",
+            "description": "Lignes enrichies avec Cell ; l’aperçu suit le thème et la palette du site."
+          }
+        },
+        "limitations": "React Native utilise CellGroup et Cell. Les éléments ul/li, les références DOM et le survol CSS ne s’appliquent pas ; le scénario de suppression reste commun."
+      }
+    }
+  }
+}

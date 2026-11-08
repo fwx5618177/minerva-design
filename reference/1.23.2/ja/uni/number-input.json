@@ -1,0 +1,303 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "ja",
+  "renderer": "uni",
+  "page": "number-input",
+  "title": "NumberInput 数値入力",
+  "description": "矢印キーでのステップ、任意のステッパー、min / max の制限、固定精度を備えた数値フィールド（spinbutton）。値はフォーカス喪失または Enter で確定します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "NumberInput",
+      "support": {
+        "status": "beta",
+        "notes": "Shared core number parsing/formatting/clamping; intermediate drafts; blur/confirm-only commit; nullable empty value; precision from step; optional steppers; controlled rejection; disabled/readonly. Uni additionally H5 keyboard stepping. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Shared core number parsing/formatting/clamping; intermediate drafts; blur/confirm-only commit; nullable empty value; precision from step; optional steppers; controlled rejection; disabled/readonly. Uni additionally H5 keyboard stepping. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "NumberInput"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "typeText": "number | null | undefined",
+            "required": false
+          },
+          {
+            "name": "modelValue",
+            "typeText": "number | null | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "number | null | undefined",
+            "required": false
+          },
+          {
+            "name": "min",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "max",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "step",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "precision",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "showStepper",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "allowEmpty",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "incrementLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "decrementLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "notANumberMessage",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "belowMinMessage",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "aboveMaxMessage",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "any[]"
+          },
+          {
+            "name": "update:modelValue",
+            "typeText": "any[]"
+          },
+          {
+            "name": "blur",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:NumberInput": {
+      "kind": "cssVars",
+      "source": "react/src/components/NumberInput",
+      "vars": [
+        {
+          "name": "--number-input-height",
+          "description": "Height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--number-input-padding-x",
+          "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+        },
+        {
+          "name": "--number-input-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--number-input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--number-input-background",
+          "description": "Background color"
+        },
+        {
+          "name": "--number-input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--number-input-stepper-width",
+          "description": "Width of the increment / decrement column"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "NumberInput 数値入力",
+      "description": "矢印キーでのステップ、任意のステッパー、min / max の制限、固定精度を備えた数値フィールド（spinbutton）。値はフォーカス喪失または Enter で確定します。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "範囲外や数値でない入力は警告され、確定時に制限または元に戻されます。クリアすると null。"
+        },
+        "stepper-precision": {
+          "title": "ステッパーと精度",
+          "description": "showStepper でボタンを追加。精度は指定がなければ step から推定。allowEmpty={false} では min に戻ります。"
+        },
+        "form-control": {
+          "title": "FormField と併用",
+          "description": "フィールドがラベル・状態・説明を提供し、readOnly は入力とステップを防ぎます。"
+        }
+      },
+      "api": {
+        "NumberInputProps": {
+          "value": "現在の値（制御）。`null` は空。非制御の場合は省略",
+          "defaultValue": "非制御フィールドの初期値",
+          "onChange": "確定した値で呼ばれます（フォーカス喪失 / Enter、ステップ、ステッパー）。入力中は呼ばれません。クリア時は `null`",
+          "min": "許容される最小値。確定値はこれに制限されます",
+          "max": "許容される最大値。確定値はこれに制限されます",
+          "step": "ArrowUp / ArrowDown とステッパーで増減する量",
+          "precision": "値の小数桁数。省略時は step から推定（step 0.01 -> 2）",
+          "size": "フィールドのサイズ",
+          "invalid": "エラー状態（無効な FormControl や範囲外の入力でも設定）",
+          "disabled": "フィールドを無効化（FormControl でも設定）",
+          "readOnly": "フォーカス・コピー可能だが、入力やステップで値は変わりません（FormControl でも設定）",
+          "showStepper": "増減ボタンを表示。矢印キーは常に有効",
+          "allowEmpty": "クリアすると `null` を確定。それ以外は min（または 0）に戻ります",
+          "className": "ラッパーのクラス名",
+          "incrementLabel": "増加ボタンのアクセシブルラベル",
+          "decrementLabel": "減少ボタンのアクセシブルラベル",
+          "notANumberMessage": "入力が数値でないときに表示されるヒント（ラッパーの title）",
+          "belowMinMessage": "入力が min 未満のときのヒント",
+          "aboveMaxMessage": "入力が max を超えるときのヒント",
+          "ref": "<input> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--number-input-height": "高さ（全サイズ。既定は密度に応じた各サイズのコントロール高さ）",
+        "--number-input-padding-x": "テキストの左右パディング（既定は密度に応じた small のコントロールパディング）",
+        "--number-input-radius": "角丸（既定は --radius-md）",
+        "--number-input-font-size": "フォントサイズ（全サイズ）",
+        "--number-input-background": "背景色",
+        "--number-input-border-color": "通常時の枠線色（ステッパーの区切り線にも使用）",
+        "--number-input-stepper-width": "増減ボタン列の幅"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ステッパー付きの min / max。上下矢印キーでステップ、PageUp / PageDown で 10 ステップ、Home / End で上下限へ移動します。minerva-change が確定した値を通知します。"
+          },
+          "precision": {
+            "title": "ステップ・精度・メソッド",
+            "description": "小数のステップ、小数点以下 2 桁固定、no-empty。外部のボタンが stepUp() / stepDown() を呼びます。読み取り専用・無効・サイズの例も含みます。"
+          },
+          "form": {
+            "title": "フォーム内での利用",
+            "description": "required と範囲外の値は、ローカライズ済みまたは独自のメッセージ（below-min-message・above-max-message）で送信を止めます。リセットで value 属性の値に戻ります。"
+          }
+        },
+        "minerva-number-input": {
+          "props": {
+            "readOnly": "フォーカス可能で送信されますが、入力やステップ操作で値は変わりません。",
+            "noEmpty": "フィールドを空にすると null ではなく min（または 0）に戻ります。",
+            "placeholder": "フィールドが空のときに表示するプレースホルダー。",
+            "name": "フォーム送信時に値を送る名前。",
+            "required": "フォームを送信するには値が必要です。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "change": "値が確定した（フォーカスアウト・Enter・ステップ操作）。",
+            "input": "入力中のテキストが変わった（ネイティブ・composed）。",
+            "minerva-input": "入力中のテキストが変わった。detail: { value } は解析した値（数値でなければ null）。",
+            "minerva-change": "新しい値が確定した。detail: { value }（空にした場合は null）。"
+          },
+          "methods": {
+            "focus": "内部のコントロールにフォーカスします。",
+            "blur": "内部のコントロールからフォーカスを外します。",
+            "stepUp": "値に step を加えます（max で制限）。イベントは発火しません。",
+            "stepDown": "値から step を引きます（min で制限）。イベントは発火しません。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

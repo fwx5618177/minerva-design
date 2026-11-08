@@ -1,0 +1,313 @@
+# MediaPlayer
+
+Lecteur audio/vidéo avec sous-titres et clavier. L’entrée React dédiée ajoute HLS/DASH/FLV, le choix de qualité, les listes de lecture, la boucle A–B, la forme d’onde, les captures et l’enregistrement.
+
+Package: minerva-design@1.23.2
+
+Renderer: weapp
+
+Locale: fr
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.23.2",
+  "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+  "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+  "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.23.2/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+Paquet du lecteur
+
+Utilisez l’entrée dédiée pour le lecteur React complet. MediaPlayer de minerva-design conserve ses propriétés et formats d’événements existants ; les deux utilisent la même implémentation.
+
+Les moteurs dépendent des codecs, de CORS, de la lecture automatique et du contexte sécurisé du navigateur. Les exemples avancés sont pour React DOM. Les autres onglets décrivent leurs propres API ; React Native et les mini-programmes nécessitent leurs hôtes multimédias.
+
+Les exemples utilisent notre film Minerva Design et sa bande-son hébergés localement, en 720p et 360p. HLS, DASH et FLV diffusent le même film. La capture et l’enregistrement apparaissent selon les capacités du navigateur ; le fichier est téléchargé à la fin.
+
+API React avancée
+
+##### Sources et moteurs
+
+src accepte une URL ou PlayerSource avec type, mimeType, qualities et defaultQuality. HLS/DASH exposent les niveaux adaptatifs ; createHlsEngine/createDashEngine/createFlvEngine et engines configurent les adaptateurs, chargés à la demande.
+
+##### Liste de lecture et audio
+
+playlist contient src/title/poster ; defaultPlaylistIndex et onPlaylistIndexChange suivent l’élément courant. waveform accepte auto, decorative ou des valeurs de crête. La boucle A–B et Media Session sont aussi disponibles.
+
+##### Contrôles et actions
+
+controls=false affiche le média seul. Un objet règle play, progress, volume, quality, speed, captions, skip, abRepeat, playlist, screenshot, record, pip et fullscreen. actions et renderTooltip intègrent les actions et infobulles de l’hôte.
+
+##### Événements et erreurs
+
+L’entrée dédiée appelle onTimeUpdate(currentTime, duration), onMetadata({ width, height, duration }), onQualityChange(id) et onError(PlayerError). L’entrée racine minerva-design conserve les événements temporels objet et MediaError.
+
+##### Handle impératif
+
+La ref expose play/pause/seek, element/video, setPlaybackRate, setQuality, next/previous, setAbRepeat/clearAbRepeat, screenshot, startRecording/stopRecording et toggleFullscreen. La promesse de play permet de gérer le refus de lecture.
+
+##### Apparence et capacités
+
+locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM. Dans une disposition flex ou grid, définissez la largeur du conteneur parent ; maxWidth fixe seulement une limite.
+
+Minerva Design · Présentation des composants
+
+Minerva Design · Bande-son du film
+
+```tsx
+import { MediaPlayer as CompatibleMediaPlayer } from "minerva-design";
+```
+
+## MediaControls
+
+Support: n/a
+
+React Native-specific extension, outside the shared web component API; use minerva-design/native for this component.
+
+## MediaPlayer
+
+Support: beta
+
+Video through the host <video> (controls off, driven by wx.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through wx.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeupdate/ended/play/pause/loadedmetadata/error/ratechange/volumechange events and play()/pause()/seek(seconds) instance methods. controls=false shows the host video's own controls. Captions: tracks (WebVTT or SRT, data: URLs inline) fetched with wx.request, parsed by the shared minerva-design/core parser and drawn as an overlay synchronized with the time updates, a CC button with an Off / per-track choice row, the choice remembered in storage (default track otherwise), a trackchange event and chooseTrack(index). Beta: needs device validation. The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG in WXML). Captions follow the host time updates (about 4 per second), are not shown in the host's native fullscreen, ignore cue positioning / styling, and remote caption files need the app's request domain allowlist. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/dist/weapp/media-player/index",
+  "exports": [],
+  "kind": "usingComponents"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "src",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "type",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "mimeType",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "poster",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "title",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "autoPlay",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "loop",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "muted",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "defaultMuted",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "startTime",
+    "typeText": "number",
+    "required": false,
+    "default": 0
+  },
+  {
+    "name": "playbackRates",
+    "typeText": "array",
+    "required": false
+  },
+  {
+    "name": "skipSeconds",
+    "typeText": "number",
+    "required": false,
+    "default": 10
+  },
+  {
+    "name": "controls",
+    "typeText": "boolean",
+    "required": false,
+    "default": true
+  },
+  {
+    "name": "height",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "aspectRatio",
+    "typeText": "string",
+    "required": false,
+    "default": "16 / 9"
+  },
+  {
+    "name": "tracks",
+    "typeText": "array",
+    "required": false
+  },
+  {
+    "name": "ariaLabel",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "play",
+    "typeText": "{}",
+    "description": "Playback started."
+  },
+  {
+    "name": "pause",
+    "typeText": "{}",
+    "description": "Playback paused."
+  },
+  {
+    "name": "ended",
+    "typeText": "{}",
+    "description": "Playback reached the end."
+  },
+  {
+    "name": "timeupdate",
+    "typeText": "{ currentTime: number; duration: number }",
+    "description": "Playhead position and duration, in seconds."
+  },
+  {
+    "name": "loadedmetadata",
+    "typeText": "{ duration: number }",
+    "description": "The duration is known (once per source)."
+  },
+  {
+    "name": "error",
+    "typeText": "{ error: unknown }",
+    "description": "The host media failed (host error detail)."
+  },
+  {
+    "name": "ratechange",
+    "typeText": "{ rate: number }",
+    "description": "The speed button changed the rate."
+  },
+  {
+    "name": "volumechange",
+    "typeText": "{ volume: number; muted: boolean }",
+    "description": "Mute button or audio volume bar (video volume stays 1)."
+  },
+  {
+    "name": "trackchange",
+    "typeText": "{ index: number; track: { src: string; srclang?: string; label: string; kind?: string; default?: boolean } | null }",
+    "description": "The user chose captions in the CC row (index -1 and track null: Off)."
+  }
+]
+```
+
+## CSS variables
+
+```json
+{
+  "css:MediaPlayer": {
+    "kind": "cssVars",
+    "source": "react/src/components/MediaPlayer",
+    "vars": [
+      {
+        "name": "--media-player-radius",
+        "description": "Corner radius of the player (defaults to --radius-lg)"
+      },
+      {
+        "name": "--media-player-accent",
+        "description": "Color of the played range and the slider thumbs (defaults to --primary-color)"
+      },
+      {
+        "name": "--media-player-video-background",
+        "description": "Letterbox color behind a video (defaults to black)"
+      },
+      {
+        "name": "--media-player-overlay-background",
+        "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
+      },
+      {
+        "name": "--media-player-overlay-color",
+        "description": "Text and icon color over a video (defaults to white)"
+      },
+      {
+        "name": "--media-player-bar-background",
+        "description": "Background of the audio bar (defaults to --surface-color)"
+      },
+      {
+        "name": "--media-player-bar-color",
+        "description": "Text and icon color of the audio bar (defaults to --text-color)"
+      },
+      {
+        "name": "--media-player-button-size",
+        "description": "Size of the control buttons (defaults to the density's small control height)"
+      },
+      {
+        "name": "--media-player-track-height",
+        "description": "Thickness of the seek and volume tracks (defaults to 4px)"
+      },
+      {
+        "name": "--media-player-captions-background",
+        "description": "Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)"
+      },
+      {
+        "name": "--media-player-captions-color",
+        "description": "Color of the caption text (defaults to white over a video, the bar color for audio)"
+      },
+      {
+        "name": "--media-player-captions-font-size",
+        "description": "Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

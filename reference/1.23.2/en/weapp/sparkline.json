@@ -1,0 +1,449 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "sparkline",
+  "title": "Sparkline",
+  "description": "A word-sized chart without axes or legend that shows the shape of a trend next to a number: in KPI cards, table cells or lists. Hover it to read a value.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {
+    "data": {
+      "orders": "Orders",
+      "ordersAria": "Weekly orders, {{variant}}",
+      "revenue": "Revenue",
+      "activeUsers": "Active users",
+      "signups": "Sign-ups",
+      "p95": "p95 latency",
+      "last30Aria": "{{metric}}, last 30 days",
+      "service": "Service",
+      "services": {
+        "gateway": "API gateway",
+        "auth": "Authentication",
+        "search": "Search",
+        "payments": "Payments",
+        "notifications": "Notifications"
+      },
+      "requestsPerMin": "Requests / min",
+      "latency30": "p95 latency, 30 days",
+      "latencyAria": "{{service}} p95 latency over 30 days",
+      "today": "Today",
+      "change": "Change",
+      "serviceLatency": "Service latency",
+      "symbol": "Symbol",
+      "companies": {
+        "ACME": "Acme Corporation",
+        "NOVA": "Nova Biotech",
+        "ORBT": "Orbit Aerospace",
+        "KITE": "Kite Robotics",
+        "LUMA": "Luma Energy"
+      },
+      "intradayAria": "{{symbol}} price today",
+      "price": "Price",
+      "watchlist": "Watchlist",
+      "inlineVisits": "Visits over the last 14 days:",
+      "visits": "Visits",
+      "visitsAria": "Visits over the last 14 days",
+      "inlineErrors": "Errors spiked after the deployment of day 7, then went back to normal:",
+      "errors": "Errors",
+      "errorsAria": "Errors per day over the last 14 days",
+      "inlineTemperature": "Afternoon temperature these two weeks:",
+      "temperature": "Temperature",
+      "temperatureAria": "Afternoon temperature over the last 14 days",
+      "cpu": "CPU",
+      "cpuAria": "CPU usage of {{server}}",
+      "alert": "Alert",
+      "healthy": "Healthy",
+      "dailyActiveUsers": "Daily active users",
+      "latestDay": "Latest: {{date}}",
+      "hoveredDay": "{{date}} · {{change}} since September 1",
+      "dauAria": "Daily active users from September 1 to October 31",
+      "stepsN": "{{value}} steps",
+      "ofGoal": "{{value}} of the goal",
+      "goalSummary": "Goal of {{goal}} steps reached on {{reached}} of {{days}} days",
+      "steps": "Steps",
+      "stepsAria": "Steps per day over four weeks, with the daily goal",
+      "cities": {
+        "reykjavik": "Reykjavík",
+        "montreal": "Montreal",
+        "tokyo": "Tokyo",
+        "cairo": "Cairo",
+        "singapore": "Singapore",
+        "sydney": "Sydney"
+      },
+      "warmestColdest": "High {{max}} ({{maxMonth}}) · low {{min}} ({{minMonth}})",
+      "weatherAria": "Average daily high of each month in {{city}}",
+      "period": "Period",
+      "periods": {
+        "week": "7 days",
+        "month": "30 days",
+        "quarter": "90 days"
+      },
+      "vsFirstHalf": "second half against the first",
+      "vsPrevious": "against the previous period",
+      "periodAria": "Daily revenue over the last {{period}}"
+    }
+  },
+  "components": [
+    {
+      "name": "Sparkline",
+      "support": {
+        "status": "beta",
+        "notes": "Word-sized line / area / bar without axes or legend (default height 48), reference line, tooltip; format() through configure(). Same as Chart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Word-sized line / area / bar without axes or legend (default height 48), reference line, tooltip; format() through configure(). Same as Chart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/sparkline/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "sparkline",
+        "props": [
+          {
+            "name": "width",
+            "typeText": "unknown",
+            "required": false,
+            "default": "100%"
+          },
+          {
+            "name": "height",
+            "typeText": "unknown",
+            "required": false,
+            "default": 48
+          },
+          {
+            "name": "legend",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "tooltip",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "crosshair",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "annotations",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "interaction",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "padding",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "palette",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "locale",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "labels",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "disableScroll",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "data",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "type",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "color",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "curve",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "reference",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+            "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+          },
+          {
+            "name": "pointclick",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }",
+            "description": "A point or bar was tapped."
+          },
+          {
+            "name": "plotclick",
+            "typeText": "{ x: number; y: number }",
+            "description": "The plot area was tapped where there is no point (data coordinates)."
+          },
+          {
+            "name": "zoom",
+            "typeText": "{ x: [number, number]; y: [number, number] }",
+            "description": "Visible range after a pinch, a pan or a double-tap reset."
+          },
+          {
+            "name": "layout",
+            "typeText": "{ x: number; y: number; width: number; height: number }",
+            "description": "The plot area moved or was resized (px of the chart)."
+          },
+          {
+            "name": "pointdrag",
+            "typeText": "{ item: NativeChartHoverItem; x: number; y: number }",
+            "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed."
+          },
+          {
+            "name": "pointdrop",
+            "typeText": "{ item: NativeChartHoverItem; x: number; y: number }",
+            "description": "A dragged scatter point was released; update the series to move it."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-sparkline\": \"minerva-design/dist/weapp/sparkline/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Sparkline",
+      "description": "A word-sized chart without axes or legend that shows the shape of a trend next to a number: in KPI cards, table cells or lists. Hover it to read a value.",
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "The same values as a smooth line, an area and bars; reference draws a dashed line at a value such as the average or a target."
+        },
+        "kpi-cards": {
+          "title": "KPI cards",
+          "description": "Sparklines in Cards, under the figure and its change: the trend gives context to the number. Each card uses a type and a color that fit its metric."
+        },
+        "table": {
+          "title": "In a table",
+          "description": "A Sparkline per row in a Table column, with a fixed width and height; the color says whether the latency rises or falls."
+        },
+        "watchlist": {
+          "title": "Stock watchlist",
+          "description": "A trading-app watchlist: each row has an intraday area sparkline colored by the change of the day, with a dashed reference at the previous close; prices use Intl.NumberFormat with each stock's currency."
+        },
+        "inline": {
+          "title": "Inside a sentence",
+          "description": "Word-sized sparklines placed inline in text with a fixed width and height and display: inline-block, the original use of sparklines."
+        },
+        "servers": {
+          "title": "Live server monitor",
+          "description": "Bar sparklines updated every second with a new CPU sample; the color and the tag turn red above the alert threshold."
+        },
+        "hover-value": {
+          "title": "Hover readout",
+          "description": "onHover receives the hovered point (null when the pointer leaves): its index drives the big number and the date above, which fall back to the latest day. tooltip={false} hides the tooltip that the readout replaces."
+        },
+        "step-goal": {
+          "title": "Daily goal",
+          "description": "Four weeks of steps as bars, the days reaching the goal colored through the color of their data point; reference draws the goal and renderTooltip shows the date and the share of the goal."
+        },
+        "weather": {
+          "title": "Small multiples",
+          "description": "A Sparkline per city in a grid of Cards. Each one is scaled to its own range, so the warmest and coldest months are written above it; renderTooltip names the hovered month and reference marks 0 °C where the city freezes."
+        },
+        "periods": {
+          "title": "Period switcher",
+          "description": "A RadioGroup picks the last 7, 30 or 90 days: the total, the change from the previous period and the color are computed from the same values, and reference marks the daily average of the period."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "KPI rows",
+            "description": "Word-sized area, bar and line charts next to the value of today; touch a sparkline to read a day in its tooltip."
+          }
+        }
+      },
+      "data": {
+        "orders": "Orders",
+        "ordersAria": "Weekly orders, {{variant}}",
+        "revenue": "Revenue",
+        "activeUsers": "Active users",
+        "signups": "Sign-ups",
+        "p95": "p95 latency",
+        "last30Aria": "{{metric}}, last 30 days",
+        "service": "Service",
+        "services": {
+          "gateway": "API gateway",
+          "auth": "Authentication",
+          "search": "Search",
+          "payments": "Payments",
+          "notifications": "Notifications"
+        },
+        "requestsPerMin": "Requests / min",
+        "latency30": "p95 latency, 30 days",
+        "latencyAria": "{{service}} p95 latency over 30 days",
+        "today": "Today",
+        "change": "Change",
+        "serviceLatency": "Service latency",
+        "symbol": "Symbol",
+        "companies": {
+          "ACME": "Acme Corporation",
+          "NOVA": "Nova Biotech",
+          "ORBT": "Orbit Aerospace",
+          "KITE": "Kite Robotics",
+          "LUMA": "Luma Energy"
+        },
+        "intradayAria": "{{symbol}} price today",
+        "price": "Price",
+        "watchlist": "Watchlist",
+        "inlineVisits": "Visits over the last 14 days:",
+        "visits": "Visits",
+        "visitsAria": "Visits over the last 14 days",
+        "inlineErrors": "Errors spiked after the deployment of day 7, then went back to normal:",
+        "errors": "Errors",
+        "errorsAria": "Errors per day over the last 14 days",
+        "inlineTemperature": "Afternoon temperature these two weeks:",
+        "temperature": "Temperature",
+        "temperatureAria": "Afternoon temperature over the last 14 days",
+        "cpu": "CPU",
+        "cpuAria": "CPU usage of {{server}}",
+        "alert": "Alert",
+        "healthy": "Healthy",
+        "dailyActiveUsers": "Daily active users",
+        "latestDay": "Latest: {{date}}",
+        "hoveredDay": "{{date}} · {{change}} since September 1",
+        "dauAria": "Daily active users from September 1 to October 31",
+        "stepsN": "{{value}} steps",
+        "ofGoal": "{{value}} of the goal",
+        "goalSummary": "Goal of {{goal}} steps reached on {{reached}} of {{days}} days",
+        "steps": "Steps",
+        "stepsAria": "Steps per day over four weeks, with the daily goal",
+        "cities": {
+          "reykjavik": "Reykjavík",
+          "montreal": "Montreal",
+          "tokyo": "Tokyo",
+          "cairo": "Cairo",
+          "singapore": "Singapore",
+          "sydney": "Sydney"
+        },
+        "warmestColdest": "High {{max}} ({{maxMonth}}) · low {{min}} ({{minMonth}})",
+        "weatherAria": "Average daily high of each month in {{city}}",
+        "period": "Period",
+        "periods": {
+          "week": "7 days",
+          "month": "30 days",
+          "quarter": "90 days"
+        },
+        "vsFirstHalf": "second half against the first",
+        "vsPrevious": "against the previous period",
+        "periodAria": "Daily revenue over the last {{period}}"
+      },
+      "api": {
+        "SparklineProps": {
+          "height": "Height of the sparkline; numbers are pixels"
+        },
+        "SparklineConfig": {
+          "data": "Values (or [x, y] pairs, typed arrays…)",
+          "type": "How the values are drawn: \"line\", \"area\" or \"bar\"",
+          "color": "Color (any CSS color); the first palette color by default",
+          "curve": "Shape of the line",
+          "name": "Name shown in the tooltip",
+          "reference": "Draws a dashed reference line at this value (e.g. a target or the average)",
+          "format": "Formats the value in the tooltip"
+        }
+      },
+      "wc": {
+        "demos": {
+          "kpi": {
+            "title": "KPI cards",
+            "description": "Word-sized trends under key figures, drawn as a line, an area and bars."
+          },
+          "reference": {
+            "title": "Target line and hover",
+            "description": "reference draws a dashed target line; hovering shows the value under the pointer."
+          }
+        },
+        "minerva-sparkline": {
+          "props": {
+            "valueName": "Name of the value in the tooltip",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

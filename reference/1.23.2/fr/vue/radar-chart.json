@@ -1,0 +1,637 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.2",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "radar-chart",
+  "title": "Graphique radar",
+  "description": "Compare un ou quelques éléments selon plusieurs indicateurs aux échelles différentes (compétences, tests de produits, profils aromatiques). Survolez un polygone pour le mettre en évidence avec l’indicateur le plus proche ; les flèches passent d’une série ou d’un indicateur à l’autre, Échap efface ; un clic sur la légende masque une série.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.2",
+    "sourceCommit": "c6618fd81b2d3c2a9016cfe13a1d15983d533ff7",
+    "sourceDigest": "sha256:1ce1c857f10d367f112c6e77d88ae3878570c428c4d39ed7a400c8c99645e9f6",
+    "referenceSourceDigest": "sha256:8f6e89c1e214fedc2e52de014615037c54204a8ec5c0dbb40c58dc530906571e"
+  },
+  "content": {
+    "data": {
+      "skills": {
+        "problemSolving": "Résolution de problèmes",
+        "coding": "Programmation",
+        "systemDesign": "Conception de systèmes",
+        "communication": "Communication",
+        "collaboration": "Collaboration",
+        "ownership": "Responsabilité"
+      },
+      "candidate": "Candidat",
+      "outOf": "{{value}} / {{max}}",
+      "scorecardAria": "Grille d'entretien d'un candidat",
+      "flavor": {
+        "aroma": "Arôme",
+        "acidity": "Acidité",
+        "sweetness": "Douceur",
+        "body": "Corps",
+        "bitterness": "Amertume",
+        "aftertaste": "Persistance"
+      },
+      "coffees": {
+        "ethiopia": "Éthiopie Yirgacheffe",
+        "sumatra": "Sumatra Mandheling"
+      },
+      "coffeeAria": "Profils aromatiques de deux cafés",
+      "criteria": {
+        "performance": "Performances",
+        "battery": "Autonomie",
+        "camera": "Appareil photo",
+        "display": "Écran",
+        "value": "Rapport qualité-prix",
+        "build": "Finition"
+      },
+      "phonesAria": "Notes de test de trois téléphones",
+      "hoverPolygon": "Survolez un polygone ou utilisez les flèches pour comparer les téléphones",
+      "football": {
+        "pace": "Vitesse",
+        "shooting": "Tir",
+        "passing": "Passe",
+        "dribbling": "Dribble",
+        "defending": "Défense",
+        "physical": "Physique"
+      },
+      "playersAria": "Attributs de deux footballeurs",
+      "capabilities": {
+        "security": "Sécurité",
+        "integrations": "Intégrations",
+        "reporting": "Rapports",
+        "mobile": "Mobile",
+        "automation": "Automatisation",
+        "support": "Support",
+        "pricing": "Prix"
+      },
+      "products": {
+        "ours": "Notre produit",
+        "competitor": "Principal concurrent",
+        "market": "Moyenne du marché"
+      },
+      "compareWith": "Produits à comparer",
+      "capabilitiesAria": "Notes des capacités de notre produit, d'un concurrent et du marché",
+      "nutrition": {
+        "nutrients": {
+          "protein": "Protéines",
+          "fiber": "Fibres",
+          "sugar": "Sucres",
+          "fat": "Lipides",
+          "sodium": "Sodium",
+          "calcium": "Calcium"
+        },
+        "meals": {
+          "oatmeal": "Porridge aux fruits",
+          "eggs": "Œufs sur toast",
+          "yogurt": "Yaourt et granola"
+        },
+        "dailyValue": "{{value}} VQ",
+        "row": "{{meal}} : {{amount}} ({{share}})",
+        "aria": "Nutriments de trois petits-déjeuners, en pourcentage de la valeur quotidienne"
+      },
+      "monitor": {
+        "metrics": {
+          "cpu": "CPU",
+          "memory": "Mémoire",
+          "diskIo": "E/S disque",
+          "network": "Réseau",
+          "latency": "Latence",
+          "errors": "Erreurs"
+        },
+        "baseline": "Moyenne de la dernière heure",
+        "now": "Maintenant",
+        "live": "Mises à jour en direct",
+        "alert": "Alerte : {{metric}} dépasse {{threshold}} de sa capacité.",
+        "peak": "Métrique la plus chargée : {{metric}}.",
+        "aria": "Charge actuelle du service comparée à la moyenne de la dernière heure"
+      },
+      "review": {
+        "competencies": {
+          "communication": "Communication",
+          "delivery": "Livraison",
+          "expertise": "Expertise",
+          "collaboration": "Collaboration",
+          "mentoring": "Mentorat",
+          "initiative": "Initiative"
+        },
+        "team": "Moyenne de l’équipe",
+        "person": "Personne",
+        "aria": "Notes de l’évaluation à 360° de {{name}} comparées à la moyenne de l’équipe",
+        "summary": "Point fort : {{strength}} ({{strengthGap}} par rapport à l’équipe). À développer : {{growth}} ({{growthGap}})."
+      },
+      "sales": {
+        "kpis": {
+          "revenue": "Chiffre d’affaires",
+          "deals": "Affaires gagnées",
+          "winRate": "Taux de réussite",
+          "dealSize": "Montant moyen",
+          "calls": "Appels",
+          "nps": "NPS"
+        },
+        "target": "Objectif",
+        "actual": "Réel",
+        "line": "{{kpi}} : {{actual}} pour un objectif de {{target}} ({{attainment}}).",
+        "aria": "KPI trimestriels d’un commercial comparés à ses objectifs",
+        "hint": "Cliquez près d’un axe pour lire son KPI."
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "RadarChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "RadarChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "animation",
+            "type": "boolean",
+            "required": false,
+            "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ShapeLegendOptions",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)",
+            "typeText": "boolean | ShapeLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ShapeTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it (default `true`)",
+            "typeText": "boolean | ShapeTooltipOptions"
+          },
+          {
+            "name": "dots",
+            "type": "boolean",
+            "required": false,
+            "description": "Dots on the vertices (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D (default `auto`, see `setDefaultChartRenderer`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "series",
+            "type": "readonly RadarSeries[]",
+            "required": true,
+            "description": "Polygons `{ name, values }`: one value per indicator",
+            "typeText": "readonly RadarSeries[]"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the drawing, in pixels (default 8 on every side)",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "shape",
+            "type": "\"circle\" | \"polygon\"",
+            "required": false,
+            "description": "Grid shape (default `polygon`)",
+            "typeText": "\"circle\" | \"polygon\""
+          },
+          {
+            "name": "hidden",
+            "type": "readonly number[]",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back.",
+            "typeText": "readonly number[]"
+          },
+          {
+            "name": "texts",
+            "type": "Partial<ShapeChartLabels>",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")",
+            "typeText": "Partial<ShapeChartLabels>"
+          },
+          {
+            "name": "format",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)",
+            "typeText": "((value: number) => string)"
+          },
+          {
+            "name": "percentFormat",
+            "type": "((share: number) => string)",
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")",
+            "typeText": "((share: number) => string)"
+          },
+          {
+            "name": "levels",
+            "type": "number",
+            "required": false,
+            "description": "Number of grid rings (default 4)",
+            "typeText": "number"
+          },
+          {
+            "name": "indicators",
+            "type": "readonly RadarIndicator[]",
+            "required": true,
+            "description": "Axes of the chart `{ name, max }`, clockwise from 12 o'clock",
+            "typeText": "readonly RadarIndicator[]"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "type": "[event: ShapeHoverEvent | null]",
+            "typeText": "[event: ShapeHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "click",
+            "type": "[event: ShapeHoverEvent]",
+            "typeText": "[event: ShapeHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "toggle",
+            "type": "[event: ShapeToggleEvent]",
+            "typeText": "[event: ShapeToggleEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "circle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radar-chart/vue/circle.vue",
+      "files": {
+        "apps/docs/src/docs/pages/radar-chart/vue/circle.vue": "<script setup lang=\"ts\">\n// `shape=\"circle\"` draws round grid rings, `levels` sets how many.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { RadarChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: {\n    profile: \"Profile\",\n    skills: [\"Frontend\", \"Backend\", \"Design\", \"Testing\", \"DevOps\", \"Data\"],\n  },\n  zh: {\n    profile: \"能力画像\",\n    skills: [\"前端\", \"后端\", \"设计\", \"测试\", \"运维\", \"数据\"],\n  },\n  ja: {\n    profile: \"プロフィール\",\n    skills: [\n      \"フロントエンド\",\n      \"バックエンド\",\n      \"デザイン\",\n      \"テスト\",\n      \"DevOps\",\n      \"データ\",\n    ],\n  },\n  fr: {\n    profile: \"Profil\",\n    skills: [\"Front-end\", \"Back-end\", \"Design\", \"Tests\", \"DevOps\", \"Données\"],\n  },\n};\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\nconst indicators = computed(() =>\n  text.value.skills.map((name) => ({ name, max: 10 })),\n);\nconst series = computed(() => [\n  { name: text.value.profile, values: [9, 6, 7, 8, 5, 6] },\n]);\n</script>\n\n<template>\n  <RadarChart\n    :indicators=\"indicators\"\n    :series=\"series\"\n    shape=\"circle\"\n    :levels=\"5\"\n    :height=\"320\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "circle",
+      "description": ""
+    },
+    {
+      "id": "compare",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radar-chart/vue/compare.vue",
+      "files": {
+        "apps/docs/src/docs/pages/radar-chart/vue/compare.vue": "<script setup lang=\"ts\">\n// One polygon per series, one value per indicator (axes clockwise from 12\n// o'clock); the legend hides / shows a series.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { RadarChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: {\n    current: \"Current model\",\n    next: \"Next model\",\n    axes: [\"Speed\", \"Reliability\", \"Comfort\", \"Safety\", \"Efficiency\"],\n  },\n  zh: {\n    current: \"当前型号\",\n    next: \"新型号\",\n    axes: [\"速度\", \"可靠性\", \"舒适性\", \"安全性\", \"能效\"],\n  },\n  ja: {\n    current: \"現行モデル\",\n    next: \"次期モデル\",\n    axes: [\"速度\", \"信頼性\", \"快適性\", \"安全性\", \"効率\"],\n  },\n  fr: {\n    current: \"Modèle actuel\",\n    next: \"Nouveau modèle\",\n    axes: [\"Vitesse\", \"Fiabilité\", \"Confort\", \"Sécurité\", \"Efficacité\"],\n  },\n};\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\nconst indicators = computed(() =>\n  text.value.axes.map((name) => ({ name, max: 100 })),\n);\nconst series = computed(() => [\n  { name: text.value.current, values: [72, 85, 64, 90, 58] },\n  { name: text.value.next, values: [88, 80, 78, 92, 81] },\n]);\n</script>\n\n<template>\n  <RadarChart :indicators=\"indicators\" :series=\"series\" :height=\"320\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "compare",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Graphique radar",
+      "description": "Compare un ou quelques éléments selon plusieurs indicateurs aux échelles différentes (compétences, tests de produits, profils aromatiques). Survolez un polygone pour le mettre en évidence avec l’indicateur le plus proche ; les flèches passent d’une série ou d’un indicateur à l’autre, Échap efface ; un clic sur la légende masque une série.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "Une série sur six indicateurs avec max: 10 ; l’infobulle liste toutes les valeurs et met en gras l’indicateur sous le pointeur."
+        },
+        "compare": {
+          "title": "Comparer des produits",
+          "description": "Avec trois séries, la légende s’affiche automatiquement ; onHover renvoie la série et l’indicateur le plus proche du pointeur."
+        },
+        "circle": {
+          "title": "Grille circulaire",
+          "description": "shape=\"circle\" trace des anneaux ronds, levels en fixe le nombre et dots={false} masque les sommets ; opacity renforce les remplissages."
+        },
+        "players": {
+          "title": "Comparaison de joueurs",
+          "description": "Deux footballeurs sur six attributs ; min et max sur les indicateurs resserrent chaque axe sur la plage 30-99 où les notes diffèrent, et chaque série fixe sa couleur."
+        },
+        "capabilities": {
+          "title": "Capacités d'un produit",
+          "description": "Notes d'analystes d'un produit, d'un concurrent et de la moyenne du marché. hidden rend la visibilité contrôlée : les cases à cocher et la légende (onToggle) partagent le même état."
+        },
+        "nutrition": {
+          "title": "Valeurs nutritionnelles de petits-déjeuners",
+          "description": "Trois petits-déjeuners sur une grille circulaire (shape=\"circle\", levels={5}), chaque axe en pourcentage de la valeur quotidienne. renderTooltip utilise l’indicator de l’évènement pour lister la quantité du nutriment survolé dans chaque repas."
+        },
+        "live-monitor": {
+          "title": "Supervision d’un service en direct",
+          "description": "La charge actuelle est redessinée chaque seconde (setInterval, arrêté quand l’interrupteur est désactivé ou au démontage) par-dessus la moyenne de la dernière heure, et passe au rouge au-delà du seuil d’alerte. Seuls la métrique la plus chargée et l’état d’alerte sont annoncés, pas chaque rafraîchissement."
+        },
+        "review-360": {
+          "title": "Évaluation à 360°",
+          "description": "Un Select choisit la personne dont les notes sont tracées sur la moyenne de l’équipe ; la garder en deuxième série fait s’animer le polygone sur place. La ligne en dessous nomme son principal point fort et son principal écart par rapport à l’équipe."
+        },
+        "sales-targets": {
+          "title": "Objectifs commerciaux aux unités variées",
+          "description": "Chaque indicateur a ses propres min et max : chiffre d’affaires, affaires gagnées, taux de réussite et NPS tiennent dans un seul graphique ; l’objectif est un contour non rempli. onClick et renderTooltip lisent l’indicator de l’évènement pour afficher la valeur réelle, l’objectif et l’atteinte d’un KPI."
+        }
+      },
+      "data": {
+        "skills": {
+          "problemSolving": "Résolution de problèmes",
+          "coding": "Programmation",
+          "systemDesign": "Conception de systèmes",
+          "communication": "Communication",
+          "collaboration": "Collaboration",
+          "ownership": "Responsabilité"
+        },
+        "candidate": "Candidat",
+        "outOf": "{{value}} / {{max}}",
+        "scorecardAria": "Grille d'entretien d'un candidat",
+        "flavor": {
+          "aroma": "Arôme",
+          "acidity": "Acidité",
+          "sweetness": "Douceur",
+          "body": "Corps",
+          "bitterness": "Amertume",
+          "aftertaste": "Persistance"
+        },
+        "coffees": {
+          "ethiopia": "Éthiopie Yirgacheffe",
+          "sumatra": "Sumatra Mandheling"
+        },
+        "coffeeAria": "Profils aromatiques de deux cafés",
+        "criteria": {
+          "performance": "Performances",
+          "battery": "Autonomie",
+          "camera": "Appareil photo",
+          "display": "Écran",
+          "value": "Rapport qualité-prix",
+          "build": "Finition"
+        },
+        "phonesAria": "Notes de test de trois téléphones",
+        "hoverPolygon": "Survolez un polygone ou utilisez les flèches pour comparer les téléphones",
+        "football": {
+          "pace": "Vitesse",
+          "shooting": "Tir",
+          "passing": "Passe",
+          "dribbling": "Dribble",
+          "defending": "Défense",
+          "physical": "Physique"
+        },
+        "playersAria": "Attributs de deux footballeurs",
+        "capabilities": {
+          "security": "Sécurité",
+          "integrations": "Intégrations",
+          "reporting": "Rapports",
+          "mobile": "Mobile",
+          "automation": "Automatisation",
+          "support": "Support",
+          "pricing": "Prix"
+        },
+        "products": {
+          "ours": "Notre produit",
+          "competitor": "Principal concurrent",
+          "market": "Moyenne du marché"
+        },
+        "compareWith": "Produits à comparer",
+        "capabilitiesAria": "Notes des capacités de notre produit, d'un concurrent et du marché",
+        "nutrition": {
+          "nutrients": {
+            "protein": "Protéines",
+            "fiber": "Fibres",
+            "sugar": "Sucres",
+            "fat": "Lipides",
+            "sodium": "Sodium",
+            "calcium": "Calcium"
+          },
+          "meals": {
+            "oatmeal": "Porridge aux fruits",
+            "eggs": "Œufs sur toast",
+            "yogurt": "Yaourt et granola"
+          },
+          "dailyValue": "{{value}} VQ",
+          "row": "{{meal}} : {{amount}} ({{share}})",
+          "aria": "Nutriments de trois petits-déjeuners, en pourcentage de la valeur quotidienne"
+        },
+        "monitor": {
+          "metrics": {
+            "cpu": "CPU",
+            "memory": "Mémoire",
+            "diskIo": "E/S disque",
+            "network": "Réseau",
+            "latency": "Latence",
+            "errors": "Erreurs"
+          },
+          "baseline": "Moyenne de la dernière heure",
+          "now": "Maintenant",
+          "live": "Mises à jour en direct",
+          "alert": "Alerte : {{metric}} dépasse {{threshold}} de sa capacité.",
+          "peak": "Métrique la plus chargée : {{metric}}.",
+          "aria": "Charge actuelle du service comparée à la moyenne de la dernière heure"
+        },
+        "review": {
+          "competencies": {
+            "communication": "Communication",
+            "delivery": "Livraison",
+            "expertise": "Expertise",
+            "collaboration": "Collaboration",
+            "mentoring": "Mentorat",
+            "initiative": "Initiative"
+          },
+          "team": "Moyenne de l’équipe",
+          "person": "Personne",
+          "aria": "Notes de l’évaluation à 360° de {{name}} comparées à la moyenne de l’équipe",
+          "summary": "Point fort : {{strength}} ({{strengthGap}} par rapport à l’équipe). À développer : {{growth}} ({{growthGap}})."
+        },
+        "sales": {
+          "kpis": {
+            "revenue": "Chiffre d’affaires",
+            "deals": "Affaires gagnées",
+            "winRate": "Taux de réussite",
+            "dealSize": "Montant moyen",
+            "calls": "Appels",
+            "nps": "NPS"
+          },
+          "target": "Objectif",
+          "actual": "Réel",
+          "line": "{{kpi}} : {{actual}} pour un objectif de {{target}} ({{attainment}}).",
+          "aria": "KPI trimestriels d’un commercial comparés à ses objectifs",
+          "hint": "Cliquez près d’un axe pour lire son KPI."
+        }
+      },
+      "api": {
+        "RadarChartProps": {
+          "indicators": "Axes du graphique, dans le sens horaire depuis midi",
+          "series": "Polygones : une valeur par indicateur",
+          "shape": "Forme de la grille : polygone ou cercle",
+          "levels": "Nombre d’anneaux de la grille",
+          "dots": "Dessine des points sur les sommets"
+        },
+        "RadarIndicator": {
+          "name": "Nom de l’axe",
+          "max": "Valeur au bord ; la plus grande valeur des séries si absente",
+          "min": "Valeur au centre"
+        },
+        "RadarSeries": {
+          "name": "Nom affiché dans la légende et l’infobulle",
+          "values": "Une valeur par indicateur",
+          "color": "Couleur du polygone ; prise dans la palette si absente",
+          "opacity": "Opacité du remplissage, de 0 à 1"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basique",
+            "description": "Appuyez près d'un sommet pour lire la note d'une compétence ; format écrit les notes sur 10."
+          },
+          "compare": {
+            "title": "Comparaison",
+            "description": "Deux séries sur une grille circulaire ; hidden et onToggle gardent l'état de la légende dans l'application."
+          }
+        },
+        "data": {
+          "skills": {
+            "problemSolving": "Résolution de problèmes",
+            "coding": "Code",
+            "systemDesign": "Conception système",
+            "communication": "Communication",
+            "collaboration": "Collaboration",
+            "ownership": "Implication"
+          },
+          "candidate": "Candidat",
+          "outOf10": "{{value}} / 10",
+          "scorecardAria": "Grille d'entretien d'un candidat",
+          "criteria": {
+            "battery": "Autonomie",
+            "camera": "Photo",
+            "display": "Écran",
+            "performance": "Performances",
+            "price": "Prix"
+          },
+          "phonesAria": "Notes de test de deux téléphones",
+          "comparing": "Comparaison : {{phones}}"
+        }
+      },
+      "wc": {
+        "demos": {
+          "compare": {
+            "title": "Comparer deux séries",
+            "description": "Deux modèles sur cinq indicateurs ; la légende masque ou affiche une série."
+          },
+          "circle": {
+            "title": "Grille circulaire",
+            "description": "shape circle trace des anneaux circulaires, levels en fixe le nombre."
+          }
+        },
+        "minerva-radar-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "La marque survolée (ou ciblée au clavier) a changé ; detail : { index, name, value, share }, null quand rien n'est survolé",
+            "minerva-click": "Une marque a été cliquée, touchée ou activée avec Entrée ; detail : { index, name, value, share }",
+            "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index",
+            "getRenderer": "Moteur de rendu des formes (webgpu, webgl2, webgl, canvas2d), null tant qu’il n’est pas prêt ; à choisir avec l’option renderer du moteur"
+          }
+        }
+      }
+    }
+  }
+}
