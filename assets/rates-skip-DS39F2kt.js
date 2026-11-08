@@ -1,0 +1,14 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<div
+  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 640px"
+>
+  <minerva-media-player
+    poster="media-player/poster.jpg"
+    id="player"
+    src="media-player/sample.mp4"
+    skip-seconds="3"
+    aspect-ratio="4 / 3"
+    aria-label="Flower, speed and skip"
+  ></minerva-media-player>
+  <output id="rate">Speed: 1×</output>
+</div>
+`})))()}n();export{t as default};

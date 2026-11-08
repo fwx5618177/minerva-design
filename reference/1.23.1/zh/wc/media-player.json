@@ -9,16 +9,16 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.23.1",
-    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
-    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
-    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+    "sourceCommit": "a59b0af81a2f5c6e7f2de29a81878dc4a5af01f1",
+    "sourceDigest": "sha256:5b7fa63ef8772ff533e1fc34d0784bfe651eb0b1be71712d0bbef057eec2b4cf",
+    "referenceSourceDigest": "sha256:1019806d6e262e50fb4e804e528badf35a408ce0a47ef203c2c5d8930c0fb0f1"
   },
   "content": {
     "advanced": {
       "advancedTitle": "播放器入口",
       "advancedText": "完整 React 播放器通过独立入口使用。原 minerva-design 的 MediaPlayer 导出继续兼容原有属性和事件参数，两者共用同一套播放实现。",
       "boundary": "流媒体引擎受浏览器编码、CORS、自动播放及安全上下文能力限制。下方高级示例面向 React DOM；其他框架和原生标签页以各自 API 为准，React Native、小程序需要对应的媒体宿主。",
-      "assets": "示例使用本地托管的短 FFmpeg 测试图案与合成音，不依赖外部流服务。截图、录制按钮按能力显示；录制完成会下载文件。",
+      "assets": "示例使用本地托管的 Minerva Design 宣传片及其音轨，提供 720p、360p 两种视频清晰度。HLS、DASH、FLV 使用同一部影片。截图、录制按钮按浏览器能力显示；录制完成会下载文件。",
       "capabilitiesTitle": "高级 React API",
       "capabilities": {
         "sources": {
@@ -48,8 +48,8 @@
       }
     },
     "data": {
-      "pattern": "合成测试图案",
-      "tone": "440 Hz 测试音"
+      "pattern": "Minerva Design · 组件展示",
+      "tone": "Minerva Design · 宣传片音轨"
     }
   },
   "components": [
@@ -538,7 +538,7 @@
         },
         {
           "name": "--media-player-overlay-background",
-          "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+          "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
         },
         {
           "name": "--media-player-overlay-color",
@@ -594,7 +594,7 @@
         },
         {
           "name": "--media-player-overlay-background",
-          "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+          "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
         },
         {
           "name": "--media-player-overlay-color",
@@ -649,7 +649,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/wc/captions.html",
       "files": {
-        "apps/docs/src/docs/pages/media-player/wc/captions.html": "<div\n  style=\"display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px\"\n>\n  <minerva-media-player id=\"player\" src=\"media-player/sample.mp4\">\n    <span slot=\"heading\">Video playback</span>\n  </minerva-media-player>\n  <output id=\"choice\" aria-live=\"polite\">Captions: default track</output>\n</div>\n",
+        "apps/docs/src/docs/pages/media-player/wc/captions.html": "<div\n  style=\"display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 640px\"\n>\n  <minerva-media-player\n    poster=\"media-player/poster.jpg\"\n    id=\"player\"\n    src=\"media-player/sample.mp4\"\n  >\n    <span slot=\"heading\">Video playback</span>\n  </minerva-media-player>\n  <output id=\"choice\" aria-live=\"polite\">Captions: default track</output>\n</div>\n",
         "apps/docs/src/docs/pages/media-player/wc/captions.ts": "// tracks is a property (an array of { src, srclang, label, kind, default });\n// <track src srclang label default> children of the element work too.\n// minerva-track-change reports the user's choice.\nimport type {\n  MediaPlayerTrack,\n  MinervaMediaPlayer,\n} from \"minerva-design/web-components/media-player\";\n\nconst ENGLISH_VTT = `WEBVTT\n\n00:00.000 --> 00:01.800\nA locally hosted playback sample\n\n00:01.800 --> 00:03.600\nVideo and audio share the <i>same player</i>\n\n00:03.600 --> 00:06.000\nCaptions follow the playback position.\n`;\nconst FRENCH_SRT = `1\n00:00:00,000 --> 00:00:01,800\nUn exemple de lecture hébergé localement\n\n2\n00:00:01,800 --> 00:00:03,600\nLa vidéo et l’audio partagent le même lecteur\n\n3\n00:00:03,600 --> 00:00:06,000\nLes sous-titres suivent la lecture.\n`;\nconst tracks: MediaPlayerTrack[] = [\n  {\n    src: `data:text/vtt;charset=utf-8,${encodeURIComponent(ENGLISH_VTT)}`,\n    srclang: \"en\",\n    label: \"English\",\n    default: true,\n  },\n  {\n    src: `data:application/x-subrip;charset=utf-8,${encodeURIComponent(FRENCH_SRT)}`,\n    srclang: \"fr\",\n    label: \"Français\",\n  },\n];\n\nexport function setup(root: HTMLElement) {\n  const player = root.querySelector<MinervaMediaPlayer>(\"#player\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#choice\")!;\n  player.tracks = tracks;\n  const onTrackChange = (e: Event) => {\n    const { track } = (\n      e as CustomEvent<{ index: number; track: MediaPlayerTrack | null }>\n    ).detail;\n    output.value = `Captions: ${track?.label ?? \"Off\"}`;\n  };\n  player.addEventListener(\"minerva-track-change\", onTrackChange);\n  return () =>\n    player.removeEventListener(\"minerva-track-change\", onTrackChange);\n}\n"
       },
       "dependencies": [
@@ -664,7 +664,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/wc/rates-skip.html",
       "files": {
-        "apps/docs/src/docs/pages/media-player/wc/rates-skip.html": "<div\n  style=\"display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px\"\n>\n  <minerva-media-player\n    id=\"player\"\n    src=\"media-player/sample.mp4\"\n    skip-seconds=\"3\"\n    aspect-ratio=\"4 / 3\"\n    aria-label=\"Flower, speed and skip\"\n  ></minerva-media-player>\n  <output id=\"rate\">Speed: 1×</output>\n</div>\n",
+        "apps/docs/src/docs/pages/media-player/wc/rates-skip.html": "<div\n  style=\"display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 640px\"\n>\n  <minerva-media-player\n    poster=\"media-player/poster.jpg\"\n    id=\"player\"\n    src=\"media-player/sample.mp4\"\n    skip-seconds=\"3\"\n    aspect-ratio=\"4 / 3\"\n    aria-label=\"Flower, speed and skip\"\n  ></minerva-media-player>\n  <output id=\"rate\">Speed: 1×</output>\n</div>\n",
         "apps/docs/src/docs/pages/media-player/wc/rates-skip.ts": "// playbackRates is a property (an array); minerva-rate-change reports the\n// speed picked with the speed button.\nimport type { MinervaMediaPlayer } from \"minerva-design/web-components/media-player\";\n\nexport function setup(root: HTMLElement) {\n  const player = root.querySelector<MinervaMediaPlayer>(\"#player\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#rate\")!;\n  player.playbackRates = [1, 1.5, 2];\n  const onRate = (e: Event) => {\n    const { rate } = (e as CustomEvent<{ rate: number }>).detail;\n    output.value = `Speed: ${rate}×`;\n  };\n  player.addEventListener(\"minerva-rate-change\", onRate);\n  return () => player.removeEventListener(\"minerva-rate-change\", onRate);\n}\n"
       },
       "dependencies": [
@@ -679,7 +679,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/wc/resume.html",
       "files": {
-        "apps/docs/src/docs/pages/media-player/wc/resume.html": "<div\n  style=\"display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px\"\n>\n  <minerva-media-player\n    id=\"player\"\n    src=\"media-player/sample.mp4\"\n    start-time=\"2\"\n  ></minerva-media-player>\n  <div style=\"display: flex; gap: 8px; flex-wrap: wrap\">\n    <minerva-button id=\"play\" size=\"small\">Play</minerva-button>\n    <minerva-button id=\"restart\" size=\"small\" variant=\"outline\"\n      >Restart</minerva-button\n    >\n  </div>\n  <output id=\"progress\" aria-live=\"polite\">Not started</output>\n</div>\n",
+        "apps/docs/src/docs/pages/media-player/wc/resume.html": "<div\n  style=\"display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 640px\"\n>\n  <minerva-media-player\n    poster=\"media-player/poster.jpg\"\n    id=\"player\"\n    src=\"media-player/sample.mp4\"\n    start-time=\"2\"\n  ></minerva-media-player>\n  <div style=\"display: flex; gap: 8px; flex-wrap: wrap\">\n    <minerva-button id=\"play\" size=\"small\">Play</minerva-button>\n    <minerva-button id=\"restart\" size=\"small\" variant=\"outline\"\n      >Restart</minerva-button\n    >\n  </div>\n  <output id=\"progress\" aria-live=\"polite\">Not started</output>\n</div>\n",
         "apps/docs/src/docs/pages/media-player/wc/resume.ts": "// start-time resumes once the metadata loads; the media events cross the\n// shadow root as minerva-* events; play() / seek() drive the player.\nimport type { MinervaMediaPlayer } from \"minerva-design/web-components/media-player\";\n\nexport function setup(root: HTMLElement) {\n  const player = root.querySelector<MinervaMediaPlayer>(\"#player\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#progress\")!;\n  let saved = 2;\n  const onMetadata = (e: Event) => {\n    const { duration } = (e as CustomEvent<{ duration: number }>).detail;\n    output.value = `Resumed at ${saved}s of ${duration.toFixed(1)}s`;\n  };\n  const onTime = (e: Event) => {\n    const { currentTime, duration } = (\n      e as CustomEvent<{ currentTime: number; duration: number }>\n    ).detail;\n    output.value = `${Math.round((currentTime / duration) * 100)}% watched (${currentTime.toFixed(1)}s)`;\n  };\n  const onPause = () => {\n    saved = Math.floor(player.element?.currentTime ?? 0);\n    player.startTime = saved;\n    output.value = `Paused · saved position: ${saved}s`;\n  };\n  const onEnded = () => (output.value = \"Finished\");\n  const play = () => void player.play();\n  const restart = () => player.seek(0);\n  const playButton = root.querySelector(\"#play\")!;\n  const restartButton = root.querySelector(\"#restart\")!;\n  player.addEventListener(\"minerva-loaded-metadata\", onMetadata);\n  player.addEventListener(\"minerva-time-update\", onTime);\n  player.addEventListener(\"minerva-pause\", onPause);\n  player.addEventListener(\"minerva-ended\", onEnded);\n  playButton.addEventListener(\"click\", play);\n  restartButton.addEventListener(\"click\", restart);\n  return () => {\n    player.removeEventListener(\"minerva-loaded-metadata\", onMetadata);\n    player.removeEventListener(\"minerva-time-update\", onTime);\n    player.removeEventListener(\"minerva-pause\", onPause);\n    player.removeEventListener(\"minerva-ended\", onEnded);\n    playButton.removeEventListener(\"click\", play);\n    restartButton.removeEventListener(\"click\", restart);\n  };\n}\n"
       },
       "dependencies": [
@@ -694,7 +694,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/wc/video.html",
       "files": {
-        "apps/docs/src/docs/pages/media-player/wc/video.html": "<div style=\"width: 100%; min-width: 0; max-width: 560px\">\n  <minerva-media-player src=\"media-player/sample.mp4\" picture-in-picture>\n    <span slot=\"heading\">Video playback</span>\n  </minerva-media-player>\n</div>\n"
+        "apps/docs/src/docs/pages/media-player/wc/video.html": "<div style=\"width: 100%; min-width: 0; max-width: 640px\">\n  <minerva-media-player\n    poster=\"media-player/poster.jpg\"\n    src=\"media-player/sample.mp4\"\n    picture-in-picture\n  >\n    <span slot=\"heading\">Video playback</span>\n  </minerva-media-player>\n</div>\n"
       },
       "dependencies": [],
       "contextImports": [],
@@ -718,7 +718,7 @@
       "demos": {
         "video": {
           "title": "视频",
-          "description": "<video> 上叠加深色半透明控制栏，播放时自动淡出（触屏设备、悬停和聚焦时保持可见）。聚焦播放器后：空格 / K 播放暂停，← / → 跳转 5 秒，↑ / ↓ 调节音量，M 静音，F 全屏。pictureInPicture 在浏览器支持时添加画中画按钮。"
+          "description": "<video> 上叠加深色半透明控制栏，播放时自动淡出（触屏设备、悬停和聚焦时保持可见）。聚焦播放器后：空格 / K 播放暂停，← / → 跳转 5 秒，↑ / ↓ 调节音量，M 静音，F 全屏。pictureInPicture 在浏览器支持时添加画中画按钮。 窄播放器将主要操作保留在同一行，精简快退、快进按钮及音量滑杆；键盘快捷键仍可使用。"
         },
         "audio": {
           "title": "音频",
@@ -824,7 +824,7 @@
         "--media-player-radius": "播放器圆角（默认 --radius-lg）",
         "--media-player-accent": "已播放范围和滑块的颜色（默认 --primary-color）",
         "--media-player-video-background": "视频背后的留白颜色（默认黑色）",
-        "--media-player-overlay-background": "视频控制栏背景（默认渐变到 --overlay-color）",
+        "--media-player-overlay-background": "视频控制栏背景（默认深色遮罩，确保亮画面上的控件清晰可读）",
         "--media-player-overlay-color": "视频上的文字和图标颜色（默认白色）",
         "--media-player-bar-background": "音频条背景（默认 --surface-color）",
         "--media-player-bar-color": "音频条的文字和图标颜色（默认 --text-color）",
@@ -900,7 +900,7 @@
         "advancedTitle": "播放器入口",
         "advancedText": "完整 React 播放器通过独立入口使用。原 minerva-design 的 MediaPlayer 导出继续兼容原有属性和事件参数，两者共用同一套播放实现。",
         "boundary": "流媒体引擎受浏览器编码、CORS、自动播放及安全上下文能力限制。下方高级示例面向 React DOM；其他框架和原生标签页以各自 API 为准，React Native、小程序需要对应的媒体宿主。",
-        "assets": "示例使用本地托管的短 FFmpeg 测试图案与合成音，不依赖外部流服务。截图、录制按钮按能力显示；录制完成会下载文件。",
+        "assets": "示例使用本地托管的 Minerva Design 宣传片及其音轨，提供 720p、360p 两种视频清晰度。HLS、DASH、FLV 使用同一部影片。截图、录制按钮按浏览器能力显示；录制完成会下载文件。",
         "capabilitiesTitle": "高级 React API",
         "capabilities": {
           "sources": {
@@ -930,8 +930,8 @@
         }
       },
       "data": {
-        "pattern": "合成测试图案",
-        "tone": "440 Hz 测试音"
+        "pattern": "Minerva Design · 组件展示",
+        "tone": "Minerva Design · 宣传片音轨"
       }
     }
   }

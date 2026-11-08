@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.1",
-  "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
-  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
-  "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  "sourceCommit": "a59b0af81a2f5c6e7f2de29a81878dc4a5af01f1",
+  "sourceDigest": "sha256:5b7fa63ef8772ff533e1fc34d0784bfe651eb0b1be71712d0bbef057eec2b4cf",
+  "referenceSourceDigest": "sha256:1019806d6e262e50fb4e804e528badf35a408ce0a47ef203c2c5d8930c0fb0f1"
 }
 ```
 
@@ -30,7 +30,7 @@ Use the dedicated entry for the full React player. The original minerva-design M
 
 Streaming engines are browser adapters: codecs, CORS, autoplay and secure-context capabilities still apply. The advanced demos below are React DOM examples. Other framework and native tabs document their own supported APIs; React Native and mini-programs require their media hosts.
 
-These examples use short, locally hosted FFmpeg test patterns and a synthetic tone. They work without third-party stream services. Screenshot and recording buttons appear only where supported; recording downloads a file on completion.
+The examples play our Minerva Design film and its soundtrack from local files, with 720p and 360p video renditions. HLS, DASH and FLV use the same film. Screenshot and recording controls appear where supported; recording downloads a file on completion.
 
 Advanced React API
 
@@ -58,9 +58,9 @@ The ref exposes play/pause/seek and element/video, plus setPlaybackRate, setQual
 
 locale supports en/zh/ja/fr and messages overrides control text; theme selects light/dark. Import the player CSS once. PiP, recording, screenshot, volume and fullscreen depend on the host; cross-origin capture requires suitable CORS headers. DRM licensing is not configured by the built-in adapters. In flex or grid layouts, give the surrounding container a width; maxWidth only limits its size.
 
-Synthetic test pattern
+Minerva Design · Component showcase
 
-440 Hz test tone
+Minerva Design · Film soundtrack
 
 ```tsx
 import { MediaPlayer as CompatibleMediaPlayer } from "minerva-design";
@@ -304,7 +304,7 @@ Video through the uni <video> component (controls off, driven by uni.createVideo
       },
       {
         "name": "--media-player-overlay-background",
-        "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
       },
       {
         "name": "--media-player-overlay-color",

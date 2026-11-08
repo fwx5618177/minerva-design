@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.1",
-  "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
-  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
-  "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  "sourceCommit": "a59b0af81a2f5c6e7f2de29a81878dc4a5af01f1",
+  "sourceDigest": "sha256:5b7fa63ef8772ff533e1fc34d0784bfe651eb0b1be71712d0bbef057eec2b4cf",
+  "referenceSourceDigest": "sha256:1019806d6e262e50fb4e804e528badf35a408ce0a47ef203c2c5d8930c0fb0f1"
 }
 ```
 
@@ -30,7 +30,7 @@ Type references resolve through the [type graph](/minerva-design/reference/1.23.
 
 流媒体引擎受浏览器编码、CORS、自动播放及安全上下文能力限制。下方高级示例面向 React DOM；其他框架和原生标签页以各自 API 为准，React Native、小程序需要对应的媒体宿主。
 
-示例使用本地托管的短 FFmpeg 测试图案与合成音，不依赖外部流服务。截图、录制按钮按能力显示；录制完成会下载文件。
+示例使用本地托管的 Minerva Design 宣传片及其音轨，提供 720p、360p 两种视频清晰度。HLS、DASH、FLV 使用同一部影片。截图、录制按钮按浏览器能力显示；录制完成会下载文件。
 
 高级 React API
 
@@ -58,9 +58,9 @@ ref 提供 play / pause / seek、element / video，以及 setPlaybackRate、setQ
 
 locale 支持中英日法，messages 覆盖控件文案，theme 选择浅色 / 深色；样式导入一次即可。画中画、录制、截图、音量、全屏取决于宿主能力，跨域捕获需正确的 CORS 头；内置引擎不配置 DRM 许可证。 在 flex 或 grid 布局中，需要为外层容器设置宽度；maxWidth 只限制最大尺寸，不会让容器自动填满可用空间。
 
-合成测试图案
+Minerva Design · 组件展示
 
-440 Hz 测试音
+Minerva Design · 宣传片音轨
 
 ```tsx
 import { MediaPlayer as CompatibleMediaPlayer } from "minerva-design";
@@ -561,7 +561,7 @@ Support: stable
       },
       {
         "name": "--media-player-overlay-background",
-        "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
       },
       {
         "name": "--media-player-overlay-color",
@@ -622,7 +622,7 @@ Support: stable
       },
       {
         "name": "--media-player-overlay-background",
-        "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
       },
       {
         "name": "--media-player-overlay-color",
@@ -700,9 +700,13 @@ Documentation context imports: none
 
 ```html
 <div
-  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px"
+  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 640px"
 >
-  <minerva-media-player id="player" src="media-player/sample.mp4">
+  <minerva-media-player
+    poster="media-player/poster.jpg"
+    id="player"
+    src="media-player/sample.mp4"
+  >
     <span slot="heading">Video playback</span>
   </minerva-media-player>
   <output id="choice" aria-live="polite">Captions: default track</output>
@@ -789,9 +793,10 @@ Documentation context imports: none
 
 ```html
 <div
-  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px"
+  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 640px"
 >
   <minerva-media-player
+    poster="media-player/poster.jpg"
     id="player"
     src="media-player/sample.mp4"
     skip-seconds="3"
@@ -838,9 +843,10 @@ Documentation context imports: none
 
 ```html
 <div
-  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 560px"
+  style="display: grid; gap: 12px; width: 100%; min-width: 0; max-width: 640px"
 >
   <minerva-media-player
+    poster="media-player/poster.jpg"
     id="player"
     src="media-player/sample.mp4"
     start-time="2"
@@ -918,8 +924,12 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/wc/video.html
 
 ```html
-<div style="width: 100%; min-width: 0; max-width: 560px">
-  <minerva-media-player src="media-player/sample.mp4" picture-in-picture>
+<div style="width: 100%; min-width: 0; max-width: 640px">
+  <minerva-media-player
+    poster="media-player/poster.jpg"
+    src="media-player/sample.mp4"
+    picture-in-picture
+  >
     <span slot="heading">Video playback</span>
   </minerva-media-player>
 </div>

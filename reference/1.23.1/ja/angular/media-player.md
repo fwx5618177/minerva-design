@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.1",
-  "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
-  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
-  "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  "sourceCommit": "a59b0af81a2f5c6e7f2de29a81878dc4a5af01f1",
+  "sourceDigest": "sha256:5b7fa63ef8772ff533e1fc34d0784bfe651eb0b1be71712d0bbef057eec2b4cf",
+  "referenceSourceDigest": "sha256:1019806d6e262e50fb4e804e528badf35a408ce0a47ef203c2c5d8930c0fb0f1"
 }
 ```
 
@@ -30,7 +30,7 @@ Type references resolve through the [type graph](/minerva-design/reference/1.23.
 
 ストリーミングはブラウザーのコーデック、CORS、自動再生、安全なコンテキストの制約を受けます。以下の高度な例は React DOM 向けです。他のフレームワークやネイティブのタブは各 API を参照してください。React Native とミニプログラムは対応するメディアホストが必要です。
 
-例はローカル配信の短い FFmpeg テストパターンと合成音を使用し、外部サービスに依存しません。スクリーンショットと録画は利用可能な環境だけに表示され、録画終了時にファイルをダウンロードします。
+例はローカル配信の Minerva Design 紹介映像と音声を使用し、720p と 360p を切り替えられます。HLS、DASH、FLV も同じ映像です。対応環境ではスクリーンショットと録画が表示され、録画終了時にファイルをダウンロードします。
 
 高度な React API
 
@@ -58,9 +58,9 @@ ref は play / pause / seek、element / video、setPlaybackRate、setQuality、n
 
 locale は英中日仏、messages は操作文言、theme はライト / ダークを設定します。CSS は一度読み込みます。PiP、録画、キャプチャー、音量、全画面はホスト次第です。クロスオリジンのキャプチャーには CORS が必要で、DRM ライセンスは設定されません。 flex や grid の中では外側のコンテナーに幅を指定してください。maxWidth は上限を設定するだけです。
 
-合成テストパターン
+Minerva Design · コンポーネント紹介
 
-440 Hz テスト音
+Minerva Design · 映像の音声
 
 ```tsx
 import { MediaPlayer as CompatibleMediaPlayer } from "minerva-design";
@@ -381,7 +381,7 @@ Native Angular: MnMediaPlayer. Native standalone component/directive; see platfo
       },
       {
         "name": "--media-player-overlay-background",
-        "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
       },
       {
         "name": "--media-player-overlay-color",
@@ -426,7 +426,7 @@ See [installation](./setup.md). Styles and root providers belong in the applicat
 
 ## Example: 動画
 
-<video> に半透明の暗いコントロールバーを重ね、再生中はフェードアウトします（タッチ画面、ホバー時、フォーカス時は表示されたまま）。プレーヤーにフォーカスして：Space / K で再生・一時停止、← / → で 5 秒シーク、↑ / ↓ で音量、M でミュート、F で全画面。pictureInPicture はブラウザが対応していればピクチャーインピクチャーボタンを追加します。
+<video> に半透明の暗いコントロールバーを重ね、再生中はフェードアウトします（タッチ画面、ホバー時、フォーカス時は表示されたまま）。プレーヤーにフォーカスして：Space / K で再生・一時停止、← / → で 5 秒シーク、↑ / ↓ で音量、M でミュート、F で全画面。pictureInPicture はブラウザが対応していればピクチャーインピクチャーボタンを追加します。 幅が狭い場合は主要操作を1行に保ち、スキップボタンと音量スライダーを省略します。キーボード操作は引き続き利用できます。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -444,7 +444,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" title="Video playback" pictureInPicture/></div>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" poster="media-player/poster.jpg" title="Video playback" pictureInPicture/></div>
   `,
 })
 export class Example {
@@ -502,7 +502,7 @@ import { MnMediaPlayer, MnButton } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer, MnButton],
   template: `
-<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player #player src="media-player/sample.mp4" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button mnButton type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output></div>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player #player src="media-player/sample.mp4" poster="media-player/poster.jpg" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button mnButton type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output></div>
   `,
 })
 export class Example {
@@ -530,7 +530,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output></div>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" poster="media-player/poster.jpg" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output></div>
   `,
 })
 export class Example {
@@ -559,7 +559,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" title="Video playback" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output></div>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" poster="media-player/poster.jpg" title="Video playback" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output></div>
   `,
 })
 export class Example {

@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.1",
-  "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
-  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
-  "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  "sourceCommit": "a59b0af81a2f5c6e7f2de29a81878dc4a5af01f1",
+  "sourceDigest": "sha256:5b7fa63ef8772ff533e1fc34d0784bfe651eb0b1be71712d0bbef057eec2b4cf",
+  "referenceSourceDigest": "sha256:1019806d6e262e50fb4e804e528badf35a408ce0a47ef203c2c5d8930c0fb0f1"
 }
 ```
 
@@ -30,7 +30,7 @@ Utilisez l’entrée dédiée pour le lecteur React complet. MediaPlayer de mine
 
 Les moteurs dépendent des codecs, de CORS, de la lecture automatique et du contexte sécurisé du navigateur. Les exemples avancés sont pour React DOM. Les autres onglets décrivent leurs propres API ; React Native et les mini-programmes nécessitent leurs hôtes multimédias.
 
-Ces exemples utilisent des motifs FFmpeg courts et un son synthétique hébergés localement, sans service externe. Les captures et l’enregistrement apparaissent selon les capacités ; le fichier est téléchargé à la fin.
+Les exemples utilisent notre film Minerva Design et sa bande-son hébergés localement, en 720p et 360p. HLS, DASH et FLV diffusent le même film. La capture et l’enregistrement apparaissent selon les capacités du navigateur ; le fichier est téléchargé à la fin.
 
 API React avancée
 
@@ -58,9 +58,9 @@ La ref expose play/pause/seek, element/video, setPlaybackRate, setQuality, next/
 
 locale prend en charge en/zh/ja/fr, messages remplace les textes et theme choisit clair/sombre. Importez le CSS une fois. PiP, enregistrement, capture, volume et plein écran dépendent de l’hôte ; les captures externes exigent CORS. Les adaptateurs ne configurent pas de licence DRM. Dans une disposition flex ou grid, définissez la largeur du conteneur parent ; maxWidth fixe seulement une limite.
 
-Motif de test synthétique
+Minerva Design · Présentation des composants
 
-Son de test à 440 Hz
+Minerva Design · Bande-son du film
 
 ```tsx
 import { MediaPlayer as CompatibleMediaPlayer } from "minerva-design";
@@ -381,7 +381,7 @@ Native Angular: MnMediaPlayer. Native standalone component/directive; see platfo
       },
       {
         "name": "--media-player-overlay-background",
-        "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
       },
       {
         "name": "--media-player-overlay-color",
@@ -426,7 +426,7 @@ See [installation](./setup.md). Styles and root providers belong in the applicat
 
 ## Example: Vidéo
 
-Une <video> avec une barre de commandes sombre et translucide qui s’efface pendant la lecture (elle reste visible sur écran tactile, au survol et au focus). Lecteur focalisé : Espace / K lecture-pause, ← / → saut de 5 s, ↑ / ↓ volume, M muet, F plein écran. pictureInPicture ajoute un bouton là où le navigateur le permet.
+Une <video> avec une barre de commandes sombre et translucide qui s’efface pendant la lecture (elle reste visible sur écran tactile, au survol et au focus). Lecteur focalisé : Espace / K lecture-pause, ← / → saut de 5 s, ↑ / ↓ volume, M muet, F plein écran. pictureInPicture ajoute un bouton là où le navigateur le permet. Dans un lecteur étroit, les actions principales restent sur une ligne ; les boutons de saut et le curseur de volume cèdent la place. Les raccourcis clavier restent disponibles.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -444,7 +444,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" title="Video playback" pictureInPicture/></div>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" poster="media-player/poster.jpg" title="Video playback" pictureInPicture/></div>
   `,
 })
 export class Example {
@@ -502,7 +502,7 @@ import { MnMediaPlayer, MnButton } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer, MnButton],
   template: `
-<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player #player src="media-player/sample.mp4" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button mnButton type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output></div>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player #player src="media-player/sample.mp4" poster="media-player/poster.jpg" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button mnButton type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output></div>
   `,
 })
 export class Example {
@@ -530,7 +530,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output></div>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" poster="media-player/poster.jpg" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output></div>
   `,
 })
 export class Example {
@@ -559,7 +559,7 @@ import { MnMediaPlayer } from 'minerva-design/angular';
   selector: 'app-example',
   imports: [MnMediaPlayer],
   template: `
-<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" title="Video playback" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output></div>
+<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" poster="media-player/poster.jpg" title="Video playback" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output></div>
   `,
 })
 export class Example {

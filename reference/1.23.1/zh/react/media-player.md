@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.1",
-  "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
-  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
-  "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  "sourceCommit": "a59b0af81a2f5c6e7f2de29a81878dc4a5af01f1",
+  "sourceDigest": "sha256:5b7fa63ef8772ff533e1fc34d0784bfe651eb0b1be71712d0bbef057eec2b4cf",
+  "referenceSourceDigest": "sha256:1019806d6e262e50fb4e804e528badf35a408ce0a47ef203c2c5d8930c0fb0f1"
 }
 ```
 
@@ -30,7 +30,7 @@ Type references resolve through the [type graph](/minerva-design/reference/1.23.
 
 流媒体引擎受浏览器编码、CORS、自动播放及安全上下文能力限制。下方高级示例面向 React DOM；其他框架和原生标签页以各自 API 为准，React Native、小程序需要对应的媒体宿主。
 
-示例使用本地托管的短 FFmpeg 测试图案与合成音，不依赖外部流服务。截图、录制按钮按能力显示；录制完成会下载文件。
+示例使用本地托管的 Minerva Design 宣传片及其音轨，提供 720p、360p 两种视频清晰度。HLS、DASH、FLV 使用同一部影片。截图、录制按钮按浏览器能力显示；录制完成会下载文件。
 
 高级 React API
 
@@ -58,9 +58,9 @@ ref 提供 play / pause / seek、element / video，以及 setPlaybackRate、setQ
 
 locale 支持中英日法，messages 覆盖控件文案，theme 选择浅色 / 深色；样式导入一次即可。画中画、录制、截图、音量、全屏取决于宿主能力，跨域捕获需正确的 CORS 头；内置引擎不配置 DRM 许可证。 在 flex 或 grid 布局中，需要为外层容器设置宽度；maxWidth 只限制最大尺寸，不会让容器自动填满可用空间。
 
-合成测试图案
+Minerva Design · 组件展示
 
-440 Hz 测试音
+Minerva Design · 宣传片音轨
 
 ```tsx
 import { MediaPlayer as CompatibleMediaPlayer } from "minerva-design";
@@ -793,7 +793,7 @@ Support: stable
       },
       {
         "name": "--media-player-overlay-background",
-        "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
       },
       {
         "name": "--media-player-overlay-color",
@@ -980,10 +980,11 @@ export default function CaptionsDemo() {
         gap: 12,
         width: "100%",
         minWidth: 0,
-        maxWidth: 560,
+        maxWidth: 640,
       }}
     >
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={VIDEO_SRC}
         title={t("docs.media-player.data.pattern")}
         tracks={tracks}
@@ -1028,6 +1029,7 @@ export default function CaptureDemo() {
   return (
     <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}
         title={t("docs.media-player.data.pattern")}
         locale={i18n.language}
@@ -1065,6 +1067,7 @@ export default function Demo() {
   return (
     <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={`${base}sample.mp4`}
         title={t("docs.media-player.demos.compact.title")}
         locale={i18n.language}
@@ -1104,6 +1107,7 @@ export default function Demo() {
   return (
     <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={`${base}sample.mp4`}
         title={t("docs.media-player.demos.desktop.title")}
         locale={i18n.language}
@@ -1148,6 +1152,7 @@ export default function PlaylistDemo() {
   return (
     <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         title={t("docs.media-player.demos.playlist.title")}
         locale={i18n.language}
         theme={resolvedTheme}
@@ -1188,10 +1193,10 @@ const base = `${import.meta.env.BASE_URL}media-player/`;
 const source: PlayerSource = {
   src: `${base}sample.mp4`,
   type: "mp4",
-  defaultQuality: "144p",
+  defaultQuality: "720p",
   qualities: [
-    { id: "144p", label: "144p", height: 144, src: `${base}sample.mp4` },
-    { id: "72p", label: "72p", height: 72, src: `${base}sample-small.mp4` },
+    { id: "720p", label: "720p", height: 720, src: `${base}sample.mp4` },
+    { id: "360p", label: "360p", height: 360, src: `${base}sample-small.mp4` },
   ],
 };
 export default function QualityDemo() {
@@ -1200,6 +1205,7 @@ export default function QualityDemo() {
   return (
     <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={source}
         title={t("docs.media-player.data.pattern")}
         locale={i18n.language}
@@ -1241,10 +1247,11 @@ export default function RatesSkipDemo() {
         gap: 12,
         width: "100%",
         minWidth: 0,
-        maxWidth: 560,
+        maxWidth: 640,
       }}
     >
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         title={t("docs.media-player.data.pattern")}
         src={VIDEO_SRC}
         playbackRates={[1, 1.5, 2]}
@@ -1297,6 +1304,7 @@ export default function RecoveryDemo() {
         {t(`docs.media-player.demos.recovery.${valid ? "break" : "restore"}`)}
       </Button>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         src={`${import.meta.env.BASE_URL}media-player/${valid ? "sample.mp4" : "missing.mp4"}`}
         title={t("docs.media-player.demos.recovery.title")}
         locale={i18n.language}
@@ -1341,10 +1349,11 @@ export default function ResumeDemo() {
         gap: 12,
         width: "100%",
         minWidth: 0,
-        maxWidth: 560,
+        maxWidth: 640,
       }}
     >
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         title={t("docs.media-player.data.pattern")}
         ref={player}
         src={VIDEO_SRC}
@@ -1437,6 +1446,7 @@ export default function StreamsDemo() {
         ))}
       </div>
       <MediaPlayer
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         title={format.toUpperCase()}
         src={sources[format]}
         locale={i18n.language}
@@ -1450,7 +1460,7 @@ export default function StreamsDemo() {
 
 ## Example: 视频
 
-<video> 上叠加深色半透明控制栏，播放时自动淡出（触屏设备、悬停和聚焦时保持可见）。聚焦播放器后：空格 / K 播放暂停，← / → 跳转 5 秒，↑ / ↓ 调节音量，M 静音，F 全屏。pictureInPicture 在浏览器支持时添加画中画按钮。
+<video> 上叠加深色半透明控制栏，播放时自动淡出（触屏设备、悬停和聚焦时保持可见）。聚焦播放器后：空格 / K 播放暂停，← / → 跳转 5 秒，↑ / ↓ 调节音量，M 静音，F 全屏。pictureInPicture 在浏览器支持时添加画中画按钮。 窄播放器将主要操作保留在同一行，精简快退、快进按钮及音量滑杆；键盘快捷键仍可使用。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -1469,9 +1479,10 @@ const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 export default function VideoDemo() {
   const { t } = useTranslation();
   return (
-    <div style={{ width: "100%", minWidth: 0, maxWidth: 560 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         src={VIDEO_SRC}
+        poster={`${import.meta.env.BASE_URL}media-player/poster.jpg`}
         title={t("docs.media-player.data.pattern")}
         pictureInPicture
       />

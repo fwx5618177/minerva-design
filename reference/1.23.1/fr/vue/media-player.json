@@ -9,16 +9,16 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.23.1",
-    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
-    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
-    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+    "sourceCommit": "a59b0af81a2f5c6e7f2de29a81878dc4a5af01f1",
+    "sourceDigest": "sha256:5b7fa63ef8772ff533e1fc34d0784bfe651eb0b1be71712d0bbef057eec2b4cf",
+    "referenceSourceDigest": "sha256:1019806d6e262e50fb4e804e528badf35a408ce0a47ef203c2c5d8930c0fb0f1"
   },
   "content": {
     "advanced": {
       "advancedTitle": "Paquet du lecteur",
       "advancedText": "Utilisez l’entrée dédiée pour le lecteur React complet. MediaPlayer de minerva-design conserve ses propriétés et formats d’événements existants ; les deux utilisent la même implémentation.",
       "boundary": "Les moteurs dépendent des codecs, de CORS, de la lecture automatique et du contexte sécurisé du navigateur. Les exemples avancés sont pour React DOM. Les autres onglets décrivent leurs propres API ; React Native et les mini-programmes nécessitent leurs hôtes multimédias.",
-      "assets": "Ces exemples utilisent des motifs FFmpeg courts et un son synthétique hébergés localement, sans service externe. Les captures et l’enregistrement apparaissent selon les capacités ; le fichier est téléchargé à la fin.",
+      "assets": "Les exemples utilisent notre film Minerva Design et sa bande-son hébergés localement, en 720p et 360p. HLS, DASH et FLV diffusent le même film. La capture et l’enregistrement apparaissent selon les capacités du navigateur ; le fichier est téléchargé à la fin.",
       "capabilitiesTitle": "API React avancée",
       "capabilities": {
         "sources": {
@@ -48,8 +48,8 @@
       }
     },
     "data": {
-      "pattern": "Motif de test synthétique",
-      "tone": "Son de test à 440 Hz"
+      "pattern": "Minerva Design · Présentation des composants",
+      "tone": "Minerva Design · Bande-son du film"
     }
   },
   "components": [
@@ -365,7 +365,7 @@
         },
         {
           "name": "--media-player-overlay-background",
-          "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+          "description": "Background of the video control bar (defaults to a dark scrim that keeps controls legible over bright frames)"
         },
         {
           "name": "--media-player-overlay-color",
@@ -422,7 +422,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/vue/captions.vue",
       "files": {
-        "apps/docs/src/docs/pages/media-player/vue/captions.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { MediaPlayer, type MediaPlayerTrack } from \"minerva-design/vue\";\n\nconst src = \"media-player/sample.mp4\";\n\n// Caption files are usually served next to the video (cross-origin ones need\n// cross-origin=\"anonymous\" and CORS headers); data: URLs keep this demo\n// self-contained.\nconst englishVtt = `WEBVTT\n\n00:00.000 --> 00:01.800\nA locally hosted playback sample\n\n00:01.800 --> 00:03.600\nVideo and audio share the <i>same player</i>\n\n00:03.600 --> 00:06.000\nCaptions follow the playback position.\n`;\nconst frenchSrt = `1\n00:00:00,000 --> 00:00:01,800\nUn exemple de lecture hébergé localement\n\n2\n00:00:01,800 --> 00:00:03,600\nLa vidéo et l’audio partagent le même lecteur\n\n3\n00:00:03,600 --> 00:00:06,000\nLes sous-titres suivent la lecture.\n`;\nconst tracks: MediaPlayerTrack[] = [\n  {\n    src: `data:text/vtt;charset=utf-8,${encodeURIComponent(englishVtt)}`,\n    srclang: \"en\",\n    label: \"English\",\n    default: true,\n  },\n  {\n    src: `data:application/x-subrip;charset=utf-8,${encodeURIComponent(frenchSrt)}`,\n    srclang: \"fr\",\n    label: \"Français\",\n  },\n];\nconst choice = ref<string | null>(null);\n</script>\n<template>\n  <div\n    style=\"\n      display: grid;\n      gap: 12px;\n      width: 100%;\n      min-width: 0;\n      max-width: 560px;\n    \"\n  >\n    <MediaPlayer\n      :src=\"src\"\n      title=\"Video playback\"\n      :tracks=\"tracks\"\n      @track-change=\"choice = $event.track?.label ?? 'Off'\"\n    />\n    <output aria-live=\"polite\">\n      Captions: {{ choice ?? \"default track\" }}\n    </output>\n  </div>\n</template>\n"
+        "apps/docs/src/docs/pages/media-player/vue/captions.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { MediaPlayer, type MediaPlayerTrack } from \"minerva-design/vue\";\n\nconst src = \"media-player/sample.mp4\";\n\n// Caption files are usually served next to the video (cross-origin ones need\n// cross-origin=\"anonymous\" and CORS headers); data: URLs keep this demo\n// self-contained.\nconst englishVtt = `WEBVTT\n\n00:00.000 --> 00:01.800\nA locally hosted playback sample\n\n00:01.800 --> 00:03.600\nVideo and audio share the <i>same player</i>\n\n00:03.600 --> 00:06.000\nCaptions follow the playback position.\n`;\nconst frenchSrt = `1\n00:00:00,000 --> 00:00:01,800\nUn exemple de lecture hébergé localement\n\n2\n00:00:01,800 --> 00:00:03,600\nLa vidéo et l’audio partagent le même lecteur\n\n3\n00:00:03,600 --> 00:00:06,000\nLes sous-titres suivent la lecture.\n`;\nconst tracks: MediaPlayerTrack[] = [\n  {\n    src: `data:text/vtt;charset=utf-8,${encodeURIComponent(englishVtt)}`,\n    srclang: \"en\",\n    label: \"English\",\n    default: true,\n  },\n  {\n    src: `data:application/x-subrip;charset=utf-8,${encodeURIComponent(frenchSrt)}`,\n    srclang: \"fr\",\n    label: \"Français\",\n  },\n];\nconst choice = ref<string | null>(null);\n</script>\n<template>\n  <div\n    style=\"\n      display: grid;\n      gap: 12px;\n      width: 100%;\n      min-width: 0;\n      max-width: 640px;\n    \"\n  >\n    <MediaPlayer\n      poster=\"media-player/poster.jpg\"\n      :src=\"src\"\n      title=\"Video playback\"\n      :tracks=\"tracks\"\n      @track-change=\"choice = $event.track?.label ?? 'Off'\"\n    />\n    <output aria-live=\"polite\">\n      Captions: {{ choice ?? \"default track\" }}\n    </output>\n  </div>\n</template>\n"
       },
       "dependencies": [
         "minerva-design",
@@ -437,7 +437,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/vue/rates-skip.vue",
       "files": {
-        "apps/docs/src/docs/pages/media-player/vue/rates-skip.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { MediaPlayer, VStack } from \"minerva-design/vue\";\nconst src = \"media-player/sample.mp4\";\nconst rate = ref(1);\n</script>\n<template>\n  <VStack\n    :gap=\"3\"\n    align=\"stretch\"\n    style=\"width: 100%; min-width: 0; max-width: 560px\"\n  >\n    <MediaPlayer\n      :src=\"src\"\n      :playback-rates=\"[1, 1.5, 2]\"\n      :skip-seconds=\"3\"\n      aspect-ratio=\"4 / 3\"\n      aria-label=\"Flower, speed and skip\"\n      @rate-change=\"(next) => (rate = next)\"\n    />\n    <output>Speed: {{ rate }}×</output>\n  </VStack>\n</template>\n"
+        "apps/docs/src/docs/pages/media-player/vue/rates-skip.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { MediaPlayer, VStack } from \"minerva-design/vue\";\nconst src = \"media-player/sample.mp4\";\nconst rate = ref(1);\n</script>\n<template>\n  <VStack\n    :gap=\"3\"\n    align=\"stretch\"\n    style=\"width: 100%; min-width: 0; max-width: 640px\"\n  >\n    <MediaPlayer\n      poster=\"media-player/poster.jpg\"\n      :src=\"src\"\n      :playback-rates=\"[1, 1.5, 2]\"\n      :skip-seconds=\"3\"\n      aspect-ratio=\"4 / 3\"\n      aria-label=\"Flower, speed and skip\"\n      @rate-change=\"(next) => (rate = next)\"\n    />\n    <output>Speed: {{ rate }}×</output>\n  </VStack>\n</template>\n"
       },
       "dependencies": [
         "minerva-design",
@@ -452,7 +452,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/vue/resume.vue",
       "files": {
-        "apps/docs/src/docs/pages/media-player/vue/resume.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  Button,\n  MediaPlayer,\n  VStack,\n  type MediaPlayerExpose,\n} from \"minerva-design/vue\";\nconst src = \"media-player/sample.mp4\";\nconst player = ref<MediaPlayerExpose | null>(null);\n// e.g. the position saved by the last session\nconst saved = ref(2);\nconst progress = ref(\"Not started\");\nfunction onTime(detail: { currentTime: number; duration: number }) {\n  progress.value = `${Math.round((detail.currentTime / detail.duration) * 100)}% watched (${detail.currentTime.toFixed(1)}s)`;\n}\nfunction onPause() {\n  saved.value = Math.floor(player.value?.element?.currentTime ?? 0);\n}\n</script>\n<template>\n  <VStack\n    :gap=\"3\"\n    align=\"stretch\"\n    style=\"width: 100%; min-width: 0; max-width: 560px\"\n  >\n    <MediaPlayer\n      ref=\"player\"\n      :src=\"src\"\n      :start-time=\"saved\"\n      @loaded-metadata=\"\n        ({ duration }) =>\n          (progress = `Resumed at ${saved}s of ${duration.toFixed(1)}s`)\n      \"\n      @time-update=\"onTime\"\n      @pause=\"onPause\"\n      @ended=\"progress = 'Finished'\"\n    />\n    <div style=\"display: flex; gap: 8px; flex-wrap: wrap\">\n      <Button size=\"small\" @click=\"player?.play()\">Play</Button>\n      <Button size=\"small\" variant=\"outline\" @click=\"player?.seek(0)\"\n        >Restart</Button\n      >\n    </div>\n    <output aria-live=\"polite\"\n      >{{ progress }} · saved position: {{ saved }}s</output\n    >\n  </VStack>\n</template>\n"
+        "apps/docs/src/docs/pages/media-player/vue/resume.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  Button,\n  MediaPlayer,\n  VStack,\n  type MediaPlayerExpose,\n} from \"minerva-design/vue\";\nconst src = \"media-player/sample.mp4\";\nconst player = ref<MediaPlayerExpose | null>(null);\n// e.g. the position saved by the last session\nconst saved = ref(2);\nconst progress = ref(\"Not started\");\nfunction onTime(detail: { currentTime: number; duration: number }) {\n  progress.value = `${Math.round((detail.currentTime / detail.duration) * 100)}% watched (${detail.currentTime.toFixed(1)}s)`;\n}\nfunction onPause() {\n  saved.value = Math.floor(player.value?.element?.currentTime ?? 0);\n}\n</script>\n<template>\n  <VStack\n    :gap=\"3\"\n    align=\"stretch\"\n    style=\"width: 100%; min-width: 0; max-width: 640px\"\n  >\n    <MediaPlayer\n      poster=\"media-player/poster.jpg\"\n      ref=\"player\"\n      :src=\"src\"\n      :start-time=\"saved\"\n      @loaded-metadata=\"\n        ({ duration }) =>\n          (progress = `Resumed at ${saved}s of ${duration.toFixed(1)}s`)\n      \"\n      @time-update=\"onTime\"\n      @pause=\"onPause\"\n      @ended=\"progress = 'Finished'\"\n    />\n    <div style=\"display: flex; gap: 8px; flex-wrap: wrap\">\n      <Button size=\"small\" @click=\"player?.play()\">Play</Button>\n      <Button size=\"small\" variant=\"outline\" @click=\"player?.seek(0)\"\n        >Restart</Button\n      >\n    </div>\n    <output aria-live=\"polite\"\n      >{{ progress }} · saved position: {{ saved }}s</output\n    >\n  </VStack>\n</template>\n"
       },
       "dependencies": [
         "minerva-design",
@@ -467,7 +467,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/vue/video.vue",
       "files": {
-        "apps/docs/src/docs/pages/media-player/vue/video.vue": "<script setup lang=\"ts\">\nimport { MediaPlayer } from \"minerva-design/vue\";\nconst src = \"media-player/sample.mp4\";\n</script>\n<template>\n  <div style=\"width: 100%; min-width: 0; max-width: 560px\">\n    <MediaPlayer :src=\"src\" title=\"Video playback\" picture-in-picture />\n  </div>\n</template>\n"
+        "apps/docs/src/docs/pages/media-player/vue/video.vue": "<script setup lang=\"ts\">\nimport { MediaPlayer } from \"minerva-design/vue\";\nconst src = \"media-player/sample.mp4\";\n</script>\n<template>\n  <div style=\"width: 100%; min-width: 0; max-width: 640px\">\n    <MediaPlayer\n      poster=\"media-player/poster.jpg\"\n      :src=\"src\"\n      title=\"Video playback\"\n      picture-in-picture\n    />\n  </div>\n</template>\n"
       },
       "dependencies": [
         "minerva-design"
@@ -493,7 +493,7 @@
       "demos": {
         "video": {
           "title": "Vidéo",
-          "description": "Une <video> avec une barre de commandes sombre et translucide qui s’efface pendant la lecture (elle reste visible sur écran tactile, au survol et au focus). Lecteur focalisé : Espace / K lecture-pause, ← / → saut de 5 s, ↑ / ↓ volume, M muet, F plein écran. pictureInPicture ajoute un bouton là où le navigateur le permet."
+          "description": "Une <video> avec une barre de commandes sombre et translucide qui s’efface pendant la lecture (elle reste visible sur écran tactile, au survol et au focus). Lecteur focalisé : Espace / K lecture-pause, ← / → saut de 5 s, ↑ / ↓ volume, M muet, F plein écran. pictureInPicture ajoute un bouton là où le navigateur le permet. Dans un lecteur étroit, les actions principales restent sur une ligne ; les boutons de saut et le curseur de volume cèdent la place. Les raccourcis clavier restent disponibles."
         },
         "audio": {
           "title": "Audio",
@@ -599,7 +599,7 @@
         "--media-player-radius": "Rayon des coins du lecteur (par défaut --radius-lg)",
         "--media-player-accent": "Couleur de la plage lue et des curseurs (par défaut --primary-color)",
         "--media-player-video-background": "Couleur des bandes derrière une vidéo (noir par défaut)",
-        "--media-player-overlay-background": "Fond de la barre de commandes vidéo (par défaut un dégradé vers --overlay-color)",
+        "--media-player-overlay-background": "Fond de la barre de commandes vidéo (voile sombre par défaut pour préserver la lisibilité sur les images claires)",
         "--media-player-overlay-color": "Couleur du texte et des icônes sur une vidéo (blanc par défaut)",
         "--media-player-bar-background": "Fond de la barre audio (par défaut --surface-color)",
         "--media-player-bar-color": "Couleur du texte et des icônes de la barre audio (par défaut --text-color)",
@@ -675,7 +675,7 @@
         "advancedTitle": "Paquet du lecteur",
         "advancedText": "Utilisez l’entrée dédiée pour le lecteur React complet. MediaPlayer de minerva-design conserve ses propriétés et formats d’événements existants ; les deux utilisent la même implémentation.",
         "boundary": "Les moteurs dépendent des codecs, de CORS, de la lecture automatique et du contexte sécurisé du navigateur. Les exemples avancés sont pour React DOM. Les autres onglets décrivent leurs propres API ; React Native et les mini-programmes nécessitent leurs hôtes multimédias.",
-        "assets": "Ces exemples utilisent des motifs FFmpeg courts et un son synthétique hébergés localement, sans service externe. Les captures et l’enregistrement apparaissent selon les capacités ; le fichier est téléchargé à la fin.",
+        "assets": "Les exemples utilisent notre film Minerva Design et sa bande-son hébergés localement, en 720p et 360p. HLS, DASH et FLV diffusent le même film. La capture et l’enregistrement apparaissent selon les capacités du navigateur ; le fichier est téléchargé à la fin.",
         "capabilitiesTitle": "API React avancée",
         "capabilities": {
           "sources": {
@@ -705,8 +705,8 @@
         }
       },
       "data": {
-        "pattern": "Motif de test synthétique",
-        "tone": "Son de test à 440 Hz"
+        "pattern": "Minerva Design · Présentation des composants",
+        "tone": "Minerva Design · Bande-son du film"
       }
     }
   }

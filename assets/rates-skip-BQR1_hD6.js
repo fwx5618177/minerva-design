@@ -1,0 +1,25 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<script setup lang="ts">
+import { ref } from "vue";
+import { MediaPlayer, VStack } from "minerva-design/vue";
+const src = "media-player/sample.mp4";
+const rate = ref(1);
+<\/script>
+<template>
+  <VStack
+    :gap="3"
+    align="stretch"
+    style="width: 100%; min-width: 0; max-width: 640px"
+  >
+    <MediaPlayer
+      poster="media-player/poster.jpg"
+      :src="src"
+      :playback-rates="[1, 1.5, 2]"
+      :skip-seconds="3"
+      aspect-ratio="4 / 3"
+      aria-label="Flower, speed and skip"
+      @rate-change="(next) => (rate = next)"
+    />
+    <output>Speed: {{ rate }}×</output>
+  </VStack>
+</template>
+`})))()}n();export{t as default};
