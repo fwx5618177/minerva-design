@@ -120,7 +120,7 @@ export interface VideoPlayerProps {
   tracks?: readonly PlayerTrack[];
   /** Optional isolation key for remembered subtitle language. */
   captionStorageKey?: string;
-  /** 替换默认引擎（hls.js → mpegts.js → 原生），例如追加 dash.js */
+  /** 替换默认引擎（HLS → DASH → FLV/MPEG-TS → 原生）；保持工厂实例稳定，替换工厂时重新接入播放源。 */
   engines?: readonly MediaEngineFactory[];
   /** 最长录制时长（秒），默认 600 */
   maxRecordingSeconds?: number;

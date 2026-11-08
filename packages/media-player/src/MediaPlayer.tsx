@@ -544,7 +544,6 @@ const MediaPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
     const videoHandlers = mediaEventHandlers({
       setPaused,
       setEnded,
-      acceptEmptyError: !!renderChrome,
       setLoading,
       setBuffered,
       setCurrent,

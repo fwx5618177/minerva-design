@@ -1,9 +1,8 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { MediaPlayer, type MediaPlayerTrack } from "minerva-design";
 
-// CC0 sample from MDN's interactive examples
-const FLOWER =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 
 // Caption files are usually served next to the video (cross-origin ones need
 // crossOrigin="anonymous" on the player and CORS headers on their server).
@@ -11,26 +10,26 @@ const FLOWER =
 const ENGLISH_VTT = `WEBVTT
 
 00:00.000 --> 00:01.800
-A flower bud in the morning light
+A locally hosted playback sample
 
 00:01.800 --> 00:03.600
-Its petals slowly <i>unfold</i>
+Video and audio share the <i>same player</i>
 
 00:03.600 --> 00:06.000
-…and the bloom opens to the bees.
+Captions follow the playback position.
 `;
 
 const FRENCH_SRT = `1
 00:00:00,000 --> 00:00:01,800
-Un bouton de fleur dans la lumière du matin
+Un exemple de lecture hébergé localement
 
 2
 00:00:01,800 --> 00:00:03,600
-Ses pétales s'ouvrent lentement
+La vidéo et l’audio partagent le même lecteur
 
 3
 00:00:03,600 --> 00:00:06,000
-…et la fleur s'offre aux abeilles.
+Les sous-titres suivent la lecture.
 `;
 
 const tracks: MediaPlayerTrack[] = [
@@ -49,18 +48,27 @@ const tracks: MediaPlayerTrack[] = [
 ];
 
 export default function CaptionsDemo() {
+  const { t } = useTranslation();
   const [choice, setChoice] = useState<string | null>(null);
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 560,
+      }}
+    >
       <MediaPlayer
-        src={FLOWER}
-        title="Flower"
+        src={VIDEO_SRC}
+        title={t("docs.media-player.data.pattern")}
         tracks={tracks}
         onTrackChange={({ track }) => setChoice(track?.label ?? "Off")}
       />
       <MediaPlayer
-        src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3"
-        title="Audio with the same captions"
+        src={`${import.meta.env.BASE_URL}media-player/sample.m4a`}
+        title={t("docs.media-player.data.tone")}
         skipSeconds={0}
         tracks={tracks}
       />

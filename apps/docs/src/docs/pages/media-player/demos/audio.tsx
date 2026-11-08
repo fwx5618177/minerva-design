@@ -1,13 +1,17 @@
+import { useTranslation } from "react-i18next";
 import { MediaPlayer } from "minerva-design";
 
-// CC0 sample from MDN's interactive examples
-const ROAR =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
+const AUDIO_SRC = `${import.meta.env.BASE_URL}media-player/sample.m4a`;
 
 export default function AudioDemo() {
+  const { t } = useTranslation();
   return (
-    <div style={{ maxWidth: 480 }}>
-      <MediaPlayer src={ROAR} title="T-Rex roar" skipSeconds={0} />
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 480 }}>
+      <MediaPlayer
+        src={AUDIO_SRC}
+        title={t("docs.media-player.data.tone")}
+        skipSeconds={0}
+      />
     </div>
   );
 }

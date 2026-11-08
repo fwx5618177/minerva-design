@@ -111,8 +111,19 @@ export function useMediaEngine({
   const [engineKind, setEngineKind] = useState<string | null>(null);
   const engineRef = useRef<MediaEngine | null>(null);
   const resumeRef = useRef<ResumeState | null>(null);
-  const enginesRef = useRef(engines);
-  enginesRef.current = engines;
+  // Compare the ordered registrations rather than the array wrapper: callers
+  // commonly pass an inline array, but replacing a factory must take effect.
+  const registrations = engines ?? defaultEngines();
+  const enginesRef = useRef(registrations);
+  if (
+    enginesRef.current.length !== registrations.length ||
+    enginesRef.current.some(
+      (factory, index) => factory !== registrations[index],
+    )
+  ) {
+    enginesRef.current = [...registrations];
+  }
+  const engineFactories = enginesRef.current;
   const errorRef = useRef(onError);
   errorRef.current = onError;
   const attachedRef = useRef(onAttached);
@@ -138,11 +149,7 @@ export function useMediaEngine({
     const protocol = unsupportedProtocol(playback.url);
     const factory = protocol
       ? null
-      : selectEngine(
-          playback.type,
-          enginesRef.current ?? defaultEngines(),
-          video,
-        );
+      : selectEngine(playback.type, engineFactories, video);
     if (!factory) {
       const error = protocol
         ? new PlayerError("unsupported", protocolHint(protocol))
@@ -200,9 +207,12 @@ export function useMediaEngine({
     return () => {
       cancelled = true;
       controller.abort();
-      // A different DOM host needs the same playback position after attachment.
-      // The source-key effect clears this resume when the URL changes as well.
-      if (videoRef.current !== video) {
+      // Replacing the host or registrations reloads the same source; restore
+      // its position after metadata. The source-key effect clears it on a new source.
+      if (
+        videoRef.current !== video ||
+        enginesRef.current !== engineFactories
+      ) {
         resumeRef.current = { time: video.currentTime, playing: !video.paused };
       }
       engineRef.current?.destroy();
@@ -210,7 +220,15 @@ export function useMediaEngine({
       setLevels([]);
       setEngineKind(null);
     };
-  }, [videoRef, hostKey, source, playback.url, playback.type, nonce]);
+  }, [
+    videoRef,
+    hostKey,
+    source,
+    playback.url,
+    playback.type,
+    nonce,
+    engineFactories,
+  ]);
 
   const options = useMemo(
     () => qualityOptionsFor(source, levels),

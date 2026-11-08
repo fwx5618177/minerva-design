@@ -9,25 +9,25 @@ import type {
 const ENGLISH_VTT = `WEBVTT
 
 00:00.000 --> 00:01.800
-A flower bud in the morning light
+A locally hosted playback sample
 
 00:01.800 --> 00:03.600
-Its petals slowly <i>unfold</i>
+Video and audio share the <i>same player</i>
 
 00:03.600 --> 00:06.000
-…and the bloom opens to the bees.
+Captions follow the playback position.
 `;
 const FRENCH_SRT = `1
 00:00:00,000 --> 00:00:01,800
-Un bouton de fleur dans la lumière du matin
+Un exemple de lecture hébergé localement
 
 2
 00:00:01,800 --> 00:00:03,600
-Ses pétales s'ouvrent lentement
+La vidéo et l’audio partagent le même lecteur
 
 3
 00:00:03,600 --> 00:00:06,000
-…et la fleur s'offre aux abeilles.
+Les sous-titres suivent la lecture.
 `;
 const tracks: MediaPlayerTrack[] = [
   {

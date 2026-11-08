@@ -11,6 +11,7 @@ import { checkHeatmapTerminal } from "./browser-heatmap-terminal.mjs";
 import { checkChartHoverPerformance } from "./browser-chart-performance.mjs";
 import { checkQuadrantCard } from "./browser-quadrant-card-checks.mjs";
 import { checkCdnFiles } from "./browser-cdn-checks.mjs";
+import { checkMediaPlayerDocs } from "./browser-media-player-checks.mjs";
 import { checkModalIframeFocus } from "./browser-modal-focus.mjs";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const connect = async (url) => {
@@ -187,21 +188,24 @@ try {
     await sleep(300);
   };
   const results = [];
-  await page("media-player");
-  await wait(`document.querySelector('[data-media]')`);
-  const mediaPlayers = await evaluate(
-    `(()=>[...document.querySelectorAll('[data-media]')].map(root=>({position:getComputedStyle(root).position,width:root.getBoundingClientRect().width,media:root.getAttribute('data-media')})))()`,
-  );
-  assert.ok(
-    mediaPlayers.every((player) => player.position === "relative"),
-    "Advanced player CSS must load in the actual docs preview: " +
-      JSON.stringify(mediaPlayers),
-  );
-  assert.ok(
-    mediaPlayers.length >= 13,
-    "The full PC-style and advanced player examples must render",
-  );
-  results.push({ check: "media-player-styles", players: mediaPlayers });
+  await checkMediaPlayerDocs({
+    call,
+    evaluate,
+    wait,
+    page,
+    results,
+    capture: async (name, selector) => {
+      await mkdir(ARTIFACTS, { recursive: true });
+      await evaluate(
+        `document.querySelector(${JSON.stringify(selector)}).scrollIntoView({block:'center'})`,
+      );
+      const { data } = await call("Page.captureScreenshot", { format: "png" });
+      await writeFile(
+        join(ARTIFACTS, `${name}.png`),
+        Buffer.from(data, "base64"),
+      );
+    },
+  });
   await checkModalIframeFocus({ call, evaluate, wait, page, results });
   await checkCdnFiles({ call, evaluate, wait, results });
   for (const width of [320, 390, 1280]) {

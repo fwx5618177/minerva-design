@@ -27,6 +27,7 @@ export function generateMetadata() {
     "core",
     "dom",
     "charts",
+    "media-player",
     "native",
     "vue",
     "angular",

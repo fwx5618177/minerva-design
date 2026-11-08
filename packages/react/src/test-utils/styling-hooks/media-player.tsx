@@ -73,6 +73,10 @@ export default [
     name: "error",
     element: <MediaPlayer src="/broken.mp4" />,
     setup: ({ container }) => {
+      Object.defineProperty(media(container), "error", {
+        configurable: true,
+        value: { code: 4, message: "Unsupported media source" },
+      });
       fireEvent(media(container), new Event("error"));
     },
   },

@@ -1,13 +1,17 @@
+import { useTranslation } from "react-i18next";
 import { MediaPlayer } from "minerva-design";
 
-// CC0 sample from MDN's interactive examples
-const FLOWER =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 
 export default function VideoDemo() {
+  const { t } = useTranslation();
   return (
-    <div style={{ maxWidth: 560 }}>
-      <MediaPlayer src={FLOWER} title="Flower" pictureInPicture />
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 560 }}>
+      <MediaPlayer
+        src={VIDEO_SRC}
+        title={t("docs.media-player.data.pattern")}
+        pictureInPicture
+      />
     </div>
   );
 }

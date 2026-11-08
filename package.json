@@ -21,7 +21,7 @@
     "test:watch": "vitest",
     "hooks:lock": "pnpm --filter @minerva/core hooks:lock",
     "gen:contracts": "node tools/generate-contracts.mjs",
-    "test:coverage": "vitest run --coverage --project=\"!media-player-product\"",
+    "test:coverage": "node tools/test-coverage.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "pnpm -r typecheck && tsc -p tests/e2e --noEmit && tsc -p tests/docs --noEmit && tsc -p tests/contracts --noEmit && tsc -p tests/e2e-native --noEmit",
@@ -37,11 +37,11 @@
     "test:smoke": "node tools/browser-smoke.mjs",
     "test:migration": "node --test tools/migrate-novel-ui.test.mjs",
     "test:release": "node --test tools/npm-release.test.mjs",
-    "test:tools": "node --test tools/import-ts.test.mjs tools/portable-types.test.mjs apps/docs/scripts/reference.test.mjs apps/docs/scripts/reference-output.test.mjs tools/type-contracts.test.mjs",
+    "test:tools": "node --test tools/assert-coverage.test.mjs tools/import-ts.test.mjs tools/portable-types.test.mjs apps/docs/scripts/reference.test.mjs apps/docs/scripts/reference-output.test.mjs tools/type-contracts.test.mjs",
     "test:recipes": "node tools/verify-recipes.mjs",
     "test:browser:ui": "node tools/browser-ui-issues.mjs",
-    "test:media-player": "pnpm exec vitest run --project media-player --project media-player-product",
-    "test:media-player:product": "vitest run --project media-player-product"
+    "test:media-player": "pnpm exec vitest run --project media-player && pnpm test:media-player:product",
+    "test:media-player:product": "node --test tools/chrome-cdp.test.mjs && vitest run --config vitest.media-player-product.config.ts"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",

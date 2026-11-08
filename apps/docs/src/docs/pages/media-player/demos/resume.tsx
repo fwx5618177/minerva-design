@@ -1,20 +1,30 @@
+import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
 import { Button, MediaPlayer, type MediaPlayerHandle } from "minerva-design";
 
-const FLOWER =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 
 export default function ResumeDemo() {
+  const { t } = useTranslation();
   const player = useRef<MediaPlayerHandle>(null);
   // e.g. the position saved by the last session
   const [saved, setSaved] = useState(2);
   const [progress, setProgress] = useState("Not started");
 
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 560,
+      }}
+    >
       <MediaPlayer
+        title={t("docs.media-player.data.pattern")}
         ref={player}
-        src={FLOWER}
+        src={VIDEO_SRC}
         startTime={saved}
         onLoadedMetadata={({ duration }) =>
           setProgress(`Resumed at ${saved}s of ${duration.toFixed(1)}s`)

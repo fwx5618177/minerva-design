@@ -103,7 +103,7 @@ describe("波形峰值", () => {
     expect(canDecodeWaveform("")).toBe(false);
   });
 
-  it("loadWaveform：取字节 → 解码 → 峰值；按地址缓存；失败不缓存；太大不解码", async () => {
+  it("loadWaveform：取字节 → 解码 → 峰值；自定义解码不缓存；太大不解码", async () => {
     clearWaveformCache();
     const audio: DecodedAudio = {
       numberOfChannels: 1,
@@ -124,7 +124,7 @@ describe("波形峰值", () => {
     expect(first.peaks).toHaveLength(8);
     expect(Math.max(...first.peaks)).toBe(1);
     await loadWaveform("blob:x/1", options);
-    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(fetcher).toHaveBeenCalledTimes(2);
 
     const failing = vi.fn(async () => {
       throw new Error("bad");

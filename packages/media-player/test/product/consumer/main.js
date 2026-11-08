@@ -45,7 +45,28 @@ function App() {
       h(Player, {
         ref: player,
         title: "Portable player",
-        src: compatible ? sources[type] : { src: sources[type], type },
+        src: compatible
+          ? sources[type]
+          : {
+              src: sources[type],
+              type,
+              ...(type === "mp4"
+                ? {
+                    qualities: [
+                      {
+                        id: "standard",
+                        label: "Standard",
+                        src: "/sample.mp4?quality=standard",
+                      },
+                      {
+                        id: "high",
+                        label: "High",
+                        src: "/sample.mp4?quality=high",
+                      },
+                    ],
+                  }
+                : {}),
+            },
         locale: params.has("captions") ? "en" : undefined,
         theme: params.has("captions") ? "light" : undefined,
         tracks: params.has("captions")
@@ -62,6 +83,7 @@ function App() {
               },
             ]
           : undefined,
+        onRecording: () => false,
         onError: (error) => {
           const media = document.querySelector("video, audio");
           window.playbackErrors.push({

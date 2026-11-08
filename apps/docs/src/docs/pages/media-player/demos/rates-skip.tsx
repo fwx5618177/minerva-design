@@ -1,16 +1,26 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { MediaPlayer } from "minerva-design";
 
-const FLOWER =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+const VIDEO_SRC = `${import.meta.env.BASE_URL}media-player/sample.mp4`;
 
 export default function RatesSkipDemo() {
+  const { t } = useTranslation();
   const [rate, setRate] = useState(1);
 
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 560,
+      }}
+    >
       <MediaPlayer
-        src={FLOWER}
+        title={t("docs.media-player.data.pattern")}
+        src={VIDEO_SRC}
         playbackRates={[1, 1.5, 2]}
         skipSeconds={3}
         aspectRatio="4 / 3"

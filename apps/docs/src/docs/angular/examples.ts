@@ -1236,45 +1236,45 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
     example(
       "Video",
       ["MnMediaPlayer"],
-      `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" title="Flower" pictureInPicture/>`,
+      `<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" title="Video playback" pictureInPicture/></div>`,
       undefined,
       "Custom controls on a <video>: play / pause, skip, seek bar (role=slider), time, mute and volume, speed, picture-in-picture and fullscreen. Focus the player: Space / K, arrows, M, F.",
     ),
     example(
       "Audio",
       ["MnMediaPlayer"],
-      `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" title="T-Rex roar" [skipSeconds]="0"/>`,
+      `<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.m4a" title="Audio playback" [skipSeconds]="0"/></div>`,
       undefined,
       "The type is inferred from the file extension (or mimeType): audio renders a surface bar.",
     ),
     example(
       "Resume and progress",
-      ["MnMediaPlayer"],
-      `<mn-media-player #player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output>`,
+      ["MnMediaPlayer", "MnButton"],
+      `<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player #player src="media-player/sample.mp4" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button mnButton type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output></div>`,
       { saved: 2, time: 0 },
       "startTime resumes once the metadata loads; (timeUpdate) reports the progress; play(), pause() and seek() are public methods.",
     ),
     example(
       "Speeds and skip step",
       ["MnMediaPlayer"],
-      `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output>`,
+      `<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output></div>`,
       { rate: 1 },
     ),
     example(
       "Captions",
       ["MnMediaPlayer"],
-      `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" title="Flower" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output>`,
+      `<div style="width: 100%; min-width: 0; max-width: 640px; display: grid; gap: 12px"><mn-media-player src="media-player/sample.mp4" title="Video playback" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output></div>`,
       {
         choice: "default track",
         tracks: [
           {
-            src: `data:text/vtt,${encodeURIComponent("WEBVTT\n\n00:00.000 --> 00:02.500\nA flower bud in the morning light\n\n00:02.500 --> 00:06.000\nIts petals slowly unfold\n")}`,
+            src: `data:text/vtt,${encodeURIComponent("WEBVTT\n\n00:00.000 --> 00:02.500\nA locally hosted playback sample\n\n00:02.500 --> 00:06.000\nVideo and audio share the same player\n")}`,
             srclang: "en",
             label: "English",
             default: true,
           },
           {
-            src: `data:application/x-subrip,${encodeURIComponent("1\n00:00:00,000 --> 00:00:02,500\nUn bouton de fleur au matin\n\n2\n00:00:02,500 --> 00:00:06,000\nSes pétales s'ouvrent lentement\n")}`,
+            src: `data:application/x-subrip,${encodeURIComponent("1\n00:00:00,000 --> 00:00:02,500\nUn exemple de lecture local\n\n2\n00:00:02,500 --> 00:00:06,000\nLa vidéo et l’audio partagent le même lecteur\n")}`,
             srclang: "fr",
             label: "Français",
           },

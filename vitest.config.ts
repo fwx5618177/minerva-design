@@ -15,18 +15,6 @@ export default defineConfig({
       // happy-dom has no GPU, so the GPU backends themselves are not exercised
       "packages/charts",
       "packages/media-player",
-      {
-        root: "./packages/media-player",
-        extends: false,
-        test: {
-          name: "media-player-product",
-          environment: "node",
-          include: ["test/product/**/*.test.ts"],
-          exclude: [],
-          testTimeout: 180000,
-          hookTimeout: 180000,
-        },
-      },
       // icon set (minerva-design/icons); tested on the faked Canvas2D backend
       "packages/icons",
       "packages/react",
@@ -51,7 +39,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       // Coverage thresholds measure core, DOM, React, Web Components and Vue.
-      // Source projects run here; the installed-browser product project runs
+      // Source projects run here; vitest.media-player-product.config.ts runs
       // separately in CI. Native/Angular/mini host tests are not
       // included in this percentage, nor is the documentation application.
       include: [

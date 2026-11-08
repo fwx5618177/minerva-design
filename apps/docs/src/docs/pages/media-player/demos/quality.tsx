@@ -17,7 +17,7 @@ export default function QualityDemo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         src={source}
         title={t("docs.media-player.data.pattern")}

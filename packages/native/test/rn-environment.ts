@@ -1,4 +1,5 @@
 import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
 import type { Environment } from "vitest/runtime";
 
 /**
@@ -29,10 +30,48 @@ function stubCjs(request: string, exports: unknown): void {
 const reactNativeEnvironment: Environment = {
   name: "react-native",
   viteEnvironment: "ssr",
-  async setup() {
+  setup() {
     stubCjs("react-native/Libraries/Core/InitializeCore", {});
-    // Installs @babel/register (Flow + haste .ios resolution) and RN native mocks.
-    await import("react-native-testing-mocks/register");
+    // The upstream Babel registration uses bare plugin/preset names, which Babel
+    // resolves from process.cwd(). Unfiltered root runs start in the repository,
+    // while this toolchain belongs to packages/native. Keep its Flow/haste rules
+    // but resolve both dependencies explicitly from their owning workspace.
+    const mocksRoot = dirname(
+      require.resolve("react-native-testing-mocks/package.json"),
+    );
+    const mocksRequire = createRequire(join(mocksRoot, "package.json"));
+    const register = mocksRequire("@babel/register") as (
+      options: unknown,
+    ) => void;
+    register({
+      cache: false,
+      extensions: [".ios.js", ".ios.jsx", ".js", ".jsx"],
+      only: [/[/\\]node_modules[/\\](react-native|@react-native)[/\\]/],
+      plugins: [
+        [
+          require.resolve("babel-plugin-module-resolver"),
+          {
+            resolvePath(sourcePath: string) {
+              const hastePaths = [
+                "/Image",
+                "/Platform",
+                "/PlatformColorValueTypes",
+                "/BaseViewConfig",
+              ];
+              return sourcePath.startsWith(".") &&
+                hastePaths.some((path) => sourcePath.endsWith(path))
+                ? `${sourcePath}.ios`
+                : undefined;
+            },
+          },
+        ],
+      ],
+      presets: [require.resolve("@react-native/babel-preset")],
+    });
+    // v1.7.0's loader registers Babel before installing its mocks; that step is
+    // already complete above. The remainder of its native mocks stays intact.
+    stubCjs(join(mocksRoot, "dist/src/lib/babelRegister.cjs"), {});
+    require("react-native-testing-mocks/register");
     return { teardown() {} };
   },
 };

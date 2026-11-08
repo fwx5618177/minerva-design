@@ -52,30 +52,34 @@ export function useWaveform({
       origin: pageOrigin(),
       cors: crossOrigin !== undefined,
     });
+  const credentials =
+    crossOrigin === "use-credentials" ? "include" : "same-origin";
+  const requestKey = JSON.stringify([url, credentials]);
   const [result, setResult] = useState<{
-    url: string;
+    key: string;
     peaks: number[] | null;
   } | null>(null);
 
   useEffect(() => {
     if (!decodable) return;
     let cancelled = false;
-    loadWaveform(url).then(
+    loadWaveform(url, { credentials }).then(
       (data) => {
-        if (!cancelled) setResult({ url, peaks: data.peaks });
+        if (!cancelled) setResult({ key: requestKey, peaks: data.peaks });
       },
       () => {
-        if (!cancelled) setResult({ url, peaks: null });
+        if (!cancelled) setResult({ key: requestKey, peaks: null });
       },
     );
     return () => {
       cancelled = true;
     };
-  }, [decodable, url]);
+  }, [decodable, url, credentials, requestKey]);
 
   if (provided) return { peaks: provided, state: "provided" };
   if (!decodable) return { peaks: null, state: "decorative" };
-  if (!result || result.url !== url) return { peaks: null, state: "loading" };
+  if (!result || result.key !== requestKey)
+    return { peaks: null, state: "loading" };
   return result.peaks
     ? { peaks: result.peaks, state: "decoded" }
     : { peaks: null, state: "decorative" };

@@ -7,7 +7,7 @@ export default function Demo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ width: "100%", maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         kind="audio"
         src={`${base}sample.m4a`}

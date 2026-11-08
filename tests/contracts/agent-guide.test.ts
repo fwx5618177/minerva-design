@@ -110,11 +110,9 @@ function problems(text: string): string[] {
 describe("agent maintenance navigation", () => {
   it("links to real sources and executable workspace commands", () => {
     expect(problems(read("AGENTS.md"))).toEqual([]);
-    expect(
-      problems(
-        "`pnpm --filter @minerva/media-player exec playwright install chromium`",
-      ),
-    ).toEqual([]);
+    expect(problems("`pnpm --filter @minerva/media-player typecheck`")).toEqual(
+      [],
+    );
   });
 
   it("covers the pnpm checks actually required by the CI verify job", () => {

@@ -29,7 +29,6 @@ export interface MediaEventCallbacks {
 export interface MediaEventContext {
   setPaused: Setter<boolean>;
   setEnded?: Setter<boolean>;
-  acceptEmptyError?: boolean;
   setLoading: Setter<boolean>;
   setBuffered: Setter<Array<[number, number]>>;
   setCurrent: Setter<number>;
@@ -89,11 +88,7 @@ export function mediaEventHandlers(ctx: MediaEventContext) {
       ctx.setBuffered(timeRangesToArray(event.currentTarget.buffered)),
     onError: (event: VideoEvent) => {
       const mediaError = event.currentTarget.error;
-      if (!mediaError) {
-        if (ctx.acceptEmptyError)
-          ctx.reportError(mediaErrorMessage(4, ctx.errorType));
-        return;
-      }
+      if (!mediaError) return;
       ctx.reportError(mediaErrorMessage(mediaError.code, ctx.errorType));
     },
     onEnded: (event: VideoEvent) => {

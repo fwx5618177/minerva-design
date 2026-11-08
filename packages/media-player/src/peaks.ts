@@ -259,7 +259,8 @@ export interface WaveformData {
 }
 
 export interface LoadWaveformOptions {
-  fetcher?: (url: string) => Promise<Response>;
+  fetcher?: (url: string, init?: RequestInit) => Promise<Response>;
+  credentials?: RequestCredentials;
   decoder?: AudioDecoder | null;
   maxBytes?: number;
   resolution?: number;
@@ -282,11 +283,41 @@ async function readBytes(
   const fetcher =
     options.fetcher ?? (typeof fetch === "function" ? fetch : null);
   if (!fetcher) throw new Error("没有 fetch");
-  const response = await fetcher(url);
+  const response = await fetcher(url, {
+    credentials: options.credentials ?? "same-origin",
+  });
   if (!response.ok) throw new Error(`读取失败：${response.status}`);
   const declared = Number(response.headers?.get?.("content-length") ?? NaN);
-  if (Number.isFinite(declared) && declared > maxBytes)
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    await response.body?.cancel().catch(() => undefined);
     throw new Error("文件太大，不解码波形");
+  }
+  if (response.body) {
+    const reader = response.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > maxBytes) throw new Error("文件太大，不解码波形");
+        chunks.push(value);
+      }
+    } catch (error) {
+      await reader.cancel().catch(() => undefined);
+      throw error;
+    } finally {
+      reader.releaseLock();
+    }
+    const bytes = new Uint8Array(size);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    return bytes.buffer;
+  }
   const bytes = await response.arrayBuffer();
   if (bytes.byteLength > maxBytes) throw new Error("文件太大，不解码波形");
   return bytes;
@@ -320,24 +351,34 @@ async function decodeWaveform(
 }
 
 /**
- * 读取并解码真实波形，按地址缓存（同一地址的多个播放器共用一次解码，组件卸载也不中断，结果留给下次）；
- * 失败时不缓存
+ * 默认读取与解码按地址、分辨率、大小上限和凭证模式缓存，组件卸载也不中断。
+ * 显式提供 fetcher / decoder 时由调用方拥有结果，不共用缓存；失败时不缓存。
  */
 export function loadWaveform(
   url: string,
   options: LoadWaveformOptions = {},
 ): Promise<WaveformData> {
-  const cached = cache.get(url);
+  // Custom producers own their results; never reuse another producer's bytes
+  // or decoding. Defaults can share only equivalent request/processing options.
+  if (options.fetcher !== undefined || options.decoder !== undefined)
+    return decodeWaveform(url, options);
+  const key = JSON.stringify([
+    url,
+    options.resolution ?? PEAK_RESOLUTION,
+    options.maxBytes ?? MAX_WAVEFORM_BYTES,
+    options.credentials ?? "same-origin",
+  ]);
+  const cached = cache.get(key);
   if (cached) {
     // 刷新 LRU 顺序
-    cache.delete(url);
-    cache.set(url, cached);
+    cache.delete(key);
+    cache.set(key, cached);
     return cached;
   }
   const promise = decodeWaveform(url, options);
-  cache.set(url, promise);
+  cache.set(key, promise);
   promise.catch(() => {
-    if (cache.get(url) === promise) cache.delete(url);
+    if (cache.get(key) === promise) cache.delete(key);
   });
   while (cache.size > CACHE_LIMIT) {
     const oldest = cache.keys().next().value;

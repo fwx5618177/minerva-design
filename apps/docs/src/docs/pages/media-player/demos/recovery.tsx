@@ -9,7 +9,15 @@ export default function RecoveryDemo() {
   const { resolvedTheme } = useTheme();
   const [valid, setValid] = useState(true);
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 640 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 640,
+      }}
+    >
       <Button onClick={() => setValid(!valid)}>
         {t(`docs.media-player.demos.recovery.${valid ? "break" : "restore"}`)}
       </Button>

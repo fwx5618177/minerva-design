@@ -16,7 +16,15 @@ export default function StreamsDemo() {
   const { i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ display: "grid", gap: 12, maxWidth: 640 }}>
+    <div
+      style={{
+        display: "grid",
+        gap: 12,
+        width: "100%",
+        minWidth: 0,
+        maxWidth: 640,
+      }}
+    >
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         {(Object.keys(sources) as (keyof typeof sources)[]).map((name) => (
           <Button

@@ -266,8 +266,15 @@ describe("MediaPlayer", () => {
     fireEvent(media(), new Event("playing"));
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
 
+    Object.defineProperty(media(), "error", {
+      configurable: true,
+      value: { code: 4, message: "Unsupported media source" },
+    });
     fireEvent(media(), new Event("error"));
     expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({ code: 4, message: "Unsupported media source" }),
+    );
     expect(screen.getByRole("alert")).toHaveTextContent(
       "This media can't be played",
     );

@@ -8,7 +8,7 @@ export default function PlaylistDemo() {
   const { t, i18n } = useTranslation();
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ maxWidth: 640 }}>
+    <div style={{ width: "100%", minWidth: 0, maxWidth: 640 }}>
       <MediaPlayer
         title={t("docs.media-player.demos.playlist.title")}
         locale={i18n.language}
