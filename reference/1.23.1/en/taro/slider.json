@@ -1,0 +1,532 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "taro",
+  "page": "slider",
+  "title": "Slider",
+  "description": "Pick a number, or a range with two thumbs, by dragging along a track: steps or marks, a value label and tooltip, and a separate event when the user lets go.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Slider",
+      "support": {
+        "status": "beta",
+        "notes": "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/uncontrolled value, onChange while dragging and onChangeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs and FormControl disabled/readOnly/invalid. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. The track is measured with createSelectorQuery on touch start (cached afterwards; a layout change is picked up on the next touch). Horizontal sliders are left-to-right only; orientation vertical runs the track bottom (min) to top (max). H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only and expose no adjustable accessibility actions. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/uncontrolled value, onChange while dragging and onChangeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs and FormControl disabled/readOnly/invalid. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. The track is measured with createSelectorQuery on touch start (cached afterwards; a layout change is picked up on the next touch). Horizontal sliders are left-to-right only; orientation vertical runs the track bottom (min) to top (max). H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only and expose no adjustable accessibility actions. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "Slider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "union",
+            "typeText": "SliderValue | undefined",
+            "typeRef": "type:57afcfaa304ddfd6ee22",
+            "required": false,
+            "description": "Value (controlled): a number, or `[start, end]` with `range`"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "union",
+            "typeText": "SliderValue | undefined",
+            "typeRef": "type:57afcfaa304ddfd6ee22",
+            "required": false,
+            "description": "Initial value (uncontrolled); defaults to min, or [min, max] with range"
+          },
+          {
+            "name": "range",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Two thumbs selecting `[start, end]` (default false)"
+          },
+          {
+            "name": "min",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Smallest value (default 0)"
+          },
+          {
+            "name": "max",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Largest value (default 100)"
+          },
+          {
+            "name": "step",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "number",
+            "typeText": "number | null | undefined",
+            "typeRef": "type:63da203dcb31379a7982",
+            "required": false,
+            "description": "Step between two values; `null` snaps to the marks only (default 1)"
+          },
+          {
+            "name": "marks",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "union",
+            "typeText": "boolean | SliderMark[] | undefined",
+            "typeRef": "type:3b548a81416903c4a3b0",
+            "required": false,
+            "description": "Ticks: `{ value, label? }[]`, or `true` for one tick per step"
+          },
+          {
+            "name": "snapToMarks",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Snaps to the closest mark instead of the step (default false)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Blocks interaction (inherited from FormControl)"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Shows the value but blocks changes (inherited from FormControl)"
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "required": false,
+            "description": "Thumb and track size (default \"medium\")"
+          },
+          {
+            "name": "color",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "\"primary\" | \"success\" | \"info\" | \"warning\" | \"danger\" | undefined",
+            "typeRef": "type:c25c34698332c2581f51",
+            "required": false,
+            "description": "Accent of the filled track and the thumbs (default \"primary\")"
+          },
+          {
+            "name": "showValue",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Shows the value after the track (default false)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Shows the value above the thumb while it is dragged (default false)"
+          },
+          {
+            "name": "formatValue",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:5e8152ed314b5a340403",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats a value for the labels and aria-valuetext"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "\"horizontal\" | \"vertical\" | undefined",
+            "typeRef": "type:4e4ac2a46972f482e8a6",
+            "required": false,
+            "description": "Direction of the track (default \"horizontal\"). A vertical track runs from min (bottom) to max (top); its length is `--slider-length` (default 160px)"
+          },
+          {
+            "name": "name",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Name of the hidden form input(s) (H5 and native forms)"
+          },
+          {
+            "name": "getAriaValueText",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "function",
+            "typeText": "((value: number, index: number) => string) | undefined",
+            "typeRef": "type:b0e7a2b263e3cddc3a36",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "aria-valuetext of a thumb (index 0, or 1 for the end thumb)"
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "function",
+            "typeText": "((value: SliderValue) => void) | undefined",
+            "typeRef": "type:edafa8e822b9467dc2a3",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "SliderValue",
+                "typeRef": "type:35ce1d2f89f8eab1e586"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the new value while dragging and on each key press"
+          },
+          {
+            "name": "onChangeEnd",
+            "source": "packages/taro/src/slider.tsx",
+            "kind": "function",
+            "typeText": "((value: SliderValue) => void) | undefined",
+            "typeRef": "type:198c8d54ca0df76e193b",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "SliderValue",
+                "typeRef": "type:35ce1d2f89f8eab1e586"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the final value on touch release (or key press on H5)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Slider": {
+      "kind": "cssVars",
+      "source": "react/src/components/Slider",
+      "vars": [
+        {
+          "name": "--slider-accent",
+          "description": "Color of the filled track and of the thumb border (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--slider-rail-color",
+          "description": "Background of the empty track"
+        },
+        {
+          "name": "--slider-thumb-color",
+          "description": "Background of the thumbs"
+        },
+        {
+          "name": "--slider-track-height",
+          "description": "Thickness of the track (every size)"
+        },
+        {
+          "name": "--slider-thumb-size",
+          "description": "Width and height of the thumbs (every size)"
+        },
+        {
+          "name": "--slider-length",
+          "description": "Length of a vertical slider"
+        },
+        {
+          "name": "--slider-min-length",
+          "description": "Smallest length of a horizontal track, like the intrinsic size of a native range input (defaults to 10rem)"
+        },
+        {
+          "name": "--slider-gap",
+          "description": "Space between the track and the value label"
+        },
+        {
+          "name": "--slider-value-font-size",
+          "description": "Font size of the value label and of the mark labels"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Slider",
+      "description": "Pick a number, or a range with two thumbs, by dragging along a track: steps or marks, a value label and tooltip, and a separate event when the user lets go.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "A controlled value with showValue and a tooltip while dragging or focused. Each thumb is a role=\"slider\": arrows step, PageUp / PageDown move by 10%, Home / End jump to min / max; clicking the track jumps there."
+        },
+        "range": {
+          "title": "Range",
+          "description": "range selects [start, end] with two thumbs that cannot cross (the closest thumb follows a track click). formatValue formats the tooltip and aria-valuetext; name submits two hidden inputs."
+        },
+        "marks": {
+          "title": "Marks",
+          "description": "marks={true} draws one tick per step; an array of { value, label } draws labelled marks. step={null} (or snapToMarks) snaps to the marks only; getAriaValueText names the value for screen readers."
+        },
+        "sizes-colors": {
+          "title": "Sizes and colors",
+          "description": "Three sizes and the five semantic colors of the filled track and the thumbs; the theme variables follow the light / dark modes."
+        },
+        "committed": {
+          "title": "Save on release",
+          "description": "onChange follows every move; onChangeEnd fires once when the pointer is released (or after a key press). Save there instead of on every change."
+        },
+        "disabled": {
+          "title": "Disabled, read-only and forms",
+          "description": "disabled blocks the slider; readOnly keeps it focusable but fixed. Inside a FormControl it takes the label, the description and the invalid / disabled / read-only states."
+        }
+      },
+      "api": {
+        "SliderProps": {
+          "value": "Value (controlled): a number, or [start, end] with range; clamped to min..max and snapped",
+          "defaultValue": "Initial value (uncontrolled); defaults to min, or [min, max] with range",
+          "range": "Two thumbs selecting [start, end]; the thumbs cannot cross",
+          "min": "Smallest value",
+          "max": "Largest value",
+          "step": "Step between two values; null snaps to the marks only",
+          "marks": "Ticks of the scale: an array of { value, label? }, or true for one tick per step (up to 101)",
+          "snapToMarks": "Snaps the value to the closest mark instead of the step",
+          "onChange": "Called with the new value while dragging and on each key press",
+          "onChangeEnd": "Called with the final value when the interaction ends (pointer release, key press): save here",
+          "disabled": "Disables the slider (inherited from an enclosing FormControl when not set)",
+          "readOnly": "Focusable, but the user cannot change the value (inherited from an enclosing FormControl)",
+          "size": "Thumb and track size",
+          "color": "Semantic color of the filled track and the thumbs",
+          "showValue": "Shows the value (formatted) after the track",
+          "tooltip": "Shows the value in a bubble above a thumb while it is dragged, hovered or focused",
+          "formatValue": "Formats a value for the value label, the tooltip and aria-valuetext",
+          "orientation": "Direction of the track",
+          "name": "Name of the hidden form input(s); a range submits two entries",
+          "aria-label": "Accessible label of the thumbs (range: suffixed with Minimum / Maximum); defaults to the FormControl label",
+          "aria-labelledby": "id(s) of the element(s) labelling the thumbs",
+          "aria-describedby": "Extra id(s) of elements describing the slider, merged with the FormControl helper / error text",
+          "getAriaValueText": "aria-valuetext of a thumb (index 0, or 1 for the end thumb of a range); defaults to formatValue",
+          "className": "Additional class name",
+          "style": "Inline styles of the root element",
+          "ref": "Ref to the root element"
+        }
+      },
+      "cssVars": {
+        "--slider-accent": "Color of the filled track and of the thumb border (defaults to the color prop's accent)",
+        "--slider-rail-color": "Background of the empty track",
+        "--slider-thumb-color": "Background of the thumbs",
+        "--slider-track-height": "Thickness of the track (every size)",
+        "--slider-thumb-size": "Width and height of the thumbs (every size)",
+        "--slider-length": "Length of a vertical slider",
+        "--slider-min-length": "Smallest length of a horizontal track, like the intrinsic size of a native range input (defaults to 10rem)",
+        "--slider-gap": "Space between the track and the value label",
+        "--slider-value-font-size": "Font size of the value label and of the mark labels"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "value is an attribute (it seeds the value and is restored by form.reset()); minerva-change follows the drag and the keys. show-value and tooltip display the value."
+          },
+          "range": {
+            "title": "Range",
+            "description": "range with value=\"20,80\" selects two values; the form submits two entries under name. formatValue is a property."
+          },
+          "marks": {
+            "title": "Marks",
+            "description": "An empty marks attribute draws a tick per step; a JSON array draws labelled marks. step=\"null\" snaps to the marks only; the getAriaValueText property names the values."
+          },
+          "sizes-colors": {
+            "title": "Sizes and colors",
+            "description": "size and color are reflected attributes (also the :state(size-small), :state(color-success) ... custom states)."
+          },
+          "committed": {
+            "title": "Save on release",
+            "description": "minerva-change follows every move; minerva-change-end fires once on release (or after a key press): save there."
+          },
+          "disabled": {
+            "title": "Disabled, read-only and invalid",
+            "description": "disabled (also from a disabled fieldset) blocks the slider; readonly keeps it focusable and submitted; invalid sets aria-invalid."
+          }
+        },
+        "minerva-slider": {
+          "events": {
+            "input": "The value changed while dragging or with a key (native-like).",
+            "change": "The interaction ended (native-like).",
+            "minerva-change": "The value changed while dragging or with a key (detail: { value }).",
+            "minerva-change-end": "The interaction ended, on release or after a key press (detail: { value }): save here."
+          },
+          "props": {
+            "invalid": "Error state (sets aria-invalid).",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only).",
+            "required": "Form-associated flag; a slider always has a value, so it is never missing."
+          },
+          "methods": {
+            "focus": "Focuses the first thumb.",
+            "blur": "Removes the focus from the slider.",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Drag the thumbs in this phone preview: onChange follows the drag, onChangeEnd fires on release; screen readers adjust each thumb with increment / decrement."
+          },
+          "vertical": {
+            "title": "Vertical",
+            "description": "orientation=\"vertical\" runs the track from min (bottom) to max (top): drag up to increase, tap the track to jump there. It is 160 dp long by default; set a height in style to change it. Range, marks, the tooltip and the value label work the same way."
+          }
+        }
+      }
+    }
+  }
+}

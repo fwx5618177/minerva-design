@@ -1,0 +1,430 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "tag",
+  "title": "Tag 标签",
+  "description": "用于标记和分类内容的小标签，可关闭或可点击。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "accessibility": {
+      "title": "无障碍",
+      "clickable": "设置 clickable 后，标签具有 role=\"button\" 和 tabIndex=0，Enter 或空格键会像鼠标点击一样触发 onClick。请用于操作或切换，而非页面跳转（跳转请使用链接）。",
+      "closable": "关闭按钮是原生 <button>，可单独聚焦。其无障碍名称默认为“Close”，请设置 closeLabel（如“Remove React”），让读屏用户知道移除的是哪个标签。",
+      "disabled": "禁用的可点击标签保留 role=\"button\" 并带有 aria-disabled=\"true\"，Tab 键会跳过它。若选中状态很重要，请同时通过文字或 aria 属性表达，而不要只依赖颜色。"
+    }
+  },
+  "components": [
+    {
+      "name": "Tag",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Tag"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "color",
+            "type": "ColorScheme",
+            "default": "\"neutral\"",
+            "required": false,
+            "description": "Semantic color of the tag",
+            "typeText": "ColorScheme"
+          },
+          {
+            "name": "variant",
+            "type": "\"subtle\" | \"outline\" | \"solid\"",
+            "default": "\"subtle\"",
+            "required": false,
+            "description": "Visual style: `subtle` (tinted background), `outline` (tinted background\nwith a border) or `solid` (filled with the color, inverse text)",
+            "typeText": "\"subtle\" | \"outline\" | \"solid\""
+          },
+          {
+            "name": "size",
+            "type": "TagSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Tag size",
+            "typeText": "TagSize"
+          },
+          {
+            "name": "shape",
+            "type": "TagShape",
+            "default": "\"rounded\"",
+            "required": false,
+            "description": "Tag shape",
+            "typeText": "TagShape"
+          },
+          {
+            "name": "closable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a close button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "clickable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Renders the tag content as a native button (focusable, activated with\nEnter / Space). With closable, the close button is a sibling button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "pressed",
+            "type": "boolean",
+            "required": false,
+            "description": "Pressed (selected) state of a toggle tag, e.g. a selectable filter\n(requires clickable); sets aria-pressed and the selected style",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a spinner instead of the icon / avatar, marks the tag busy and\nblocks its action; the close button is hidden",
+            "typeText": "boolean"
+          },
+          {
+            "name": "elevation",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a shadow",
+            "typeText": "boolean"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the tag and its close button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "closeLabel",
+            "type": "string | ((label: string) => string)",
+            "required": false,
+            "description": "Accessible label of the close button: a string, or a function of the\ntag's text label (the text of its children)",
+            "typeText": "string | ((label: string) => string)"
+          },
+          {
+            "name": "ripple",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Shows a ripple effect when a clickable tag is activated",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "close",
+            "type": "[event: MouseEvent]",
+            "typeText": "[event: MouseEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "MouseEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "click",
+            "type": "[event: MouseEvent]",
+            "typeText": "[event: MouseEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "MouseEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Content of the tag",
+            "typeText": "any"
+          },
+          {
+            "name": "icon",
+            "type": "any",
+            "description": "Icon displayed before the content",
+            "typeText": "any"
+          },
+          {
+            "name": "avatar",
+            "type": "any",
+            "description": "Avatar (e.g. a small Avatar or image) displayed before the content",
+            "typeText": "any"
+          },
+          {
+            "name": "close-icon",
+            "type": "any",
+            "description": "Custom close icon",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Tag": {
+      "kind": "cssVars",
+      "source": "react/src/components/Tag",
+      "vars": [
+        {
+          "name": "--tag-height",
+          "description": "Minimum height (every size; default: the content height)"
+        },
+        {
+          "name": "--tag-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--tag-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--tag-radius",
+          "description": "Corner radius of the rounded shape (defaults to --radius-sm)"
+        },
+        {
+          "name": "--tag-gap",
+          "description": "Space between the icon, the label and the close button"
+        },
+        {
+          "name": "--tag-ring-color",
+          "description": "Color of the hairline ring of the tinted (default) variant (defaults to the text color at 16%)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tag/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Tag, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Tag>Design</Tag><Tag color=\"success\">Published</Tag\n    ><Tag color=\"warning\">Draft</Tag></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "closable",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/vue/closable.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tag/vue/closable.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Tag, Button, HStack } from \"minerva-design/vue\";\nconst initialTags = [\"Tag 1\", \"Tag 2\", \"Tag 3\"];\nconst tags = ref([...initialTags]);\nconst opened = ref(\"\");\n</script>\n<template>\n  <HStack :gap=\"2\" wrap\n    ><Tag\n      v-for=\"(tag, index) in tags\"\n      :key=\"tag\"\n      closable\n      :close-label=\"(label) => `Remove ${label}`\"\n      :clickable=\"index === 0\"\n      @close=\"tags = tags.filter((t) => t !== tag)\"\n      @click=\"opened = tag\"\n      >{{ tag }}<template v-if=\"index === 2\" #close-icon>⊗</template></Tag\n    ><span v-if=\"opened\">Opened: {{ opened }}</span\n    ><Button v-if=\"!tags.length\" @click=\"tags = [...initialTags]\"\n      >Reset</Button\n    ></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "closable",
+      "description": ""
+    },
+    {
+      "id": "toggle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/vue/toggle.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tag/vue/toggle.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Tag, HStack } from \"minerva-design/vue\";\nconst tags = [\"All\", \"Design\", \"Engineering\"];\nconst selected = ref(\"All\");\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Tag\n      v-for=\"tag in tags\"\n      :key=\"tag\"\n      clickable\n      :pressed=\"selected === tag\"\n      @click=\"selected = tag\"\n      >{{ tag }}</Tag\n    ><output>Filter: {{ selected }}</output></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "toggle",
+      "description": ""
+    },
+    {
+      "id": "variants-sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/vue/variants-sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tag/vue/variants-sizes.vue": "<script setup lang=\"ts\">\nimport { Tag, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Tag size=\"small\" variant=\"outline\" shape=\"square\">Small</Tag\n    ><Tag color=\"primary\" variant=\"solid\">Solid</Tag\n    ><Tag size=\"large\" shape=\"circle\" color=\"info\">Large</Tag\n    ><Tag loading>Working</Tag></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants-sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tag 标签",
+      "description": "用于标记和分类内容的小标签，可关闭或可点击。",
+      "demos": {
+        "colors": {
+          "title": "颜色",
+          "description": "通过 color 表达不同的含义：neutral（默认）、primary、success、warning、danger 和 info。"
+        },
+        "variants": {
+          "title": "变体",
+          "description": "variant 设置视觉样式：subtle（默认，浅色背景）、outline（增加边框）或 solid（以颜色填充）。elevation 可为任意变体添加阴影。"
+        },
+        "sizes-shapes": {
+          "title": "尺寸与形状",
+          "description": "三种尺寸和三种形状：square、rounded（默认）和 circle。"
+        },
+        "with-icon": {
+          "title": "带图标",
+          "description": "icon 显示在内容之前。"
+        },
+        "closable": {
+          "title": "可关闭",
+          "description": "依次移除 Tag 1、Tag 2 和 Tag 3；全部移除后，用 Reset 恢复标签。"
+        },
+        "clickable": {
+          "title": "可点击（可选择）",
+          "description": "clickable 会将内容渲染为原生按钮：用 Tab 聚焦，用点击、Enter 或空格键触发。这里标签用于切换选中状态，并通过 pressed 告知辅助技术。"
+        },
+        "avatar-loading": {
+          "title": "头像与加载",
+          "description": "avatar 在内容前显示头像。loading 用加载动画替换图标 / 头像，将标签标记为忙碌，阻止其操作并隐藏关闭按钮。"
+        },
+        "custom-colors": {
+          "title": "自定义颜色",
+          "description": "CSS 自定义属性 --tag-<color>-bg 和 --tag-<color>-text 可覆盖某个颜色的配色（可写在行内样式、类名或主题中）；ripple={false} 关闭点击涟漪效果。"
+        },
+        "disabled": {
+          "title": "禁用",
+          "description": "禁用的标签忽略点击、不参与 Tab 顺序，并禁用其关闭按钮。"
+        }
+      },
+      "accessibility": {
+        "title": "无障碍",
+        "clickable": "设置 clickable 后，标签具有 role=\"button\" 和 tabIndex=0，Enter 或空格键会像鼠标点击一样触发 onClick。请用于操作或切换，而非页面跳转（跳转请使用链接）。",
+        "closable": "关闭按钮是原生 <button>，可单独聚焦。其无障碍名称默认为“Close”，请设置 closeLabel（如“Remove React”），让读屏用户知道移除的是哪个标签。",
+        "disabled": "禁用的可点击标签保留 role=\"button\" 并带有 aria-disabled=\"true\"，Tab 键会跳过它。若选中状态很重要，请同时通过文字或 aria 属性表达，而不要只依赖颜色。"
+      },
+      "api": {
+        "TagProps": {
+          "children": "标签内容",
+          "color": "标签的语义颜色",
+          "variant": "视觉样式：subtle（浅色背景）、outline（浅色背景加边框）或 solid（以颜色填充，反色文字）",
+          "size": "标签尺寸",
+          "shape": "标签形状",
+          "closable": "显示关闭按钮",
+          "onClose": "点击关闭按钮时的回调",
+          "clickable": "将标签内容渲染为原生按钮（可聚焦，可用 Enter / 空格键触发）。与 closable 同时使用时，关闭按钮是与之并列的独立按钮",
+          "onClick": "标签被触发时的回调（需要 clickable）",
+          "pressed": "切换型标签的按下（选中）状态，例如可选择的筛选项（需要 clickable）；会设置 aria-pressed 和选中样式",
+          "icon": "内容前显示的图标",
+          "avatar": "显示在内容之前的头像（例如小尺寸 Avatar 或图片）",
+          "loading": "用加载动画替换图标 / 头像，标记为忙碌并阻止操作；关闭按钮会被隐藏",
+          "elevation": "显示阴影",
+          "className": "额外的类名",
+          "style": "内联样式",
+          "disabled": "禁用标签及其关闭按钮",
+          "closeIcon": "自定义关闭图标",
+          "closeLabel": "关闭按钮的无障碍标签：字符串，或以标签文本为参数的函数。默认为“移除 {label}”（本地化），标签没有文本时为“关闭”",
+          "ripple": "点击时显示涟漪效果",
+          "ref": "指向根元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--tag-height": "最小高度（所有尺寸；默认为内容高度）",
+        "--tag-padding-x": "水平内边距（所有尺寸）",
+        "--tag-font-size": "字号（所有尺寸）",
+        "--tag-radius": "rounded 形状的圆角（默认 --radius-sm）",
+        "--tag-gap": "图标、文字与关闭按钮之间的间距",
+        "--tag-ring-color": "默认（浅色填充）变体细描边的颜色（默认为 16% 的文字颜色）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "小型标签；color 设置其语义色调。"
+          },
+          "variants-sizes": {
+            "title": "变体、尺寸与内容",
+            "description": "三种变体、尺寸和形状，elevation，icon 与 avatar 插槽，以及 loading 和 disabled 状态。"
+          },
+          "closable": {
+            "title": "可关闭",
+            "description": "closable 添加一个触发 minerva-close 的关闭按钮：在监听器中移除标签，并将焦点移到相邻元素。close-label 和 close-icon 插槽可自定义该按钮。"
+          },
+          "toggle": {
+            "title": "切换筛选",
+            "description": "clickable toggle 标签是切换按钮（aria-pressed）：点击会翻转 pressed 并触发 minerva-change。普通可点击标签触发 click。"
+          }
+        },
+        "minerva-tag": {
+          "props": {
+            "toggle": "使可点击标签成为切换按钮：点击翻转 pressed 并触发 minerva-change。",
+            "noRipple": "禁用可点击标签的波纹效果。"
+          },
+          "events": {
+            "minerva-close": "关闭按钮被激活。",
+            "minerva-change": "切换标签被切换（detail: { pressed }）。"
+          },
+          "slots": {
+            "default": "标签文字。",
+            "icon": "显示在文字前的图标。",
+            "avatar": "显示在文字前的头像（小号 <minerva-avatar> 或图片）。",
+            "close-icon": "自定义关闭图标。"
+          },
+          "methods": {
+            "focus": "聚焦标签的按钮（可点击标签的操作按钮，否则为关闭按钮）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "closable": {
+            "title": "可关闭",
+            "description": "依次移除 Tag 1、Tag 2 和 Tag 3；全部移除后，用 Reset 恢复标签。"
+          },
+          "colors-variants": {
+            "title": "颜色和样式",
+            "description": "Tag 的颜色和样式示例；预览随站点主题和色板更新。"
+          },
+          "selectable": {
+            "title": "可选择标签",
+            "description": "Tag 的可选择标签示例；预览随站点主题和色板更新。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "answer-sheet",
+  "title": "AnswerSheet",
+  "description": "A question navigator (答题卡) for practice and exam sessions: numbered pills grouped by section, each showing whether the question is unanswered, answered, correct, wrong or skipped, with a flag for review and the current question highlighted.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "AnswerSheet",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnAnswerSheet. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnAnswerSheet. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnAnswerSheet"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-answer-sheet",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly AnswerSheetItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "groups",
+            "typeText": "readonly AnswerSheetGroup[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "value",
+            "typeText": "string | null",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "AnswerSheetSize",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "layout",
+            "typeText": "AnswerSheetLayout",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "columns",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "showLegend",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "showSummary",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "getItemLabel",
+            "typeText": "((item: AnswerSheetItem, index: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string | null",
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AnswerSheet": {
+      "kind": "cssVars",
+      "source": "react/src/components/AnswerSheet",
+      "vars": [
+        {
+          "name": "--answer-sheet-gap",
+          "description": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-item-size",
+          "description": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-radius",
+          "description": "Corner radius of the pills (defaults to --radius-md)"
+        },
+        {
+          "name": "--answer-sheet-item-background",
+          "description": "Background of an unanswered pill"
+        },
+        {
+          "name": "--answer-sheet-answered-background",
+          "description": "Background of an answered pill (defaults to --primary-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-answered-color",
+          "description": "Text color of an answered pill"
+        },
+        {
+          "name": "--answer-sheet-correct-background",
+          "description": "Background of a correct pill (defaults to --success-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-correct-color",
+          "description": "Text color of a correct pill"
+        },
+        {
+          "name": "--answer-sheet-wrong-background",
+          "description": "Background of a wrong pill (defaults to --danger-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-wrong-color",
+          "description": "Text color of a wrong pill"
+        },
+        {
+          "name": "--answer-sheet-current-background",
+          "description": "Background of the current pill (defaults to --primary-color)"
+        },
+        {
+          "name": "--answer-sheet-current-color",
+          "description": "Text color of the current pill"
+        },
+        {
+          "name": "--answer-sheet-flag-color",
+          "description": "Color of the flag dot (defaults to --warning-color)"
+        },
+        {
+          "name": "--answer-sheet-title-color",
+          "description": "Text color of the group titles and the summary"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "jump-between-questions",
+      "title": "Jump between questions",
+      "description": "[(value)] holds the key of the current question (aria-current=step). One tab stop: arrows and Home / End move the focus, Enter / Space select.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAnswerSheet } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAnswerSheet],\n  template: `\n<mn-answer-sheet [items]=\"items\" [(value)]=\"value\"/><output>Current question: {{value}}</output>\n  `,\n})\nexport class Example {\n  value: string | null = \"q6\";\n  items: import('minerva-design/angular').AnswerSheetItem[] = [\n  {\n    \"key\": \"q1\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q2\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q3\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q4\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q5\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q6\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q7\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q8\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q9\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q10\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q11\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q12\",\n    \"status\": \"unanswered\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "sections-statuses-and-legend",
+      "title": "Sections, statuses and legend",
+      "description": "groups titles the sections; showSummary counts the answered questions and showLegend explains the statuses present.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAnswerSheet } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAnswerSheet],\n  template: `\n<mn-answer-sheet [items]=\"items\" [groups]=\"groups\" [(value)]=\"value\" showSummary showLegend aria-label=\"Review questions\"/>\n  `,\n})\nexport class Example {\n  value: string | null = \"s3\";\n  groups: import('minerva-design/angular').AnswerSheetGroup[] = [\n  {\n    \"key\": \"single\",\n    \"title\": \"Single choice\"\n  },\n  {\n    \"key\": \"short\",\n    \"title\": \"Short answer\"\n  }\n];\n  items: import('minerva-design/angular').AnswerSheetItem[] = [\n  {\n    \"key\": \"s1\",\n    \"group\": \"single\",\n    \"status\": \"correct\"\n  },\n  {\n    \"key\": \"s2\",\n    \"group\": \"single\",\n    \"status\": \"correct\"\n  },\n  {\n    \"key\": \"s3\",\n    \"group\": \"single\",\n    \"status\": \"wrong\",\n    \"flagged\": true\n  },\n  {\n    \"key\": \"s4\",\n    \"group\": \"single\",\n    \"status\": \"skipped\"\n  },\n  {\n    \"key\": \"a1\",\n    \"group\": \"short\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"a2\",\n    \"group\": \"short\"\n  },\n  {\n    \"key\": \"a3\",\n    \"group\": \"short\",\n    \"disabled\": true\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "scroll-layout-sizes-and-columns",
+      "title": "Scroll layout, sizes and columns",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAnswerSheet } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAnswerSheet],\n  template: `\n<mn-answer-sheet [items]=\"items\" layout=\"scroll\" size=\"small\" aria-label=\"Scrolling sheet\"/><mn-answer-sheet [items]=\"items\" columns=\"5\" aria-label=\"Five columns\"/><mn-answer-sheet [items]=\"items\" disabled aria-label=\"Disabled sheet\"/>\n  `,\n})\nexport class Example {\n  items: import('minerva-design/angular').AnswerSheetItem[] = [\n  {\n    \"key\": \"q1\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q2\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q3\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q4\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q5\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q6\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q7\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q8\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q9\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q10\",\n    \"status\": \"unanswered\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AnswerSheet",
+      "description": "A question navigator (答题卡) for practice and exam sessions: numbered pills grouped by section, each showing whether the question is unanswered, answered, correct, wrong or skipped, with a flag for review and the current question highlighted.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "A controlled current question (value / onChange). The sheet is a nav landmark of buttons; the current pill carries aria-current=\"step\". One tab stop: the arrow keys and Home / End move the focus, Enter / Space select."
+        },
+        "groups": {
+          "title": "Sections, statuses and legend",
+          "description": "groups titles the sections (items render under the group whose key matches item.group, numbered across sections). Statuses: answered, correct, wrong, skipped; flagged adds a warning dot. showSummary counts the answered questions and showLegend explains the statuses present."
+        },
+        "scroll": {
+          "title": "Scrolling row",
+          "description": "layout=\"scroll\" keeps a single horizontally scrolling row, for a compact navigator above the question."
+        },
+        "sizes": {
+          "title": "Sizes, columns and disabled",
+          "description": "Two pill sizes, a fixed grid with columns (ArrowUp / ArrowDown move by a row; without columns they move to the nearest pill of the row above / below), and a disabled sheet."
+        }
+      },
+      "api": {
+        "AnswerSheetProps": {
+          "items": "The questions, in order",
+          "groups": "Titled sections, in display order; items render under the group whose key matches item.group",
+          "value": "Key of the current question (controlled; pair with onChange)",
+          "defaultValue": "Key of the initially current question (uncontrolled)",
+          "onChange": "Called with the key of the selected question",
+          "size": "Density of the pills",
+          "layout": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row",
+          "columns": "Fixed number of columns (a grid; ArrowUp / ArrowDown move by a row). Ignored with layout=\"scroll\".",
+          "showLegend": "Shows a legend of the statuses present (and of the flag)",
+          "showSummary": "Shows the number of answered questions (\"12 / 20 answered\")",
+          "getItemLabel": "Accessible name of a pill; receives the item and its display index",
+          "disabled": "Disables the whole sheet",
+          "aria-label": "Accessible name of the navigation landmark",
+          "className": "Additional class of the root element",
+          "ref": "Ref to the root <nav> element"
+        },
+        "AnswerSheetItem": {
+          "key": "Unique key of the question (the value of the sheet)",
+          "label": "Visible label of the pill (defaults to its number across all the groups)",
+          "status": "Status of the question: unanswered, answered, correct, wrong or skipped",
+          "flagged": "Flags the question for review (a warning dot in a corner)",
+          "disabled": "The question can't be selected",
+          "group": "Key of its group; items without a known group render first, in an untitled section"
+        },
+        "AnswerSheetGroup": {
+          "key": "Key matched by item.group",
+          "title": "Visible title of the section"
+        }
+      },
+      "cssVars": {
+        "--answer-sheet-gap": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")",
+        "--answer-sheet-item-size": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")",
+        "--answer-sheet-radius": "Corner radius of the pills (defaults to --radius-md)",
+        "--answer-sheet-item-background": "Background of an unanswered pill",
+        "--answer-sheet-answered-background": "Background of an answered pill (defaults to --primary-color-subtle)",
+        "--answer-sheet-answered-color": "Text color of an answered pill",
+        "--answer-sheet-correct-background": "Background of a correct pill (defaults to --success-color-subtle)",
+        "--answer-sheet-correct-color": "Text color of a correct pill",
+        "--answer-sheet-wrong-background": "Background of a wrong pill (defaults to --danger-color-subtle)",
+        "--answer-sheet-wrong-color": "Text color of a wrong pill",
+        "--answer-sheet-current-background": "Background of the current pill (defaults to --primary-color)",
+        "--answer-sheet-current-color": "Text color of the current pill",
+        "--answer-sheet-flag-color": "Color of the flag dot (defaults to --warning-color)",
+        "--answer-sheet-title-color": "Text color of the group titles and the summary"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "items is a property; value (the key of the current question) is an attribute and minerva-change reports the selected key. One tab stop: the arrow keys and Home / End move the focus, Enter / Space select."
+          },
+          "groups": {
+            "title": "Sections, statuses and legend",
+            "description": "The groups property titles the sections; show-summary and show-legend add the answered count and a legend of the statuses present. Pills expose ::part(item item--status-wrong), item--flagged, item--current ..."
+          },
+          "scroll": {
+            "title": "Scrolling row",
+            "description": "layout=\"scroll\" keeps a single horizontally scrolling row (also the :state(layout-scroll) custom state)."
+          },
+          "sizes": {
+            "title": "Sizes, columns and disabled",
+            "description": "size=\"small\", a fixed grid with columns=\"5\" (ArrowUp / ArrowDown move by a row) and a disabled sheet."
+          }
+        },
+        "minerva-answer-sheet": {
+          "events": {
+            "minerva-change": "The user selected a question (detail: { value }, its key)."
+          },
+          "methods": {
+            "focus": "Focuses the pill holding the tab stop."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

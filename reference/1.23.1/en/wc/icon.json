@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "icon",
+  "title": "Icon",
+  "description": "One icon of the set: inline SVG by default, or a canvas drawn with WebGPU, WebGL2, WebGL or Canvas2D. Named components (SearchIcon…), the generic Icon, custom icons and icons chosen by name.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "intro": {
+      "title": "SVG or canvas",
+      "svg": "By default an icon is an inline <svg>: it renders on the server, follows the text color through currentColor and the font size with size=\"1em\", and is hidden from assistive technologies unless it has a title or an aria-label.",
+      "canvas": "With renderer set to \"auto\", \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\", the same icon is drawn on a canvas. Browsers cap live WebGL contexts at about 16, so canvas icons share one backend per page: the icons that changed are packed into an atlas, drawn in one pass and copied to their canvases. \"auto\" follows the global default (setDefaultIconRenderer), here the renderer bar.",
+      "bundle": "Only what you import is bundled: SearchIcon brings its own path data, the canvas renderers load with the first canvas icon, and DynamicIcon (names chosen at runtime) is the only component that bundles the whole set."
+    },
+    "platforms": {
+      "title": "React Native and mini programs",
+      "native": "minerva-design/native/icons has the same components for React Native (Icon, createIcon, DynamicIcon, SearchIcon…), drawn with react-native-svg from the same 24×24 path data. react-native-svg is an optional peer dependency needed by this entry only (minerva-design/native never imports it): install it with npx expo install react-native-svg, or npm install react-native-svg outside Expo. Icons stroke with the theme's text color unless color is set, size is in dp, and a title makes the icon an accessible image.",
+      "taro": "minerva-design/taro/icons has them for Taro. Mini programs cannot render inline SVG and the WeChat <image> rejects percent-encoded SVG, so each icon is an Image of a base64 SVG data URI (toSvgBase64DataUri, which needs no btoa). An image has no currentColor: the color is written into the SVG, by default the theme's text color of the active light or dark mode, and the image is rebuilt when the color or the mode changes. size is in px, or any CSS length such as \"48rpx\".",
+      "tabBar": "The tabBar of a mini program only takes PNG or JPG files: generate them at build time from toSvg (one file per icon, color and state) with the SVG rasterizer of your choice. Minerva ships no rasterizer."
+    },
+    "data": {
+      "starting": "starting…"
+    }
+  },
+  "components": [
+    {
+      "name": "Icon",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/icon",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-icon",
+        "props": [
+          {
+            "name": "name",
+            "typeText": "string | undefined",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "number",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "string",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "strokeWidth",
+            "typeText": "number",
+            "attribute": "stroke-width",
+            "required": false
+          },
+          {
+            "name": "absoluteStrokeWidth",
+            "typeText": "boolean",
+            "attribute": "absolute-stroke-width",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "renderer",
+            "typeText": "\"svg\" | \"auto\" | \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\"",
+            "attribute": "renderer",
+            "required": false
+          },
+          {
+            "name": "icon",
+            "typeText": "IconDefinition | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-renderer-change",
+            "typeText": "CustomEvent",
+            "description": "Canvas mode: the backend drew the icon (or fell back after a GPU loss); detail: { renderer }"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-icon": {
+      "kind": "element",
+      "source": "web-components/src/components/icon/icon.ts",
+      "className": "MinervaIcon",
+      "summary": "Icon of the Minerva icon set, as inline SVG or on a GPU canvas.",
+      "description": "An icon of minerva-design/icons (the `<Icon>` of React): inline SVG by default (crisp at any size, styled by CSS, server-renderable), or a canvas drawn with WebGPU, WebGL2, WebGL or Canvas2D (`renderer`) by a backend shared by every canvas icon of the page. Set a built-in icon by `name` (`search`, `arrow-up`...) or any icon, custom ones made with `defineIcon` included, as the `icon` property. The stroke follows the text color unless `color` is set. Without `label` the icon is decorative (hidden from assistive technologies); with one it is an image with that accessible name. In canvas mode the host gets `data-renderer` with the backend drawing. Published as the optional entry `minerva-design/web-components/icon` (not part of the all-in-one entry nor of `cdn/minerva.js`: it loads the icon set `minerva-design/icons/core`). Without a build step, load the self-contained `dist/web-components/cdn/icon.js` next to `minerva.js`.",
+      "properties": [
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string | undefined",
+          "description": "Name of a built-in icon (`search`, `arrow-up`...); the `icon` property wins over it"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "number",
+          "default": "24",
+          "description": "Width and height in pixels"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "string",
+          "default": "\"currentColor\"",
+          "description": "Stroke color, any CSS color (`currentColor` follows the text color)"
+        },
+        {
+          "name": "strokeWidth",
+          "attribute": "stroke-width",
+          "type": "number",
+          "default": "2",
+          "description": "Stroke width on the 24×24 grid (scales with the size unless `absolute-stroke-width`)"
+        },
+        {
+          "name": "absoluteStrokeWidth",
+          "attribute": "absolute-stroke-width",
+          "type": "boolean",
+          "default": "false",
+          "description": "Keeps the stroke width in pixels whatever the size"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string | undefined",
+          "description": "Accessible name: the icon becomes an image (role=img); without it the icon is hidden from assistive technologies"
+        },
+        {
+          "name": "renderer",
+          "attribute": "renderer",
+          "type": "\"svg\" | \"auto\" | \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\"",
+          "default": "\"svg\"",
+          "description": "`svg` (inline SVG), or a canvas drawn with the backend preference (`auto` follows the page default)"
+        },
+        {
+          "name": "icon",
+          "type": "IconDefinition | undefined",
+          "description": "Icon definition (a built-in icon constant, or a custom icon of `defineIcon`); wins over `name`; property only"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getRenderer",
+          "signature": "() => IconRendererKind | null",
+          "description": "Backend drawing the canvas (`webgpu`, `webgl2`, `webgl`, `canvas2d`); `null` in SVG mode or until drawn"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-renderer-change",
+          "description": "Canvas mode: the backend drew the icon (or fell back after a GPU loss); detail: { renderer }"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "icon",
+          "description": "The <svg> (or the <canvas> in canvas mode) drawing the icon"
+        }
+      ],
+      "cssProperties": []
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/icon/wc/basic.html": "<div style=\"display: flex; flex-wrap: wrap; align-items: center; gap: 16px\">\n  <minerva-icon name=\"home\"></minerva-icon>\n  <minerva-icon name=\"search\"></minerva-icon>\n  <minerva-icon name=\"settings\"></minerva-icon>\n  <minerva-button>\n    <minerva-icon slot=\"start\" name=\"download\" size=\"16\"></minerva-icon>\n    Download\n  </minerva-button>\n  <minerva-button color=\"danger\" variant=\"outline\">\n    <minerva-icon slot=\"start\" name=\"trash\" size=\"16\"></minerva-icon>\n    Delete\n  </minerva-button>\n  <minerva-icon name=\"bell\" size=\"32\" label=\"Notifications\"></minerva-icon>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic",
+      "description": "<minerva-icon> draws a built-in icon by name, inline with text and in the slots of other elements; with a label it becomes an image for assistive technologies."
+    },
+    {
+      "id": "canvas",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon/wc/canvas.html",
+      "files": {
+        "apps/docs/src/docs/pages/icon/wc/canvas.html": "<div id=\"renderers\" style=\"display: flex; flex-wrap: wrap; gap: 24px\">\n  <figure style=\"display: grid; justify-items: center; gap: 4px; margin: 0\">\n    <minerva-icon\n      name=\"settings\"\n      size=\"40\"\n      color=\"var(--primary-color)\"\n    ></minerva-icon>\n    <figcaption><code>svg</code> <small>SVG</small></figcaption>\n  </figure>\n  <figure style=\"display: grid; justify-items: center; gap: 4px; margin: 0\">\n    <minerva-icon\n      name=\"settings\"\n      size=\"40\"\n      color=\"var(--primary-color)\"\n      renderer=\"auto\"\n    ></minerva-icon>\n    <figcaption><code>auto</code> <small>…</small></figcaption>\n  </figure>\n  <figure style=\"display: grid; justify-items: center; gap: 4px; margin: 0\">\n    <minerva-icon\n      name=\"settings\"\n      size=\"40\"\n      color=\"var(--primary-color)\"\n      renderer=\"webgpu\"\n    ></minerva-icon>\n    <figcaption><code>webgpu</code> <small>…</small></figcaption>\n  </figure>\n  <figure style=\"display: grid; justify-items: center; gap: 4px; margin: 0\">\n    <minerva-icon\n      name=\"settings\"\n      size=\"40\"\n      color=\"var(--primary-color)\"\n      renderer=\"webgl2\"\n    ></minerva-icon>\n    <figcaption><code>webgl2</code> <small>…</small></figcaption>\n  </figure>\n  <figure style=\"display: grid; justify-items: center; gap: 4px; margin: 0\">\n    <minerva-icon\n      name=\"settings\"\n      size=\"40\"\n      color=\"var(--primary-color)\"\n      renderer=\"webgl\"\n    ></minerva-icon>\n    <figcaption><code>webgl</code> <small>…</small></figcaption>\n  </figure>\n  <figure style=\"display: grid; justify-items: center; gap: 4px; margin: 0\">\n    <minerva-icon\n      name=\"settings\"\n      size=\"40\"\n      color=\"var(--primary-color)\"\n      renderer=\"canvas2d\"\n    ></minerva-icon>\n    <figcaption><code>canvas2d</code> <small>…</small></figcaption>\n  </figure>\n</div>\n",
+        "apps/docs/src/docs/pages/icon/wc/canvas.ts": "// Every canvas icon fires minerva-renderer-change with the backend that drew\n// it (\"auto\" follows setDefaultIconRenderer; a forced backend that cannot\n// start here falls back to the next one).\nimport type { MinervaIcon } from \"minerva-design/web-components/icon\";\n\nexport function setup(root: HTMLElement) {\n  const onChange = (event: Event) => {\n    const icon = event.target as MinervaIcon;\n    const { renderer } = (event as CustomEvent<{ renderer: string }>).detail;\n    const caption = icon.closest(\"figure\")?.querySelector(\"small\");\n    if (caption) caption.textContent = renderer;\n  };\n  root.addEventListener(\"minerva-renderer-change\", onChange);\n  return () => root.removeEventListener(\"minerva-renderer-change\", onChange);\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Renderers",
+      "description": "The renderer attribute draws the icon on a canvas; each icon fires minerva-renderer-change with the backend that drew it, shown under it. \"auto\" follows the renderer bar; a forced backend this browser lacks falls back to the next one."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// npx expo install react-native-svg (optional peer dependency of this entry)\nimport { DynamicIcon, Icon, SearchIcon, searchIcon } from \"minerva-design/native/icons\";\n\n<SearchIcon />                                          // 24dp, theme text color\n<SearchIcon size={20} color=\"#2563eb\" title=\"Search\" /> // accessible image\n<Icon icon={searchIcon} strokeWidth={1.5} absoluteStrokeWidth />\n<DynamicIcon name={item.icon} />                        // bundles the whole set",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Icon, SearchIcon, settingsIcon } from \"minerva-design/taro/icons\";\n\n<SearchIcon />                                          // 24px base64 SVG image\n<SearchIcon size=\"48rpx\" color=\"#2563eb\" title=\"Search\" />\n<Icon icon={settingsIcon} strokeWidth={1.5} />          // theme text color, per mode",
+      "language": "tsx"
+    },
+    {
+      "source": "// build-time Node script: the tabBar only takes PNG / JPG files\nimport { writeFileSync } from \"node:fs\";\nimport { homeIcon, toSvg } from \"minerva-design/icons/core\";\n\nfor (const [state, color] of [[\"normal\", \"#6b7280\"], [\"active\", \"#2563eb\"]]) {\n  const svg = toSvg(homeIcon, { size: 81, color });\n  // rasterize: the SVG -> PNG converter of your choice\n  writeFileSync(`src/assets/tab-home-${state}.png`, await rasterize(svg));\n}",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Icon",
+      "description": "One icon of the set: inline SVG by default, or a canvas drawn with WebGPU, WebGL2, WebGL or Canvas2D. Named components (SearchIcon…), the generic Icon, custom icons and icons chosen by name.",
+      "intro": {
+        "title": "SVG or canvas",
+        "svg": "By default an icon is an inline <svg>: it renders on the server, follows the text color through currentColor and the font size with size=\"1em\", and is hidden from assistive technologies unless it has a title or an aria-label.",
+        "canvas": "With renderer set to \"auto\", \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\", the same icon is drawn on a canvas. Browsers cap live WebGL contexts at about 16, so canvas icons share one backend per page: the icons that changed are packed into an atlas, drawn in one pass and copied to their canvases. \"auto\" follows the global default (setDefaultIconRenderer), here the renderer bar.",
+        "bundle": "Only what you import is bundled: SearchIcon brings its own path data, the canvas renderers load with the first canvas icon, and DynamicIcon (names chosen at runtime) is the only component that bundles the whole set."
+      },
+      "platforms": {
+        "title": "React Native and mini programs",
+        "native": "minerva-design/native/icons has the same components for React Native (Icon, createIcon, DynamicIcon, SearchIcon…), drawn with react-native-svg from the same 24×24 path data. react-native-svg is an optional peer dependency needed by this entry only (minerva-design/native never imports it): install it with npx expo install react-native-svg, or npm install react-native-svg outside Expo. Icons stroke with the theme's text color unless color is set, size is in dp, and a title makes the icon an accessible image.",
+        "taro": "minerva-design/taro/icons has them for Taro. Mini programs cannot render inline SVG and the WeChat <image> rejects percent-encoded SVG, so each icon is an Image of a base64 SVG data URI (toSvgBase64DataUri, which needs no btoa). An image has no currentColor: the color is written into the SVG, by default the theme's text color of the active light or dark mode, and the image is rebuilt when the color or the mode changes. size is in px, or any CSS length such as \"48rpx\".",
+        "tabBar": "The tabBar of a mini program only takes PNG or JPG files: generate them at build time from toSvg (one file per icon, color and state) with the SVG rasterizer of your choice. Minerva ships no rasterizer."
+      },
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "Every icon is a component named after it; icons sit inline with text and inside buttons."
+        },
+        "size-color": {
+          "title": "Size and color",
+          "description": "size takes pixels or any CSS length (1em follows the font size); color takes any CSS color, theme variables included, and defaults to the text color."
+        },
+        "stroke": {
+          "title": "Stroke width",
+          "description": "strokeWidth is on the 24×24 grid, so it scales with the icon. absoluteStrokeWidth keeps it in pixels whatever the size (second half of the bottom row)."
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "description": "Decorative icons are aria-hidden; give an icon that stands alone a title (role=\"img\"); inside a control, label the control instead."
+        },
+        "custom": {
+          "title": "Custom icons",
+          "description": "defineIcon validates your own path data once; createIcon turns it into a component like the built-in ones, and Icon draws it on every renderer."
+        },
+        "dynamic": {
+          "title": "Icons by name",
+          "description": "DynamicIcon picks a built-in icon from a name known only at runtime; unknown names render nothing. It bundles the whole set."
+        },
+        "canvas": {
+          "title": "Renderers",
+          "description": "The same icon as SVG and on each canvas backend; under each one, the backend that actually drew it. \"auto\" follows the renderer bar; a forced backend this browser lacks falls back to the next one."
+        }
+      },
+      "data": {
+        "starting": "starting…"
+      },
+      "api": {
+        "IconProps": {
+          "icon": "The icon to draw: a built-in one (e.g. searchIcon) or a defineIcon result",
+          "size": "Width and height; a number is in pixels, canvas renderers also follow CSS sizes such as \"1em\"",
+          "color": "Stroke color, any CSS color",
+          "strokeWidth": "Stroke width on the 24×24 grid (scales with the size)",
+          "absoluteStrokeWidth": "Keeps strokeWidth in pixels whatever the size",
+          "title": "Accessible name: the icon becomes role=\"img\"; without it (or an aria-label) the icon is hidden from assistive technologies",
+          "renderer": "Inline SVG, or a canvas drawn by a backend shared by every canvas icon of the page (\"auto\" follows the global default)",
+          "onRendererChange": "Canvas renderers: called with the backend that drew the icon",
+          "ref": "The <svg> element, or the <canvas> with a canvas renderer"
+        },
+        "DynamicIconProps": {
+          "name": "Name of a built-in icon (e.g. \"arrow-up\"); unknown names render nothing"
+        }
+      },
+      "wc": {
+        "minerva-icon": {
+          "props": {
+            "label": "Accessible name: the icon becomes role=\"img\" with this name; without it, the icon is hidden from assistive technologies"
+          },
+          "events": {
+            "minerva-renderer-change": "Canvas mode: the backend drew the icon, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "getRenderer": "Backend drawing the canvas (webgpu, webgl2, webgl, canvas2d), null in SVG mode or until it started"
+          }
+        },
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "<minerva-icon> draws a built-in icon by name, inline with text and in the slots of other elements; with a label it becomes an image for assistive technologies."
+          },
+          "canvas": {
+            "title": "Renderers",
+            "description": "The renderer attribute draws the icon on a canvas; each icon fires minerva-renderer-change with the backend that drew it, shown under it. \"auto\" follows the renderer bar; a forced backend this browser lacks falls back to the next one."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Icons in React Native",
+            "description": "The same icons drawn with react-native-svg: named components stroked with the theme's text color, size in dp, a custom color and stroke width, an accessible name with title, and DynamicIcon for icons chosen by name (a tab bar here)."
+          }
+        }
+      }
+    }
+  }
+}

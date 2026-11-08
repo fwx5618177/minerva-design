@@ -1,0 +1,579 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "badge",
+  "title": "Badge",
+  "description": "Petit compteur ou indicateur d'état attaché au coin d'un autre élément.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Badge",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Badge"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "color",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "ColorScheme | undefined",
+            "typeRef": "type:67f905b25ade366da2d8",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the badge"
+          },
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "enum",
+            "values": [
+              "outline",
+              "solid",
+              "subtle"
+            ],
+            "typeText": "\"solid\" | \"subtle\" | \"outline\" | undefined",
+            "typeRef": "type:2399c7b51bc7a672b1d1",
+            "default": "solid",
+            "required": false,
+            "description": "Visual style: `solid` (filled), `subtle` (tinted background) or `outline` (bordered)"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "default": "medium",
+            "required": false,
+            "description": "Badge size"
+          },
+          {
+            "name": "content",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content displayed inside the badge (count, short text, icon + text...). Use it instead of children for rich content of a standalone badge"
+          },
+          {
+            "name": "position",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "enum",
+            "values": [
+              "bottom-left",
+              "bottom-right",
+              "top-left",
+              "top-right"
+            ],
+            "typeText": "\"top-right\" | \"top-left\" | \"bottom-right\" | \"bottom-left\" | undefined",
+            "typeRef": "type:05a7a827619b4457785a",
+            "default": "top-right",
+            "required": false,
+            "description": "Corner of the children the badge is placed on (ignored by standalone badges)"
+          },
+          {
+            "name": "dot",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Renders a small dot instead of content"
+          },
+          {
+            "name": "borderRadius",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Custom border radius (CSS value)"
+          },
+          {
+            "name": "borderWidth",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Custom border width (CSS value)"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the badge, e.g. \"5 unread messages\""
+          },
+          {
+            "name": "icon",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Icon displayed before the content"
+          },
+          {
+            "name": "role",
+            "source": "packages/react/src/components/Badge/types.ts",
+            "kind": "union",
+            "typeText": "AriaRole | undefined",
+            "typeRef": "type:40806c1dba45f4ea6730",
+            "default": "status",
+            "required": false,
+            "description": "ARIA role of the badge element; set it to \"presentation\" or \"none\" when the badge must not be announced as a live status"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "BadgeProps": {
+      "source": "react/src/components/Badge/types.ts",
+      "description": "Props of the Badge. Colors come from the theme tokens of `color`. To override them for a single badge, set these CSS custom properties (e.g. through `style` or a class): `--badge-bg` (background), `--badge-fg` (text) and `--badge-border` (border color of the `outline` variant).",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLSpanElement>, \"children\" | \"content\" | \"color\">"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Element the badge is attached to. Without children (or with plain text / number children, used as the content) the badge renders inline in the normal flow instead of being positioned on a corner"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "default": "\"\"",
+          "description": "Additional class name of the badge"
+        },
+        {
+          "name": "color",
+          "type": "ColorScheme",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the badge"
+        },
+        {
+          "name": "variant",
+          "type": "\"solid\" | \"subtle\" | \"outline\"",
+          "required": false,
+          "default": "\"solid\"",
+          "description": "Visual style: `solid` (filled), `subtle` (tinted background) or `outline` (bordered)"
+        },
+        {
+          "name": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Badge size"
+        },
+        {
+          "name": "content",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Content displayed inside the badge (count, short text, icon + text...). Use it instead of children for rich content of a standalone badge"
+        },
+        {
+          "name": "position",
+          "type": "\"top-right\" | \"top-left\" | \"bottom-right\" | \"bottom-left\"",
+          "required": false,
+          "default": "\"top-right\"",
+          "description": "Corner of the children the badge is placed on (ignored by standalone badges)"
+        },
+        {
+          "name": "dot",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Renders a small dot instead of content"
+        },
+        {
+          "name": "borderRadius",
+          "type": "string",
+          "required": false,
+          "description": "Custom border radius (CSS value)"
+        },
+        {
+          "name": "borderWidth",
+          "type": "string",
+          "required": false,
+          "description": "Custom border width (CSS value)"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label of the badge, e.g. \"5 unread messages\""
+        },
+        {
+          "name": "icon",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Icon displayed before the content"
+        },
+        {
+          "name": "role",
+          "type": "React.AriaRole",
+          "required": false,
+          "default": "\"status\"",
+          "description": "ARIA role of the badge element; set it to \"presentation\" or \"none\" when the badge must not be announced as a live status"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "required": false,
+          "description": "Ref to the root element: the wrapper when attached to children, otherwise the badge itself"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Badge": {
+      "kind": "cssVars",
+      "source": "react/src/components/Badge",
+      "vars": [
+        {
+          "name": "--badge-bg",
+          "description": "Background color (overrides the color and variant)"
+        },
+        {
+          "name": "--badge-fg",
+          "description": "Text color (overrides the color and variant)"
+        },
+        {
+          "name": "--badge-border",
+          "description": "Border color of the subtle and outline variants"
+        },
+        {
+          "name": "--badge-radius",
+          "description": "Corner radius (defaults to --radius-sm)"
+        },
+        {
+          "name": "--badge-padding-y",
+          "description": "Vertical padding (every size)"
+        },
+        {
+          "name": "--badge-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--badge-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--badge-dot-size",
+          "description": "Diameter of the dot badge"
+        },
+        {
+          "name": "--badge-ring-color",
+          "description": "Color of the ring separating an attached (corner) badge from its content (defaults to --surface-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/basic.tsx": "import { Badge } from \"minerva-design\";\nimport { FaBell, FaEnvelope } from \"react-icons/fa\";\n\nexport default function BasicDemo() {\n  return (\n    <>\n      <Badge content={5} aria-label=\"5 unread notifications\">\n        <FaBell size={24} aria-label=\"Notifications\" />\n      </Badge>\n      <Badge content=\"99+\" aria-label=\"More than 99 messages\">\n        <FaEnvelope size={24} aria-label=\"Messages\" />\n      </Badge>\n      <span>\n        Inbox <Badge content={12} color=\"info\" aria-label=\"12 unread\" /> and\n        changelog <Badge color=\"success\">New</Badge>\n      </span>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Les notifications et messages affichent 5 et 99+ ; les badges en ligne indiquent Inbox 12 et New."
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/colors.tsx": "import { Badge } from \"minerva-design\";\nimport { FaBell } from \"react-icons/fa\";\n\nconst colors = [\n  \"primary\",\n  \"neutral\",\n  \"success\",\n  \"warning\",\n  \"danger\",\n  \"info\",\n] as const;\n\nexport default function ColorsDemo() {\n  return (\n    <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 24 }}>\n      {colors.map((color, index) => (\n        <Badge\n          key={color}\n          color={color}\n          content={index + 1}\n          aria-label={`${color} badge`}\n        >\n          <FaBell size={24} title={color} />\n        </Badge>\n      ))}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Couleurs",
+      "description": "color définit la couleur sémantique : primary (par défaut), neutral, success, warning, danger et info."
+    },
+    {
+      "id": "custom-style",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/custom-style.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/custom-style.tsx": "import type { CSSProperties } from \"react\";\nimport { Badge } from \"minerva-design\";\nimport { FaBell } from \"react-icons/fa\";\n\n// --badge-bg, --badge-fg and --badge-border override the theme colors; they\n// can also be set from a stylesheet, for a single badge or a whole subtree.\nconst brand = {\n  \"--badge-bg\": \"#7c3aed\",\n  \"--badge-fg\": \"#ffffff\",\n} as CSSProperties;\n\nconst outlined = {\n  \"--badge-fg\": \"#e65100\",\n  \"--badge-border\": \"#e65100\",\n} as CSSProperties;\n\nexport default function CustomStyleDemo() {\n  return (\n    <div style={{ display: \"flex\", gap: 24 }}>\n      <Badge content={1} borderRadius=\"12px\" style={brand}>\n        <FaBell size={24} />\n      </Badge>\n      <Badge content={2} variant=\"outline\" borderWidth=\"2px\" style={outlined}>\n        <FaBell size={24} />\n      </Badge>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Styles personnalisés",
+      "description": "borderRadius et borderWidth ajustent la forme. Pour changer les couleurs, définissez les propriétés personnalisées CSS --badge-bg, --badge-fg et --badge-border (en ligne, dans une classe ou sur un élément parent)."
+    },
+    {
+      "id": "dot",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/dot.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/dot.tsx": "import { Badge } from \"minerva-design\";\nimport { FaBell } from \"react-icons/fa\";\n\nexport default function DotDemo() {\n  return (\n    <>\n      <Badge dot color=\"primary\" aria-label=\"New activity\">\n        <FaBell size={24} />\n      </Badge>\n      <Badge dot color=\"success\" aria-label=\"Online\">\n        <FaBell size={24} />\n      </Badge>\n      <Badge dot color=\"danger\" aria-label=\"Danger\">\n        <FaBell size={24} />\n      </Badge>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Point",
+      "description": "dot remplace le contenu par un petit point, pour signaler « quelque chose de nouveau »."
+    },
+    {
+      "id": "positions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/positions.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/positions.tsx": "import { Badge } from \"minerva-design\";\nimport { FaBell } from \"react-icons/fa\";\n\nconst positions = [\n  \"top-right\",\n  \"top-left\",\n  \"bottom-right\",\n  \"bottom-left\",\n] as const;\n\nexport default function PositionsDemo() {\n  return (\n    <div style={{ display: \"flex\", gap: 32 }}>\n      {positions.map((position, index) => (\n        <Badge key={position} position={position} content={index + 1}>\n          <FaBell size={24} />\n        </Badge>\n      ))}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Positions",
+      "description": "Placez le badge sur n'importe quel coin avec position."
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/sizes.tsx": "import { Badge } from \"minerva-design\";\nimport { FaBell } from \"react-icons/fa\";\n\nexport default function SizesDemo() {\n  return (\n    <>\n      <Badge size=\"small\" content=\"S\">\n        <FaBell size={24} />\n      </Badge>\n      <Badge size=\"medium\" content=\"M\">\n        <FaBell size={24} />\n      </Badge>\n      <Badge size=\"large\" content=\"L\">\n        <FaBell size={24} />\n      </Badge>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Tailles",
+      "description": "Trois tailles : small, medium (par défaut) et large."
+    },
+    {
+      "id": "status",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/status.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/status.tsx": "import { Badge, HStack } from \"minerva-design\";\n\nconst statuses = [\n  { color: \"success\", label: \"Online\" },\n  { color: \"warning\", label: \"Away\" },\n  { color: \"danger\", label: \"Busy\" },\n  { color: \"neutral\", label: \"Offline\" },\n] as const;\n\nexport default function StatusDemo() {\n  return (\n    <HStack gap={4} wrap>\n      {statuses.map(({ color, label }) => (\n        <HStack key={label} gap={2} align=\"center\">\n          {/* The visible text names the status, so the dot is decorative */}\n          <Badge dot color={color} role=\"presentation\" />\n          <span>{label}</span>\n        </HStack>\n      ))}\n    </HStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Point de statut",
+      "description": "Un point autonome à côté d’un libellé indique le statut d’un élément ou la présence d’un utilisateur. Donnez au point role=\"presentation\" quand le texte nomme déjà le statut, sinon un aria-label."
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/variants.tsx": "import { Badge, HStack, VStack } from \"minerva-design\";\n\nconst variants = [\"solid\", \"subtle\", \"outline\"] as const;\nconst colors = [\n  \"primary\",\n  \"neutral\",\n  \"success\",\n  \"warning\",\n  \"danger\",\n  \"info\",\n] as const;\n\nexport default function VariantsDemo() {\n  return (\n    <VStack gap={3}>\n      {variants.map((variant) => (\n        <HStack key={variant} gap={2} wrap>\n          {colors.map((color) => (\n            <Badge key={color} variant={variant} color={color}>\n              {variant} {color}\n            </Badge>\n          ))}\n        </HStack>\n      ))}\n    </VStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Variantes",
+      "description": "variant définit le style visuel : solid (par défaut, plein), subtle (fond teinté) ou outline (bordé). Chaque variante fonctionne avec chaque couleur."
+    },
+    {
+      "id": "with-icon",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/demos/with-icon.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/demos/with-icon.tsx": "import { Badge } from \"minerva-design\";\nimport { FaCheck, FaStar, FaUser } from \"react-icons/fa\";\n\nexport default function WithIconDemo() {\n  return (\n    <div style={{ display: \"flex\", gap: 48 }}>\n      <Badge\n        color=\"success\"\n        icon={<FaCheck />}\n        content=\"OK\"\n        aria-label=\"Verified\"\n      >\n        <FaUser size={24} />\n      </Badge>\n      <Badge\n        color=\"warning\"\n        icon={<FaStar />}\n        content=\"Top\"\n        aria-label=\"Top rated\"\n      >\n        <FaUser size={24} />\n      </Badge>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Avec icône",
+      "description": "icon s'affiche avant le contenu."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Badge",
+      "description": "Petit compteur ou indicateur d'état attaché au coin d'un autre élément.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Les notifications et messages affichent 5 et 99+ ; les badges en ligne indiquent Inbox 12 et New."
+        },
+        "colors": {
+          "title": "Couleurs",
+          "description": "color définit la couleur sémantique : primary (par défaut), neutral, success, warning, danger et info."
+        },
+        "variants": {
+          "title": "Variantes",
+          "description": "variant définit le style visuel : solid (par défaut, plein), subtle (fond teinté) ou outline (bordé). Chaque variante fonctionne avec chaque couleur."
+        },
+        "positions": {
+          "title": "Positions",
+          "description": "Placez le badge sur n'importe quel coin avec position."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Trois tailles : small, medium (par défaut) et large."
+        },
+        "dot": {
+          "title": "Point",
+          "description": "dot remplace le contenu par un petit point, pour signaler « quelque chose de nouveau »."
+        },
+        "with-icon": {
+          "title": "Avec icône",
+          "description": "icon s'affiche avant le contenu."
+        },
+        "custom-style": {
+          "title": "Styles personnalisés",
+          "description": "borderRadius et borderWidth ajustent la forme. Pour changer les couleurs, définissez les propriétés personnalisées CSS --badge-bg, --badge-fg et --badge-border (en ligne, dans une classe ou sur un élément parent)."
+        },
+        "status": {
+          "title": "Point de statut",
+          "description": "Un point autonome à côté d’un libellé indique le statut d’un élément ou la présence d’un utilisateur. Donnez au point role=\"presentation\" quand le texte nomme déjà le statut, sinon un aria-label."
+        }
+      },
+      "api": {
+        "BadgeProps": {
+          "children": "Élément auquel le badge est attaché. Sans children (ou avec un texte / nombre, utilisé comme contenu), le badge s'affiche en ligne dans le flux normal au lieu d'être positionné dans un coin",
+          "className": "Classe CSS supplémentaire du badge",
+          "color": "Couleur sémantique du badge",
+          "variant": "Style visuel : solid (plein), subtle (fond teinté) ou outline (bordé)",
+          "size": "Taille du badge",
+          "content": "Contenu du badge (nombre, texte court, icône + texte…). Utilisez-le à la place de children pour le contenu riche d’un badge autonome",
+          "position": "Coin des children sur lequel le badge est placé (ignoré par les badges autonomes)",
+          "dot": "Affiche un petit point au lieu du contenu",
+          "borderRadius": "Arrondi personnalisé (valeur CSS)",
+          "borderWidth": "Épaisseur de bordure personnalisée (valeur CSS)",
+          "aria-label": "Libellé accessible du badge, ex. « 5 messages non lus »",
+          "icon": "Icône affichée avant le contenu",
+          "ref": "Ref vers l'élément racine : le conteneur s'il est attaché à des children, sinon le badge lui-même",
+          "role": "Rôle ARIA du badge ; utilisez \"presentation\" ou \"none\" quand il ne doit pas être annoncé comme statut"
+        }
+      },
+      "cssVars": {
+        "--badge-bg": "Couleur de fond (remplace la couleur et la variante)",
+        "--badge-fg": "Couleur du texte (remplace la couleur et la variante)",
+        "--badge-border": "Couleur de bordure des variantes subtle et outline",
+        "--badge-radius": "Rayon des coins (par défaut --radius-sm)",
+        "--badge-padding-y": "Marge intérieure verticale (toutes les tailles)",
+        "--badge-padding-x": "Marge intérieure horizontale (toutes les tailles)",
+        "--badge-font-size": "Taille de police (toutes les tailles)",
+        "--badge-dot-size": "Diamètre du badge en point",
+        "--badge-ring-color": "Couleur de l'anneau qui détache un badge attaché (en coin) de son contenu (par défaut --surface-color)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Avec un élément enfant, le badge est attaché à son coin et affiche content ; avec du texte seul, c'est un badge autonome."
+          },
+          "colors-variants": {
+            "title": "Couleurs, variantes et tailles",
+            "description": "Six couleurs, trois variantes et trois tailles ; border-radius et border-width personnalisent la forme."
+          },
+          "positions": {
+            "title": "Positions et points",
+            "description": "position choisit le coin de l'enfant. Un badge point n'a pas de texte : donnez-lui un aria-label, ou badge-role=\"presentation\" s'il ne doit pas être annoncé."
+          },
+          "slots": {
+            "title": "Icônes, contenu riche et mises à jour",
+            "description": "Le slot icon ajoute une icône, le slot content un contenu riche. content est une propriété : cliquez sur le bouton pour mettre le compteur à jour."
+          }
+        },
+        "minerva-badge": {
+          "props": {
+            "badgeRole": "Rôle ARIA du badge (\"status\" par défaut ; \"presentation\" ou \"none\" pour ne plus l'annoncer)."
+          },
+          "slots": {
+            "default": "Élément auquel le badge est attaché, ou texte d'un badge autonome.",
+            "content": "Contenu riche du badge (au lieu de content).",
+            "icon": "Icône affichée avant le contenu."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Les notifications et messages affichent 5 et 99+ ; les badges en ligne indiquent Inbox 12 et New."
+          },
+          "colors-variants": {
+            "title": "Couleurs et variantes",
+            "description": "Couleurs et variantes avec Badge ; l’aperçu suit le thème et la palette du site."
+          },
+          "dot-max": {
+            "title": "Points et limites de compteur",
+            "description": "Points et limites de compteur avec Badge ; l’aperçu suit le thème et la palette du site."
+          }
+        }
+      }
+    }
+  }
+}

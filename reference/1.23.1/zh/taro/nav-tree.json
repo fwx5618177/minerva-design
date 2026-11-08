@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "zh",
+  "renderer": "taro",
+  "page": "nav-tree",
+  "title": "NavTree 导航树",
+  "description": "侧边栏导航：分组、可展开分支、当前项高亮以及仅图标的紧凑模式。方向键可在项目间移动并展开或收起分支。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "NavTree",
+      "support": {
+        "status": "beta",
+        "notes": "Page-tab onSelect/actions/close events, measured overflow arrows and active-item native scrollIntoView; step selection, active-path tree expansion with explicit collapse persistence and renderLink(item,content,state). Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native horizontal scrolling and touch activation replace browser keyboard navigation. Native route links require the application renderer or onItemSelect to navigate. PageTabs uses native scroll measurement and explicit dir for RTL; React has no reorder API, and child order follows the caller. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Page-tab onSelect/actions/close events, measured overflow arrows and active-item native scrollIntoView; step selection, active-path tree expansion with explicit collapse persistence and renderLink(item,content,state). Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native horizontal scrolling and touch activation replace browser keyboard navigation. Native route links require the application renderer or onItemSelect to navigate. PageTabs uses native scroll measurement and explicit dir for RTL; React has no reorder API, and child order follows the caller. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "NavTree"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "sections",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "array",
+            "typeText": "NavTreeSection[]",
+            "typeRef": "type:5b4dae1fd0745cc4e2a4",
+            "required": true
+          },
+          {
+            "name": "activeId",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "expandedIds",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "array",
+            "typeText": "string[] | undefined",
+            "typeRef": "type:2f7bd52d63b79232027d",
+            "required": false
+          },
+          {
+            "name": "defaultExpandedIds",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "array",
+            "typeText": "string[] | undefined",
+            "typeRef": "type:2f7bd52d63b79232027d",
+            "required": false
+          },
+          {
+            "name": "collapsed",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "wrapLabels",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "renderLink",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "node",
+            "typeText": "((item: NavTreeItem, content: ReactNode, state: NavTreeItemState) => ReactNode) | undefined",
+            "typeRef": "type:8905fae6e8491b0bf44b",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NavTreeItem",
+                "typeRef": "type:e57e5551fdd4f629cf59"
+              },
+              {
+                "name": "content",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "ReactNode",
+                "typeRef": "type:a991edaa7809b6d75ba2"
+              },
+              {
+                "name": "state",
+                "position": 2,
+                "required": true,
+                "rest": false,
+                "typeText": "NavTreeItemState",
+                "typeRef": "type:e7e7f4b0443372bc7f7c"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:a991edaa7809b6d75ba2"
+            },
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onSelect",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "function",
+            "typeText": "((item: NavTreeItem) => void) | undefined",
+            "typeRef": "type:182759de6d29b8282a37",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NavTreeItem",
+                "typeRef": "type:e57e5551fdd4f629cf59"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onItemSelect",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "function",
+            "typeText": "((item: NavTreeItem) => void) | undefined",
+            "typeRef": "type:6d903afc9065a575f8bf",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NavTreeItem",
+                "typeRef": "type:e57e5551fdd4f629cf59"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onExpandedChange",
+            "source": "packages/taro/src/navigation.tsx",
+            "kind": "function",
+            "typeText": "((ids: string[]) => void) | undefined",
+            "typeRef": "type:4e24f6093d6901dfc4f6",
+            "parameters": [
+              {
+                "name": "ids",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string[]",
+                "typeRef": "type:19a96e1d6cef0c4dc643"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:NavTree": {
+      "kind": "cssVars",
+      "source": "react/src/components/NavTree",
+      "vars": [
+        {
+          "name": "--nav-tree-gap",
+          "description": "Space between the sections"
+        },
+        {
+          "name": "--nav-tree-item-height",
+          "description": "Minimum height of a top-level row (defaults to the density's control height)"
+        },
+        {
+          "name": "--nav-tree-item-padding-x",
+          "description": "Horizontal padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--nav-tree-item-radius",
+          "description": "Corner radius of a row (defaults to --radius-md)"
+        },
+        {
+          "name": "--nav-tree-indent",
+          "description": "Indentation of nested rows"
+        },
+        {
+          "name": "--nav-tree-active-background",
+          "description": "Background of the active row"
+        },
+        {
+          "name": "--nav-tree-active-color",
+          "description": "Accent color of the active row's icon"
+        },
+        {
+          "name": "--nav-tree-hover-background",
+          "description": "Background of a hovered row (defaults to --hover-color)"
+        },
+        {
+          "name": "--nav-tree-guide-color",
+          "description": "Color of the optional indent guide of an expanded branch (defaults to transparent)"
+        },
+        {
+          "name": "--nav-tree-guide-active-color",
+          "description": "Color of the indent guide of the branch holding the active row"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "NavTree 导航树",
+      "description": "侧边栏导航：分组、可展开分支、当前项高亮以及仅图标的紧凑模式。方向键可在项目间移动并展开或收起分支。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "包含当前项的分支会自动展开，手动收起后会被记住。项目可带图标、描述和尾部内容。"
+        },
+        "collapsed": {
+          "title": "紧凑模式与换行",
+          "description": "collapsed 仅显示图标；wrapLabels 让长标签换行而非截断。"
+        },
+        "custom-link": {
+          "title": "路由链接",
+          "description": "renderLink 用路由的链接组件渲染叶子项，并保留 state.className。展开状态可受控。"
+        }
+      },
+      "api": {
+        "NavTreeProps": {
+          "sections": "项目分组",
+          "activeId": "当前项（当前页）的 id，其祖先分支会展开",
+          "collapsed": "紧凑模式：仅显示图标",
+          "wrapLabels": "长标签和描述换行而非截断",
+          "defaultExpandedIds": "初始展开的分支 id（非受控）",
+          "expandedIds": "展开的分支 id（受控，配合 onExpandedChange）",
+          "onExpandedChange": "切换分支时以展开的 id 调用",
+          "onItemSelect": "激活叶子链接或分支时调用",
+          "renderLink": "自定义叶子链接渲染（如路由 Link），需带上 state.className",
+          "className": "额外的类名",
+          "style": "内联样式",
+          "aria-label": "<nav> 地标的无障碍名称",
+          "ref": "<nav> 元素的 ref",
+          "aria-labelledby": "为<nav> 地标（替代默认标签）提供标签的元素 id（可多个）",
+          "id": "<nav> 元素的 id"
+        },
+        "NavTreeSection": {
+          "id": "分组的唯一 id",
+          "title": "可选的分组标题",
+          "items": "分组中的项目"
+        },
+        "NavTreeItem": {
+          "id": "唯一 id（与 activeId / 展开 id 匹配）",
+          "label": "可见标签",
+          "description": "标签下方的次要文本（嵌套项不显示）",
+          "href": "叶子项的链接地址",
+          "icon": "前置图标",
+          "endContent": "尾部内容，如徽标或计数",
+          "disabled": "禁用该项",
+          "children": "子项目，使该项成为可展开分支"
+        },
+        "NavTreeItemState": {
+          "active": "该项为当前项",
+          "ancestorActive": "该项的某个后代为当前项",
+          "expanded": "分支已展开",
+          "depth": "嵌套深度（顶层为 0）",
+          "collapsed": "导航树处于紧凑模式",
+          "hasChildren": "该项有子项",
+          "disabled": "该项已禁用",
+          "className": "需加到渲染链接上的类名"
+        }
+      },
+      "cssVars": {
+        "--nav-tree-gap": "分组之间的间距",
+        "--nav-tree-item-height": "顶层行的最小高度（默认为密度的控件高度）",
+        "--nav-tree-item-padding-x": "行的水平内边距（跟随密度的行内边距）",
+        "--nav-tree-item-radius": "行的圆角（默认 --radius-md）",
+        "--nav-tree-indent": "嵌套行的缩进",
+        "--nav-tree-active-background": "激活行的背景",
+        "--nav-tree-active-color": "激活行图标的强调色",
+        "--nav-tree-hover-background": "悬停行的背景（默认为 --hover-color）",
+        "--nav-tree-guide-color": "展开分支可选缩进引导线的颜色（默认透明）",
+        "--nav-tree-guide-active-color": "包含当前行的分支缩进引导线的颜色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "通过 sections 属性提供分组、图标、末尾计数和分支。取消 minerva-select 以在客户端路由并更新 active-id。"
+          },
+          "collapsed": {
+            "title": "紧凑模式",
+            "description": "collapsed 只保留图标，适用于窄侧边栏；标签仍作为可访问名称。"
+          },
+          "expansion": {
+            "title": "受控展开",
+            "description": "expandedIds 设置展开的分支，minerva-expanded-change 可取消（Getting started 保持展开）；wrap-labels 让长标签换行。"
+          }
+        },
+        "minerva-nav-tree": {
+          "events": {
+            "minerva-select": "叶子链接 / 操作或分支被激活（detail: { value, item }）；可取消：preventDefault() 同时阻止链接跳转（用于客户端路由）。",
+            "minerva-expanded-change": "用户展开或折叠了分支（detail: { expandedIds, item, expanded }）；可取消：preventDefault() 保持当前状态。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

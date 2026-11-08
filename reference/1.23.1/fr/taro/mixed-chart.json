@@ -1,0 +1,615 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "fr",
+  "renderer": "taro",
+  "page": "mixed-chart",
+  "title": "Graphique combiné",
+  "description": "Barres, lignes et aires dans un même graphique, sur un ou deux axes de valeurs : chiffre d'affaires et croissance, pluie et température, diagrammes de Pareto.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "data": {
+      "quarter": "T{{n}} {{year}}",
+      "revenue": "Chiffre d'affaires",
+      "growth": "Croissance (sur un an)",
+      "revenueAria": "Chiffre d'affaires trimestriel et sa croissance sur un an",
+      "rainfall": "Précipitations",
+      "temperature": "Température",
+      "climateAria": "Précipitations et températures mensuelles à Tokyo",
+      "sessions": "Sessions",
+      "conversionRate": "Taux de conversion",
+      "campaign": "Campagne",
+      "conversionAria": "Sessions quotidiennes et taux de conversion sur deux mois",
+      "returns": "Retours",
+      "cumulative": "Part cumulée",
+      "causes": {
+        "wrongSize": "Mauvaise taille",
+        "damaged": "Endommagé",
+        "notAsDescribed": "Non conforme",
+        "late": "Livré en retard",
+        "changedMind": "Changement d'avis",
+        "wrongItem": "Mauvais article",
+        "other": "Autre"
+      },
+      "paretoAria": "Retours par cause et leur part cumulée",
+      "pageViews": "Pages vues",
+      "locales": {
+        "chinese": "Chinois (zh-CN)",
+        "french": "Français (fr-FR)"
+      },
+      "localeAria": "Pages vues et taux de conversion par jour, {{locale}}",
+      "yearlyRevenue": "Chiffre d’affaires",
+      "users": "Utilisateurs",
+      "usersLog": "Utilisateurs (échelle log)",
+      "logAria": "Chiffre d’affaires annuel et utilisateurs sur un axe logarithmique, de 2016 à 2025",
+      "kwh": "{{value}} kWh",
+      "solarProduction": "Production solaire",
+      "consumption": "Consommation",
+      "batteryCharge": "Charge de la batterie",
+      "night": "Nuit",
+      "withBattery": "Batterie de {{value}}",
+      "selfSufficiency": "Autosuffisance de {{share}} sur deux jours, {{imported}} achetés au réseau.",
+      "energyPerHour": "Énergie par heure",
+      "solarAria": "Production solaire et consommation horaires d'une maison sur deux jours, avec l'état de charge de sa batterie",
+      "stockLevel": "Niveau de stock",
+      "deliveries": "Livraisons",
+      "promotion": "Promotion",
+      "safetyStock": "Stock de sécurité",
+      "reorderPoint": "Point de commande",
+      "inventoryHint": "Cliquez sur un jour ou une livraison.",
+      "deliveryDetails": "{{id}} : {{quantity}} unités commandées le {{ordered}}, livrées le {{arrived}} après {{lead}}.",
+      "stockOn": "{{units}} unités en stock le {{date}}.",
+      "stockLow": "Seulement {{units}} unités en stock le {{date}}, sous le stock de sécurité.",
+      "unitsInStock": "Unités",
+      "inventoryAria": "Niveau de stock quotidien d'un article sur trois mois, avec les livraisons, le point de commande et le stock de sécurité",
+      "requests": "Requêtes",
+      "errorRate": "Taux d'erreur",
+      "releases": "Mises en production",
+      "requestsPerHalfHour": "Requêtes par 30 min",
+      "opsAria": "Requêtes et taux d'erreur d'une API web sur une journée, avec ses mises en production",
+      "incidentSummary": "Le taux d'erreur a culminé à {{peak}} à {{time}} après {{version}}, jusqu'au retour à {{rollback}}.",
+      "points": "{{value}} pts",
+      "sprintStart": "Début",
+      "remainingWork": "Travail restant",
+      "completedPerDay": "Terminé",
+      "idealBurn": "Idéal",
+      "scopeAdded": "+{{value}} ajoutés",
+      "idealLeft": "Idéal : {{value}} restants",
+      "remainingLeft": "{{value}} restants",
+      "doneThatDay": "{{value}} terminés ce jour-là",
+      "behindBy": "{{value}} de retard sur l'idéal",
+      "aheadBy": "{{value}} d'avance sur l'idéal",
+      "storyPoints": "Points d'histoire",
+      "burndownAria": "Burndown de sprint : travail restant, points terminés chaque jour et progression idéale sur dix jours ouvrés",
+      "burndownLate": "{{left}} restants à {{velocity}} par jour : environ {{forecast}} ne seront pas terminés à la fin du sprint.",
+      "burndownOnTrack": "{{left}} restants à {{velocity}} par jour : le sprint est dans les temps."
+    }
+  },
+  "components": [
+    {
+      "name": "MixedChart",
+      "support": {
+        "status": "beta",
+        "notes": "Cartesian charts drawn on a Canvas 2D node by the DOM-free engine (minerva-design/charts presets): the web component props mapped to the same engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset, H5 mouse hover; ref exposes resetZoom/getView/setView/getInstance/resize. No WebGPU / WebGL renderer (one Canvas 2D path), no keyboard navigation and no React tooltip content: tooltip.render may only return text. QuadrantChart accessible points: a visually hidden list of the points (role / aria-role, aria-label with name, quadrant and values; a tap is onPointClick) with 'Move to …' buttons calling onPointDrop with the center of the neighbouring quadrant. Mini-program views take no keyboard focus, so there is no focus ring nor Shift + arrow moves, and no live region: the move is announced (role=status) on H5 only. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Cartesian charts drawn on a Canvas 2D node by the DOM-free engine (minerva-design/charts presets): the web component props mapped to the same engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset, H5 mouse hover; ref exposes resetZoom/getView/setView/getInstance/resize. No WebGPU / WebGL renderer (one Canvas 2D path), no keyboard navigation and no React tooltip content: tooltip.render may only return text. QuadrantChart accessible points: a visually hidden list of the points (role / aria-role, aria-label with name, quadrant and values; a tap is onPointClick) with 'Move to …' buttons calling onPointDrop with the center of the neighbouring quadrant. Mini-program views take no keyboard focus, so there is no focus ring nor Shift + arrow moves, and no live region: the move is announced (role=status) on H5 only. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "MixedChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Bars, lines, areas and dots, each with its `type`; `yAxis: \"right\"` plots a series against `yAxis2`"
+          },
+          {
+            "name": "yAxis2",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Right value axis of the series with `yAxis: \"right\"` (dual axis charts)"
+          },
+          {
+            "name": "stackMode",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "enum",
+            "values": [
+              "normal",
+              "percent"
+            ],
+            "typeText": "\"normal\" | \"percent\" | undefined",
+            "typeRef": "type:2d2343824f816d71127f",
+            "default": "normal",
+            "required": false,
+            "description": "`percent` scales every stack to 100% at each x"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "ChartOrientation | undefined",
+            "typeRef": "type:872af3679a2d7fcf3d26",
+            "default": "vertical",
+            "required": false,
+            "description": "`horizontal` puts the x axis (categories) down the left side"
+          },
+          {
+            "name": "height",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch zoom, pan (drag when zoomed) and double-tap reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes). Mini-programs have no `<html lang>`: pass the app language"
+          },
+          {
+            "name": "labels",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "disableScroll",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Keeps the page from scrolling while a finger moves on the chart (needed to pan a zoomed chart or drag points)"
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the `<Canvas>` (generated by default)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:980cbee566a575ab834d",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the touched (or hovered) points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:054b6d565969c517cbb1",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:02c2f014ba9839a6e936",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/taro/src/charts.tsx",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:6871f590139907a5872c",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Graphique combiné",
+      "description": "Barres, lignes et aires dans un même graphique, sur un ou deux axes de valeurs : chiffre d'affaires et croissance, pluie et température, diagrammes de Pareto.",
+      "demos": {
+        "revenue-growth": {
+          "title": "Chiffre d'affaires et croissance",
+          "description": "La ligne de croissance fixe yAxis: \"right\" et se lit sur yAxis2 avec son propre format ; la plage de droite s'aligne sur les graduations de gauche, la grille convient aux deux axes."
+        },
+        "climate": {
+          "title": "Diagramme climatique",
+          "description": "Les barres de précipitations sur l'axe de gauche, la courbe des températures sur l'axe de droite ; zero: true garde le zéro dans la plage de droite."
+        },
+        "conversion": {
+          "title": "Trafic et conversion",
+          "description": "Une aire des sessions quotidiennes avec le taux de conversion sur l'axe de droite et une campagne mise en évidence par une annotation rect."
+        },
+        "pareto": {
+          "title": "Diagramme de Pareto",
+          "description": "Les causes triées et leur part cumulée sur un axe de droite de 0 à 100 % (min, max et nice: false) ; les causes de 80 % des retours sont mises en évidence."
+        },
+        "log-scale": {
+          "title": "Échelle logarithmique",
+          "description": "Les utilisateurs sont multipliés par 6 000 en dix ans : yAxis2={{ type: \"log\" }} les trace sur un axe droit logarithmique avec ses propres décades, à côté des barres de chiffre d’affaires sur l’axe gauche linéaire ; les infobulles gardent les valeurs réelles."
+        },
+        "locale": {
+          "title": "Langues",
+          "description": "Le même graphique avec locale=\"zh-CN\" et locale=\"fr-FR\" : le moteur écrit les unités compactes (万 / k), les séparateurs, les noms des mois de l'axe temporel et les dates de l'infobulle de la langue. Sans locale, les graphiques suivent la langue de la page (<html lang>)."
+        },
+        "solar-battery": {
+          "title": "Solaire et batterie domestique",
+          "description": "La production solaire horaire en barres et la consommation en ligne sur l'axe de gauche, l'état de charge de la batterie en aire sur yAxis2 fixé à 0-100 % avec min, max et nice: false ; des annotations rect grisent les nuits. Le Switch masque la batterie et la sortie recalcule l'autosuffisance."
+        },
+        "inventory": {
+          "title": "Stock et livraisons",
+          "description": "Une aire en escalier du niveau de stock avec des barres de livraison, une ligne de point de commande et un rect de stock de sécurité. onPointClick marque le jour d'une ligne x et affiche son bon de commande ou son stock dans une sortie ; onPlotClick l'efface."
+        },
+        "ops-overview": {
+          "title": "Vue d'ensemble de l'exploitation",
+          "description": "Des barres de requêtes sur l'axe de gauche, le taux d'erreur sur l'axe de droite et les mises en production en série type: \"scatter\" dont showLabels écrit chaque version. Des Checkbox remplacent la légende et règlent hidden sur chaque série."
+        },
+        "burndown": {
+          "title": "Burndown de sprint",
+          "description": "Le travail restant en aire, les points terminés chaque jour en barres et la progression idéale en ligne, sur des catégories xAxis explicites ; une annotation text signale un changement de périmètre. renderTooltip indique l'avance ou le retard de chaque jour sur la ligne idéale."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple de base",
+            "description": "Les barres de pluie sur l'axe de gauche et la courbe des températures sur l'axe de droite (yAxis: \"right\" et yAxis2) ; touchez pour comparer."
+          }
+        }
+      },
+      "data": {
+        "quarter": "T{{n}} {{year}}",
+        "revenue": "Chiffre d'affaires",
+        "growth": "Croissance (sur un an)",
+        "revenueAria": "Chiffre d'affaires trimestriel et sa croissance sur un an",
+        "rainfall": "Précipitations",
+        "temperature": "Température",
+        "climateAria": "Précipitations et températures mensuelles à Tokyo",
+        "sessions": "Sessions",
+        "conversionRate": "Taux de conversion",
+        "campaign": "Campagne",
+        "conversionAria": "Sessions quotidiennes et taux de conversion sur deux mois",
+        "returns": "Retours",
+        "cumulative": "Part cumulée",
+        "causes": {
+          "wrongSize": "Mauvaise taille",
+          "damaged": "Endommagé",
+          "notAsDescribed": "Non conforme",
+          "late": "Livré en retard",
+          "changedMind": "Changement d'avis",
+          "wrongItem": "Mauvais article",
+          "other": "Autre"
+        },
+        "paretoAria": "Retours par cause et leur part cumulée",
+        "pageViews": "Pages vues",
+        "locales": {
+          "chinese": "Chinois (zh-CN)",
+          "french": "Français (fr-FR)"
+        },
+        "localeAria": "Pages vues et taux de conversion par jour, {{locale}}",
+        "yearlyRevenue": "Chiffre d’affaires",
+        "users": "Utilisateurs",
+        "usersLog": "Utilisateurs (échelle log)",
+        "logAria": "Chiffre d’affaires annuel et utilisateurs sur un axe logarithmique, de 2016 à 2025",
+        "kwh": "{{value}} kWh",
+        "solarProduction": "Production solaire",
+        "consumption": "Consommation",
+        "batteryCharge": "Charge de la batterie",
+        "night": "Nuit",
+        "withBattery": "Batterie de {{value}}",
+        "selfSufficiency": "Autosuffisance de {{share}} sur deux jours, {{imported}} achetés au réseau.",
+        "energyPerHour": "Énergie par heure",
+        "solarAria": "Production solaire et consommation horaires d'une maison sur deux jours, avec l'état de charge de sa batterie",
+        "stockLevel": "Niveau de stock",
+        "deliveries": "Livraisons",
+        "promotion": "Promotion",
+        "safetyStock": "Stock de sécurité",
+        "reorderPoint": "Point de commande",
+        "inventoryHint": "Cliquez sur un jour ou une livraison.",
+        "deliveryDetails": "{{id}} : {{quantity}} unités commandées le {{ordered}}, livrées le {{arrived}} après {{lead}}.",
+        "stockOn": "{{units}} unités en stock le {{date}}.",
+        "stockLow": "Seulement {{units}} unités en stock le {{date}}, sous le stock de sécurité.",
+        "unitsInStock": "Unités",
+        "inventoryAria": "Niveau de stock quotidien d'un article sur trois mois, avec les livraisons, le point de commande et le stock de sécurité",
+        "requests": "Requêtes",
+        "errorRate": "Taux d'erreur",
+        "releases": "Mises en production",
+        "requestsPerHalfHour": "Requêtes par 30 min",
+        "opsAria": "Requêtes et taux d'erreur d'une API web sur une journée, avec ses mises en production",
+        "incidentSummary": "Le taux d'erreur a culminé à {{peak}} à {{time}} après {{version}}, jusqu'au retour à {{rollback}}.",
+        "points": "{{value}} pts",
+        "sprintStart": "Début",
+        "remainingWork": "Travail restant",
+        "completedPerDay": "Terminé",
+        "idealBurn": "Idéal",
+        "scopeAdded": "+{{value}} ajoutés",
+        "idealLeft": "Idéal : {{value}} restants",
+        "remainingLeft": "{{value}} restants",
+        "doneThatDay": "{{value}} terminés ce jour-là",
+        "behindBy": "{{value}} de retard sur l'idéal",
+        "aheadBy": "{{value}} d'avance sur l'idéal",
+        "storyPoints": "Points d'histoire",
+        "burndownAria": "Burndown de sprint : travail restant, points terminés chaque jour et progression idéale sur dix jours ouvrés",
+        "burndownLate": "{{left}} restants à {{velocity}} par jour : environ {{forecast}} ne seront pas terminés à la fin du sprint.",
+        "burndownOnTrack": "{{left}} restants à {{velocity}} par jour : le sprint est dans les temps."
+      },
+      "api": {
+        "MixedChartProps": {
+          "series": "Barres, lignes, aires et points, chacun avec son type ; yAxis: \"right\" place une série sur yAxis2",
+          "yAxis2": "Axe de valeurs de droite des séries avec yAxis: \"right\"",
+          "stackMode": "\"percent\" ramène chaque empilement à 100 %",
+          "orientation": "\"horizontal\" place les catégories sur le côté gauche"
+        },
+        "ChartProps": {
+          "series": "Séries de données ; chacune fixe son type",
+          "stackMode": "\"percent\" ramène chaque pile à 100 % à chaque x",
+          "yAxis2": "Axe des valeurs de droite des séries avec yAxis: \"right\" ; sa plage est alignée sur les graduations de gauche",
+          "orientation": "\"horizontal\" place l'axe x (catégories) à gauche et les valeurs en bas"
+        },
+        "ChartLabels": {
+          "open": "Ligne d'ouverture des chandeliers",
+          "high": "Ligne du plus haut des chandeliers",
+          "low": "Ligne du plus bas des chandeliers",
+          "close": "Ligne de clôture des chandeliers",
+          "max": "Ligne de la moustache haute des boîtes",
+          "q3": "Ligne du troisième quartile des boîtes",
+          "median": "Ligne de la médiane des boîtes",
+          "q1": "Ligne du premier quartile des boîtes",
+          "min": "Ligne de la moustache basse des boîtes",
+          "outliers": "Nombre de valeurs aberrantes d'une boîte",
+          "value": "Valeur des points (bulles) quand la série n'a pas de valueName",
+          "x": "Ligne du x d'un point quand l'axe n'a pas de titre",
+          "y": "Ligne du y d'un point quand l'axe n'a pas de titre",
+          "series": "Noms de série par défaut (« Série 1 », « Série 2 »…)",
+          "chart": "Nom accessible d'un graphique sans série",
+          "chartOf": "Nom accessible d'un graphique ; {series} est la liste des noms de séries",
+          "start": "Début d’une barre d’intervalle sur un axe temporel (tâches de Gantt)",
+          "end": "Fin d’une barre d’intervalle sur un axe temporel",
+          "duration": "Durée d’une barre d’intervalle sur un axe temporel (4 semaines, 26 jours)",
+          "progress": "Part réalisée d’une tâche de Gantt",
+          "dependencies": "Tâches dont dépend une tâche de Gantt",
+          "outlier": "Valeur aberrante survolée d’une boîte à moustaches"
+        }
+      },
+      "wc": {
+        "demos": {
+          "revenue-growth": {
+            "title": "Chiffre d’affaires et croissance sur deux axes",
+            "description": "Le chiffre d’affaires en barres sur l’axe gauche, la croissance en ligne sur l’axe droit (yAxis: \"right\")."
+          },
+          "climate": {
+            "title": "Diagramme climatique",
+            "description": "Les précipitations mensuelles en barres et la température moyenne en ligne lissée ; le réticule lit les deux."
+          }
+        },
+        "minerva-mixed-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}

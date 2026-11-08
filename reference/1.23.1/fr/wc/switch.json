@@ -1,0 +1,757 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "switch",
+  "title": "Switch",
+  "description": "Active ou désactive un réglage, avec effet immédiat.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Switch",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/switch",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-switch",
+        "props": [
+          {
+            "name": "defaultChecked",
+            "typeText": "boolean",
+            "attribute": "checked",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "offLabel",
+            "typeText": "string",
+            "attribute": "off-label",
+            "required": false
+          },
+          {
+            "name": "onLabel",
+            "typeText": "string",
+            "attribute": "on-label",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"slider\" | \"segmented\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "SwitchColor",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "typeText": "\"round\" | \"square\"",
+            "attribute": "shape",
+            "required": false
+          },
+          {
+            "name": "labelPlacement",
+            "typeText": "\"start\" | \"end\" | \"top\" | \"bottom\"",
+            "attribute": "label-placement",
+            "required": false
+          },
+          {
+            "name": "iconPlacement",
+            "typeText": "\"start\" | \"end\"",
+            "attribute": "icon-placement",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "attribute": "loading",
+            "required": false
+          },
+          {
+            "name": "noRipple",
+            "typeText": "boolean",
+            "attribute": "no-ripple",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "attribute": "readonly",
+            "required": false
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "attribute": "invalid",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "checked",
+            "typeText": "boolean",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "Event",
+            "description": "The state changed (re-dispatched from the inner input)"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ checked: boolean; value: string; }>",
+            "detailType": {
+              "typeText": "{ checked: boolean; value: string; }",
+              "typeRef": "type:3746ff127f94612742d5"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The user toggled the switch; `detail: { checked, value }`"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Label content (alternative to the `label` attribute)"
+          },
+          {
+            "name": "icon",
+            "description": "Icon inside the thumb (`icon-placement=\"start\"`) or after the switch (\"end\")"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-switch": {
+      "kind": "element",
+      "source": "web-components/src/components/switch/switch.ts",
+      "className": "MinervaSwitch",
+      "summary": "On / off switch (slider, side labels or segmented).",
+      "description": "Toggles between two mutually exclusive states (`<Switch>` of React): a native checkbox with `role=\"switch\"` (Space and Enter toggle it). `off-label` + `on-label` add clickable labels on both sides of the slider, or build a two-segment control with `variant=\"segmented\"`. Form-associated like a checkbox: when on, submits `value` (default `\"on\"`) under `name`; `required` makes it invalid until on (`valueMissing`); supports `form.reset()` (restores the `checked` attribute), `<fieldset disabled>` and state restoration.",
+      "properties": [
+        {
+          "name": "defaultChecked",
+          "attribute": "checked",
+          "type": "boolean",
+          "default": "false",
+          "description": "Initial state, restored by `form.reset()` (the `checked` attribute)"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"on\"",
+          "description": "Value submitted with the form when on"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Label text (alternative to the default slot)"
+        },
+        {
+          "name": "offLabel",
+          "attribute": "off-label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Label of the \"off\" state; with `on-label`, rendered as side buttons or segments"
+        },
+        {
+          "name": "onLabel",
+          "attribute": "on-label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Label of the \"on\" state (see `off-label`)"
+        },
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"slider\" | \"segmented\"",
+          "default": "\"slider\"",
+          "description": "\"slider\" (track + thumb) or \"segmented\" (needs off-label and on-label)"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Switch size"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "SwitchColor",
+          "default": "\"primary\"",
+          "description": "Semantic color of the \"on\" state"
+        },
+        {
+          "name": "shape",
+          "attribute": "shape",
+          "type": "\"round\" | \"square\"",
+          "default": "\"round\"",
+          "description": "Shape of the track and thumb"
+        },
+        {
+          "name": "labelPlacement",
+          "attribute": "label-placement",
+          "type": "\"start\" | \"end\" | \"top\" | \"bottom\"",
+          "default": "\"end\"",
+          "description": "Position of the label relative to the switch"
+        },
+        {
+          "name": "iconPlacement",
+          "attribute": "icon-placement",
+          "type": "\"start\" | \"end\"",
+          "default": "\"start\"",
+          "description": "Icon position: inside the thumb (\"start\") or after the switch (\"end\")"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a loading state and blocks interaction (aria-busy)"
+        },
+        {
+          "name": "noRipple",
+          "attribute": "no-ripple",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the ripple effect on click"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false",
+          "description": "Read-only: focusable and submitted, but the user cannot toggle it"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false",
+          "description": "Error state (aria-invalid)"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the switch is on (property; the `checked` attribute sets `defaultChecked`)"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "click",
+          "signature": "() => void"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "description": "The state changed (re-dispatched from the inner input)"
+        },
+        {
+          "name": "minerva-change",
+          "description": "The user toggled the switch; `detail: { checked, value }`"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "Label content (alternative to the `label` attribute)"
+        },
+        {
+          "name": "icon",
+          "description": "Icon inside the thumb (`icon-placement=\"start\"`) or after the switch (\"end\")"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The outer element (<label>; a <span> with side labels; the group of segments)"
+        },
+        {
+          "name": "input",
+          "description": "The native `<input type=\"checkbox\" role=\"switch\">`"
+        },
+        {
+          "name": "control",
+          "description": "The slider box (wraps the track and the thumb)"
+        },
+        {
+          "name": "track",
+          "description": "The track"
+        },
+        {
+          "name": "thumb",
+          "description": "The thumb"
+        },
+        {
+          "name": "icon",
+          "description": "The icon (in the thumb or after the slider)"
+        },
+        {
+          "name": "label",
+          "description": "The label text"
+        },
+        {
+          "name": "side",
+          "description": "The off / on side labels (buttons)"
+        },
+        {
+          "name": "segment",
+          "description": "The off / on segments (buttons, variant=\"segmented\")"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--switch-track-width",
+          "description": "Width of the track (every size)"
+        },
+        {
+          "name": "--switch-track-height",
+          "description": "Height of the track (every size)"
+        },
+        {
+          "name": "--switch-thumb-size",
+          "description": "Width and height of the thumb (every size)"
+        },
+        {
+          "name": "--switch-track-color",
+          "description": "Background of the unchecked track"
+        },
+        {
+          "name": "--switch-thumb-color",
+          "description": "Background of the unchecked thumb"
+        },
+        {
+          "name": "--switch-checked-color",
+          "description": "Accent of the checked thumb, track and active segment (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--switch-label-gap",
+          "description": "Space between the switch and its label"
+        },
+        {
+          "name": "--switch-label-font-size",
+          "description": "Font size of the label (every size)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Switch": {
+      "kind": "cssVars",
+      "source": "react/src/components/Switch",
+      "vars": [
+        {
+          "name": "--switch-track-width",
+          "description": "Width of the track (every size)"
+        },
+        {
+          "name": "--switch-track-height",
+          "description": "Height of the track (every size)"
+        },
+        {
+          "name": "--switch-thumb-size",
+          "description": "Width and height of the thumb (every size)"
+        },
+        {
+          "name": "--switch-track-color",
+          "description": "Background of the unchecked track"
+        },
+        {
+          "name": "--switch-thumb-color",
+          "description": "Background of the unchecked thumb"
+        },
+        {
+          "name": "--switch-checked-color",
+          "description": "Accent of the checked thumb, track and active segment (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--switch-label-gap",
+          "description": "Space between the switch and its label"
+        },
+        {
+          "name": "--switch-label-font-size",
+          "description": "Font size of the label (every size)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/switch/wc/basic.html": "<div style=\"display: grid; gap: 12px; justify-items: start\">\n  <minerva-switch id=\"sw-wifi\" checked label=\"Wi-Fi\"></minerva-switch>\n  <minerva-switch label=\"Bluetooth\"></minerva-switch>\n  <minerva-switch disabled label=\"Airplane mode\"></minerva-switch>\n  <output id=\"sw-wifi-state\">Wi-Fi is on</output>\n</div>\n",
+        "apps/docs/src/docs/pages/switch/wc/basic.ts": "// Space and Enter toggle the focused switch; `minerva-change` reports the\n// new state in detail.checked.\nexport function setup(root: HTMLElement) {\n  const wifi = root.querySelector<HTMLElement>(\"#sw-wifi\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#sw-wifi-state\")!;\n  const onChange = (event: Event) => {\n    const { checked } = (event as CustomEvent<{ checked: boolean }>).detail;\n    output.value = `Wi-Fi is ${checked ? \"on\" : \"off\"}`;\n  };\n  wifi.addEventListener(\"minerva-change\", onChange);\n  return () => wifi.removeEventListener(\"minerva-change\", onChange);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Une case native avec role=\"switch\" : Espace et Entrée la basculent, et minerva-change signale le nouvel état."
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/switch/wc/form.html": "<form id=\"sw-form\" style=\"display: grid; gap: 12px; justify-items: start\">\n  <minerva-switch\n    name=\"notifications\"\n    value=\"enabled\"\n    checked\n    label=\"Notifications\"\n  ></minerva-switch>\n  <minerva-switch\n    name=\"consent\"\n    required\n    label=\"I agree to the data policy\"\n  ></minerva-switch>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button type=\"submit\">Save</minerva-button>\n    <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n      >Reset</minerva-button\n    >\n  </div>\n  <output id=\"sw-form-result\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/switch/wc/form.ts": "// Like a checkbox: a switch that is on submits its `value` (default \"on\"),\n// `required` keeps the form invalid until it is on, and reset restores the\n// `checked` attributes.\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#sw-form\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#sw-form-result\")!;\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    const entries = [...new FormData(form)].map(\n      ([key, value]) => `${key}=${value}`,\n    );\n    result.value = `FormData: ${entries.join(\", \") || \"(empty)\"}`;\n  };\n  const onReset = () => (result.value = \"\");\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Dans un formulaire",
+      "description": "Comme une case à cocher : un interrupteur activé envoie sa value, required rend le formulaire invalide tant qu’il est désactivé, et reset restaure les attributs checked."
+    },
+    {
+      "id": "side-labels",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/wc/side-labels.html",
+      "files": {
+        "apps/docs/src/docs/pages/switch/wc/side-labels.html": "<div style=\"display: grid; gap: 16px; justify-items: start\">\n  <minerva-switch\n    off-label=\"Monthly\"\n    on-label=\"Yearly\"\n    aria-label=\"Yearly billing\"\n  ></minerva-switch>\n  <minerva-switch\n    variant=\"segmented\"\n    off-label=\"List\"\n    on-label=\"Grid\"\n    checked\n    aria-label=\"View\"\n  ></minerva-switch>\n  <minerva-switch\n    variant=\"segmented\"\n    size=\"small\"\n    color=\"success\"\n    off-label=\"Draft\"\n    on-label=\"Published\"\n    aria-label=\"Publication status\"\n  ></minerva-switch>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Libellés latéraux et segments",
+      "description": "off-label et on-label ajoutent des libellés cliquables de part et d’autre du curseur ; variant=\"segmented\" en fait un contrôle à deux segments."
+    },
+    {
+      "id": "styles-states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/wc/styles-states.html",
+      "files": {
+        "apps/docs/src/docs/pages/switch/wc/styles-states.html": "<div style=\"display: grid; gap: 16px\">\n  <div style=\"display: flex; flex-wrap: wrap; gap: 16px; align-items: center\">\n    <minerva-switch size=\"small\" checked label=\"Small\"></minerva-switch>\n    <minerva-switch size=\"medium\" checked label=\"Medium\"></minerva-switch>\n    <minerva-switch size=\"large\" checked label=\"Large\"></minerva-switch>\n    <minerva-switch shape=\"square\" checked label=\"Square\"></minerva-switch>\n  </div>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 16px; align-items: center\">\n    <minerva-switch color=\"success\" checked label=\"Success\"></minerva-switch>\n    <minerva-switch color=\"warning\" checked label=\"Warning\"></minerva-switch>\n    <minerva-switch color=\"danger\" checked label=\"Danger\"></minerva-switch>\n    <minerva-switch\n      color=\"info\"\n      checked\n      label-placement=\"start\"\n      label=\"Label at start\"\n    ></minerva-switch>\n  </div>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 16px; align-items: center\">\n    <minerva-switch id=\"sw-sync\" checked label=\"Sync (click me)\"\n      ><span slot=\"icon\" aria-hidden=\"true\">⟳</span></minerva-switch\n    >\n    <minerva-switch readonly checked label=\"Read-only\"></minerva-switch>\n    <minerva-switch invalid label=\"Invalid\"></minerva-switch>\n    <minerva-switch no-ripple label=\"No ripple\"></minerva-switch>\n  </div>\n</div>\n",
+        "apps/docs/src/docs/pages/switch/wc/styles-states.ts": "// `loading` blocks interaction (aria-busy) while a change is being saved.\nexport function setup(root: HTMLElement) {\n  const sync = root.querySelector<HTMLElement & { loading: boolean }>(\n    \"#sw-sync\",\n  )!;\n  let timer: ReturnType<typeof setTimeout> | undefined;\n  const onChange = () => {\n    sync.loading = true;\n    timer = setTimeout(() => (sync.loading = false), 1200);\n  };\n  sync.addEventListener(\"minerva-change\", onChange);\n  return () => {\n    clearTimeout(timer);\n    sync.removeEventListener(\"minerva-change\", onChange);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Styles et états",
+      "description": "Tailles, forme carrée, couleurs, position du libellé, icône dans le curseur, et variantes lecture seule, invalide et sans onde. Basculer Sync montre l’état de chargement."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Switch",
+      "description": "Active ou désactive un réglage, avec effet immédiat.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Interrupteurs non contrôlés avec libellé ; defaultChecked définit l'état initial."
+        },
+        "controlled": {
+          "title": "Mode contrôlé",
+          "description": "Utilisez checked avec onChange pour piloter l'interrupteur depuis votre état."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Trois tailles : small, medium (par défaut) et large."
+        },
+        "colors": {
+          "title": "Couleurs",
+          "description": "color définit la couleur sémantique de l'état actif : primary (par défaut), success, info, warning ou danger."
+        },
+        "label-placement": {
+          "title": "Position du libellé",
+          "description": "Placez le libellé avant (\"start\"), après (\"end\", par défaut), au-dessus (\"top\") ou en dessous (\"bottom\") de l'interrupteur avec labelPlacement."
+        },
+        "states": {
+          "title": "Chargement et désactivé",
+          "description": "loading affiche un état occupé et, comme disabled, bloque l'interaction."
+        },
+        "icons": {
+          "title": "Icônes",
+          "description": "Affichez une petite icône dans le curseur avec icon."
+        },
+        "custom-style": {
+          "title": "Forme et styles personnalisés",
+          "description": "Forme carrée, sans effet d'onde, et trackStyle / thumbStyle personnalisés."
+        },
+        "bilateral-and-segmented": {
+          "title": "Libellés latéraux et segmenté",
+          "description": "offLabel et onLabel affichent des libellés cliquables de chaque côté ; variant=\"segmented\" en fait un contrôle à deux segments."
+        }
+      },
+      "api": {
+        "SwitchProps": {
+          "checked": "Indique si l'interrupteur est activé (contrôlé)",
+          "defaultChecked": "État initial (non contrôlé)",
+          "disabled": "Désactive l'interrupteur",
+          "size": "Taille de l'interrupteur",
+          "color": "Couleur sémantique de l'état actif (curseur et piste activés, libellé latéral / segment actif)",
+          "shape": "Forme du rail et du curseur",
+          "label": "Libellé affiché à côté de l'interrupteur",
+          "aria-label": "Libellé accessible, obligatoire si l'interrupteur n'a pas de libellé visible",
+          "name": "Nom de l'input, utilisé dans les formulaires",
+          "labelPlacement": "Position du libellé par rapport à l'interrupteur",
+          "loading": "Affiche un état de chargement et bloque l'interaction",
+          "ripple": "Affiche un effet d'onde au clic",
+          "className": "Classe CSS supplémentaire",
+          "style": "Styles en ligne de l’élément racine",
+          "trackStyle": "Styles en ligne du rail",
+          "thumbStyle": "Styles en ligne du curseur",
+          "onChange": "Appelé quand l'état change",
+          "onFocus": "Appelé quand l'interrupteur reçoit le focus",
+          "onBlur": "Appelé quand l'interrupteur perd le focus",
+          "icon": "Icône personnalisée",
+          "iconPlacement": "Position de l'icône : dans le curseur (\"start\") ou après l'interrupteur (\"end\")",
+          "ref": "Ref vers l'élément <input role=\"switch\"> sous-jacent",
+          "variant": "\"slider\" : piste et curseur classiques ; \"segmented\" : deux segments pressables (offLabel et onLabel requis)",
+          "children": "Contenu du libellé (alternative à label ; utilisé si label est absent)",
+          "offLabel": "Libellé de l’état « désactivé » ; avec onLabel, rendu en boutons latéraux ou en segments",
+          "onLabel": "Libellé de l’état « activé » (voir offLabel)",
+          "id": "id de l’input (par défaut celui du FormControl parent)",
+          "value": "Valeur envoyée avec le formulaire lorsque l’interrupteur est activé",
+          "aria-labelledby": "id du ou des éléments qui étiquettent l’interrupteur (le groupe de segments en variante segmentée)",
+          "aria-describedby": "Ids supplémentaires d’éléments décrivant l’interrupteur (le groupe de segments en variante segmentée) (fusionnés avec le texte d’aide / d’erreur)"
+        }
+      },
+      "cssVars": {
+        "--switch-track-width": "Largeur du rail (toutes tailles)",
+        "--switch-track-height": "Hauteur du rail (toutes tailles)",
+        "--switch-thumb-size": "Largeur et hauteur du curseur (toutes tailles)",
+        "--switch-track-color": "Fond du rail désactivé",
+        "--switch-thumb-color": "Fond du curseur désactivé",
+        "--switch-checked-color": "Accent du curseur, du rail et du segment actif à l'état activé (par défaut l'accent de la prop color)",
+        "--switch-label-gap": "Espace entre l'interrupteur et son libellé",
+        "--switch-label-font-size": "Taille de police du libellé (toutes tailles)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Une case native avec role=\"switch\" : Espace et Entrée la basculent, et minerva-change signale le nouvel état."
+          },
+          "styles-states": {
+            "title": "Styles et états",
+            "description": "Tailles, forme carrée, couleurs, position du libellé, icône dans le curseur, et variantes lecture seule, invalide et sans onde. Basculer Sync montre l’état de chargement."
+          },
+          "side-labels": {
+            "title": "Libellés latéraux et segments",
+            "description": "off-label et on-label ajoutent des libellés cliquables de part et d’autre du curseur ; variant=\"segmented\" en fait un contrôle à deux segments."
+          },
+          "form": {
+            "title": "Dans un formulaire",
+            "description": "Comme une case à cocher : un interrupteur activé envoie sa value, required rend le formulaire invalide tant qu’il est désactivé, et reset restaure les attributs checked."
+          }
+        },
+        "minerva-switch": {
+          "props": {
+            "noRipple": "Désactive l’effet d’onde au clic.",
+            "readOnly": "Lecture seule : focalisable et envoyé, mais l’utilisateur ne peut pas le basculer.",
+            "invalid": "État d’erreur (définit aria-invalid).",
+            "required": "L’interrupteur doit être activé pour que le formulaire soit envoyé.",
+            "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+            "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+            "validity": "État de validité, comme <input>.validity (lecture seule).",
+            "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+            "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+          },
+          "events": {
+            "change": "L’état a changé (réémis depuis l’input interne).",
+            "minerva-change": "L’utilisateur a basculé l’interrupteur ; detail : { checked, value }."
+          },
+          "slots": {
+            "default": "Contenu du libellé (alternative à l’attribut label).",
+            "icon": "Icône dans le curseur (icon-placement=\"start\") ou après l’interrupteur (\"end\")."
+          },
+          "methods": {
+            "focus": "Donne le focus au contrôle interne.",
+            "blur": "Retire le focus du contrôle interne.",
+            "click": "Clique sur l’input interne (bascule l’interrupteur s’il n’est pas bloqué).",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+            "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+            "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "states": {
+            "title": "Chargement et désactivé",
+            "description": "loading affiche un état occupé et, comme disabled, bloque l'interaction."
+          },
+          "colors": {
+            "title": "Couleurs",
+            "description": "color définit la couleur sémantique de l'état actif : primary (par défaut), success, info, warning ou danger."
+          },
+          "controlled": {
+            "title": "Mode contrôlé",
+            "description": "Utilisez checked avec onChange pour piloter l'interrupteur depuis votre état."
+          },
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Interrupteurs non contrôlés avec libellé ; defaultChecked définit l'état initial."
+          },
+          "sizes": {
+            "title": "Tailles",
+            "description": "Trois tailles : small, medium (par défaut) et large."
+          },
+          "label-placement": {
+            "title": "Position du libellé",
+            "description": "Placez le libellé avant (\"start\"), après (\"end\", par défaut), au-dessus (\"top\") ou en dessous (\"bottom\") de l'interrupteur avec labelPlacement."
+          }
+        }
+      }
+    }
+  }
+}

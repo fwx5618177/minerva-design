@@ -1,0 +1,546 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "zh",
+  "renderer": "wc",
+  "page": "command",
+  "title": "Command 命令面板",
+  "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CommandDialog",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/command-dialog",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-command-dialog",
+        "props": [
+          {
+            "name": "open",
+            "typeText": "boolean",
+            "attribute": "open",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string | undefined",
+            "attribute": "description",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string | undefined",
+            "attribute": "placeholder",
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "typeText": "string | undefined",
+            "attribute": "empty-text",
+            "required": false
+          },
+          {
+            "name": "shortcutLabel",
+            "typeText": "string | undefined",
+            "attribute": "shortcut-label",
+            "required": false
+          },
+          {
+            "name": "shortcut",
+            "typeText": "string | string[] | undefined",
+            "attribute": "shortcut",
+            "required": false
+          },
+          {
+            "name": "maxResults",
+            "typeText": "number",
+            "attribute": "max-results",
+            "required": false
+          },
+          {
+            "name": "resultsLabel",
+            "typeText": "string | undefined",
+            "attribute": "results-label",
+            "required": false
+          },
+          {
+            "name": "enterLabel",
+            "typeText": "string | undefined",
+            "attribute": "enter-label",
+            "required": false
+          },
+          {
+            "name": "items",
+            "typeText": "CommandItem[]",
+            "required": false
+          },
+          {
+            "name": "filter",
+            "typeText": "(items: CommandItem[], query: string) => CommandItem[] | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-select",
+            "typeText": "CustomEvent<{ value: string; item: CommandItem; }>",
+            "detailType": {
+              "typeText": "{ value: string; item: CommandItem; }",
+              "typeRef": "type:430ccbfc9823c27ef889"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "A command was chosen (`detail: { value, item }`, `value` = the item's `id`); the palette then closes"
+          },
+          {
+            "name": "minerva-open-change",
+            "typeText": "CustomEvent<{ open: boolean; reason: CommandOpenChangeReason; }>",
+            "detailType": {
+              "typeText": "{ open: boolean; reason: CommandOpenChangeReason; }",
+              "typeRef": "type:01f45bb1bf66a5faece8"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "The user asked to open (shortcut) / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state"
+          },
+          {
+            "name": "minerva-after-open",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The palette is open and focus moved to the search input"
+          },
+          {
+            "name": "minerva-after-close",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The palette finished closing (after its exit animation)"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-command-dialog": {
+      "kind": "element",
+      "source": "web-components/src/components/command/command.ts",
+      "className": "MinervaCommandDialog",
+      "summary": "Searchable command palette in a modal, with a global shortcut.",
+      "description": "Command palette (`<CommandDialog>` of React): a searchable list of commands in a modal dialog. Type to filter (title, description, group and keywords), move with ArrowUp / ArrowDown (Home / End while the query is empty) over the results (combobox + listbox with `aria-activedescendant`), choose with Enter or a click; Escape (topmost layer only) or an overlay click closes it. Focus moves to the search input, is trapped, and returns to the opener on close. An optional global `shortcut` (e.g. \"mod+k\") opens it.",
+      "properties": [
+        {
+          "name": "open",
+          "attribute": "open",
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the palette is open"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string | undefined",
+          "description": "Title of the dialog (default: localized \"Command palette\")"
+        },
+        {
+          "name": "description",
+          "attribute": "description",
+          "type": "string | undefined",
+          "description": "Description of the palette (default: a localized hint)"
+        },
+        {
+          "name": "placeholder",
+          "attribute": "placeholder",
+          "type": "string | undefined",
+          "description": "Placeholder (and accessible name) of the search input (default: a localized hint)"
+        },
+        {
+          "name": "emptyText",
+          "attribute": "empty-text",
+          "type": "string | undefined",
+          "description": "Text shown when nothing matches (default: localized \"No matching results\")"
+        },
+        {
+          "name": "shortcutLabel",
+          "attribute": "shortcut-label",
+          "type": "string | undefined",
+          "description": "Shortcut hint rendered as `<kbd>` next to the title, e.g. \"⌘K\""
+        },
+        {
+          "name": "shortcut",
+          "attribute": "shortcut",
+          "type": "string | string[] | undefined",
+          "description": "Global keyboard shortcut(s) that open the palette, e.g. \"mod+k\" (Cmd+K on macOS, Ctrl+K elsewhere). Modifiers: mod, ctrl, meta/cmd, shift, alt/option. The attribute takes a comma-separated list (\"mod+k, /\")."
+        },
+        {
+          "name": "maxResults",
+          "attribute": "max-results",
+          "type": "number",
+          "default": "12",
+          "description": "Maximum number of results shown"
+        },
+        {
+          "name": "resultsLabel",
+          "attribute": "results-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the results list (default: localized \"Command results\")"
+        },
+        {
+          "name": "enterLabel",
+          "attribute": "enter-label",
+          "type": "string | undefined",
+          "description": "Key hint at the end of the search input (default: localized \"Enter\")"
+        },
+        {
+          "name": "items",
+          "type": "CommandItem[]",
+          "default": "[]",
+          "description": "Commands to search (disabled items are never shown)"
+        },
+        {
+          "name": "filter",
+          "type": "(items: CommandItem[], query: string) => CommandItem[] | undefined",
+          "description": "Custom search, e.g. to rank results by match quality. Receives the enabled items and the trimmed query (never empty) and returns the matching items in display order (then capped at `maxResults`). By default, items whose group, title, description or keywords contain the query (case-insensitive) are kept in `items` order."
+        }
+      ],
+      "methods": [
+        {
+          "name": "show",
+          "signature": "() => void",
+          "description": "Opens the palette"
+        },
+        {
+          "name": "hide",
+          "signature": "() => void",
+          "description": "Closes the palette"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-select",
+          "description": "A command was chosen (`detail: { value, item }`, `value` = the item's `id`); the palette then closes"
+        },
+        {
+          "name": "minerva-open-change",
+          "description": "The user asked to open (shortcut) / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state"
+        },
+        {
+          "name": "minerva-after-open",
+          "description": "The palette is open and focus moved to the search input"
+        },
+        {
+          "name": "minerva-after-close",
+          "description": "The palette finished closing (after its exit animation)"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "overlay",
+          "description": "The backdrop"
+        },
+        {
+          "name": "content",
+          "description": "The dialog panel (`role=\"dialog\"`)"
+        },
+        {
+          "name": "header",
+          "description": "The title row (accessible name of the dialog)"
+        },
+        {
+          "name": "description",
+          "description": "The description below the title"
+        },
+        {
+          "name": "search",
+          "description": "The search field (icon, input and Enter hint)"
+        },
+        {
+          "name": "input",
+          "description": "The search input (`role=\"combobox\"`)"
+        },
+        {
+          "name": "list",
+          "description": "The results list (`role=\"listbox\"`)"
+        },
+        {
+          "name": "item",
+          "description": "A result (`role=\"option\"`)"
+        },
+        {
+          "name": "item--highlighted",
+          "description": "Item state of `item`: highlighted"
+        },
+        {
+          "name": "empty",
+          "description": "The text shown when no command matches"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--modal-width",
+          "description": "Width of the panel (every size; defaults to the width of the size, capped by the viewport)"
+        },
+        {
+          "name": "--modal-max-height",
+          "description": "Maximum height of the panel (the body scrolls beyond)"
+        },
+        {
+          "name": "--modal-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--modal-radius",
+          "description": "Corner radius of the panel (defaults to --radius-xl)"
+        },
+        {
+          "name": "--modal-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--modal-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--modal-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        },
+        {
+          "name": "--command-search-height",
+          "description": "Minimum height of the search field (defaults to --control-height-md)"
+        },
+        {
+          "name": "--command-results-max-height",
+          "description": "Maximum height of the scrolling result list"
+        },
+        {
+          "name": "--command-item-min-height",
+          "description": "Minimum height of a result row"
+        },
+        {
+          "name": "--command-item-padding-y",
+          "description": "Vertical padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-padding-x",
+          "description": "Horizontal padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-active-background",
+          "description": "Background of the hovered / active row (defaults to a 10% primary tint)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Command": {
+      "kind": "cssVars",
+      "source": "react/src/components/Command",
+      "vars": [
+        {
+          "name": "--command-search-height",
+          "description": "Minimum height of the search field (defaults to --control-height-md)"
+        },
+        {
+          "name": "--command-results-max-height",
+          "description": "Maximum height of the scrolling result list"
+        },
+        {
+          "name": "--command-item-min-height",
+          "description": "Minimum height of a result row"
+        },
+        {
+          "name": "--command-item-padding-y",
+          "description": "Vertical padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-padding-x",
+          "description": "Horizontal padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-active-background",
+          "description": "Background of the hovered / active row (defaults to a 10% primary tint)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/command/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/command/wc/basic.html": "<minerva-button id=\"open-palette\" variant=\"outline\"\n  >Search commands…</minerva-button\n>\n<minerva-command-dialog\n  id=\"palette\"\n  placeholder=\"Type a command or search…\"\n  empty-text=\"No matching command\"\n></minerva-command-dialog>\n<p id=\"palette-result\" style=\"margin: 8px 0 0\"></p>\n",
+        "apps/docs/src/docs/pages/command/wc/basic.ts": "// `items` is a JS property (CommandItem[]); minerva-select gives the id.\ntype CommandItem = {\n  id: string;\n  title: string;\n  description?: string;\n  group?: string;\n  keywords?: string;\n  disabled?: boolean;\n};\ntype CommandDialog = HTMLElement & { items: CommandItem[]; show(): void };\ntype Select = CustomEvent<{ value: string; item: CommandItem }>;\n\nexport function setup(root: HTMLElement) {\n  const button = root.querySelector<HTMLElement>(\"#open-palette\")!;\n  const palette = root.querySelector<CommandDialog>(\"#palette\")!;\n  const result = root.querySelector<HTMLElement>(\"#palette-result\")!;\n  palette.items = [\n    { id: \"new-file\", title: \"New file\", group: \"File\", keywords: \"create\" },\n    { id: \"open-recent\", title: \"Open recent\", group: \"File\" },\n    {\n      id: \"theme\",\n      title: \"Toggle theme\",\n      description: \"Switch between light and dark\",\n      group: \"View\",\n      keywords: \"dark light\",\n    },\n    { id: \"zoom\", title: \"Reset zoom\", group: \"View\" },\n    { id: \"invite\", title: \"Invite member\", group: \"Team\" },\n    { id: \"billing\", title: \"Billing\", group: \"Team\", disabled: true },\n  ];\n  const onOpen = () => palette.show();\n  const onSelect = (event: Event) => {\n    const { value, item } = (event as Select).detail;\n    result.textContent = `Ran \"${item.title}\" (${value})`;\n  };\n  button.addEventListener(\"click\", onOpen);\n  palette.addEventListener(\"minerva-select\", onSelect);\n  return () => {\n    button.removeEventListener(\"click\", onOpen);\n    palette.removeEventListener(\"minerva-select\", onSelect);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "items 是一个 JS 属性（id、title、description、group、keywords、disabled）。输入即可筛选，方向键移动，Enter 或点击选择；minerva-select 返回所选 id。"
+    },
+    {
+      "id": "custom-filter",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/command/wc/custom-filter.html",
+      "files": {
+        "apps/docs/src/docs/pages/command/wc/custom-filter.html": "<minerva-button id=\"open-ranked\" variant=\"outline\"\n  >Search “invoice”…</minerva-button\n>\n<minerva-command-dialog id=\"ranked\"></minerva-command-dialog>\n<p id=\"ranked-result\" style=\"margin: 8px 0 0\"></p>\n",
+        "apps/docs/src/docs/pages/command/wc/custom-filter.ts": "// `filter` (JS property) receives the enabled items and the trimmed query and\n// returns the results in display order: here, ranked by match quality.\ntype CommandItem = {\n  id: string;\n  title: string;\n  description?: string;\n  group?: string;\n  keywords?: string;\n};\ntype CommandDialog = HTMLElement & {\n  items: CommandItem[];\n  filter: (items: CommandItem[], query: string) => CommandItem[];\n  show(): void;\n};\ntype Select = CustomEvent<{ value: string; item: CommandItem }>;\n\nconst rank = (item: CommandItem, query: string) => {\n  const title = item.title.toLowerCase();\n  if (title.startsWith(query)) return 0;\n  if (title.split(\" \").some((word) => word.startsWith(query))) return 1;\n  return 2;\n};\n\nexport function setup(root: HTMLElement) {\n  const button = root.querySelector<HTMLElement>(\"#open-ranked\")!;\n  const palette = root.querySelector<CommandDialog>(\"#ranked\")!;\n  const result = root.querySelector<HTMLElement>(\"#ranked-result\")!;\n  palette.items = [\n    { id: \"billing\", title: \"Billing history\", keywords: \"invoice\" },\n    { id: \"invoices\", title: \"Invoices\", group: \"Billing\" },\n    { id: \"new-invoice\", title: \"New invoice\", keywords: \"create\" },\n    { id: \"tax\", title: \"Tax settings\", description: \"Invoice numbering\" },\n  ];\n  palette.filter = (items, raw) => {\n    const query = raw.toLowerCase();\n    return items\n      .filter((item) =>\n        [item.title, item.description, item.group, item.keywords]\n          .join(\" \")\n          .toLowerCase()\n          .includes(query),\n      )\n      .sort((a, b) => rank(a, query) - rank(b, query));\n  };\n  const onOpen = () => palette.show();\n  const onSelect = (event: Event) => {\n    result.textContent = `Ran \"${(event as Select).detail.item.title}\"`;\n  };\n  button.addEventListener(\"click\", onOpen);\n  palette.addEventListener(\"minerva-select\", onSelect);\n  return () => {\n    button.removeEventListener(\"click\", onOpen);\n    palette.removeEventListener(\"minerva-select\", onSelect);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "结果排序",
+      "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+    },
+    {
+      "id": "shortcut",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/command/wc/shortcut.html",
+      "files": {
+        "apps/docs/src/docs/pages/command/wc/shortcut.html": "<p style=\"margin: 0\">\n  Press <kbd>Ctrl</kbd> + <kbd>K</kbd> (<kbd>⌘</kbd> + <kbd>K</kbd> on macOS) or\n  <kbd>/</kbd> anywhere on the page.\n</p>\n<minerva-command-dialog\n  id=\"go-to\"\n  shortcut=\"mod+k, /\"\n  label=\"Go to page\"\n  description=\"Jump to any page of the documentation.\"\n  max-results=\"5\"\n></minerva-command-dialog>\n<p id=\"go-to-result\" style=\"margin: 8px 0 0\"></p>\n",
+        "apps/docs/src/docs/pages/command/wc/shortcut.ts": "// `shortcut` registers global keys (\"mod\" = Ctrl, or ⌘ on macOS) while the\n// element is connected; max-results caps the visible results.\ntype CommandItem = { id: string; title: string; group?: string };\ntype CommandDialog = HTMLElement & { items: CommandItem[] };\ntype Select = CustomEvent<{ value: string; item: CommandItem }>;\ntype OpenChange = CustomEvent<{ open: boolean; reason: string }>;\n\nconst pages = [\"Button\", \"Modal\", \"Drawer\", \"Menu\", \"Popover\", \"Toast\"];\n\nexport function setup(root: HTMLElement) {\n  const palette = root.querySelector<CommandDialog>(\"#go-to\")!;\n  const result = root.querySelector<HTMLElement>(\"#go-to-result\")!;\n  palette.items = [\n    ...pages.map((title) => ({\n      id: title.toLowerCase(),\n      title,\n      group: \"Components\",\n    })),\n    { id: \"install\", title: \"Installation\", group: \"Guides\" },\n    { id: \"theming\", title: \"Theming\", group: \"Guides\" },\n  ];\n  const onChange = (event: Event) => {\n    const { open, reason } = (event as OpenChange).detail;\n    if (open) result.textContent = `Opened by ${reason}`;\n  };\n  const onSelect = (event: Event) =>\n    (result.textContent = `Go to ${(event as Select).detail.item.title}`);\n  palette.addEventListener(\"minerva-open-change\", onChange);\n  palette.addEventListener(\"minerva-select\", onSelect);\n  return () => {\n    palette.removeEventListener(\"minerva-open-change\", onChange);\n    palette.removeEventListener(\"minerva-select\", onSelect);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "全局快捷键",
+      "description": "shortcut 接受逗号分隔的列表（\"mod+k, /\"；mod 即 Ctrl，macOS 上为 ⌘），可在页面任意位置打开面板，在输入框中输入时除外。max-results 限制结果数量。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Command 命令面板",
+      "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "受控的命令面板；onSelect 收到选中的项目后面板关闭。"
+        },
+        "shortcut": {
+          "title": "全局快捷键",
+          "description": "shortcut=\"mod+k\" 在 macOS 上用 Cmd+K、其他系统用 Ctrl+K 打开面板；shortcutLabel 显示提示。"
+        },
+        "custom-filter": {
+          "title": "结果排序",
+          "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+        },
+        "site-search": {
+          "title": "站点搜索",
+          "description": "文档站的搜索由 Button 和 CommandDialog 组合：输入筛选、分组、无结果反馈、键盘选择和关闭后焦点恢复。此示例使用 Ctrl+Shift+K，站点搜索使用 Cmd/Ctrl+K；在实际项目中用 onSelect 接入路由。"
+        }
+      },
+      "api": {
+        "CommandDialogProps": {
+          "open": "受控的打开状态；不传（undefined）时为非受控",
+          "defaultOpen": "非受控时的初始打开状态",
+          "onOpenChange": "请求改变打开状态时调用（快捷键、选择、Escape、点击遮罩）",
+          "items": "要搜索的命令；禁用的项目不会显示",
+          "onSelect": "以选中的项目调用（点击或回车），随后面板关闭",
+          "title": "对话框标题；默认为本地化的“命令面板”",
+          "description": "面板的可访问描述；默认为本地化提示",
+          "placeholder": "搜索框占位文本；默认为本地化提示",
+          "emptyText": "没有匹配结果时显示的内容",
+          "shortcutLabel": "以 <kbd> 显示在标题旁的快捷键提示，例如“⌘K”",
+          "shortcut": "打开面板的全局快捷键，例如“mod+k”；修饰键：mod、ctrl、meta/cmd、shift、alt/option",
+          "maxResults": "最多显示的结果数",
+          "filter": "自定义搜索，例如按匹配质量排序：接收启用的条目和去除首尾空白的查询（不为空），按显示顺序返回匹配的条目（之后再受 maxResults 限制）；默认是不区分大小写的子串匹配，并保持 items 的顺序",
+          "resultsLabel": "结果列表的可访问标签",
+          "enterLabel": "显示在搜索框末尾的按键提示；默认为本地化的“Enter”",
+          "className": "对话框面板的额外类名"
+        },
+        "CommandItem": {
+          "id": "唯一 id，通过 onSelect 传回",
+          "title": "主标签",
+          "description": "标题下方的次要文字",
+          "group": "分组名，以徽标显示并参与搜索",
+          "keywords": "额外的搜索词（不显示）",
+          "disabled": "从结果中隐藏该项目"
+        }
+      },
+      "cssVars": {
+        "--command-search-height": "搜索框的最小高度（默认 --control-height-md）",
+        "--command-results-max-height": "可滚动结果列表的最大高度",
+        "--command-item-min-height": "结果行的最小高度",
+        "--command-item-padding-y": "结果行的垂直内边距（跟随密度的行内边距）",
+        "--command-item-padding-x": "结果行的水平内边距（跟随密度的行内边距）",
+        "--command-item-active-background": "悬停 / 激活行的背景（默认 10% 主色调）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "items 是一个 JS 属性（id、title、description、group、keywords、disabled）。输入即可筛选，方向键移动，Enter 或点击选择；minerva-select 返回所选 id。"
+          },
+          "shortcut": {
+            "title": "全局快捷键",
+            "description": "shortcut 接受逗号分隔的列表（\"mod+k, /\"；mod 即 Ctrl，macOS 上为 ⌘），可在页面任意位置打开面板，在输入框中输入时除外。max-results 限制结果数量。"
+          },
+          "custom-filter": {
+            "title": "结果排序",
+            "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+          }
+        },
+        "minerva-command-dialog": {
+          "props": {
+            "label": "对话框标题（默认：本地化的「命令面板」）。"
+          },
+          "events": {
+            "minerva-select": "选择了一个命令（detail: { value, item }，value 为该项的 id）；随后面板关闭。",
+            "minerva-open-change": "用户请求打开（快捷键）/ 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+            "minerva-after-open": "面板已打开，焦点已移至搜索框。",
+            "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+          },
+          "cssVars": {
+            "--modal-width": "面板宽度（默认取决于尺寸，并受视口限制）。",
+            "--modal-max-height": "面板最大高度（超出时主体滚动）。",
+            "--modal-padding": "标题、描述、主体和底部的水平内边距。",
+            "--modal-radius": "面板圆角（默认 --radius-xl）。",
+            "--modal-shadow": "面板阴影（默认 --shadow-xl）。",
+            "--modal-background": "面板背景。",
+            "--modal-z-index": "面板层级（默认 --z-modal）。"
+          },
+          "methods": {
+            "show": "打开命令面板。",
+            "hide": "关闭命令面板。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

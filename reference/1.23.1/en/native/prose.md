@@ -1,0 +1,154 @@
+# Prose
+
+Unframed, theme-aware typography for semantic HTML such as articles, rendered Markdown and rich-text editors. The same rules ship as a Sass mixin: @use "minerva-design/prose.scss" as typography; then @include typography.prose; on your own selector.
+
+Package: minerva-design@1.23.1
+
+Renderer: native
+
+Locale: en
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.23.1",
+  "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+  "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.23.1/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## Prose
+
+Support: beta
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/native",
+  "exports": [
+    "Prose"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "size",
+    "source": "packages/native/src/components/Display/index.tsx",
+    "kind": "enum",
+    "values": [
+      "large",
+      "medium",
+      "small"
+    ],
+    "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+    "typeRef": "type:8d5b6882dc615b54818b",
+    "required": false
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "children"
+  }
+]
+```
+
+## API
+
+```json
+{
+  "native:ProseProps": {
+    "source": "native/src/components/Display/index.tsx",
+    "kind": "interface",
+    "extends": [
+      "TextProps"
+    ],
+    "props": [
+      {
+        "name": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "required": false
+      }
+    ]
+  }
+}
+```
+
+## CSS variables
+
+```json
+{
+  "css:Prose": {
+    "kind": "cssVars",
+    "source": "react/src/components/Prose",
+    "vars": [
+      {
+        "name": "--prose-font-size",
+        "description": "Base font size of the body text"
+      },
+      {
+        "name": "--prose-border-color",
+        "description": "Color of the blockquote, table, code block and rule borders"
+      },
+      {
+        "name": "--prose-code-bg",
+        "description": "Background color of inline code and table headers"
+      },
+      {
+        "name": "--prose-pre-bg",
+        "description": "Background color of code blocks"
+      },
+      {
+        "name": "--prose-radius",
+        "description": "Corner radius of code blocks (defaults to --radius-sm)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Basic usage
+
+Headings, paragraphs, links, lists, quotes and code share the theme tokens. Prose does not sanitize HTML.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/prose/native/basic.tsx
+
+```tsx
+import { Prose } from "minerva-design/native";
+export default function Basic() {
+  return (
+    <Prose>
+      Native text content with selectable text, consistent line spacing and
+      theme-aware typography.
+    </Prose>
+  );
+}
+
+```

@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "uni",
+  "page": "steps",
+  "title": "Steps",
+  "description": "Shows the stages of a workflow and lets the user move between them.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Steps",
+      "support": {
+        "status": "beta",
+        "notes": "React value/defaultValue identities, current/completed states, item disabled and readOnly defaults; label/icon slots. Uni also accepts legacy current/title plus direction, error status and string icons. Native list/view semantics replace DOM ol/ref targets. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "React value/defaultValue identities, current/completed states, item disabled and readOnly defaults; label/icon slots. Uni also accepts legacy current/title plus direction, error status and string icons. Native list/view semantics replace DOM ol/ref targets. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "Steps"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "typeText": "Item[] | undefined",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "modelValue",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "current",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "direction",
+            "typeText": "\"vertical\" | \"horizontal\" | undefined",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "[value: string | number]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string | number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:modelValue",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "icon",
+            "typeText": "{ item: Item; index: number; current: boolean; }"
+          },
+          {
+            "name": "label",
+            "typeText": "{ item: Item; index: number; }"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Steps": {
+      "kind": "cssVars",
+      "source": "react/src/components/Steps",
+      "vars": [
+        {
+          "name": "--steps-gap",
+          "description": "Space between the steps (row and column gap)"
+        },
+        {
+          "name": "--steps-font-size",
+          "description": "Font size of the labels"
+        },
+        {
+          "name": "--steps-indicator-size",
+          "description": "Diameter of the numbered indicator"
+        },
+        {
+          "name": "--steps-accent-color",
+          "description": "Color of the current / completed indicators (defaults to --primary-color)"
+        },
+        {
+          "name": "--steps-current-background",
+          "description": "Background of the current step's indicator"
+        },
+        {
+          "name": "--steps-connector-color",
+          "description": "Color of the line joining the upcoming steps (defaults to --border-color)"
+        },
+        {
+          "name": "--steps-connector-complete-color",
+          "description": "Color of the line after a completed step (defaults to the accent color)"
+        },
+        {
+          "name": "--steps-connector-min-width",
+          "description": "Minimum length of the line joining two steps"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Steps",
+      "description": "Shows the stages of a workflow and lets the user move between them.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Review is initially selected. Choose Draft to go back; Publish is disabled."
+        },
+        "read-only": {
+          "title": "Read-only progress",
+          "description": "Without onChange the steps are a read-only progress indicator: a plain ordered list (no buttons) whose current item has aria-current=\"step\"."
+        },
+        "styling": {
+          "title": "Styling",
+          "description": "Completed steps show a check mark on a solid disc, the current one a soft halo, and the connectors fill in as steps complete. --steps-accent-color recolors them, --steps-connector-min-width / --steps-connector-color tune the lines."
+        }
+      },
+      "api": {
+        "StepsProps": {
+          "items": "Steps, in order",
+          "value": "Value of the current step (controlled; pair with onChange)",
+          "defaultValue": "Value of the initial current step (uncontrolled)",
+          "onChange": "Called with the value of the step the user navigates to. Steps only report navigation: validation and workflow transitions belong to the caller",
+          "readOnly": "Renders the steps as a read-only progress indicator: plain list items without buttons, the current one marked aria-current=\"step\"",
+          "aria-label": "Accessible label of the list",
+          "className": "Additional class name",
+          "ref": "Ref to the root <ol> element"
+        },
+        "StepsItem": {
+          "value": "Unique value of the step, matched against the Steps value",
+          "label": "Visible label of the step",
+          "disabled": "Prevents navigating to this step (e.g. a terminal state that is not reached yet)"
+        }
+      },
+      "cssVars": {
+        "--steps-gap": "Space between the steps (row and column gap)",
+        "--steps-font-size": "Font size of the labels",
+        "--steps-indicator-size": "Diameter of the numbered indicator",
+        "--steps-accent-color": "Color of the current / completed indicators (defaults to --primary-color)",
+        "--steps-current-background": "Background of the current step's indicator",
+        "--steps-connector-color": "Color of the line joining the upcoming steps (defaults to --border-color)",
+        "--steps-connector-complete-color": "Color of the line after a completed step (defaults to the accent color)",
+        "--steps-connector-min-width": "Minimum length of the line joining two steps"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Read-only progress",
+            "description": "Steps come from the items property; earlier steps are complete and the current one has aria-current=\"step\"."
+          },
+          "navigable": {
+            "title": "Navigable wizard",
+            "description": "navigable turns each step into a button. minerva-change is cancelable: the caller validates the transition (accept the terms to leave the first step)."
+          },
+          "styling": {
+            "title": "Styling",
+            "description": "CSS variables set the accent color, indicator size and gap; ::part(label) styles the labels."
+          }
+        },
+        "minerva-steps": {
+          "props": {
+            "navigable": "Renders each step as a button the user can navigate with (default: read-only)."
+          },
+          "events": {
+            "minerva-change": "The user navigated to a step (detail: { value }); cancelable: preventDefault() keeps the current step."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Review is initially selected. Choose Draft to go back; Publish is disabled."
+          },
+          "vertical": {
+            "title": "Vertical layout",
+            "description": "Vertical layout using Steps; the preview follows the selected site theme and palette."
+          }
+        }
+      }
+    }
+  }
+}

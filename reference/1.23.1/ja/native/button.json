@@ -1,0 +1,663 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "button",
+  "title": "Button ボタン",
+  "description": "フォーム送信やダイアログを開くなど、アクションやイベントを実行します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Button",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Button"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "NativeColor | undefined",
+            "typeRef": "type:c1c4fb1afcf9f8ec5869",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the button"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "ghost",
+              "link",
+              "outline",
+              "solid"
+            ],
+            "typeText": "ButtonVariant | undefined",
+            "typeRef": "type:1e3b5884a3a7673a4553",
+            "default": "solid",
+            "required": false,
+            "description": "Visual style: `solid` (filled), `outline` (border only), `ghost` (transparent, tinted while pressed) or `link` (text link look)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small",
+              "xlarge",
+              "xsmall"
+            ],
+            "typeText": "ButtonSize | undefined",
+            "typeRef": "type:4f1445f517e28a7afd60",
+            "default": "medium",
+            "required": false,
+            "description": "Button size (heights from the `--control-height-*` tokens)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the button"
+          },
+          {
+            "name": "loading",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a spinner and ignores presses (`accessibilityState.busy`)"
+          },
+          {
+            "name": "loadingText",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Text shown instead of the label while loading"
+          },
+          {
+            "name": "startIcon",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Element rendered before the label"
+          },
+          {
+            "name": "endIcon",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Element rendered after the label"
+          },
+          {
+            "name": "fullWidth",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stretches the button to the full width of its container"
+          },
+          {
+            "name": "active",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Renders the button in its pressed / active state"
+          },
+          {
+            "name": "shape",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "rounded",
+              "square"
+            ],
+            "typeText": "\"square\" | \"rounded\" | \"circle\" | undefined",
+            "typeRef": "type:bc311df462bffff00236",
+            "default": "rounded",
+            "required": false,
+            "description": "Preset shape: `rounded` (theme radius), `square` (no radius) or `circle` (pill; a square button when the label is an icon)"
+          },
+          {
+            "name": "textStyle",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the label text"
+          }
+        ],
+        "events": [
+          {
+            "name": "onPress",
+            "source": "packages/native/src/components/Button/Button.tsx",
+            "kind": "function",
+            "typeText": "((event: GestureResponderEvent) => void) | undefined",
+            "typeRef": "type:79e82a664defccdac2e6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GestureResponderEvent",
+                "typeRef": "type:2a25eb9466bc75075bdf"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called on press (not while disabled or loading)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:ButtonProps": {
+      "source": "native/src/components/Button/Button.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+      ],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label: a string (rendered as Text) or any element"
+        },
+        {
+          "name": "color",
+          "type": "NativeColor",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the button"
+        },
+        {
+          "name": "variant",
+          "type": "ButtonVariant",
+          "required": false,
+          "default": "\"solid\"",
+          "description": "Visual style: `solid` (filled), `outline` (border only), `ghost` (transparent, tinted while pressed) or `link` (text link look)"
+        },
+        {
+          "name": "size",
+          "type": "ButtonSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Button size (heights from the `--control-height-*` tokens)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the button"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a spinner and ignores presses (`accessibilityState.busy`)"
+        },
+        {
+          "name": "loadingText",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Text shown instead of the label while loading"
+        },
+        {
+          "name": "startIcon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Element rendered before the label"
+        },
+        {
+          "name": "endIcon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Element rendered after the label"
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Stretches the button to the full width of its container"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Renders the button in its pressed / active state"
+        },
+        {
+          "name": "shape",
+          "type": "\"square\" | \"rounded\" | \"circle\"",
+          "required": false,
+          "default": "\"rounded\"",
+          "description": "Preset shape: `rounded` (theme radius), `square` (no radius) or `circle` (pill; a square button when the label is an icon)"
+        },
+        {
+          "name": "onPress",
+          "type": "(event: GestureResponderEvent) => void",
+          "required": false,
+          "description": "Called on press (not while disabled or loading)"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the pressable container"
+        },
+        {
+          "name": "textStyle",
+          "type": "StyleProp<TextStyle>",
+          "required": false,
+          "description": "Style of the label text"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Button": {
+      "kind": "cssVars",
+      "source": "react/src/components/Button",
+      "vars": [
+        {
+          "name": "--button-height",
+          "description": "Minimum height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--button-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--button-radius",
+          "description": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)"
+        },
+        {
+          "name": "--button-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--button-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--button-gap",
+          "description": "Space between the icons and the label"
+        },
+        {
+          "name": "--button-label-white-space",
+          "description": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/basic.tsx": "import { useState } from \"react\";\nimport { Text } from \"react-native\";\nimport { Button, HStack, useTheme } from \"minerva-design/native\";\n\nexport default function Basic() {\n  const { colors } = useTheme();\n  const [count, setCount] = useState(0);\n  return (\n    <HStack gap={3} wrap align=\"center\">\n      <Button onPress={() => setCount((c) => c + 1)}>Click me</Button>\n      <Text role=\"status\" style={{ color: colors[\"text-secondary-color\"] }}>\n        Clicked {count} times\n      </Text>\n    </HStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/colors.tsx": "import { View } from \"react-native\";\nimport { Button } from \"minerva-design/native\";\n\nexport default function ColorsDemo() {\n  return (\n    <View style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}>\n      <Button color=\"primary\">Primary</Button>\n      <Button color=\"neutral\">Neutral</Button>\n      <Button color=\"success\">Success</Button>\n      <Button color=\"warning\">Warning</Button>\n      <Button color=\"danger\">Danger</Button>\n      <Button color=\"info\">Info</Button>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "カラー",
+      "description": "color でセマンティックカラーを指定します：primary（デフォルト）、neutral、success、warning、danger、info。"
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/form.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/form.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Button, Input, useTheme } from \"minerva-design/native\";\n\nexport default function FormDemo() {\n  const { colors } = useTheme();\n  const [title, setTitle] = useState(\"Draft\");\n  const [log, setLog] = useState(\"Nothing yet\");\n  return (\n    <View style={{ gap: 8 }}>\n      <Input accessibilityLabel=\"Title\" value={title} onChange={setTitle} />\n      <View style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}>\n        <Button\n          color=\"neutral\"\n          variant=\"outline\"\n          onPress={() => setLog(\"Preview opened (form not submitted)\")}\n        >\n          Preview\n        </Button>\n        <Button\n          color=\"neutral\"\n          variant=\"ghost\"\n          onPress={() => {\n            setTitle(\"Draft\");\n            setLog(\"Reset\");\n          }}\n        >\n          Reset\n        </Button>\n        <Button onPress={() => setLog(`Submitted \"${title}\"`)}>Save</Button>\n      </View>\n      <Text role=\"status\" style={{ color: colors[\"text-color\"] }}>\n        {log}\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "フォーム内の type",
+      "description": "Button の既定は type=\"button\" なので、<form> 内のボタン（プレビュー、行の追加、ダイアログを開くなど）が誤ってフォームを送信することはありません。送信ボタンには type=\"submit\"、リセットには type=\"reset\" を明示してください。"
+    },
+    {
+      "id": "icons-loading",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/icons-loading.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/icons-loading.tsx": "import { View, Text } from \"react-native\";\nimport { useState } from \"react\";\nimport { Button } from \"minerva-design/native\";\n\nexport default function IconsLoadingDemo() {\n  const [saving, setSaving] = useState(false);\n  const save = () => {\n    setSaving(true);\n    setTimeout(() => setSaving(false), 1500);\n  };\n\n  return (\n    <View style={{ gap: 12, maxWidth: 320 }}>\n      <Button startIcon={<Text accessible={false}>+</Text>}>Add item</Button>\n      <Button variant=\"outline\" endIcon={<Text accessible={false}>→</Text>}>\n        Continue\n      </Button>\n      <Button\n        color=\"success\"\n        fullWidth\n        loading={saving}\n        loadingText=\"Saving...\"\n        onPress={save}\n      >\n        Save\n      </Button>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "アイコン・読み込みテキスト・全幅",
+      "description": "startIcon / endIcon でラベルの前後にアイコンを表示し、loadingText は読み込み中に内容を置き換え、fullWidth でボタンを全幅にします。"
+    },
+    {
+      "id": "shapes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/shapes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/shapes.tsx": "import { View } from \"react-native\";\nimport { Button } from \"minerva-design/native\";\n\nexport default function ShapesDemo() {\n  return (\n    <View style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}>\n      <Button shape=\"square\">Square</Button>\n      <Button shape=\"rounded\">Rounded</Button>\n      <Button shape=\"circle\" accessibilityLabel=\"Add\">\n        +\n      </Button>\n      <Button style={{ borderRadius: 0 }}>No radius</Button>\n      <Button style={{ borderRadius: 12 }}>12px radius</Button>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "形状と角丸",
+      "description": "プリセットの形状、または borderRadius のプリセット / ピクセル値で角丸を指定します。"
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/sizes.tsx": "import { View } from \"react-native\";\nimport { Button } from \"minerva-design/native\";\n\nexport default function SizesDemo() {\n  return (\n    <View style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}>\n      <Button size=\"xsmall\">XSmall</Button>\n      <Button size=\"small\">Small</Button>\n      <Button size=\"medium\">Medium</Button>\n      <Button size=\"large\">Large</Button>\n      <Button size=\"xlarge\">XLarge</Button>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "サイズ",
+      "description": "xsmall、small、medium（デフォルト）、large、xlarge の 5 種類。"
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/states.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/states.tsx": "import { useEffect, useRef, useState } from \"react\";\nimport { View } from \"react-native\";\nimport { Button } from \"minerva-design/native\";\nexport default function States() {\n  const [saving, setSaving] = useState(false);\n  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);\n  useEffect(() => () => clearTimeout(timer.current), []);\n  function save() {\n    setSaving(true);\n    timer.current = setTimeout(() => setSaving(false), 1500);\n  }\n  return (\n    <View style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}>\n      <Button loading={saving} onPress={save}>\n        {saving ? \"Saving…\" : \"Save\"}\n      </Button>\n      <Button disabled>Disabled</Button>\n      <Button active>Active</Button>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "状態",
+      "description": "読み込み中・無効・アクティブ状態。読み込み中は処理の実行中にクリック（およびフォーム送信）をブロックしますが、キーボードフォーカスはボタンに残ります。"
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/variants.tsx": "import { View } from \"react-native\";\nimport { Button } from \"minerva-design/native\";\n\nconst variants = [\"solid\", \"outline\", \"ghost\", \"link\"] as const;\n\nexport default function VariantsDemo() {\n  return (\n    <View style={{ gap: 12 }}>\n      {([\"primary\", \"neutral\", \"danger\"] as const).map((color) => (\n        <View\n          key={color}\n          style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}\n        >\n          {variants.map((variant) => (\n            <Button key={variant} color={color} variant={variant}>\n              {variant}\n            </Button>\n          ))}\n        </View>\n      ))}\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "バリアント",
+      "description": "variant で見た目のスタイルを指定します：solid（デフォルト）、outline、ghost、link。どの色とも組み合わせられます。"
+    },
+    {
+      "id": "with-icon",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/native/with-icon.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/native/with-icon.tsx": "import { View, Text } from \"react-native\";\nimport { Button } from \"minerva-design/native\";\n\nexport default function WithIconDemo() {\n  return (\n    <View style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}>\n      <Button startIcon={<Text accessible={false}>+</Text>}>Add</Button>\n      <Button color=\"danger\" startIcon={<Text accessible={false}>↻</Text>}>\n        Retry\n      </Button>\n      <Button\n        color=\"neutral\"\n        variant=\"ghost\"\n        startIcon={<Text accessible={false}>←</Text>}\n      >\n        Back\n      </Button>\n      <Button color=\"danger\" variant=\"outline\" accessibilityLabel=\"Delete item\">\n        <Text accessible={false}>×</Text>\n      </Button>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "アイコン付き",
+      "description": "startIcon / endIcon でテキストとアイコンを組み合わせます（例：danger の再試行ボタン、neutral の ghost の戻るボタン）。アイコンのみのボタンには aria-label を指定してください。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Button ボタン",
+      "description": "フォーム送信やダイアログを開くなど、アクションやイベントを実行します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でセマンティックカラーを指定します：primary（デフォルト）、neutral、success、warning、danger、info。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを指定します：solid（デフォルト）、outline、ghost、link。どの色とも組み合わせられます。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "xsmall、small、medium（デフォルト）、large、xlarge の 5 種類。"
+        },
+        "shapes": {
+          "title": "形状と角丸",
+          "description": "プリセットの形状、または borderRadius のプリセット / ピクセル値で角丸を指定します。"
+        },
+        "states": {
+          "title": "状態",
+          "description": "読み込み中・無効・アクティブ状態。読み込み中は処理の実行中にクリック（およびフォーム送信）をブロックしますが、キーボードフォーカスはボタンに残ります。"
+        },
+        "with-icon": {
+          "title": "アイコン付き",
+          "description": "startIcon / endIcon でテキストとアイコンを組み合わせます（例：danger の再試行ボタン、neutral の ghost の戻るボタン）。アイコンのみのボタンには aria-label を指定してください。"
+        },
+        "icons-loading": {
+          "title": "アイコン・読み込みテキスト・全幅",
+          "description": "startIcon / endIcon でラベルの前後にアイコンを表示し、loadingText は読み込み中に内容を置き換え、fullWidth でボタンを全幅にします。"
+        },
+        "form": {
+          "title": "フォーム内の type",
+          "description": "Button の既定は type=\"button\" なので、<form> 内のボタン（プレビュー、行の追加、ダイアログを開くなど）が誤ってフォームを送信することはありません。送信ボタンには type=\"submit\"、リセットには type=\"reset\" を明示してください。"
+        }
+      },
+      "api": {
+        "ButtonProps": {
+          "type": "ネイティブのボタン種別。既定は \"button\"（HTML の既定 \"submit\" とは異なる）なので、フォーム内の Button が誤って送信することはありません。送信ボタンには type=\"submit\"、リセットボタンには \"reset\" を使います",
+          "onClick": "クリック時に呼ばれます（無効時は呼ばれません）",
+          "children": "ボタンの内容",
+          "className": "追加のクラス名",
+          "color": "ボタンのセマンティックカラー",
+          "variant": "見た目のスタイル：solid（塗りつぶし）、outline（枠線のみ）、ghost（ホバーまで透明）、link（テキストリンク風）",
+          "size": "ボタンのサイズ",
+          "aria-label": "アクセシブルなラベル。アイコンのみのボタンでは必須",
+          "disabled": "ボタンを無効にします",
+          "loading": "スピナーを表示し、実行をブロックします（aria-busy / aria-disabled）。ボタンはフォーカス可能なままなので、キーボードフォーカスが失われません",
+          "active": "押下/アクティブ状態で表示します",
+          "shape": "ボタンのプリセット形状",
+          "borderRadius": "角丸：プリセットまたはピクセル数。省略時はテーマの角丸（--radius-md）を使用します",
+          "style": "インラインスタイル",
+          "ref": "<button> 要素への ref",
+          "loadingText": "読み込み中に内容（とアイコン）の代わりに表示するテキスト",
+          "startIcon": "内容の前に表示するアイコン",
+          "endIcon": "内容の後に表示するアイコン",
+          "fullWidth": "ボタンをコンテナの全幅に広げます"
+        }
+      },
+      "cssVars": {
+        "--button-height": "最小の高さ（全サイズ。既定値は現在の密度におけるサイズ別のコントロール高さ）",
+        "--button-padding-x": "左右のパディング（全サイズ）",
+        "--button-radius": "角丸（既定は --radius-md。shape / borderRadius プロパティが優先）",
+        "--button-font-size": "フォントサイズ（全サイズ）",
+        "--button-font-weight": "フォントの太さ",
+        "--button-gap": "アイコンとラベルの間隔",
+        "--button-label-white-space": "ラベルの white-space：nowrap（既定、省略表示）または normal（折り返し）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+          },
+          "colors-variants": {
+            "title": "色とバリアント",
+            "description": "color は意味的な色（共通の ColorScheme）、variant は見た目のスタイルを指定します。"
+          },
+          "sizes-shapes": {
+            "title": "サイズと形",
+            "description": "5 つのサイズと 3 つの形。アイコンのみの円形ボタンには aria-label が必要で、内部のボタンに転送されます。"
+          },
+          "states": {
+            "title": "状態・アイコン・読み込み",
+            "description": "start / end スロットにアイコン、loading スロットは読み込み中にラベルを置き換えます。「保存」をクリックすると読み込み状態を確認できます。"
+          },
+          "form": {
+            "title": "フォーム内",
+            "description": "この要素はフォーム関連要素です。type=\"submit\" はフォームを検証して送信し、type=\"reset\" はリセットします。"
+          }
+        },
+        "minerva-button": {
+          "props": {
+            "form": "ボタンが属するフォーム（読み取り専用）。"
+          },
+          "slots": {
+            "default": "ラベル。",
+            "start": "ラベルの前のアイコン。",
+            "end": "ラベルの後のアイコン。",
+            "loading": "読み込み中にラベルの代わりに表示するテキスト。"
+          },
+          "methods": {
+            "focus": "内部のボタンにフォーカスします。",
+            "blur": "内部のボタンからフォーカスを外します。",
+            "click": "内部のボタンをクリックします（無効または読み込み中は無視）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+          },
+          "colors": {
+            "title": "カラー",
+            "description": "color でセマンティックカラーを指定します：primary（デフォルト）、neutral、success、warning、danger、info。"
+          },
+          "variants": {
+            "title": "バリアント",
+            "description": "variant で見た目のスタイルを指定します：solid（デフォルト）、outline、ghost、link。どの色とも組み合わせられます。"
+          },
+          "sizes": {
+            "title": "サイズ",
+            "description": "xsmall、small、medium（デフォルト）、large、xlarge の 5 種類。"
+          },
+          "shapes": {
+            "title": "形状と角丸",
+            "description": "プリセットの形状、または borderRadius のプリセット / ピクセル値で角丸を指定します。"
+          },
+          "states": {
+            "title": "状態",
+            "description": "読み込み中・無効・アクティブ状態。読み込み中は処理の実行中にクリック（およびフォーム送信）をブロックしますが、キーボードフォーカスはボタンに残ります。"
+          },
+          "with-icon": {
+            "title": "アイコン付き",
+            "description": "startIcon / endIcon でテキストとアイコンを組み合わせます（例：danger の再試行ボタン、neutral の ghost の戻るボタン）。アイコンのみのボタンには aria-label を指定してください。"
+          },
+          "icons-loading": {
+            "title": "アイコン・読み込みテキスト・全幅",
+            "description": "startIcon / endIcon でラベルの前後にアイコンを表示し、loadingText は読み込み中に内容を置き換え、fullWidth でボタンを全幅にします。"
+          },
+          "form": {
+            "title": "フォーム内の type",
+            "description": "下書きをプレビュー、リセット、保存します。ネイティブボタンはブラウザーのフォーム送信ではなく onPress を使います。"
+          }
+        }
+      },
+      "vue": {
+        "demos": {
+          "basic": {
+            "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+          }
+        }
+      }
+    }
+  }
+}

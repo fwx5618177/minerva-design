@@ -1,0 +1,618 @@
+# SegmentedControl
+
+Un sélecteur segmenté à choix unique pour les modes et les filtres, avec un curseur qui glisse sous le segment sélectionné. Utilisez Tabs lorsque chaque choix a son propre panneau de contenu.
+
+Package: minerva-design@1.23.1
+
+Renderer: react
+
+Locale: fr
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.23.1",
+  "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+  "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.23.1/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## SegmentedControl
+
+Support: stable
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design",
+  "exports": [
+    "SegmentedControl"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "options",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "array",
+    "typeText": "readonly SegmentedControlOption<NoInfer<T>>[]",
+    "typeRef": "type:a602c82e323b3248e0aa",
+    "required": true,
+    "description": "The segments: strings or option objects"
+  },
+  {
+    "name": "value",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "object",
+    "typeText": "NoInfer<T> | undefined",
+    "typeRef": "type:0a3cd3e425b13b6714df",
+    "required": false,
+    "description": "Selected value (controlled; pair with onChange)"
+  },
+  {
+    "name": "defaultValue",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "object",
+    "typeText": "NoInfer<T> | undefined",
+    "typeRef": "type:0a3cd3e425b13b6714df",
+    "required": false,
+    "description": "Initially selected value (uncontrolled)"
+  },
+  {
+    "name": "size",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "enum",
+    "values": [
+      "large",
+      "medium",
+      "small"
+    ],
+    "typeText": "SegmentedControlSize | undefined",
+    "typeRef": "type:aba180377d3532dc0a95",
+    "default": "medium",
+    "required": false,
+    "description": "Segment density"
+  },
+  {
+    "name": "color",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "enum",
+    "values": [
+      "neutral",
+      "primary"
+    ],
+    "typeText": "SegmentedControlColor | undefined",
+    "typeRef": "type:ba97261bfc73d42d6181",
+    "default": "neutral",
+    "required": false,
+    "description": "Thumb color"
+  },
+  {
+    "name": "fullWidth",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false,
+    "description": "Fills the width of the container (the segments always share the width equally)"
+  },
+  {
+    "name": "disabled",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false,
+    "description": "Blocks every segment"
+  },
+  {
+    "name": "name",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Name of a hidden input carrying the value in a form"
+  },
+  {
+    "name": "aria-label",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Accessible label of the group"
+  },
+  {
+    "name": "aria-labelledby",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Id of the element labelling the group"
+  },
+  {
+    "name": "id",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Root id"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "onChange",
+    "source": "packages/react/src/components/SegmentedControl/types.ts",
+    "kind": "function",
+    "typeText": "((value: T) => void) | undefined",
+    "typeRef": "type:6bdc65bbd537e289b41a",
+    "parameters": [
+      {
+        "name": "value",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "T",
+        "typeRef": "type:ef890c1cb48dd466d41d"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called with the selected value"
+  }
+]
+```
+
+### bindings
+
+```json
+[
+  {
+    "prop": "value",
+    "event": "onChange",
+    "syntax": "value={value} onChange={handler}"
+  }
+]
+```
+
+## API
+
+```json
+{
+  "SegmentedControlProps": {
+    "source": "react/src/components/SegmentedControl/types.ts",
+    "description": "Props of the SegmentedControl component: a single-choice segmented switch for modes and filters (use Tabs when each choice has a content panel). The value type `T` comes from `onChange` or an explicit type argument (`<SegmentedControl<View> ...>`), never from `options` / `value` / `defaultValue`, so literal values and mixed options do not narrow it.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "options",
+        "type": "readonly SegmentedControlOption<NoInfer<T>>[]",
+        "required": true,
+        "description": "The segments: strings or option objects"
+      },
+      {
+        "name": "value",
+        "type": "NoInfer<T>",
+        "required": false,
+        "description": "Selected value (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "NoInfer<T>",
+        "required": false,
+        "description": "Initially selected value (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: T) => void",
+        "required": false,
+        "description": "Called with the selected value"
+      },
+      {
+        "name": "size",
+        "type": "SegmentedControlSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Segment density"
+      },
+      {
+        "name": "color",
+        "type": "SegmentedControlColor",
+        "required": false,
+        "default": "\"neutral\"",
+        "description": "Thumb color"
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Fills the width of the container (the segments always share the width equally)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks every segment"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of a hidden input carrying the value in a form"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the group"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Id of the element labelling the group"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Root id"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> (role=\"radiogroup\")"
+      }
+    ]
+  },
+  "SegmentedControlOptionObject": {
+    "source": "react/src/components/SegmentedControl/types.ts",
+    "description": "A segment of a SegmentedControl",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "T",
+        "required": true,
+        "description": "Value of the segment"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the value (unless an icon is given)",
+        "description": "Visible label"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Icon shown before the label (alone for an icon-only segment)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks this segment"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name; required for an icon-only segment"
+      }
+    ]
+  }
+}
+```
+
+## CSS variables
+
+```json
+{
+  "css:SegmentedControl": {
+    "kind": "cssVars",
+    "source": "react/src/components/SegmentedControl",
+    "vars": [
+      {
+        "name": "--segmented-control-height",
+        "description": "Height of the control (defaults to the density's control height)"
+      },
+      {
+        "name": "--segmented-control-padding",
+        "description": "Space between the track and the segments (defaults to 2px)"
+      },
+      {
+        "name": "--segmented-control-radius",
+        "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+      },
+      {
+        "name": "--segmented-control-background",
+        "description": "Background of the track (defaults to --surface-muted-color)"
+      },
+      {
+        "name": "--segmented-control-color",
+        "description": "Text color of the unselected segments"
+      },
+      {
+        "name": "--segmented-control-item-padding-x",
+        "description": "Inline padding of a segment"
+      },
+      {
+        "name": "--segmented-control-thumb-background",
+        "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+      },
+      {
+        "name": "--segmented-control-thumb-shadow",
+        "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+      },
+      {
+        "name": "--segmented-control-selected-color",
+        "description": "Text color of the selected segment"
+      },
+      {
+        "name": "--segmented-control-duration",
+        "description": "Duration of the thumb slide (defaults to --transition-base)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Utilisation de base
+
+Une valeur contrôlée (value / onChange ; le type de la valeur est générique). Le contrôle est un radiogroup de segments radio avec un seul arrêt de tabulation : les flèches déplacent et sélectionnent (en sautant les segments désactivés, en boucle), Home / End vont aux extrémités.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/segmented-control/demos/basic.tsx
+
+```tsx
+import { useState } from "react";
+import { SegmentedControl } from "minerva-design";
+
+type View = "day" | "week" | "month";
+
+export default function BasicDemo() {
+  const [view, setView] = useState<View>("week");
+  return (
+    <div style={{ display: "grid", gap: 12, justifyItems: "start" }}>
+      <SegmentedControl<View>
+        aria-label="Calendar view"
+        options={[
+          { value: "day", label: "Day" },
+          { value: "week", label: "Week" },
+          { value: "month", label: "Month" },
+        ]}
+        value={view}
+        onChange={setView}
+      />
+      <output>Showing the {view} view</output>
+    </div>
+  );
+}
+
+```
+
+## Example: Couleurs et désactivation
+
+neutral (par défaut) affiche un curseur en relief sur une piste atténuée, primary un curseur plein de la couleur primaire. Désactivez des segments isolés ou tout le contrôle.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/segmented-control/demos/colors.tsx
+
+```tsx
+import { SegmentedControl } from "minerva-design";
+
+const options = [
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+  { value: "system", label: "System", disabled: true },
+];
+
+export default function ColorsDemo() {
+  return (
+    <div style={{ display: "grid", gap: 16, justifyItems: "start" }}>
+      <SegmentedControl
+        aria-label="Theme (neutral)"
+        options={options}
+        defaultValue="light"
+      />
+      <SegmentedControl
+        color="primary"
+        aria-label="Theme (primary)"
+        options={options}
+        defaultValue="dark"
+      />
+      <SegmentedControl
+        disabled
+        aria-label="Theme (disabled)"
+        options={options}
+        defaultValue="light"
+      />
+    </div>
+  );
+}
+
+```
+
+## Example: Pleine largeur
+
+fullWidth étire le contrôle sur son conteneur ; les segments se partagent toujours la largeur à parts égales. name ajoute un champ caché pour envoyer la valeur avec un formulaire.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/segmented-control/demos/full-width.tsx
+
+```tsx
+import { SegmentedControl } from "minerva-design";
+
+export default function FullWidthDemo() {
+  return (
+    <form
+      style={{ display: "grid", gap: 12, maxWidth: 420 }}
+      onSubmit={(event) => event.preventDefault()}
+    >
+      <SegmentedControl
+        fullWidth
+        name="billing"
+        aria-label="Billing period"
+        defaultValue="yearly"
+        options={[
+          { value: "monthly", label: "Monthly" },
+          { value: "yearly", label: "Yearly (−20%)" },
+        ]}
+      />
+      <SegmentedControl
+        fullWidth
+        aria-label="Status filter"
+        defaultValue="all"
+        options={["all", "open", "closed", "archived"]}
+      />
+    </form>
+  );
+}
+
+```
+
+## Example: Icônes
+
+Les options peuvent afficher une icône à côté du libellé, ou une icône seule ; les segments avec icône seule nécessitent un aria-label.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-icons
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/segmented-control/demos/icons.tsx
+
+```tsx
+import { LuGrid2X2, LuList, LuMap } from "react-icons/lu";
+import { SegmentedControl } from "minerva-design";
+
+export default function IconsDemo() {
+  return (
+    <div style={{ display: "grid", gap: 16, justifyItems: "start" }}>
+      <SegmentedControl
+        aria-label="Layout"
+        defaultValue="list"
+        options={[
+          { value: "list", label: "List", icon: <LuList /> },
+          { value: "grid", label: "Grid", icon: <LuGrid2X2 /> },
+          { value: "map", label: "Map", icon: <LuMap /> },
+        ]}
+      />
+      {/* Icon-only segments need an aria-label */}
+      <SegmentedControl
+        aria-label="Layout (compact)"
+        defaultValue="grid"
+        options={[
+          { value: "list", icon: <LuList />, "aria-label": "List" },
+          { value: "grid", icon: <LuGrid2X2 />, "aria-label": "Grid" },
+          { value: "map", icon: <LuMap />, "aria-label": "Map" },
+        ]}
+      />
+    </div>
+  );
+}
+
+```
+
+## Example: Tailles
+
+Trois densités qui suivent les hauteurs des contrôles. Une simple chaîne sert à la fois de valeur et de libellé.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/segmented-control/demos/sizes.tsx
+
+```tsx
+import { SegmentedControl } from "minerva-design";
+
+const options = ["Daily", "Weekly", "Monthly"];
+
+export default function SizesDemo() {
+  return (
+    <div style={{ display: "grid", gap: 16, justifyItems: "start" }}>
+      <SegmentedControl
+        size="small"
+        aria-label="Small"
+        options={options}
+        defaultValue="Daily"
+      />
+      <SegmentedControl
+        aria-label="Medium"
+        options={options}
+        defaultValue="Weekly"
+      />
+      <SegmentedControl
+        size="large"
+        aria-label="Large"
+        options={options}
+        defaultValue="Monthly"
+      />
+    </div>
+  );
+}
+
+```

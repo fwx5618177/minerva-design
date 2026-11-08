@@ -1,0 +1,82 @@
+# Grid 网格
+
+使用原生移动控件和共享设计变量构建的网格。
+
+Package: minerva-design@1.23.1
+
+Renderer: angular
+
+Locale: zh
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.23.1",
+  "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+  "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+  "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.23.1/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## Grid
+
+Support: n/a
+
+React Native-specific extension, outside the shared web component API; use minerva-design/native for this component.
+
+## GridItem
+
+Support: beta
+
+Native Angular: MnGridItem. Native standalone component/directive; see platform tests for validated scope.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/angular",
+  "exports": [
+    "MnGridItem"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "span",
+    "typeText": "number",
+    "required": false,
+    "source": "packages/angular/src/components/foundations/index.ts"
+  },
+  {
+    "name": "fullWidth",
+    "typeText": "boolean",
+    "required": false,
+    "source": "packages/angular/src/components/foundations/index.ts"
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "default"
+  }
+]
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

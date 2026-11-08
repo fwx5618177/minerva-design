@@ -1,0 +1,806 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "native",
+  "page": "gauge-chart",
+  "title": "Gauge",
+  "description": "A single value on an arc, against a range and optional colored thresholds: KPIs, usage, scores. Changing value animates the arc (and the needle) from its current position.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "data": {
+      "metrics": {
+        "cpu": "CPU",
+        "memory": "Memory",
+        "disk": "Disk"
+      },
+      "usageAria": "{{metric}} usage",
+      "nps": "Net Promoter Score",
+      "requestsPerSecond": "Requests / s",
+      "liveAria": "Requests per second, updated live",
+      "pause": "Pause updates",
+      "resume": "Resume updates",
+      "speed": "Speed",
+      "speedAria": "Speedometer: {{speed}}",
+      "brake": "Brake",
+      "accelerate": "Accelerate",
+      "quotas": {
+        "storage": "Storage",
+        "apiCalls": "API calls",
+        "seats": "Seats",
+        "minutes": "Build minutes"
+      },
+      "quotaUsed": "{{used}} of {{limit}}",
+      "quotaAria": "{{quota}}: {{share}} of the quota used",
+      "availability": "Availability, 30 days",
+      "objective": "Objective: {{value}}",
+      "availabilityAria": "Availability over 30 days against the objective",
+      "budgetLeft": "Error budget left",
+      "budgetDetail": "{{used}} of downtime out of {{budget}} allowed",
+      "budgetAria": "Error budget left this month",
+      "thermostat": {
+        "unit": "Temperature unit",
+        "units": {
+          "celsius": "°C",
+          "fahrenheit": "°F"
+        },
+        "target": "target",
+        "room": "Room: {{value}}",
+        "aria": "Thermostat target temperature",
+        "lower": "Lower the target temperature",
+        "raise": "Raise the target temperature",
+        "modes": {
+          "heating": "Heating to {{target}} (room: {{room}})",
+          "cooling": "Cooling to {{target}} (room: {{room}})",
+          "holding": "Holding {{target}} (room: {{room}})"
+        }
+      },
+      "credit": {
+        "applicant": "Applicant",
+        "score": "credit score",
+        "ratings": {
+          "poor": "Poor",
+          "fair": "Fair",
+          "good": "Good",
+          "veryGood": "Very good",
+          "exceptional": "Exceptional"
+        },
+        "position": "{{share}} of the way up the scale",
+        "aria": "Credit score of {{name}}",
+        "result": "{{name}}: {{score}}. {{advice}}",
+        "advice": {
+          "poor": "Most lenders will decline the application.",
+          "fair": "Approval is possible, at a higher rate.",
+          "good": "Eligible for most loans at standard rates.",
+          "veryGood": "Eligible for better than average rates.",
+          "exceptional": "Eligible for the best rates on offer."
+        }
+      },
+      "battery": {
+        "label": "charged",
+        "range": "Range: {{range}}",
+        "aria": "Battery charge of the car",
+        "plugged": "Plugged in",
+        "reset": "Reset",
+        "phases": {
+          "full": "Fully charged",
+          "unplugged": "Unplugged",
+          "charging": "Fast charging",
+          "topping": "Slow charging above 80 %"
+        },
+        "toEighty": "80 % in {{minutes}}"
+      },
+      "turbine": {
+        "rpm": "{{value}} rpm",
+        "mw": "{{value}} MW",
+        "dark": "Dark panel",
+        "rotor": "Rotor speed",
+        "power": "Power output",
+        "nacelle": "Nacelle temperature",
+        "aria": "{{reading}} of the wind turbine: {{value}}"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "GaugeChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "GaugeChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Value shown by the arc (clamped to `min` - `max` for the drawing)"
+          },
+          {
+            "name": "min",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Value at the start of the arc"
+          },
+          {
+            "name": "max",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 100,
+            "required": false,
+            "description": "Value at the end of the arc"
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Caption under the value"
+          },
+          {
+            "name": "sweep",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 240,
+            "required": false,
+            "description": "Total angle of the arc, degrees"
+          },
+          {
+            "name": "thickness",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.16,
+            "required": false,
+            "description": "Thickness of the arc as a fraction of the radius"
+          },
+          {
+            "name": "bands",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly GaugeBand[] | undefined",
+            "typeRef": "type:d2cd036beaf1add471a3",
+            "required": false,
+            "description": "Colored ranges of the track; the value arc takes the color of its band"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Color of the value arc (when there are no bands)"
+          },
+          {
+            "name": "needle",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Draws a needle in addition to the value arc"
+          },
+          {
+            "name": "ticks",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Tick labels at the ends (and at the band bounds)"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; tapping an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip shown while a mark is pressed; `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:541b024ed1104992e34e",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:d92c3cd66b7afc0213bc",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend taps then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back."
+          },
+          {
+            "name": "animation",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations (skipped when the theme reduces motion)"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "BCP 47 locale of the built-in texts (tooltip rows, accessible names, \"No data\") and of the numbers"
+          },
+          {
+            "name": "texts",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale`"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:9333c89b3161f5ff3652",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:fa632874a08b24956e5f",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted mark changes (press and drag over the chart)"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:8504b594a968c22eaac5",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is tapped"
+          },
+          {
+            "name": "onToggle",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:d096120cd0ab66afae24",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is tapped (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:GaugeChartProps": {
+      "source": "native/src/components/ShapeChart/types.ts",
+      "description": "Props of GaugeChart",
+      "kind": "interface",
+      "extends": [
+        "ShapeChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Value shown by the arc (clamped to `min` - `max` for the drawing)"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Value at the start of the arc"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "default": "100",
+          "description": "Value at the end of the arc"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Caption under the value"
+        },
+        {
+          "name": "sweep",
+          "type": "number",
+          "required": false,
+          "default": "240",
+          "description": "Total angle of the arc, degrees"
+        },
+        {
+          "name": "thickness",
+          "type": "number",
+          "required": false,
+          "default": "0.16",
+          "description": "Thickness of the arc as a fraction of the radius"
+        },
+        {
+          "name": "bands",
+          "type": "readonly GaugeBand[]",
+          "required": false,
+          "description": "Colored ranges of the track; the value arc takes the color of its band"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "default": "the first palette color",
+          "description": "Color of the value arc (when there are no bands)"
+        },
+        {
+          "name": "needle",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Draws a needle in addition to the value arc"
+        },
+        {
+          "name": "ticks",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Tick labels at the ends (and at the band bounds)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "bands",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/native/bands.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/native/bands.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { View } from \"react-native\";\nimport { Button, GaugeChart, type GaugeBand } from \"minerva-design/native\";\n\n// Net Promoter Score: -100 (everyone detracts) to +100 (everyone promotes)\nconst bands: GaugeBand[] = [\n  { to: 0, color: \"var(--danger-color)\" },\n  { to: 30, color: \"var(--warning-color)\" },\n  { to: 100, color: \"var(--success-color)\" },\n];\n\nconst signed = (value: number) => {\n  const rounded = Math.round(value);\n  return rounded > 0 ? `+${rounded}` : `${rounded}`;\n};\n\nexport default function Bands() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.native.data\",\n  });\n  const [score, setScore] = useState(42);\n  const change = (step: number) =>\n    setScore((value) => Math.max(-100, Math.min(100, value + step)));\n  return (\n    <View style={{ width: \"100%\", gap: 12 }}>\n      <GaugeChart\n        value={score}\n        min={-100}\n        max={100}\n        bands={bands}\n        needle\n        label={t(\"nps\")}\n        format={signed}\n        height={240}\n        ariaLabel={t(\"nps\")}\n      />\n      <View style={{ flexDirection: \"row\", gap: 8, justifyContent: \"center\" }}>\n        <Button variant=\"outline\" onPress={() => change(-20)}>\n          {t(\"lower\")}\n        </Button>\n        <Button variant=\"outline\" onPress={() => change(20)}>\n          {t(\"raise\")}\n        </Button>\n      </View>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Bands and needle",
+      "description": "bands colors the track by range (red, amber, green) and the value arc takes the color of its band; needle points at the value, min can be negative."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/native/basic.tsx": "import { useTranslation } from \"react-i18next\";\nimport { GaugeChart } from \"minerva-design/native\";\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.native.data\",\n  });\n  const percent = new Intl.NumberFormat(i18n.language, {\n    style: \"percent\",\n    maximumFractionDigits: 0,\n  });\n  return (\n    <GaugeChart\n      value={72}\n      label={t(\"storage\")}\n      format={(value) => percent.format(value / 100)}\n      height={220}\n      ariaLabel={t(\"storageAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Basic",
+      "description": "Three small gauges with their own color, label and format."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Gauge",
+      "description": "A single value on an arc, against a range and optional colored thresholds: KPIs, usage, scores. Changing value animates the arc (and the needle) from its current position.",
+      "demos": {
+        "basic": {
+          "title": "Basic",
+          "description": "Three small gauges with their own color, label and format."
+        },
+        "bands": {
+          "title": "Bands and needle",
+          "description": "bands colors the track by range (red, amber, green) and the value arc takes the color of its band; needle points at the value, min can be negative."
+        },
+        "live": {
+          "title": "Live value",
+          "description": "A timer updates value every 1.5 s and the gauge animates to it; sweep={180} draws a half circle and thickness widens the arc. The timer is cleared when paused or unmounted."
+        },
+        "speedometer": {
+          "title": "Speedometer",
+          "description": "A thin arc with a needle; hold the buttons (or Space / Enter) to accelerate or brake. animation={false} lets the needle follow the state directly, and the unit comes from Intl.NumberFormat."
+        },
+        "quota": {
+          "title": "Quota usage",
+          "description": "One gauge per plan quota with bands at 75% and 90% of each limit, ticks={false} and a caption with the used and allowed amounts."
+        },
+        "slo": {
+          "title": "Availability and error budget",
+          "description": "A zoomed gauge (min 99.5, max 100) shows the availability against its objective, a second one the error budget left; renderTooltip gives the details."
+        },
+        "thermostat": {
+          "title": "Smart thermostat",
+          "description": "The − and + buttons move the target by half a degree; the setting is stored in °C and converted for display, so switching to °F changes value, min, max and the bands together. renderTooltip shows the room temperature and the line below whether the system heats, cools or holds."
+        },
+        "credit-score": {
+          "title": "Credit score",
+          "description": "A needle on five rating bands from 300 to 850, with min and max set to the scale of the score. A Select switches applicants and the needle sweeps to the new score; renderTooltip names the rating and event.percent gives the position on the scale."
+        },
+        "battery": {
+          "title": "Electric car charging",
+          "description": "A half gauge (sweep={180}) fills every 400 ms while plugged in, more slowly above 80 %; the interval stops when unplugged, full or unmounted. Only the charging phase is announced; the range and the time to 80 % come from Intl.NumberFormat units."
+        },
+        "dark-panel": {
+          "title": "Dark control panel",
+          "description": "Three needle gauges on a panel whose CSS variables switch to a dark theme. The charts only watch <html> and <body>, so after restyling the container the demo calls refreshTheme() on each chart through its ref."
+        }
+      },
+      "data": {
+        "metrics": {
+          "cpu": "CPU",
+          "memory": "Memory",
+          "disk": "Disk"
+        },
+        "usageAria": "{{metric}} usage",
+        "nps": "Net Promoter Score",
+        "requestsPerSecond": "Requests / s",
+        "liveAria": "Requests per second, updated live",
+        "pause": "Pause updates",
+        "resume": "Resume updates",
+        "speed": "Speed",
+        "speedAria": "Speedometer: {{speed}}",
+        "brake": "Brake",
+        "accelerate": "Accelerate",
+        "quotas": {
+          "storage": "Storage",
+          "apiCalls": "API calls",
+          "seats": "Seats",
+          "minutes": "Build minutes"
+        },
+        "quotaUsed": "{{used}} of {{limit}}",
+        "quotaAria": "{{quota}}: {{share}} of the quota used",
+        "availability": "Availability, 30 days",
+        "objective": "Objective: {{value}}",
+        "availabilityAria": "Availability over 30 days against the objective",
+        "budgetLeft": "Error budget left",
+        "budgetDetail": "{{used}} of downtime out of {{budget}} allowed",
+        "budgetAria": "Error budget left this month",
+        "thermostat": {
+          "unit": "Temperature unit",
+          "units": {
+            "celsius": "°C",
+            "fahrenheit": "°F"
+          },
+          "target": "target",
+          "room": "Room: {{value}}",
+          "aria": "Thermostat target temperature",
+          "lower": "Lower the target temperature",
+          "raise": "Raise the target temperature",
+          "modes": {
+            "heating": "Heating to {{target}} (room: {{room}})",
+            "cooling": "Cooling to {{target}} (room: {{room}})",
+            "holding": "Holding {{target}} (room: {{room}})"
+          }
+        },
+        "credit": {
+          "applicant": "Applicant",
+          "score": "credit score",
+          "ratings": {
+            "poor": "Poor",
+            "fair": "Fair",
+            "good": "Good",
+            "veryGood": "Very good",
+            "exceptional": "Exceptional"
+          },
+          "position": "{{share}} of the way up the scale",
+          "aria": "Credit score of {{name}}",
+          "result": "{{name}}: {{score}}. {{advice}}",
+          "advice": {
+            "poor": "Most lenders will decline the application.",
+            "fair": "Approval is possible, at a higher rate.",
+            "good": "Eligible for most loans at standard rates.",
+            "veryGood": "Eligible for better than average rates.",
+            "exceptional": "Eligible for the best rates on offer."
+          }
+        },
+        "battery": {
+          "label": "charged",
+          "range": "Range: {{range}}",
+          "aria": "Battery charge of the car",
+          "plugged": "Plugged in",
+          "reset": "Reset",
+          "phases": {
+            "full": "Fully charged",
+            "unplugged": "Unplugged",
+            "charging": "Fast charging",
+            "topping": "Slow charging above 80 %"
+          },
+          "toEighty": "80 % in {{minutes}}"
+        },
+        "turbine": {
+          "rpm": "{{value}} rpm",
+          "mw": "{{value}} MW",
+          "dark": "Dark panel",
+          "rotor": "Rotor speed",
+          "power": "Power output",
+          "nacelle": "Nacelle temperature",
+          "aria": "{{reading}} of the wind turbine: {{value}}"
+        }
+      },
+      "api": {
+        "GaugeChartProps": {
+          "value": "Value shown by the arc (clamped to min - max for the drawing)",
+          "min": "Value at the start of the arc",
+          "max": "Value at the end of the arc",
+          "label": "Caption under the value",
+          "sweep": "Total angle of the arc, in degrees",
+          "thickness": "Thickness of the arc as a fraction of the radius",
+          "bands": "Colored ranges of the track; the value arc takes the color of its band",
+          "color": "Color of the value arc when there are no bands",
+          "needle": "Draws a needle in addition to the value arc",
+          "ticks": "Tick labels at the ends (and at the band bounds)"
+        },
+        "GaugeBand": {
+          "to": "Upper bound of the band (the previous band's bound, or min, is the lower one)",
+          "color": "Color of the band"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "One value on a 240° arc; format writes it as a percent."
+          },
+          "bands": {
+            "title": "Bands and needle",
+            "description": "bands color the track and the value arc; the buttons change value and the arc and the needle animate to it."
+          }
+        },
+        "data": {
+          "storage": "Storage used",
+          "storageAria": "Phone storage used",
+          "nps": "Net Promoter Score",
+          "lower": "Lower by 20",
+          "raise": "Raise by 20"
+        }
+      },
+      "wc": {
+        "demos": {
+          "bands": {
+            "title": "Colored bands",
+            "description": "Three bands split the track; the value arc takes the color of the band it ends in."
+          },
+          "needle": {
+            "title": "Needle and custom scale",
+            "description": "A needle over a 0–200 scale, with a wider sweep and a thinner arc."
+          }
+        },
+        "minerva-gauge-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, null when nothing is hovered",
+            "minerva-click": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+            "minerva-toggle": "A legend item was clicked (or toggle() called); detail: { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node by index",
+            "getRenderer": "Backend drawing the shapes (webgpu, webgl2, webgl, canvas2d), null until ready; set it with the renderer engine option"
+          }
+        }
+      }
+    }
+  }
+}

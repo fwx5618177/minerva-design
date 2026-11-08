@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "ja",
+  "renderer": "weapp",
+  "page": "responsive-grid",
+  "title": "ResponsiveGrid レスポンシブグリッド",
+  "description": "列数がビューポートではなく自身の幅（コンテナクエリ）に従う等幅カラムのグリッド。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "GridItem",
+      "support": {
+        "status": "beta",
+        "notes": "Native grid child with full row and optional column/row spans. Native wrapper replaces DOM asChild cloning. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native grid child with full row and optional column/row spans. Native wrapper replaces DOM asChild cloning. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/grid-item/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "grid-item",
+        "props": [
+          {
+            "name": "fullWidth",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "columnSpan",
+            "typeText": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "rowSpan",
+            "typeText": "number",
+            "required": false,
+            "default": 0
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-grid-item\": \"minerva-design/dist/weapp/grid-item/index\" }",
+        "bindings": []
+      }
+    },
+    {
+      "name": "ResponsiveGrid",
+      "support": {
+        "status": "beta",
+        "notes": "Container-measured 1–12 columns with base/sm/md/lg inheritance, token/CSS gaps and row/column overrides; measure(width) for host layout updates. Automatic measurement runs on ready/window resize; non-window host size changes call measure(width). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Container-measured 1–12 columns with base/sm/md/lg inheritance, token/CSS gaps and row/column overrides; measure(width) for host layout updates. Automatic measurement runs on ready/window resize; non-window host size changes call measure(width). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/responsive-grid/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "responsive-grid",
+        "props": [
+          {
+            "name": "columns",
+            "typeText": "unknown",
+            "required": false,
+            "default": 1
+          },
+          {
+            "name": "gap",
+            "typeText": "unknown",
+            "required": false,
+            "default": 4
+          },
+          {
+            "name": "rowGap",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "columnGap",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-responsive-grid\": \"minerva-design/dist/weapp/responsive-grid/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:ResponsiveGrid": {
+      "kind": "cssVars",
+      "source": "react/src/components/ResponsiveGrid",
+      "vars": [
+        {
+          "name": "--responsive-grid-align-items",
+          "description": "Vertical alignment of the items in their row (default: stretch)"
+        },
+        {
+          "name": "--responsive-grid-justify-items",
+          "description": "Horizontal alignment of the items in their column (default: stretch)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ResponsiveGrid レスポンシブグリッド",
+      "description": "列数がビューポートではなく自身の幅（コンテナクエリ）に従う等幅カラムのグリッド。",
+      "demos": {
+        "basic": {
+          "title": "レスポンシブな列",
+          "description": "columns は利用可能幅 0・480・768・1200px に対応する base / sm / md / lg の列数を受け付けます。"
+        },
+        "full-width": {
+          "title": "全幅アイテム",
+          "description": "GridItem の fullWidth は行全体にまたがります。rowGap と columnGap は独立しています。"
+        }
+      },
+      "api": {
+        "ResponsiveGridProps": {
+          "ref": "外側（クエリコンテナ）要素への ref",
+          "as": "外側のコンテナとして描画する要素またはコンポーネント（div、section、nav など）",
+          "columns": "列数（1〜12 の整数）：数値、または 480 / 768 / 1200px に対応する { base, sm, md, lg }。それ以外は RangeError",
+          "gap": "行と列の間隔（スペーシングトークンまたは CSS 値）",
+          "rowGap": "行の間隔。既定は gap",
+          "columnGap": "列の間隔。既定は gap"
+        },
+        "GridItemProps": {
+          "ref": "アイテム要素（asChild 時は子要素）への ref",
+          "fullWidth": "親グリッドの行全体にまたがります",
+          "asChild": "ラッパー div を描画せず、props・クラス・ref を唯一の子要素にマージします"
+        }
+      },
+      "cssVars": {
+        "--responsive-grid-align-items": "行内でのアイテムの縦方向の配置（既定値は stretch）",
+        "--responsive-grid-justify-items": "列内でのアイテムの横方向の配置（既定値は stretch）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "columns=\"1 2 3 4\" は base、sm、md、lg のコンテナ幅ごとの列数を設定します。グリッドはビューポートではなく自身の幅に従います。"
+          },
+          "container": {
+            "title": "コンテナのブレークポイント",
+            "description": "columns は JSON（{\"base\": 1, \"sm\": 2, \"lg\": 4}、指定のないブレークポイントは前の値を継承）も受け付け、row-gap / column-gap で間隔を個別に指定できます。スライダーでコンテナの幅を変えてみてください。"
+          },
+          "full-width": {
+            "title": "全幅のアイテム",
+            "description": "子要素を <minerva-grid-item full-width> で囲むと行全体に広がります。"
+          }
+        },
+        "minerva-responsive-grid": {
+          "slots": {
+            "default": "グリッドのアイテム。"
+          }
+        },
+        "minerva-grid-item": {
+          "slots": {
+            "default": "セルのコンテンツ。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

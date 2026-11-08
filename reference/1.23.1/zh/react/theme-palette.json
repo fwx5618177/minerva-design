@@ -1,0 +1,895 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "theme-palette",
+  "title": "主题与调色板",
+  "description": "两个相互独立的维度：浅色 / 深色 / 跟随系统的模式，以及配色调色板；支持 Cookie 持久化和无闪烁的服务端渲染。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "axes": {
+      "title": "两个维度：模式与调色板",
+      "text": "模式决定浅色还是深色；调色板决定整体风格：颜色、表面、阴影和字体栈。任意调色板都能与任意模式组合，因此四个调色板提供八套完整主题；不设置调色板时则使用 Minerva 的默认外观。",
+      "value": "取值",
+      "modeFixed": "模式：始终为浅色或始终为深色。",
+      "modeSystem": "模式：跟随 prefers-color-scheme，操作系统设置变化时实时更新。ConfigProvider 也接受 \"auto\"，它是为兼容而保留的别名。",
+      "editorial": "调色板：暖色纸张背景、墨蓝主色和铁锈色强调色，适合内容为主的页面。",
+      "tech": "调色板：干净的中性表面搭配明亮的蓝色主色，适合仪表盘和开发者工具。",
+      "graphite": "调色板：单色灰阶加克制的强调色，适合信息密集的专业界面。",
+      "cool": "调色板：冷调蓝灰表面搭配青蓝主色，沉静而通透。",
+      "none": "无调色板：Minerva 的默认外观（内置的浅色和深色主题，以内联变量形式写入）。"
+    },
+    "provider": {
+      "title": "ThemeProvider 与 useTheme",
+      "text": "ThemeProvider 是同时获得两个维度的最简方式：它以给定的模式和调色板渲染一个 ConfigProvider，把变更持久化到 Cookie，并通过 useTheme() 暴露全部状态。ThemeToggle 和 PaletteToggle 是绑定到最近 Provider 的现成切换器。",
+      "config": "ThemeProvider 是 ConfigProvider 的预设，两者共享同一个数据源。如果还需要 github-dark 等内置主题、自定义主题对象或受控的 theme 属性，请直接使用 ConfigProvider：",
+      "hook": "useTheme() 返回用户选择的模式、实际应用的模式、调色板以及对应的设置函数。它在 ThemeProvider 和 ConfigProvider 下都可用，在两者之外调用会抛出错误。"
+    },
+    "applied": {
+      "title": "主题如何生效",
+      "text": "Provider 总会把解析后的模式写入 <html> 的 data-theme 和 color-scheme。当设置了调色板且主题为 light、dark 或 system 时，还会设置 data-palette，此时令牌来自 style.css 中打包的调色板样式块，内联的主题变量会被移除。没有调色板、或使用 github-dark 及自定义主题对象时，主题令牌仍像以前一样以内联 CSS 变量的形式写到 <html> 上。",
+      "precedence": "当多个来源定义了同一个令牌时，优先级最高者生效：",
+      "p1": "<html> 上的内联 CSS 变量（自定义主题对象、github-dark 或无调色板时）优先于样式表中的任何声明。",
+      "p2": "调色板样式块（[data-palette][data-theme]）优先于 :root 上的默认值。",
+      "p3": "没有其他来源匹配时，使用 style.css 中 :root 的默认值，包括由 color-mix() 派生的令牌。",
+      "p4": "对于 github-dark 和自定义主题对象，palette 属性会被忽略：这些主题自带完整的令牌。",
+      "global": "只有最外层的 Provider 会写入 <html> 和 Cookie。嵌套的 ThemeProvider 或 ConfigProvider 继承父级的模式和配色，并将自己的 defaultTheme / defaultPalette（或 theme / palette）只作用于其子树以及从中打开的浮层，不会修改 <html>（见下方“局部调色板”）。"
+    },
+    "persistence": {
+      "title": "Cookie 持久化",
+      "text": "ThemeProvider（以及开启 persist 的 ConfigProvider）会把选择写入两个 Cookie：theme（\"light\"、\"dark\" 或 \"system\"）和 palette（调色板名称；选择默认外观时会被删除）。它们有效期一年，使用 path=/ 和 SameSite=Lax，并且可以在服务端读取，这正是无闪烁 SSR 的基础。水合完成后，Provider 会恢复一次 Cookie 中的值。给 ThemeProvider 传入 disableStorage（或不开启 persist）即可只在内存中保存选择。你自己的服务端代码也可以使用同样的辅助函数："
+    },
+    "ssr": {
+      "title": "无闪烁的服务端渲染",
+      "text": "服务端无法得知访客的系统配色，而 React 只会在水合之后应用主题。两步即可弥补这一差距：在服务端读取 Cookie 并作为默认值传给 Provider；在 <head> 中内联 THEME_INIT_SCRIPT。这段很小的阻塞渲染脚本会读取 Cookie（回退到 prefers-color-scheme），并在首次绘制前设置 data-theme、data-palette 和 color-scheme，因此页面永远不会闪现错误的主题。",
+      "next": "Next.js App Router",
+      "generic": "其他任意 SSR 方案",
+      "hydration": "初始化脚本会在 React 水合之前修改 <html> 的属性，因此服务端标记与 DOM 的差异是有意为之。请给 <html> 和 <script> 元素加上 suppressHydrationWarning；它只会屏蔽该元素自身的属性警告，不影响其子元素。服务端所需的一切都从 minerva-design/theme-utils 导入：该入口没有 \"use client\" 声明，可以在 Server Component 中调用。"
+    },
+    "init": {
+      "title": "createThemeInitScript",
+      "text": "THEME_INIT_SCRIPT 就是使用默认选项调用 createThemeInitScript() 的结果。需要不同的默认值时，可以自行生成：",
+      "option": "选项",
+      "default": "默认值",
+      "defaultTheme": "theme Cookie 缺失或无效时使用的模式。\"system\" 会根据 prefers-color-scheme 解析为浅色或深色。",
+      "defaultPalette": "palette Cookie 缺失或无效、且 <html> 上还没有有效的 data-palette 时使用的调色板。null 表示不设置 data-palette（Minerva 默认外观）。",
+      "order": "脚本的解析顺序：先取 theme Cookie，否则用 defaultTheme；先取 palette Cookie，否则用 <html> 上已渲染的有效 data-palette，再否则用 defaultPalette。请保持脚本内联（不要 async 或 defer），并放在样式表之前，确保它在首次绘制前执行。"
+    },
+    "helpers": {
+      "title": "服务端安全的辅助函数",
+      "text": "以下内容均来自 minerva-design/theme-utils，这是一个不依赖 React、也没有 \"use client\" 的小型入口，可以安全地用于 Server Component、中间件和边缘函数。",
+      "name": "导出",
+      "initScript": "默认初始化脚本（字符串）：模式取自 Cookie（否则跟随系统），调色板取自 Cookie（否则取 <html> 上已有的 data-palette，再否则不设置）。请内联到 <head> 中。",
+      "create": "使用其他默认值生成初始化脚本（见上方选项）。",
+      "parseAll": "从 Cookie 请求头中解析两个 Cookie，返回 { theme, palette }，可为缺失值提供默认值。",
+      "parseTheme": "校验原始的 theme Cookie 值；无效或缺失时返回回退值（\"system\"）。",
+      "parsePalette": "校验原始的 palette Cookie 值；无效或缺失时返回回退值（null）。",
+      "read": "从 Cookie 请求头或 document.cookie 中读取并 URI 解码单个 Cookie；不存在时返回 undefined。",
+      "serialize": "为主题或调色板值返回 Set-Cookie 格式的字符串（path=/、一年、SameSite=Lax）。",
+      "guards": "ThemeMode 与 Palette 值的类型守卫。",
+      "palettes": "内置调色板名称，依次为：editorial、tech、graphite、cool。",
+      "cookieNames": "Cookie 名称（\"theme\"、\"palette\"）及其有效期（秒，一年）。"
+    },
+    "scoped": {
+      "title": "局部调色板",
+      "text": "style.css 中的配色块是属性选择器，因此可以匹配任意元素，而不仅是 <html>。让某个子树使用不同配色或模式的最简单方式是嵌套 Provider：<ThemeProvider defaultPalette=\"tech\"> 或 <ConfigProvider palette=\"tech\"> 会将其作用于子元素及其浮层。不使用 Provider 时，也可以自己在包裹元素上设置 data-palette 和 data-theme：请同时设置两个属性，并为包裹元素设置背景，因为变量虽然改变了，但只有元素使用它们时才会显示出来。"
+    },
+    "tokens": {
+      "title": "新增令牌",
+      "text": "调色板引入了一些语义颜色令牌和一组尺度令牌。每个令牌在 style.css 中都有默认值，因此无论是否使用调色板、是否使用自定义主题都能正常工作。",
+      "semantic": "语义颜色令牌",
+      "variable": "变量",
+      "items": {
+        "surface-subtle-color": "非常柔和的背景，用于侧边栏、表头和代码块。",
+        "canvas-color": "位于各表面之后的应用背景，例如应用外壳的画布。默认等于柔和表面色。",
+        "control-color": "输入框、选择器等表单控件的背景。默认等于柔和表面色。",
+        "hover-color": "悬停行和条目的背景。默认等于弱化表面色。",
+        "selected-color": "选中行、条目和标签页的背景：主色的浅色调。",
+        "text-muted-color": "低强调文本，用于说明和辅助文字，介于次要文本与禁用文本之间。",
+        "accent-color": "次级强调色，用于行动号召、评分和高亮。默认等于主色；各调色板会设置自己的值。"
+      },
+      "accentRole": "accent 也是一个完整的颜色角色，与 primary、success 相同：--accent-color-hover、-active、-subtle、-border 和 -text 会自动派生。",
+      "scales": "尺度令牌",
+      "scalesText": "尺度令牌不随模式变化（调色板只可能替换字体栈）。组件通过 CSS 变量使用它们，数值型的 gap 或 padding 属性会解析为 var(--space-<n>)。",
+      "group": "分组",
+      "variables": "变量",
+      "groups": {
+        "spacing": {
+          "name": "间距",
+          "text": "基于 4px 的 rem 尺度。小数步长用短横线表示：--space-0-5 即 0.125rem。"
+        },
+        "radius": {
+          "name": "圆角",
+          "text": "在 --radius-sm、-md、-lg 之外新增的圆角，后三者仍是主题令牌。"
+        },
+        "fontSize": {
+          "name": "字号",
+          "text": "从 0.75rem（xs）到 3.75rem（6xl）；md（0.875rem）是组件的正文字号。"
+        },
+        "fontWeight": {
+          "name": "字重与行高",
+          "text": "400 到 700 的字重，以及三档行高。"
+        },
+        "fontFamily": {
+          "name": "字体族",
+          "text": "正文、标题和等宽字体栈。调色板会覆盖它们。"
+        },
+        "zIndex": {
+          "name": "层级",
+          "text": "下拉菜单、吸顶元素、遮罩、模态框、弹出层和消息提示使用的 z-index 层级。"
+        },
+        "motion": {
+          "name": "动效",
+          "text": "过渡时长和缓动曲线。"
+        },
+        "rhythm": {
+          "name": "节奏与高度",
+          "text": "区块和段落之间的流式垂直间距，以及阴影令牌的高度别名。"
+        },
+        "focus": {
+          "name": "焦点",
+          "text": "焦点环的宽度和偏移。"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "PaletteToggle",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "PaletteToggle"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "palettes",
+            "source": "packages/react/src/components/ThemeToggle/types.ts",
+            "kind": "array",
+            "typeText": "(\"editorial\" | \"tech\" | \"graphite\" | \"cool\")[] | undefined",
+            "typeRef": "type:0a61f358e05925bc041d",
+            "required": false,
+            "description": "Palettes offered, in order"
+          },
+          {
+            "name": "showDefault",
+            "source": "packages/react/src/components/ThemeToggle/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Also offer Minerva's default look (no palette) as the first option"
+          },
+          {
+            "name": "labels",
+            "source": "packages/react/src/components/ThemeToggle/types.ts",
+            "kind": "object",
+            "typeText": "Partial<Record<\"default\" | \"editorial\" | \"tech\" | \"graphite\" | \"cool\", string>> | undefined",
+            "typeRef": "type:d45a45bbe86657f1037e",
+            "required": false,
+            "description": "Override the button labels (`default` labels the no-palette option)"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PresetToggle",
+      "support": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components."
+      }
+    },
+    {
+      "name": "ThemeProvider",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "ThemeProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "defaultTheme",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "enum",
+            "values": [
+              "dark",
+              "light",
+              "system"
+            ],
+            "typeText": "ThemeMode | undefined",
+            "typeRef": "type:293f77323be9bd072cec",
+            "required": false,
+            "description": "Initial mode. For SSR pass the value parsed from the request cookie so the server markup matches the client."
+          },
+          {
+            "name": "defaultPalette",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "enum",
+            "values": [
+              "cool",
+              "editorial",
+              "graphite",
+              "tech"
+            ],
+            "typeText": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined",
+            "typeRef": "type:b7f5e4f1c686e6b76ccf",
+            "required": false,
+            "description": "Initial palette (`null` = Minerva's default look). For SSR pass the parsed `palette` cookie."
+          },
+          {
+            "name": "primaryColor",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "union",
+            "typeText": "PrimaryColor | null | undefined",
+            "typeRef": "type:f612ad4ccbeed997ce22",
+            "required": false,
+            "description": "Brand color, as `ConfigProvider`'s `primaryColor` (a color, or `{ light, dark }`); the light / dark mode stays the user's choice"
+          },
+          {
+            "name": "disableStorage",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Do not read / write the theme cookies (tests, embedded previews). Nested providers never use the cookies."
+          },
+          {
+            "name": "locale",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "object",
+            "typeText": "Locale | undefined",
+            "typeRef": "type:faa2d1cac8abe6cb7ce4",
+            "required": false,
+            "description": "Language of the React library's built-in texts"
+          }
+        ],
+        "events": [
+          {
+            "name": "onThemeChange",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "function",
+            "typeText": "((theme: ThemeMode) => void) | undefined",
+            "typeRef": "type:500bb726e7e2dabac339",
+            "parameters": [
+              {
+                "name": "theme",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ThemeMode",
+                "typeRef": "type:49e6b37018cf95b597ae"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the mode changes"
+          },
+          {
+            "name": "onPaletteChange",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "function",
+            "typeText": "((palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null) => void) | undefined",
+            "typeRef": "type:16baf768edd6ac7f1adc",
+            "parameters": [
+              {
+                "name": "palette",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null",
+                "typeRef": "type:918077d2a22b5f20e063"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the palette changes"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ThemeToggle",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "ThemeToggle"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "showSystem",
+            "source": "packages/react/src/components/ThemeToggle/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Show the \"system\" (follow the OS) option"
+          },
+          {
+            "name": "labels",
+            "source": "packages/react/src/components/ThemeToggle/types.ts",
+            "kind": "object",
+            "typeText": "Partial<Record<ThemeMode, string>> | undefined",
+            "typeRef": "type:e54adf9eea9935a3df48",
+            "required": false,
+            "description": "Override the button labels (defaults come from the React library's locale)"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "ThemeProviderProps": {
+      "source": "react/src/contexts/types.ts",
+      "description": "Props of `ThemeProvider`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "defaultTheme",
+          "type": "ThemeMode",
+          "required": false,
+          "default": "\"system\" (nested: the parent's theme)",
+          "description": "Initial mode. For SSR pass the value parsed from the request cookie so the server markup matches the client."
+        },
+        {
+          "name": "defaultPalette",
+          "type": "Palette | null",
+          "required": false,
+          "default": "null (nested: the parent's palette)",
+          "description": "Initial palette (`null` = Minerva's default look). For SSR pass the parsed `palette` cookie."
+        },
+        {
+          "name": "primaryColor",
+          "type": "PrimaryColor | null",
+          "required": false,
+          "default": "null (nested: the parent's brand color)",
+          "description": "Brand color, as `ConfigProvider`'s `primaryColor` (a color, or `{ light, dark }`); the light / dark mode stays the user's choice"
+        },
+        {
+          "name": "disableStorage",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Do not read / write the theme cookies (tests, embedded previews). Nested providers never use the cookies."
+        },
+        {
+          "name": "locale",
+          "type": "Locale",
+          "required": false,
+          "description": "Language of the React library's built-in texts"
+        },
+        {
+          "name": "onThemeChange",
+          "type": "(theme: ThemeMode) => void",
+          "required": false,
+          "description": "Called when the mode changes"
+        },
+        {
+          "name": "onPaletteChange",
+          "type": "(palette: Palette | null) => void",
+          "required": false,
+          "description": "Called when the palette changes"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Application content"
+        }
+      ]
+    },
+    "ThemeContextValue": {
+      "source": "react/src/contexts/types.ts",
+      "description": "Value returned by `useTheme()`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "theme",
+          "type": "ThemeMode",
+          "required": true,
+          "description": "Mode chosen by the user (\"system\" follows the OS)"
+        },
+        {
+          "name": "resolvedTheme",
+          "type": "ResolvedThemeMode",
+          "required": true,
+          "description": "Mode actually applied (\"light\" / \"dark\")"
+        },
+        {
+          "name": "palette",
+          "type": "Palette | null",
+          "required": true,
+          "description": "Active palette, `null` for Minerva's default look"
+        },
+        {
+          "name": "setTheme",
+          "type": "(theme: ThemeMode) => void",
+          "required": true,
+          "description": "Change the mode (writes the `theme` cookie unless storage is disabled)"
+        },
+        {
+          "name": "setPalette",
+          "type": "(palette: Palette | null) => void",
+          "required": true,
+          "description": "Change the palette (writes the `palette` cookie unless storage is disabled)"
+        }
+      ]
+    },
+    "ThemeToggleProps": {
+      "source": "react/src/components/ThemeToggle/types.ts",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLDivElement>"
+      ],
+      "props": [
+        {
+          "name": "showSystem",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Show the \"system\" (follow the OS) option"
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Record<ThemeMode, string>>",
+          "required": false,
+          "description": "Override the button labels (defaults come from the React library's locale)"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the group element"
+        }
+      ]
+    },
+    "PaletteToggleProps": {
+      "source": "react/src/components/ThemeToggle/types.ts",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLDivElement>"
+      ],
+      "props": [
+        {
+          "name": "palettes",
+          "type": "Palette[]",
+          "required": false,
+          "default": "[\"editorial\", \"tech\", \"graphite\", \"cool\"]",
+          "description": "Palettes offered, in order"
+        },
+        {
+          "name": "showDefault",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Also offer Minerva's default look (no palette) as the first option"
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Record<Palette | \"default\", string>>",
+          "required": false,
+          "description": "Override the button labels (`default` labels the no-palette option)"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the group element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:ThemeToggle": {
+      "kind": "cssVars",
+      "source": "react/src/components/ThemeToggle",
+      "vars": [
+        {
+          "name": "--theme-toggle-gap",
+          "description": "Space between the options"
+        },
+        {
+          "name": "--theme-toggle-padding",
+          "description": "Inner padding of the group"
+        },
+        {
+          "name": "--theme-toggle-radius",
+          "description": "Corner radius of the group (defaults to --radius-lg; options use --radius-md)"
+        },
+        {
+          "name": "--theme-toggle-background",
+          "description": "Background of the group"
+        },
+        {
+          "name": "--theme-toggle-item-height",
+          "description": "Minimum height of an option (follows the density's control height)"
+        },
+        {
+          "name": "--theme-toggle-item-min-width",
+          "description": "Minimum width of an option"
+        },
+        {
+          "name": "--theme-toggle-active-background",
+          "description": "Background of the selected option"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "palette-swatches",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/theme-palette/demos/palette-swatches.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/theme-palette/demos/palette-swatches.tsx": "import { palettes } from \"minerva-design\";\nimport { PALETTES } from \"minerva-design/theme-utils\";\n\nconst MODES = [\"light\", \"dark\"] as const;\n\n// Tokens shown for each palette x mode (values read from `palettes`)\nconst TOKENS = [\n  \"primary-color\",\n  \"accent-color\",\n  \"success-color\",\n  \"warning-color\",\n  \"danger-color\",\n  \"info-color\",\n  \"border-color\",\n] as const;\n\nexport default function PaletteSwatchesDemo() {\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"repeat(auto-fill, minmax(220px, 1fr))\",\n        gap: 12,\n      }}\n    >\n      {PALETTES.flatMap((name) =>\n        MODES.map((mode) => {\n          const tokens = palettes[name][mode];\n          return (\n            <figure\n              key={`${name}-${mode}`}\n              style={{\n                margin: 0,\n                padding: 14,\n                borderRadius: 10,\n                border: `1px solid ${tokens[\"border-color\"]}`,\n                background: tokens[\"background-color\"],\n                color: tokens[\"text-color\"],\n                fontFamily: tokens[\"font-family-sans\"],\n              }}\n            >\n              <figcaption\n                style={{\n                  display: \"flex\",\n                  justifyContent: \"space-between\",\n                  marginBottom: 10,\n                  fontWeight: 600,\n                }}\n              >\n                <span>{name}</span>\n                <span style={{ color: tokens[\"text-muted-color\"] }}>\n                  {mode}\n                </span>\n              </figcaption>\n              <div style={{ display: \"flex\", gap: 6, flexWrap: \"wrap\" }}>\n                {TOKENS.map((token) => (\n                  <span\n                    key={token}\n                    title={`--${token}: ${tokens[token]}`}\n                    style={{\n                      width: 22,\n                      height: 22,\n                      borderRadius: 6,\n                      background: tokens[token],\n                      border: `1px solid ${tokens[\"border-strong-color\"]}`,\n                    }}\n                  />\n                ))}\n              </div>\n              <div\n                style={{\n                  marginTop: 10,\n                  padding: \"6px 8px\",\n                  borderRadius: 6,\n                  background: tokens[\"surface-subtle-color\"],\n                  color: tokens[\"text-secondary-color\"],\n                  fontSize: 12,\n                }}\n              >\n                {tokens[\"primary-color\"]} / {tokens[\"accent-color\"]}\n              </div>\n            </figure>\n          );\n        }),\n      )}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "全部调色板",
+      "description": "每个调色板的浅色与深色模式，根据导出的 palettes 对象渲染（palettes[name][mode] 是一个完整的 ComponentTheme）。"
+    },
+    {
+      "id": "toggles",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/theme-palette/demos/toggles.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/theme-palette/demos/toggles.tsx": "import {\n  Button,\n  HStack,\n  PaletteToggle,\n  Switch,\n  Tag,\n  ThemeProvider,\n  ThemeToggle,\n  useTheme,\n} from \"minerva-design\";\n\n// In an application, one provider at the root is all you need:\n//\n//   <ThemeProvider defaultPalette=\"editorial\">\n//     <ThemeToggle />\n//     <PaletteToggle />\n//   </ThemeProvider>\n//\n// Here a nested ThemeProvider is used: it scopes its mode and palette to its\n// own subtree (no <html> attributes, no cookies), so the toggles re-theme\n// this preview without touching the rest of the docs site.\nfunction Preview() {\n  const { resolvedTheme, palette } = useTheme();\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gap: 16,\n        padding: 20,\n        borderRadius: 12,\n        border: \"1px solid var(--border-color)\",\n        background: \"var(--background-color)\",\n        color: \"var(--text-color)\",\n        fontFamily: \"var(--font-family-sans)\",\n      }}\n    >\n      <HStack gap={4} wrap>\n        <ThemeToggle />\n        <PaletteToggle />\n      </HStack>\n      <HStack gap={4} wrap>\n        <Button color=\"primary\">Primary</Button>\n        <Button color=\"neutral\" variant=\"outline\">\n          Secondary\n        </Button>\n        <Tag color=\"primary\">{palette ?? \"default\"}</Tag>\n        <Tag color=\"info\">{resolvedTheme}</Tag>\n        <Switch label=\"Switch\" defaultChecked />\n      </HStack>\n      <p style={{ margin: 0, color: \"var(--text-muted-color)\" }}>\n        Theme: {resolvedTheme}; palette: {palette ?? \"default\"}\n      </p>\n    </div>\n  );\n}\n\nexport default function TogglesDemo() {\n  return (\n    <ThemeProvider defaultTheme=\"system\" defaultPalette=\"editorial\">\n      <Preview />\n    </ThemeProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "ThemeToggle 与 PaletteToggle",
+      "description": "嵌套预览初始使用 editorial 调色板；切换其主题或调色板不会改变外围文档。"
+    },
+    {
+      "id": "use-theme",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/theme-palette/demos/use-theme.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/theme-palette/demos/use-theme.tsx": "import { Tag, useConfig, useTheme } from \"minerva-design\";\n\n// useTheme() reads the closest ThemeProvider / ConfigProvider. This site wraps\n// every page in one: change the theme or palette in the header and the values\n// below follow. (github-dark is not a light / dark / system mode, so useTheme\n// falls back to \"system\" while useConfig().mode is undefined.)\nexport default function UseThemeDemo() {\n  const { theme, resolvedTheme, palette } = useTheme();\n  const config = useConfig();\n\n  const rows: [string, string][] = [\n    [\"useTheme().theme\", theme],\n    [\"useTheme().resolvedTheme\", resolvedTheme],\n    [\"useTheme().palette\", palette ?? \"null\"],\n    [\"useConfig().mode\", config.mode ?? \"undefined\"],\n    [\"useConfig().resolvedMode\", config.resolvedMode ?? \"undefined\"],\n    [\"useConfig().palette\", config.palette ?? \"null\"],\n  ];\n\n  return (\n    <dl\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"auto 1fr\",\n        gap: \"8px 16px\",\n        margin: 0,\n      }}\n    >\n      {rows.map(([label, value]) => (\n        <div key={label} style={{ display: \"contents\" }}>\n          <dt>\n            <code>{label}</code>\n          </dt>\n          <dd style={{ margin: 0 }}>\n            <Tag color=\"primary\">{value}</Tag>\n          </dd>\n        </div>\n      ))}\n    </dl>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "读取主题",
+      "description": "本站 Provider 的 useTheme() 与 useConfig()。在页头切换主题或调色板即可看到数值更新。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { ThemeProvider, ThemeToggle, PaletteToggle } from \"minerva-design\";\nimport \"minerva-design/style.css\";\n\nexport default function Root() {\n  return (\n    // mode: \"light\" | \"dark\" | \"system\" (default)\n    // palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null (default look)\n    <ThemeProvider defaultTheme=\"system\" defaultPalette=\"editorial\">\n      <header>\n        <ThemeToggle />\n        <PaletteToggle showDefault />\n      </header>\n      <App />\n    </ThemeProvider>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { ConfigProvider, ToastProvider, toast } from \"minerva-design\";\n\n// The same thing with ConfigProvider (ThemeProvider is a preset over it):\n// \"system\" is an alias of \"auto\"; persist turns on the cookies.\n<ConfigProvider\n  theme=\"system\"\n  palette=\"editorial\"\n  persist\n  onThemeChange={(theme) => toast.info(`Theme: ${theme}`)}\n  onPaletteChange={(palette) => toast.info(`Palette: ${palette}`)}\n>\n  <ToastProvider>\n    <App />\n  </ToastProvider>\n</ConfigProvider>;",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Button, useTheme } from \"minerva-design\";\n\nfunction Settings() {\n  const { theme, resolvedTheme, palette, setTheme, setPalette } = useTheme();\n  return (\n    <>\n      <p>{theme} → {resolvedTheme} · {palette ?? \"default\"}</p>\n      <Button onClick={() => setTheme(resolvedTheme === \"dark\" ? \"light\" : \"dark\")}>\n        Toggle mode\n      </Button>\n      <Button onClick={() => setPalette(\"tech\")}>Tech palette</Button>\n    </>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "<!-- palette + light / dark / system: tokens come from style.css -->\n<html data-theme=\"dark\" data-palette=\"tech\" style=\"color-scheme: dark\">\n\n<!-- no palette, or github-dark / a custom theme object: inline variables -->\n<html data-theme=\"light\" style=\"color-scheme: light; --primary-color: #2563eb; ...\">",
+      "language": "html"
+    },
+    {
+      "source": "import {\n  THEME_COOKIE_NAME,     // \"theme\"   -> \"light\" | \"dark\" | \"system\"\n  PALETTE_COOKIE_NAME,   // \"palette\" -> \"editorial\" | \"tech\" | \"graphite\" | \"cool\"\n  readCookieValue,\n  parseThemeCookie,\n  parsePaletteCookie,\n  serializeThemeCookie,\n} from \"minerva-design/theme-utils\";\n\n// Read on the server (or from document.cookie)\nconst theme = parseThemeCookie(readCookieValue(cookieHeader, THEME_COOKIE_NAME));\nconst palette = parsePaletteCookie(readCookieValue(cookieHeader, PALETTE_COOKIE_NAME));\n\n// Write from a route handler / server action (path=/, one year, SameSite=Lax)\nresponse.headers.append(\"Set-Cookie\", serializeThemeCookie(THEME_COOKIE_NAME, \"dark\"));",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/layout.tsx: a Server Component (no \"use client\")\nimport { headers } from \"next/headers\";\nimport { ThemeProvider } from \"minerva-design\";\nimport {\n  THEME_INIT_SCRIPT,\n  parseThemeCookies,\n} from \"minerva-design/theme-utils\";\nimport \"minerva-design/style.css\";\n\nexport default async function RootLayout({ children }: { children: React.ReactNode }) {\n  const { theme, palette } = parseThemeCookies((await headers()).get(\"cookie\"), {\n    palette: \"editorial\",\n  });\n\n  return (\n    // the init script changes <html> attributes before React hydrates\n    <html\n      lang=\"en\"\n      suppressHydrationWarning\n      data-theme={theme === \"system\" ? undefined : theme}\n      data-palette={palette ?? undefined}\n    >\n      <head>\n        <script\n          suppressHydrationWarning\n          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}\n        />\n      </head>\n      <body>\n        <ThemeProvider defaultTheme={theme} defaultPalette={palette}>\n          {children}\n        </ThemeProvider>\n      </body>\n    </html>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "// server.tsx: any SSR setup (Express, Hono, a Vite SSR server...)\nimport { renderToString } from \"react-dom/server\";\nimport { ThemeProvider } from \"minerva-design\";\nimport { THEME_INIT_SCRIPT, parseThemeCookies } from \"minerva-design/theme-utils\";\n\napp.get(\"*\", (req, res) => {\n  const { theme, palette } = parseThemeCookies(req.headers.cookie);\n  const body = renderToString(\n    <ThemeProvider defaultTheme={theme} defaultPalette={palette}>\n      <App url={req.url} />\n    </ThemeProvider>,\n  );\n  res.send(`<!doctype html>\n<html${palette ? ` data-palette=\"${palette}\"` : \"\"}>\n  <head>\n    <script>${THEME_INIT_SCRIPT}</script>\n    <link rel=\"stylesheet\" href=\"/assets/style.css\" />\n  </head>\n  <body><div id=\"root\">${body}</div></body>\n</html>`);\n});",
+      "language": "tsx"
+    },
+    {
+      "source": "import { createThemeInitScript } from \"minerva-design/theme-utils\";\n\n// Dark by default, \"graphite\" when the visitor has no palette cookie yet\nexport const themeInitScript = createThemeInitScript({\n  defaultTheme: \"dark\",\n  defaultPalette: \"graphite\",\n});",
+      "language": "tsx"
+    },
+    {
+      "source": "// A nested provider scopes a palette / mode to its subtree (and to the\n// overlays opened from it). <html> and the cookies are left to the root one.\n<ThemeProvider defaultTheme=\"dark\" defaultPalette=\"tech\">\n  <Button color=\"primary\">Always tech / dark</Button>\n</ThemeProvider>\n\n// Without a provider: palette token blocks match any element, not only\n// <html>. Set both attributes and give the wrapper a background.\n<div data-palette=\"tech\" data-theme=\"dark\" style={{ background: \"var(--background-color)\" }}>\n  <Button color=\"primary\">Always tech / dark</Button>\n</div>",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "主题与调色板",
+      "description": "两个相互独立的维度：浅色 / 深色 / 跟随系统的模式，以及配色调色板；支持 Cookie 持久化和无闪烁的服务端渲染。",
+      "axes": {
+        "title": "两个维度：模式与调色板",
+        "text": "模式决定浅色还是深色；调色板决定整体风格：颜色、表面、阴影和字体栈。任意调色板都能与任意模式组合，因此四个调色板提供八套完整主题；不设置调色板时则使用 Minerva 的默认外观。",
+        "value": "取值",
+        "modeFixed": "模式：始终为浅色或始终为深色。",
+        "modeSystem": "模式：跟随 prefers-color-scheme，操作系统设置变化时实时更新。ConfigProvider 也接受 \"auto\"，它是为兼容而保留的别名。",
+        "editorial": "调色板：暖色纸张背景、墨蓝主色和铁锈色强调色，适合内容为主的页面。",
+        "tech": "调色板：干净的中性表面搭配明亮的蓝色主色，适合仪表盘和开发者工具。",
+        "graphite": "调色板：单色灰阶加克制的强调色，适合信息密集的专业界面。",
+        "cool": "调色板：冷调蓝灰表面搭配青蓝主色，沉静而通透。",
+        "none": "无调色板：Minerva 的默认外观（内置的浅色和深色主题，以内联变量形式写入）。"
+      },
+      "provider": {
+        "title": "ThemeProvider 与 useTheme",
+        "text": "ThemeProvider 是同时获得两个维度的最简方式：它以给定的模式和调色板渲染一个 ConfigProvider，把变更持久化到 Cookie，并通过 useTheme() 暴露全部状态。ThemeToggle 和 PaletteToggle 是绑定到最近 Provider 的现成切换器。",
+        "config": "ThemeProvider 是 ConfigProvider 的预设，两者共享同一个数据源。如果还需要 github-dark 等内置主题、自定义主题对象或受控的 theme 属性，请直接使用 ConfigProvider：",
+        "hook": "useTheme() 返回用户选择的模式、实际应用的模式、调色板以及对应的设置函数。它在 ThemeProvider 和 ConfigProvider 下都可用，在两者之外调用会抛出错误。"
+      },
+      "applied": {
+        "title": "主题如何生效",
+        "text": "Provider 总会把解析后的模式写入 <html> 的 data-theme 和 color-scheme。当设置了调色板且主题为 light、dark 或 system 时，还会设置 data-palette，此时令牌来自 style.css 中打包的调色板样式块，内联的主题变量会被移除。没有调色板、或使用 github-dark 及自定义主题对象时，主题令牌仍像以前一样以内联 CSS 变量的形式写到 <html> 上。",
+        "precedence": "当多个来源定义了同一个令牌时，优先级最高者生效：",
+        "p1": "<html> 上的内联 CSS 变量（自定义主题对象、github-dark 或无调色板时）优先于样式表中的任何声明。",
+        "p2": "调色板样式块（[data-palette][data-theme]）优先于 :root 上的默认值。",
+        "p3": "没有其他来源匹配时，使用 style.css 中 :root 的默认值，包括由 color-mix() 派生的令牌。",
+        "p4": "对于 github-dark 和自定义主题对象，palette 属性会被忽略：这些主题自带完整的令牌。",
+        "global": "只有最外层的 Provider 会写入 <html> 和 Cookie。嵌套的 ThemeProvider 或 ConfigProvider 继承父级的模式和配色，并将自己的 defaultTheme / defaultPalette（或 theme / palette）只作用于其子树以及从中打开的浮层，不会修改 <html>（见下方“局部调色板”）。"
+      },
+      "persistence": {
+        "title": "Cookie 持久化",
+        "text": "ThemeProvider（以及开启 persist 的 ConfigProvider）会把选择写入两个 Cookie：theme（\"light\"、\"dark\" 或 \"system\"）和 palette（调色板名称；选择默认外观时会被删除）。它们有效期一年，使用 path=/ 和 SameSite=Lax，并且可以在服务端读取，这正是无闪烁 SSR 的基础。水合完成后，Provider 会恢复一次 Cookie 中的值。给 ThemeProvider 传入 disableStorage（或不开启 persist）即可只在内存中保存选择。你自己的服务端代码也可以使用同样的辅助函数："
+      },
+      "ssr": {
+        "title": "无闪烁的服务端渲染",
+        "text": "服务端无法得知访客的系统配色，而 React 只会在水合之后应用主题。两步即可弥补这一差距：在服务端读取 Cookie 并作为默认值传给 Provider；在 <head> 中内联 THEME_INIT_SCRIPT。这段很小的阻塞渲染脚本会读取 Cookie（回退到 prefers-color-scheme），并在首次绘制前设置 data-theme、data-palette 和 color-scheme，因此页面永远不会闪现错误的主题。",
+        "next": "Next.js App Router",
+        "generic": "其他任意 SSR 方案",
+        "hydration": "初始化脚本会在 React 水合之前修改 <html> 的属性，因此服务端标记与 DOM 的差异是有意为之。请给 <html> 和 <script> 元素加上 suppressHydrationWarning；它只会屏蔽该元素自身的属性警告，不影响其子元素。服务端所需的一切都从 minerva-design/theme-utils 导入：该入口没有 \"use client\" 声明，可以在 Server Component 中调用。"
+      },
+      "init": {
+        "title": "createThemeInitScript",
+        "text": "THEME_INIT_SCRIPT 就是使用默认选项调用 createThemeInitScript() 的结果。需要不同的默认值时，可以自行生成：",
+        "option": "选项",
+        "default": "默认值",
+        "defaultTheme": "theme Cookie 缺失或无效时使用的模式。\"system\" 会根据 prefers-color-scheme 解析为浅色或深色。",
+        "defaultPalette": "palette Cookie 缺失或无效、且 <html> 上还没有有效的 data-palette 时使用的调色板。null 表示不设置 data-palette（Minerva 默认外观）。",
+        "order": "脚本的解析顺序：先取 theme Cookie，否则用 defaultTheme；先取 palette Cookie，否则用 <html> 上已渲染的有效 data-palette，再否则用 defaultPalette。请保持脚本内联（不要 async 或 defer），并放在样式表之前，确保它在首次绘制前执行。"
+      },
+      "helpers": {
+        "title": "服务端安全的辅助函数",
+        "text": "以下内容均来自 minerva-design/theme-utils，这是一个不依赖 React、也没有 \"use client\" 的小型入口，可以安全地用于 Server Component、中间件和边缘函数。",
+        "name": "导出",
+        "initScript": "默认初始化脚本（字符串）：模式取自 Cookie（否则跟随系统），调色板取自 Cookie（否则取 <html> 上已有的 data-palette，再否则不设置）。请内联到 <head> 中。",
+        "create": "使用其他默认值生成初始化脚本（见上方选项）。",
+        "parseAll": "从 Cookie 请求头中解析两个 Cookie，返回 { theme, palette }，可为缺失值提供默认值。",
+        "parseTheme": "校验原始的 theme Cookie 值；无效或缺失时返回回退值（\"system\"）。",
+        "parsePalette": "校验原始的 palette Cookie 值；无效或缺失时返回回退值（null）。",
+        "read": "从 Cookie 请求头或 document.cookie 中读取并 URI 解码单个 Cookie；不存在时返回 undefined。",
+        "serialize": "为主题或调色板值返回 Set-Cookie 格式的字符串（path=/、一年、SameSite=Lax）。",
+        "guards": "ThemeMode 与 Palette 值的类型守卫。",
+        "palettes": "内置调色板名称，依次为：editorial、tech、graphite、cool。",
+        "cookieNames": "Cookie 名称（\"theme\"、\"palette\"）及其有效期（秒，一年）。"
+      },
+      "scoped": {
+        "title": "局部调色板",
+        "text": "style.css 中的配色块是属性选择器，因此可以匹配任意元素，而不仅是 <html>。让某个子树使用不同配色或模式的最简单方式是嵌套 Provider：<ThemeProvider defaultPalette=\"tech\"> 或 <ConfigProvider palette=\"tech\"> 会将其作用于子元素及其浮层。不使用 Provider 时，也可以自己在包裹元素上设置 data-palette 和 data-theme：请同时设置两个属性，并为包裹元素设置背景，因为变量虽然改变了，但只有元素使用它们时才会显示出来。"
+      },
+      "tokens": {
+        "title": "新增令牌",
+        "text": "调色板引入了一些语义颜色令牌和一组尺度令牌。每个令牌在 style.css 中都有默认值，因此无论是否使用调色板、是否使用自定义主题都能正常工作。",
+        "semantic": "语义颜色令牌",
+        "variable": "变量",
+        "items": {
+          "surface-subtle-color": "非常柔和的背景，用于侧边栏、表头和代码块。",
+          "canvas-color": "位于各表面之后的应用背景，例如应用外壳的画布。默认等于柔和表面色。",
+          "control-color": "输入框、选择器等表单控件的背景。默认等于柔和表面色。",
+          "hover-color": "悬停行和条目的背景。默认等于弱化表面色。",
+          "selected-color": "选中行、条目和标签页的背景：主色的浅色调。",
+          "text-muted-color": "低强调文本，用于说明和辅助文字，介于次要文本与禁用文本之间。",
+          "accent-color": "次级强调色，用于行动号召、评分和高亮。默认等于主色；各调色板会设置自己的值。"
+        },
+        "accentRole": "accent 也是一个完整的颜色角色，与 primary、success 相同：--accent-color-hover、-active、-subtle、-border 和 -text 会自动派生。",
+        "scales": "尺度令牌",
+        "scalesText": "尺度令牌不随模式变化（调色板只可能替换字体栈）。组件通过 CSS 变量使用它们，数值型的 gap 或 padding 属性会解析为 var(--space-<n>)。",
+        "group": "分组",
+        "variables": "变量",
+        "groups": {
+          "spacing": {
+            "name": "间距",
+            "text": "基于 4px 的 rem 尺度。小数步长用短横线表示：--space-0-5 即 0.125rem。"
+          },
+          "radius": {
+            "name": "圆角",
+            "text": "在 --radius-sm、-md、-lg 之外新增的圆角，后三者仍是主题令牌。"
+          },
+          "fontSize": {
+            "name": "字号",
+            "text": "从 0.75rem（xs）到 3.75rem（6xl）；md（0.875rem）是组件的正文字号。"
+          },
+          "fontWeight": {
+            "name": "字重与行高",
+            "text": "400 到 700 的字重，以及三档行高。"
+          },
+          "fontFamily": {
+            "name": "字体族",
+            "text": "正文、标题和等宽字体栈。调色板会覆盖它们。"
+          },
+          "zIndex": {
+            "name": "层级",
+            "text": "下拉菜单、吸顶元素、遮罩、模态框、弹出层和消息提示使用的 z-index 层级。"
+          },
+          "motion": {
+            "name": "动效",
+            "text": "过渡时长和缓动曲线。"
+          },
+          "rhythm": {
+            "name": "节奏与高度",
+            "text": "区块和段落之间的流式垂直间距，以及阴影令牌的高度别名。"
+          },
+          "focus": {
+            "name": "焦点",
+            "text": "焦点环的宽度和偏移。"
+          }
+        }
+      },
+      "demos": {
+        "toggles": {
+          "title": "ThemeToggle 与 PaletteToggle",
+          "description": "嵌套预览初始使用 editorial 调色板；切换其主题或调色板不会改变外围文档。"
+        },
+        "palette-swatches": {
+          "title": "全部调色板",
+          "description": "每个调色板的浅色与深色模式，根据导出的 palettes 对象渲染（palettes[name][mode] 是一个完整的 ComponentTheme）。"
+        },
+        "use-theme": {
+          "title": "读取主题",
+          "description": "本站 Provider 的 useTheme() 与 useConfig()。在页头切换主题或调色板即可看到数值更新。"
+        }
+      },
+      "api": {
+        "ThemeProviderProps": {
+          "defaultTheme": "初始模式。SSR 时传入从请求 Cookie 解析出的值，使服务端标记与客户端一致。嵌套 Provider 未设置时继承父级模式。",
+          "defaultPalette": "初始配色（null 表示 Minerva 默认外观）。SSR 时传入解析出的 palette Cookie。嵌套 Provider 未设置时继承父级配色。",
+          "primaryColor": "品牌色（一个 CSS 颜色或 { light, dark } 对），传给 ConfigProvider 的 primaryColor：在保持显式模式的同时重新计算主色相关变量。详见 ConfigProvider 页面的「品牌色」。",
+          "disableStorage": "不读写主题 Cookie（用于测试、嵌入式预览）。嵌套 Provider 从不使用 Cookie。",
+          "locale": "React 版内置文案的语言（嵌套 Provider 只作用于其子树）。",
+          "onThemeChange": "模式变化时调用。",
+          "onPaletteChange": "调色板变化时调用。",
+          "children": "应用内容。"
+        },
+        "ThemeContextValue": {
+          "theme": "用户选择的模式（\"system\" 跟随操作系统）。",
+          "resolvedTheme": "实际应用的模式：\"light\" 或 \"dark\"。",
+          "palette": "当前调色板，null 表示 Minerva 默认外观。",
+          "setTheme": "切换模式（未禁用存储时会写入 theme Cookie）。",
+          "setPalette": "切换调色板（未禁用存储时会写入 palette Cookie）。"
+        },
+        "ThemeToggleProps": {
+          "showSystem": "显示跟随操作系统的 \"system\" 选项。",
+          "labels": "按模式覆盖按钮文字；默认值来自 React 版的语言包。",
+          "ref": "分组元素的 ref。"
+        },
+        "PaletteToggleProps": {
+          "palettes": "提供的调色板及其顺序。",
+          "showDefault": "额外提供 Minerva 默认外观（无调色板）作为第一个选项。",
+          "labels": "覆盖按钮文字；default 键对应无调色板选项。",
+          "ref": "分组元素的 ref。"
+        }
+      },
+      "cssVars": {
+        "--theme-toggle-gap": "选项之间的间距",
+        "--theme-toggle-padding": "分组的内边距",
+        "--theme-toggle-radius": "分组的圆角（默认 --radius-lg；选项使用 --radius-md）",
+        "--theme-toggle-background": "分组的背景",
+        "--theme-toggle-item-height": "选项的最小高度（跟随密度的控件高度）",
+        "--theme-toggle-item-min-width": "选项的最小宽度",
+        "--theme-toggle-active-background": "选中选项的背景"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "主题切换",
+            "description": "浅色 / 深色 / 跟随系统按钮（aria-pressed），绑定到最近的 <minerva-config> 的主题；没有时则控制 <html data-theme>。"
+          },
+          "palette": {
+            "title": "调色板切换",
+            "description": "调色板与明暗模式相互独立：show-default 增加 Minerva 默认外观选项，hide-system 只保留浅色和深色。"
+          },
+          "events": {
+            "title": "标签与事件",
+            "description": "palettes 选择要提供的选项，labels 属性重命名选项，minerva-change 可取消（勾选 Lock 以保持当前主题）。"
+          }
+        },
+        "minerva-theme-toggle": {
+          "props": {
+            "hideSystem": "隐藏“跟随系统”选项。",
+            "persist": "当切换器控制 <html>（无 <minerva-config>）时，将选择保存到 theme / palette cookie 中（与 React 版的 ThemeProvider 相同）。"
+          },
+          "events": {
+            "minerva-change": "用户选择了主题（detail: { value }）；可取消：preventDefault() 保持当前主题。"
+          }
+        },
+        "minerva-palette-toggle": {
+          "props": {
+            "persist": "当切换器控制 <html>（无 <minerva-config>）时，将选择保存到 theme / palette cookie 中（与 React 版的 ThemeProvider 相同）。"
+          },
+          "events": {
+            "minerva-change": "用户选择了调色板（detail: { value }，null 表示默认外观）；可取消：preventDefault() 保持当前调色板。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "preset": {
+            "title": "预设选择",
+            "description": "ThemeToggle 的预设选择示例；预览随站点主题和色板更新。"
+          },
+          "toggles": {
+            "title": "ThemeToggle 与 PaletteToggle",
+            "description": "嵌套预览初始使用 editorial 调色板；切换其主题或调色板不会改变外围文档。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,754 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "native",
+  "page": "waterfall-chart",
+  "title": "Waterfall chart",
+  "description": "How a series of increases and decreases takes a value from a start to an end, with subtotals and totals: P&L bridges, cash flow, variances. Thin dashed connectors join every bar to the next one.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "data": {
+      "pnl": {
+        "revenue": "Revenue",
+        "costOfSales": "Cost of sales",
+        "grossProfit": "Gross profit",
+        "research": "R&D",
+        "marketing": "Marketing",
+        "admin": "G&A",
+        "operatingIncome": "Operating income",
+        "interest": "Interest",
+        "tax": "Tax",
+        "netIncome": "Net income"
+      },
+      "amount": "Amount",
+      "pnlAria": "Income statement from revenue to net income",
+      "opening": "Opening",
+      "closing": "Closing",
+      "cashFlow": "Net cash flow",
+      "cashAria": "Monthly net cash flows from the opening to the closing balance",
+      "budget": "Budget",
+      "actual": "Actual",
+      "drivers": {
+        "volume": "Volume",
+        "price": "Price",
+        "mix": "Product mix",
+        "exchangeRates": "Exchange rates",
+        "rawMaterials": "Raw materials",
+        "savings": "Savings"
+      },
+      "variance": "Variance",
+      "varianceAria": "Drivers of the variance between the budgeted and the actual margin",
+      "startOfYear": "Start of year",
+      "endOfYear": "End of year",
+      "movements": {
+        "hires": "Hires",
+        "internalIn": "Transfers in",
+        "resignations": "Resignations",
+        "internalOut": "Transfers out",
+        "retirements": "Retirements"
+      },
+      "people": "People",
+      "headcountAria": "Headcount changes over the year",
+      "arr": {
+        "opening": "Opening ARR",
+        "newBusiness": "New business",
+        "expansion": "Expansion",
+        "contraction": "Contraction",
+        "churn": "Churn",
+        "closing": "Closing ARR",
+        "name": "ARR",
+        "quarterLabel": "Quarter",
+        "quarter": "Q{{n}}",
+        "summary": "{{quarter}}: net new ARR {{net}} · net revenue retention {{nrr}}",
+        "aria": "ARR bridge of {{quarter}}"
+      },
+      "price": {
+        "listPrice": "List price",
+        "dealerDiscount": "Dealer discount",
+        "promotion": "Promotions",
+        "invoicePrice": "Invoice price",
+        "paymentTerms": "Payment terms",
+        "freight": "Freight",
+        "rebates": "Volume rebates",
+        "pocketPrice": "Pocket price",
+        "name": "Price per unit",
+        "hint": "Click a bar to compare it with the list price",
+        "selected": "{{step}}: {{value}}, {{share}} of the list price",
+        "aria": "Price waterfall from the list price to the pocket price"
+      },
+      "emissions": {
+        "baseline": "2019 baseline",
+        "growth": "Business growth",
+        "efficiency": "Energy efficiency",
+        "renewables": "Renewable power",
+        "fleet": "Electric fleet",
+        "refrigerants": "Refrigerants",
+        "acquisition": "Acquisition",
+        "current": "2025",
+        "target": "2030 target",
+        "kt": "{{value}} kt CO₂e",
+        "name": "Emissions",
+        "change": "Change: {{value}}",
+        "range": "From {{from}} to {{to}}",
+        "gap": "{{value}} above the 2030 target",
+        "aria": "Emissions bridge from the 2019 baseline to 2025"
+      },
+      "lead": {
+        "orderEntry": "Order entry",
+        "creditCheck": "Credit check",
+        "picking": "Picking",
+        "quality": "Quality check",
+        "carrierWait": "Waiting for carrier",
+        "transit": "Transit",
+        "customs": "Customs",
+        "total": "Lead time",
+        "name": "Duration",
+        "work": "Work",
+        "wait": "Waiting",
+        "summary": "work takes {{work}} of the {{total}} ({{share}})",
+        "aria": "Lead time of an order by stage"
+      },
+      "live": {
+        "opening": "Earlier",
+        "now": "Now",
+        "name": "Balance",
+        "kinds": {
+          "customer": "Customer payment",
+          "supplier": "Supplier invoice",
+          "payroll": "Payroll",
+          "card": "Card fees",
+          "refund": "Refund"
+        },
+        "last": "Latest: {{time}} · {{kind}} {{amount}}",
+        "pause": "Pause",
+        "resume": "Resume",
+        "aria": "Cash position of the day, updated live"
+      },
+      "scope": {
+        "committed": "Committed",
+        "added": "Added",
+        "removed": "Removed",
+        "reestimated": "Re-estimated",
+        "carriedOver": "Carried over",
+        "completed": "Completed",
+        "name": "Story points",
+        "orientation": "Orientation",
+        "vertical": "Vertical",
+        "horizontal": "Horizontal",
+        "labels": "Labels",
+        "connector": "Connectors",
+        "aria": "Sprint scope from committed to completed story points"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "WaterfallChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "WaterfallChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "steps",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "array",
+            "typeText": "readonly WaterfallStep[]",
+            "typeRef": "type:3873f9105900201e8357",
+            "required": true,
+            "description": "Changes, subtotals and totals, in order"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Writes the change (or the total) at the end of every bar"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "ChartOrientation | undefined",
+            "typeRef": "type:872af3679a2d7fcf3d26",
+            "default": "vertical",
+            "required": false,
+            "description": "`horizontal` lays the steps out in rows"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:WaterfallChartProps": {
+      "source": "native/src/components/Charts/types.ts",
+      "description": "Props of WaterfallChart",
+      "kind": "interface",
+      "extends": [
+        "Omit<ChartCommonProps, \"crosshair\" | \"labels\">",
+        "Omit<WaterfallOptions, \"labels\">"
+      ],
+      "props": [
+        {
+          "name": "steps",
+          "type": "readonly WaterfallStep[]",
+          "required": true,
+          "description": "Changes, subtotals and totals, in order"
+        },
+        {
+          "name": "labels",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Writes the change (or the total) at the end of every bar"
+        },
+        {
+          "name": "orientation",
+          "type": "ChartOrientation",
+          "required": false,
+          "default": "\"vertical\"",
+          "description": "`horizontal` lays the steps out in rows"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/waterfall-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/waterfall-chart/native/basic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { WaterfallChart, type WaterfallStep } from \"minerva-design/native\";\n\n// Income statement of the year (M$), from the revenue to the net income\nconst lines = [\n  [\"revenue\", \"subtotal\"],\n  [\"costOfSales\", -191],\n  [\"grossProfit\", \"subtotal\"],\n  [\"research\", -74],\n  [\"marketing\", -63],\n  [\"admin\", -38],\n  [\"operatingIncome\", \"subtotal\"],\n  [\"tax\", -27],\n  [\"netIncome\", \"total\"],\n] as const;\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.waterfall-chart.data\",\n  });\n  const steps = useMemo(\n    (): WaterfallStep[] =>\n      lines.map(([key, value]) =>\n        typeof value === \"number\"\n          ? { label: t(`pnl.${key}`), value }\n          : { label: t(`pnl.${key}`), kind: value },\n      ),\n    [t],\n  );\n  return (\n    <WaterfallChart\n      height={300}\n      locale={i18n.language}\n      steps={steps}\n      start={482}\n      name={t(\"amount\")}\n      orientation=\"horizontal\"\n      ariaLabel={t(\"pnlAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Waterfall chart",
+      "description": "How a series of increases and decreases takes a value from a start to an end, with subtotals and totals: P&L bridges, cash flow, variances. Thin dashed connectors join every bar to the next one.",
+      "demos": {
+        "pnl": {
+          "title": "Profit and loss bridge",
+          "description": "From revenue to net income: each change starts where the previous bar ended, subtotal and total bars show the running total from zero; the labels show the changes."
+        },
+        "cash-flow": {
+          "title": "Cash flow",
+          "description": "start sets the opening balance shown by the first subtotal, the months add their net flows and the closing balance ends the chart; yAxis.min zooms on the changes."
+        },
+        "variance": {
+          "title": "Budget variance",
+          "description": "With orientation: \"horizontal\", the drivers explaining the gap between the budgeted and the actual margin are listed in rows."
+        },
+        "headcount": {
+          "title": "Headcount bridge",
+          "description": "upColor, downColor and totalColor replace the default colors, here arrivals in blue and departures in amber."
+        },
+        "arr-bridge": {
+          "title": "ARR bridge by quarter",
+          "description": "Annual recurring revenue from the opening to the closing ARR of a quarter: new business, expansion, contraction and churn. A RadioGroup switches the quarter, start takes the previous closing ARR and yAxis.min zooms on the changes; the line below computes the net new ARR and the net revenue retention."
+        },
+        "price-bridge": {
+          "title": "Price waterfall",
+          "description": "From the list price to the pocket price of one unit, with the invoice price as a subtotal. onPointClick receives the clicked bar (event.items[0].index): the line below gives its amount as a share of the list price."
+        },
+        "emissions": {
+          "title": "Emissions bridge",
+          "description": "Emissions from the 2019 baseline to 2025: upColor and downColor are swapped so that increases are red and reductions green, a line annotation marks the 2030 target, and renderTooltip shows each change, where it starts and ends, and the gap to the target."
+        },
+        "lead-time": {
+          "title": "Lead time breakdown",
+          "description": "Every stage of an order adds its duration and a total bar gives the lead time. Each step sets its own color (work or waiting), format writes days with the unit style of Intl.NumberFormat and connector draws solid lines."
+        },
+        "live-balance": {
+          "title": "Live cash position",
+          "description": "The treasury balance during the day: a transaction arrives every two seconds (setInterval, cleared on pause and unmount), the oldest one leaves the window and is folded into start, so the first bar always shows the balance before the visible transactions."
+        },
+        "options": {
+          "title": "Options",
+          "description": "Sprint scope from the committed to the completed story points: try orientation, labels and connector."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "An income statement laid out in rows (orientation=\"horizontal\"), which leaves room for the line names on a phone."
+          }
+        }
+      },
+      "data": {
+        "pnl": {
+          "revenue": "Revenue",
+          "costOfSales": "Cost of sales",
+          "grossProfit": "Gross profit",
+          "research": "R&D",
+          "marketing": "Marketing",
+          "admin": "G&A",
+          "operatingIncome": "Operating income",
+          "interest": "Interest",
+          "tax": "Tax",
+          "netIncome": "Net income"
+        },
+        "amount": "Amount",
+        "pnlAria": "Income statement from revenue to net income",
+        "opening": "Opening",
+        "closing": "Closing",
+        "cashFlow": "Net cash flow",
+        "cashAria": "Monthly net cash flows from the opening to the closing balance",
+        "budget": "Budget",
+        "actual": "Actual",
+        "drivers": {
+          "volume": "Volume",
+          "price": "Price",
+          "mix": "Product mix",
+          "exchangeRates": "Exchange rates",
+          "rawMaterials": "Raw materials",
+          "savings": "Savings"
+        },
+        "variance": "Variance",
+        "varianceAria": "Drivers of the variance between the budgeted and the actual margin",
+        "startOfYear": "Start of year",
+        "endOfYear": "End of year",
+        "movements": {
+          "hires": "Hires",
+          "internalIn": "Transfers in",
+          "resignations": "Resignations",
+          "internalOut": "Transfers out",
+          "retirements": "Retirements"
+        },
+        "people": "People",
+        "headcountAria": "Headcount changes over the year",
+        "arr": {
+          "opening": "Opening ARR",
+          "newBusiness": "New business",
+          "expansion": "Expansion",
+          "contraction": "Contraction",
+          "churn": "Churn",
+          "closing": "Closing ARR",
+          "name": "ARR",
+          "quarterLabel": "Quarter",
+          "quarter": "Q{{n}}",
+          "summary": "{{quarter}}: net new ARR {{net}} · net revenue retention {{nrr}}",
+          "aria": "ARR bridge of {{quarter}}"
+        },
+        "price": {
+          "listPrice": "List price",
+          "dealerDiscount": "Dealer discount",
+          "promotion": "Promotions",
+          "invoicePrice": "Invoice price",
+          "paymentTerms": "Payment terms",
+          "freight": "Freight",
+          "rebates": "Volume rebates",
+          "pocketPrice": "Pocket price",
+          "name": "Price per unit",
+          "hint": "Click a bar to compare it with the list price",
+          "selected": "{{step}}: {{value}}, {{share}} of the list price",
+          "aria": "Price waterfall from the list price to the pocket price"
+        },
+        "emissions": {
+          "baseline": "2019 baseline",
+          "growth": "Business growth",
+          "efficiency": "Energy efficiency",
+          "renewables": "Renewable power",
+          "fleet": "Electric fleet",
+          "refrigerants": "Refrigerants",
+          "acquisition": "Acquisition",
+          "current": "2025",
+          "target": "2030 target",
+          "kt": "{{value}} kt CO₂e",
+          "name": "Emissions",
+          "change": "Change: {{value}}",
+          "range": "From {{from}} to {{to}}",
+          "gap": "{{value}} above the 2030 target",
+          "aria": "Emissions bridge from the 2019 baseline to 2025"
+        },
+        "lead": {
+          "orderEntry": "Order entry",
+          "creditCheck": "Credit check",
+          "picking": "Picking",
+          "quality": "Quality check",
+          "carrierWait": "Waiting for carrier",
+          "transit": "Transit",
+          "customs": "Customs",
+          "total": "Lead time",
+          "name": "Duration",
+          "work": "Work",
+          "wait": "Waiting",
+          "summary": "work takes {{work}} of the {{total}} ({{share}})",
+          "aria": "Lead time of an order by stage"
+        },
+        "live": {
+          "opening": "Earlier",
+          "now": "Now",
+          "name": "Balance",
+          "kinds": {
+            "customer": "Customer payment",
+            "supplier": "Supplier invoice",
+            "payroll": "Payroll",
+            "card": "Card fees",
+            "refund": "Refund"
+          },
+          "last": "Latest: {{time}} · {{kind}} {{amount}}",
+          "pause": "Pause",
+          "resume": "Resume",
+          "aria": "Cash position of the day, updated live"
+        },
+        "scope": {
+          "committed": "Committed",
+          "added": "Added",
+          "removed": "Removed",
+          "reestimated": "Re-estimated",
+          "carriedOver": "Carried over",
+          "completed": "Completed",
+          "name": "Story points",
+          "orientation": "Orientation",
+          "vertical": "Vertical",
+          "horizontal": "Horizontal",
+          "labels": "Labels",
+          "connector": "Connectors",
+          "aria": "Sprint scope from committed to completed story points"
+        }
+      },
+      "api": {
+        "WaterfallChartProps": {
+          "steps": "Changes, subtotals and totals, in order",
+          "labels": "Writes the change (or the total) at the end of every bar",
+          "orientation": "\"horizontal\" lays the steps out in rows"
+        },
+        "WaterfallStep": {
+          "label": "Category name of the bar",
+          "value": "Change (positive or negative); ignored by totals",
+          "kind": "\"subtotal\" and \"total\" bars show the running total from zero",
+          "color": "Color of this bar (any CSS color)"
+        },
+        "WaterfallOptions": {
+          "name": "Name of the series (tooltip)",
+          "upColor": "Color of the increases",
+          "downColor": "Color of the decreases",
+          "totalColor": "Color of the totals and subtotals",
+          "start": "Value the first change starts from",
+          "labels": "Writes the change (or the total) at the end of every bar",
+          "format": "Formats the values (labels, tooltip)",
+          "locale": "Locale of the default series name; the page language by default",
+          "connector": "Thin lines from the end of every bar to the next one (dashed, secondary text color); false hides them, an object sets color, dash and width"
+        },
+        "ChartConnectorOptions": {
+          "color": "Line color (any CSS color); the secondary text color by default",
+          "dash": "Dash pattern in CSS pixels; [] draws solid lines (default [3, 3])",
+          "width": "Line width in CSS pixels (default 1)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "pnl": {
+            "title": "Profit and loss bridge",
+            "description": "Changes float from the running total, the gross profit is a subtotal and the net income the total."
+          },
+          "cash-flow": {
+            "title": "Cash flow from an opening balance",
+            "description": "Monthly inflows and outflows in rows, from the opening balance to the closing total; values in the tooltip."
+          }
+        },
+        "minerva-waterfall-chart": {
+          "props": {
+            "valueName": "Name of the value in the tooltip",
+            "hideLabels": "Hides the change (or total) written at the end of every bar",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected",
+            "hideConnectors": "Hides the thin lines from the end of every bar to the next one"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

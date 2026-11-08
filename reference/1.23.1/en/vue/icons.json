@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "icons",
+  "title": "Icons",
+  "description": "The icon set of Minerva: original icons drawn for the library on a 24×24 grid, rendered as inline SVG by default and also drawn on Canvas2D, WebGL, WebGL2 or WebGPU canvases.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "intro": {
+      "title": "Overview",
+      "text": "minerva-design/icons ships {{count}} icons in {{categories}} categories, with no third-party icon set: every icon is SVG path data owned by the library, the same data for every renderer and every framework.",
+      "design": "One visual language: a 24×24 grid with about 2px of padding, 2px strokes with round caps and joins, no fills, so icons sit well next to text and scale from 12 to 96 pixels. Some icons carry a color per stroke (colors); the others follow the color prop.",
+      "svg": "SVG by default: crisp at any size, server-rendered, colored by the text color (currentColor), hidden from assistive technologies unless given a title.",
+      "renderers": "The same geometry on the GPU: Icon draws on a canvas with renderer=\"auto\", \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\", and IconCanvas draws thousands of icons in a few instanced draws, with the WebGPU -> WebGL2 -> WebGL -> Canvas2D fallback of the charts.",
+      "treeShaking": "Pay for what you use: each icon is its own constant (searchIcon) and component (SearchIcon), and the canvas renderers load only with the first canvas icon.",
+      "frameworks": "Framework-free core: minerva-design/icons/core has the icon data, SVG strings, Canvas2D drawing and the GPU canvases for any framework; the React components are built on it.",
+      "pages": "See <icon>Icon</icon> for the component, <canvas>IconCanvas</canvas> for GPU batches, and <core>Icons core</core> for the framework-free API."
+    },
+    "data": {
+      "search": "Search icons",
+      "searchPlaceholder": "Search by name or tag…",
+      "category": "Category",
+      "all": "All categories",
+      "size": "Size",
+      "stroke": "Stroke width",
+      "render": "Rendering",
+      "svg": "SVG",
+      "canvas": "Canvas",
+      "copy": "Copy {{code}}",
+      "copied": "Copied {{code}}",
+      "copyFailed": "Could not copy {{code}}: the clipboard is unavailable",
+      "kind": "Kind",
+      "kinds": {
+        "all": "All kinds",
+        "monochrome": "Monochrome",
+        "multicolor": "Multicolor"
+      },
+      "color": "Color",
+      "tones": {
+        "text": "Text color",
+        "primary": "Primary",
+        "success": "Success",
+        "warning": "Warning",
+        "danger": "Danger"
+      },
+      "count": "{{n}} icons",
+      "empty": "No icon matches \"{{query}}\"",
+      "categories": {
+        "arrows": "Arrows",
+        "actions": "Actions",
+        "interface": "Interface",
+        "media": "Media",
+        "files": "Files",
+        "communication": "Communication",
+        "data": "Data and charts",
+        "finance": "Finance",
+        "status": "Status",
+        "devices": "Devices",
+        "weather": "Weather",
+        "nature": "Nature",
+        "food": "Food",
+        "people": "People",
+        "places": "Places",
+        "shapes": "Shapes",
+        "text": "Text",
+        "education": "Education",
+        "health": "Health",
+        "shopping": "Shopping",
+        "music": "Music",
+        "tools": "Tools",
+        "sports": "Sports"
+      }
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { SearchIcon, SettingsIcon } from \"minerva-design/icons\";\n\n<SearchIcon />                                  // 24px, currentColor, 2px stroke\n<SettingsIcon size={16} title=\"Settings\" />     // labelled: role=\"img\"\n<SearchIcon renderer=\"webgl2\" />               // drawn by the GPU on a canvas",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Icons",
+      "description": "The icon set of Minerva: original icons drawn for the library on a 24×24 grid, rendered as inline SVG by default and also drawn on Canvas2D, WebGL, WebGL2 or WebGPU canvases.",
+      "intro": {
+        "title": "Overview",
+        "text": "minerva-design/icons ships {{count}} icons in {{categories}} categories, with no third-party icon set: every icon is SVG path data owned by the library, the same data for every renderer and every framework.",
+        "design": "One visual language: a 24×24 grid with about 2px of padding, 2px strokes with round caps and joins, no fills, so icons sit well next to text and scale from 12 to 96 pixels. Some icons carry a color per stroke (colors); the others follow the color prop.",
+        "svg": "SVG by default: crisp at any size, server-rendered, colored by the text color (currentColor), hidden from assistive technologies unless given a title.",
+        "renderers": "The same geometry on the GPU: Icon draws on a canvas with renderer=\"auto\", \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\", and IconCanvas draws thousands of icons in a few instanced draws, with the WebGPU -> WebGL2 -> WebGL -> Canvas2D fallback of the charts.",
+        "treeShaking": "Pay for what you use: each icon is its own constant (searchIcon) and component (SearchIcon), and the canvas renderers load only with the first canvas icon.",
+        "frameworks": "Framework-free core: minerva-design/icons/core has the icon data, SVG strings, Canvas2D drawing and the GPU canvases for any framework; the React components are built on it.",
+        "pages": "See <icon>Icon</icon> for the component, <canvas>IconCanvas</canvas> for GPU batches, and <core>Icons core</core> for the framework-free API."
+      },
+      "demos": {
+        "gallery": {
+          "title": "Gallery",
+          "description": "Every icon of the set. Search by name or tag, filter by category or by kind, try sizes, stroke widths and colors, and switch from SVG to canvas: in canvas mode every icon is drawn by the backend picked in the renderer bar at the top of the page. Monochrome icons (the interface ones: actions, arrows, status…) follow the text color, like text, so they fit buttons and inputs; multicolor icons keep their own accents and only their neutral strokes follow the color. Click an icon to copy its component."
+        }
+      },
+      "data": {
+        "search": "Search icons",
+        "searchPlaceholder": "Search by name or tag…",
+        "category": "Category",
+        "all": "All categories",
+        "size": "Size",
+        "stroke": "Stroke width",
+        "render": "Rendering",
+        "svg": "SVG",
+        "canvas": "Canvas",
+        "copy": "Copy {{code}}",
+        "copied": "Copied {{code}}",
+        "copyFailed": "Could not copy {{code}}: the clipboard is unavailable",
+        "kind": "Kind",
+        "kinds": {
+          "all": "All kinds",
+          "monochrome": "Monochrome",
+          "multicolor": "Multicolor"
+        },
+        "color": "Color",
+        "tones": {
+          "text": "Text color",
+          "primary": "Primary",
+          "success": "Success",
+          "warning": "Warning",
+          "danger": "Danger"
+        },
+        "count": "{{n}} icons",
+        "empty": "No icon matches \"{{query}}\"",
+        "categories": {
+          "arrows": "Arrows",
+          "actions": "Actions",
+          "interface": "Interface",
+          "media": "Media",
+          "files": "Files",
+          "communication": "Communication",
+          "data": "Data and charts",
+          "finance": "Finance",
+          "status": "Status",
+          "devices": "Devices",
+          "weather": "Weather",
+          "nature": "Nature",
+          "food": "Food",
+          "people": "People",
+          "places": "Places",
+          "shapes": "Shapes",
+          "text": "Text",
+          "education": "Education",
+          "health": "Health",
+          "shopping": "Shopping",
+          "music": "Music",
+          "tools": "Tools",
+          "sports": "Sports"
+        }
+      }
+    }
+  }
+}

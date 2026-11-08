@@ -1,0 +1,587 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "native",
+  "page": "checkbox",
+  "title": "Checkbox",
+  "description": "Lets users select one or more options, with indeterminate, error and custom styling support.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Checkbox",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Checkbox"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "checked",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Checked state (controlled). Ignored inside a CheckboxGroup"
+          },
+          {
+            "name": "defaultChecked",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Initial checked state (uncontrolled)"
+          },
+          {
+            "name": "indeterminate",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the indeterminate (partially checked) state; a press checks the box (and reports `onChange(true)`) while the prop stays in charge"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the checkbox (also set by a disabled group)"
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label content (a string becomes Text and names the checkbox)"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "SemanticColor | undefined",
+            "typeRef": "type:fb510f224f696f21d0ad",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the checked / indeterminate box (a CheckboxGroup color overrides it)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "NativeSize | undefined",
+            "typeRef": "type:3e1597e03bb6f7f3269e",
+            "default": "medium",
+            "required": false,
+            "description": "Box and label size (a CheckboxGroup size overrides it)"
+          },
+          {
+            "name": "shape",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "rounded",
+              "square"
+            ],
+            "typeText": "CheckboxShape | undefined",
+            "typeRef": "type:da94cbfaf3bae65cca73",
+            "default": "square",
+            "required": false,
+            "description": "Box shape (a CheckboxGroup shape overrides it)"
+          },
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Value of the checkbox: identifies it inside a CheckboxGroup"
+          },
+          {
+            "name": "error",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Error state: danger border (also set by an invalid group)"
+          },
+          {
+            "name": "labelPlacement",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "enum",
+            "values": [
+              "bottom",
+              "end",
+              "start",
+              "top"
+            ],
+            "typeText": "LabelPlacement | undefined",
+            "typeRef": "type:6686aa99dfdd3afb9058",
+            "default": "end",
+            "required": false,
+            "description": "Position of the label relative to the box"
+          },
+          {
+            "name": "icon",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Custom glyph shown in the checked box"
+          },
+          {
+            "name": "labelStyle",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the label text"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/Checkbox/Checkbox.tsx",
+            "kind": "function",
+            "typeText": "((checked: boolean, value?: string | undefined) => void) | undefined",
+            "typeRef": "type:21d11caba2d9de86e709",
+            "parameters": [
+              {
+                "name": "checked",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              },
+              {
+                "name": "value",
+                "position": 1,
+                "required": false,
+                "rest": false,
+                "typeText": "string | undefined",
+                "typeRef": "type:c59382f9551703242861"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the requested state and the checkbox `value`"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:CheckboxProps": {
+      "source": "native/src/components/Checkbox/Checkbox.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+      ],
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "required": false,
+          "description": "Checked state (controlled). Ignored inside a CheckboxGroup"
+        },
+        {
+          "name": "defaultChecked",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Initial checked state (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(checked: boolean, value?: string) => void",
+          "required": false,
+          "description": "Called with the requested state and the checkbox `value`"
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the indeterminate (partially checked) state; a press checks the box (and reports `onChange(true)`) while the prop stays in charge"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the checkbox (also set by a disabled group)"
+        },
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label content (a string becomes Text and names the checkbox)"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label content, when `label` is not set"
+        },
+        {
+          "name": "color",
+          "type": "CheckboxColor",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the checked / indeterminate box (a CheckboxGroup color overrides it)"
+        },
+        {
+          "name": "size",
+          "type": "CheckboxSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Box and label size (a CheckboxGroup size overrides it)"
+        },
+        {
+          "name": "shape",
+          "type": "CheckboxShape",
+          "required": false,
+          "default": "\"square\"",
+          "description": "Box shape (a CheckboxGroup shape overrides it)"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Value of the checkbox: identifies it inside a CheckboxGroup"
+        },
+        {
+          "name": "error",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Error state: danger border (also set by an invalid group)"
+        },
+        {
+          "name": "labelPlacement",
+          "type": "CheckboxLabelPlacement",
+          "required": false,
+          "default": "\"end\"",
+          "description": "Position of the label relative to the box"
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Custom glyph shown in the checked box"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the pressable root"
+        },
+        {
+          "name": "labelStyle",
+          "type": "StyleProp<TextStyle>",
+          "required": false,
+          "description": "Style of the label text"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Checkbox": {
+      "kind": "cssVars",
+      "source": "react/src/components/Checkbox",
+      "vars": [
+        {
+          "name": "--checkbox-checked-color",
+          "description": "Background / border of the checked or indeterminate box (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--checkbox-checkmark-color",
+          "description": "Color of the checkmark / indeterminate dash"
+        },
+        {
+          "name": "--checkbox-box-color",
+          "description": "Background of the unchecked box"
+        },
+        {
+          "name": "--checkbox-border-color",
+          "description": "Border of the unchecked box"
+        },
+        {
+          "name": "--checkbox-size",
+          "description": "Width and height of the box (every size)"
+        },
+        {
+          "name": "--checkbox-radius",
+          "description": "Corner radius of the box for the square and rounded shapes"
+        },
+        {
+          "name": "--checkbox-gap",
+          "description": "Space between the box and the label"
+        },
+        {
+          "name": "--checkbox-label-font-size",
+          "description": "Font size of the label (every size)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/checkbox/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/checkbox/native/basic.tsx": "import { View } from \"react-native\";\nimport { Checkbox } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <View style={{ gap: 12, alignItems: \"flex-start\" }}>\n      <Checkbox label=\"Remember me\" />\n      <Checkbox label=\"Checked by default\" defaultChecked />\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Remember me starts unchecked; Checked by default starts checked. Each checkbox toggles independently."
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/checkbox/native/controlled.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/checkbox/native/controlled.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Checkbox, useTheme } from \"minerva-design/native\";\nexport default function Controlled() {\n  const [checked, setChecked] = useState(true);\n  const { colors } = useTheme();\n  return (\n    <View style={{ gap: 12, alignItems: \"flex-start\" }}>\n      <Checkbox\n        label=\"Subscribe to the newsletter\"\n        checked={checked}\n        onChange={setChecked}\n      />\n      <Text role=\"status\" style={{ color: colors[\"text-color\"] }}>\n        {checked ? \"Subscribed\" : \"Not subscribed\"}\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Controlled",
+      "description": "The newsletter starts subscribed. Toggling it updates the subscription status below."
+    },
+    {
+      "id": "indeterminate",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/checkbox/native/indeterminate.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/checkbox/native/indeterminate.tsx": "import { View } from \"react-native\";\nimport { useState } from \"react\";\nimport { Checkbox } from \"minerva-design/native\";\n\nconst fruits = [\"Apple\", \"Banana\", \"Cherry\"];\n\nexport default function IndeterminateDemo() {\n  const [selected, setSelected] = useState<string[]>([\"Apple\"]);\n  const allChecked = selected.length === fruits.length;\n  const someChecked = selected.length > 0 && !allChecked;\n\n  const toggle = (fruit: string, checked: boolean) =>\n    setSelected((prev) =>\n      checked ? [...prev, fruit] : prev.filter((f) => f !== fruit),\n    );\n\n  return (\n    <View style={{ gap: 8 }}>\n      <Checkbox\n        label=\"Select all\"\n        checked={allChecked}\n        indeterminate={someChecked}\n        onChange={(checked) => setSelected(checked ? fruits : [])}\n      />\n      <View\n        style={{\n          gap: 8,\n          paddingLeft: 24,\n        }}\n      >\n        {fruits.map((fruit) => (\n          <Checkbox\n            key={fruit}\n            label={fruit}\n            checked={selected.includes(fruit)}\n            onChange={(checked) => toggle(fruit, checked)}\n          />\n        ))}\n      </View>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Indeterminate",
+      "description": "Apple is initially selected. Select all starts mixed, selects every fruit, and clears them on the next activation."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Checkbox",
+      "description": "Lets users select one or more options, with indeterminate, error and custom styling support.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Remember me starts unchecked; Checked by default starts checked. Each checkbox toggles independently."
+        },
+        "controlled": {
+          "title": "Controlled",
+          "description": "The newsletter starts subscribed. Toggling it updates the subscription status below."
+        },
+        "indeterminate": {
+          "title": "Indeterminate",
+          "description": "Apple is initially selected. Select all starts mixed, selects every fruit, and clears them on the next activation."
+        },
+        "sizes-and-shapes": {
+          "title": "Sizes and shapes",
+          "description": "Three sizes and three box shapes: square (default), rounded and circle."
+        },
+        "label-placement": {
+          "title": "Label placement",
+          "description": "Place the label at the start, end (default), top or bottom of the box."
+        },
+        "states": {
+          "title": "States",
+          "description": "Disabled checkboxes, and required for use in native forms."
+        },
+        "custom-style": {
+          "title": "Custom style",
+          "description": "Recolor the box with the --checkbox-checked-color, --checkbox-checkmark-color, --checkbox-box-color and --checkbox-border-color CSS custom properties (on className or an ancestor), or show a custom icon when checked."
+        },
+        "error": {
+          "title": "Error state",
+          "description": "error with helperText highlights a checkbox that needs attention."
+        },
+        "colors-and-form-control": {
+          "title": "Colors and FormControl",
+          "description": "color sets the semantic checked color (primary, success, info, warning or danger); children can be used as the label. Inside a FormControl the checkbox picks up the id, description, invalid, required and disabled state."
+        }
+      },
+      "api": {
+        "CheckboxProps": {
+          "checked": "Checked state (controlled)",
+          "defaultChecked": "Initial checked state (uncontrolled)",
+          "disabled": "Disables the checkbox",
+          "indeterminate": "Shows the indeterminate (partially checked) state. Controlled: it stays applied until this prop changes, also after the user clicks",
+          "name": "Name of the input, used in forms",
+          "onChange": "Called with the new checked state and the change event",
+          "shape": "Box shape",
+          "size": "Checkbox size",
+          "label": "Label text",
+          "aria-label": "Accessible label, required when there is no visible label",
+          "className": "Additional class name",
+          "icon": "Custom icon shown when checked",
+          "required": "Marks the input as required",
+          "error": "Shows the error state",
+          "errorIcon": "Icon shown before the helper text in the error state",
+          "helperText": "Helper or error text shown below the checkbox (linked with aria-describedby)",
+          "labelPlacement": "Position of the label relative to the box",
+          "ref": "Ref to the underlying <input> element",
+          "children": "Label content (alternative to label; used when label is not set)",
+          "color": "Semantic color of the checked / indeterminate box. For a custom look, set the --checkbox-checked-color, --checkbox-checkmark-color, --checkbox-box-color and --checkbox-border-color CSS custom properties on className or an ancestor",
+          "id": "id of the input (defaults to the enclosing FormControl's id)",
+          "value": "Value submitted with the form when checked",
+          "aria-describedby": "Extra ids of elements describing the checkbox (aria-describedby)",
+          "aria-labelledby": "id(s) of the element(s) labelling the checkbox",
+          "style": "Inline styles of the label element"
+        }
+      },
+      "cssVars": {
+        "--checkbox-checked-color": "Background / border of the checked or indeterminate box (defaults to the color prop's accent)",
+        "--checkbox-checkmark-color": "Color of the checkmark / indeterminate dash",
+        "--checkbox-box-color": "Background of the unchecked box",
+        "--checkbox-border-color": "Border of the unchecked box",
+        "--checkbox-size": "Width and height of the box (every size)",
+        "--checkbox-radius": "Corner radius of the box for the square and rounded shapes",
+        "--checkbox-gap": "Space between the box and the label",
+        "--checkbox-label-font-size": "Font size of the label (every size)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Remember me starts unchecked; Checked by default starts checked. Each checkbox toggles independently."
+          },
+          "select-all": {
+            "title": "Select all (indeterminate)",
+            "description": "The parent box follows its children through minerva-change: checked when all are, indeterminate (aria-checked=\"mixed\") when only some are."
+          },
+          "styles-states": {
+            "title": "Styles and states",
+            "description": "Sizes, shapes, colors, label placement, a custom icon in the icon slot, read-only and error states with helper text."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "Form-associated: a checked box submits its value under name, required blocks submission until it is checked, and reset restores the checked attributes."
+          }
+        },
+        "minerva-checkbox": {
+          "props": {
+            "readOnly": "Read-only: focusable and submitted, but the user cannot toggle it.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only)."
+          },
+          "events": {
+            "change": "The checked state changed (re-dispatched from the inner input).",
+            "minerva-change": "The user toggled the box; detail: { checked, value }."
+          },
+          "slots": {
+            "default": "Label content (alternative to the label attribute).",
+            "icon": "Custom icon shown inside the box when checked."
+          },
+          "methods": {
+            "focus": "Focuses the inner control.",
+            "blur": "Removes focus from the inner control.",
+            "click": "Clicks the inner control (toggles it unless disabled or read-only).",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Remember me starts unchecked; Checked by default starts checked. Each checkbox toggles independently."
+          },
+          "controlled": {
+            "title": "Controlled",
+            "description": "The newsletter starts subscribed. Toggling it updates the subscription status below."
+          },
+          "indeterminate": {
+            "title": "Indeterminate",
+            "description": "Apple is initially selected. Select all starts mixed, selects every fruit, and clears them on the next activation."
+          }
+        }
+      }
+    }
+  }
+}

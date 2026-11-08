@@ -1,0 +1,583 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "zh",
+  "renderer": "wc",
+  "page": "icon-button",
+  "title": "IconButton 图标按钮",
+  "description": "仅显示图标的紧凑按钮。设置 pressed / defaultPressed 后成为切换按钮（收藏、点赞、静音等）。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "IconButton",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/icon-button",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-icon-button",
+        "props": [
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "\"primary\" | \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\"",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"ghost\" | \"solid\" | \"outline\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"xsmall\" | \"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "typeText": "\"circle\" | \"square\"",
+            "attribute": "shape",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "attribute": "loading",
+            "required": false
+          },
+          {
+            "name": "toggle",
+            "typeText": "boolean",
+            "attribute": "toggle",
+            "required": false
+          },
+          {
+            "name": "pressed",
+            "typeText": "boolean",
+            "attribute": "pressed",
+            "required": false
+          },
+          {
+            "name": "tooltip",
+            "typeText": "string | undefined",
+            "attribute": "tooltip",
+            "required": false
+          },
+          {
+            "name": "tooltipPlacement",
+            "typeText": "Placement",
+            "attribute": "tooltip-placement",
+            "required": false
+          },
+          {
+            "name": "noTooltip",
+            "typeText": "boolean",
+            "attribute": "no-tooltip",
+            "required": false
+          },
+          {
+            "name": "type",
+            "typeText": "\"button\" | \"submit\" | \"reset\"",
+            "attribute": "type",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-pressed-change",
+            "typeText": "CustomEvent<{ pressed: boolean; }>",
+            "detailType": {
+              "typeText": "{ pressed: boolean; }",
+              "typeRef": "type:bb59ebc1c083982ddc76"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "A toggle button was activated (`detail: { pressed }`, the new state); cancelable: `preventDefault()` keeps the current state"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "The icon (hidden from assistive technologies)"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-icon-button": {
+      "kind": "element",
+      "source": "web-components/src/components/icon-button/icon-button.ts",
+      "className": "MinervaIconButton",
+      "summary": "Icon-only button with a tooltip, toggle and loading states.",
+      "description": "A button that only contains an icon (`<IconButton>` of React). - `label` (or `aria-label`) names the button; `label` is also shown as a tooltip on hover / focus (Escape closes it) unless `no-tooltip` is set. - `color` picks the semantic color (neutral by default), `variant` the visual style (ghost by default). - The icon is the default slot content, wrapped in an `aria-hidden` span (the button's name describes it). - `toggle` makes it a toggle button (`aria-pressed` from `pressed`): activation flips `pressed` and fires a cancelable `minerva-pressed-change`. - While `loading` it stays focusable (aria-disabled + aria-busy instead of the native disabled attribute) but ignores activation, including the form submission of `type=\"submit\"`. Differences from React: the tooltip is built in (React wraps the button in its `<Tooltip>`); it supports `tooltip` (content), `tooltip-placement` and `no-tooltip`, not the tooltip color / variant / shape / arrow options.",
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string | undefined",
+          "description": "Accessible name of the button, also shown as its tooltip (unless `no-tooltip`). Takes precedence over aria-label"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "\"primary\" | \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\"",
+          "default": "\"neutral\"",
+          "description": "Semantic color"
+        },
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"ghost\" | \"solid\" | \"outline\"",
+          "default": "\"ghost\"",
+          "description": "Visual style: ghost (transparent until hovered), solid or outline"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Button size"
+        },
+        {
+          "name": "shape",
+          "attribute": "shape",
+          "type": "\"circle\" | \"square\"",
+          "default": "\"circle\"",
+          "description": "Button shape"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the button and removes it from the tab order"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false",
+          "description": "Replaces the icon with a spinner and ignores activation while staying focusable (aria-busy + aria-disabled)"
+        },
+        {
+          "name": "toggle",
+          "attribute": "toggle",
+          "type": "boolean",
+          "default": "false",
+          "description": "Makes the button a toggle button (exposes `aria-pressed`)"
+        },
+        {
+          "name": "pressed",
+          "attribute": "pressed",
+          "type": "boolean",
+          "default": "false",
+          "description": "Pressed state of a toggle button"
+        },
+        {
+          "name": "tooltip",
+          "attribute": "tooltip",
+          "type": "string | undefined",
+          "description": "Tooltip content (defaults to `label`)"
+        },
+        {
+          "name": "tooltipPlacement",
+          "attribute": "tooltip-placement",
+          "type": "Placement",
+          "default": "\"top\"",
+          "description": "Preferred tooltip placement"
+        },
+        {
+          "name": "noTooltip",
+          "attribute": "no-tooltip",
+          "type": "boolean",
+          "default": "false",
+          "description": "Does not show the tooltip (the label still names the button)"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "\"button\" | \"submit\" | \"reset\"",
+          "default": "\"button\"",
+          "description": "What the button does in its form: nothing, submit it or reset it"
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the button"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "click",
+          "signature": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-pressed-change",
+          "description": "A toggle button was activated (`detail: { pressed }`, the new state); cancelable: `preventDefault()` keeps the current state"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The icon (hidden from assistive technologies)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The native <button>; state active while a toggle button is pressed, inactive otherwise"
+        },
+        {
+          "name": "icon",
+          "description": "The icon wrapper (hidden from assistive technologies)"
+        },
+        {
+          "name": "spinner",
+          "description": "The loading indicator (while loading)"
+        },
+        {
+          "name": "tooltip",
+          "description": "The tooltip (role=tooltip). Web components only: React wraps the button in a <Tooltip> component, which has its own hooks"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        },
+        {
+          "name": "--tooltip-max-width",
+          "description": "Maximum width (capped by the viewport)"
+        },
+        {
+          "name": "--tooltip-padding",
+          "description": "Padding (every shape)"
+        },
+        {
+          "name": "--tooltip-radius",
+          "description": "Corner radius (defaults to the radius of the shape)"
+        },
+        {
+          "name": "--tooltip-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--tooltip-bg",
+          "description": "Background (gradients allowed; every variant)"
+        },
+        {
+          "name": "--tooltip-color",
+          "description": "Text color (every variant)"
+        },
+        {
+          "name": "--tooltip-shadow",
+          "description": "Shadow (defaults to --shadow-md, --shadow-lg for the glass variant)"
+        },
+        {
+          "name": "--tooltip-z-index",
+          "description": "Stacking order (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:IconButton": {
+      "kind": "cssVars",
+      "source": "react/src/components/IconButton",
+      "vars": [
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/wc/basic.html": "<minerva-icon-button label=\"Edit\">✎</minerva-icon-button>\n<minerva-icon-button label=\"Delete\" color=\"danger\">🗑</minerva-icon-button>\n<minerva-icon-button label=\"Share\" variant=\"outline\">⤴</minerva-icon-button>\n<minerva-icon-button label=\"Add\" variant=\"solid\" color=\"primary\"\n  >+</minerva-icon-button\n>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本用法",
+      "description": "label 为纯图标按钮提供名称，并在悬停和聚焦时作为提示显示（Escape 关闭）。默认为 ghost 样式和 neutral 颜色。"
+    },
+    {
+      "id": "sizes-shapes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/wc/sizes-shapes.html",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/wc/sizes-shapes.html": "<div style=\"display: grid; gap: 12px\">\n  <div style=\"display: flex; flex-wrap: wrap; gap: 8px; align-items: center\">\n    <minerva-icon-button\n      label=\"Extra small\"\n      size=\"xsmall\"\n      variant=\"solid\"\n      color=\"primary\"\n      >★</minerva-icon-button\n    >\n    <minerva-icon-button\n      label=\"Small\"\n      size=\"small\"\n      variant=\"solid\"\n      color=\"primary\"\n      >★</minerva-icon-button\n    >\n    <minerva-icon-button\n      label=\"Medium\"\n      size=\"medium\"\n      variant=\"solid\"\n      color=\"primary\"\n      >★</minerva-icon-button\n    >\n    <minerva-icon-button\n      label=\"Large\"\n      size=\"large\"\n      variant=\"solid\"\n      color=\"primary\"\n      >★</minerva-icon-button\n    >\n    <minerva-icon-button label=\"Square\" shape=\"square\" variant=\"outline\"\n      >★</minerva-icon-button\n    >\n  </div>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 8px; align-items: center\">\n    <minerva-icon-button label=\"Primary\" color=\"primary\" variant=\"solid\"\n      >★</minerva-icon-button\n    >\n    <minerva-icon-button label=\"Success\" color=\"success\" variant=\"solid\"\n      >✓</minerva-icon-button\n    >\n    <minerva-icon-button label=\"Warning\" color=\"warning\" variant=\"outline\"\n      >!</minerva-icon-button\n    >\n    <minerva-icon-button label=\"Danger\" color=\"danger\" variant=\"outline\"\n      >✕</minerva-icon-button\n    >\n    <minerva-icon-button label=\"Info\" color=\"info\">i</minerva-icon-button>\n  </div>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "尺寸、形状与颜色",
+      "description": "四种尺寸、圆形或方形，以及搭配 solid / outline / ghost 变体的通用语义颜色。"
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/wc/states.html",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/wc/states.html": "<div style=\"display: flex; flex-wrap: wrap; gap: 8px; align-items: center\">\n  <minerva-icon-button id=\"refresh\" label=\"Refresh\" variant=\"outline\"\n    >⟳</minerva-icon-button\n  >\n  <minerva-icon-button label=\"Disabled\" disabled>✎</minerva-icon-button>\n  <minerva-icon-button label=\"Settings\" tooltip-placement=\"bottom\"\n    >⚙</minerva-icon-button\n  >\n  <minerva-icon-button\n    label=\"Help\"\n    tooltip=\"Open the help center (F1)\"\n    tooltip-placement=\"right\"\n    >?</minerva-icon-button\n  >\n  <minerva-icon-button label=\"Close\" no-tooltip>✕</minerva-icon-button>\n</div>\n",
+        "apps/docs/src/docs/pages/icon-button/wc/states.ts": "// While loading the button shows a spinner, stays focusable\n// (aria-busy / aria-disabled) and ignores clicks.\nexport function setup(root: HTMLElement) {\n  const refresh = root.querySelector<HTMLElement & { loading: boolean }>(\n    \"#refresh\",\n  )!;\n  const onClick = () => {\n    refresh.loading = true;\n    setTimeout(() => (refresh.loading = false), 1500);\n  };\n  refresh.addEventListener(\"click\", onClick);\n  return () => refresh.removeEventListener(\"click\", onClick);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "加载、禁用与提示",
+      "description": "点击刷新查看加载状态（仍可聚焦，但忽略激活）。tooltip 覆盖提示文本，tooltip-placement 调整位置，no-tooltip 移除提示。"
+    },
+    {
+      "id": "toggle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/wc/toggle.html",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/wc/toggle.html": "<div style=\"display: flex; flex-wrap: wrap; gap: 8px; align-items: center\">\n  <minerva-icon-button id=\"bold\" toggle label=\"Bold\">B</minerva-icon-button>\n  <minerva-icon-button id=\"italic\" toggle pressed label=\"Italic\"\n    >I</minerva-icon-button\n  >\n  <minerva-icon-button\n    id=\"locked\"\n    toggle\n    label=\"Pin (locked)\"\n    tooltip=\"Pinned items cannot be unpinned here\"\n    >📌</minerva-icon-button\n  >\n  <output id=\"log\" aria-live=\"polite\"></output>\n</div>\n",
+        "apps/docs/src/docs/pages/icon-button/wc/toggle.ts": "// toggle buttons expose aria-pressed and fire a cancelable\n// minerva-pressed-change; preventDefault() keeps the current state.\nexport function setup(root: HTMLElement) {\n  const log = root.querySelector<HTMLOutputElement>(\"#log\")!;\n  const onChange = (event: Event) => {\n    const { pressed } = (event as CustomEvent<{ pressed: boolean }>).detail;\n    const button = event.target as HTMLElement & { label?: string };\n    if (button.id === \"locked\" && !pressed) {\n      event.preventDefault();\n      log.value = \"Unpinning was prevented\";\n      return;\n    }\n    log.value = `${button.label}: ${pressed ? \"on\" : \"off\"}`;\n  };\n  root.addEventListener(\"minerva-pressed-change\", onChange);\n  return () => root.removeEventListener(\"minerva-pressed-change\", onChange);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "切换按钮",
+      "description": "toggle 会暴露 aria-pressed；激活时翻转 pressed 并触发可取消的 minerva-pressed-change。图钉无法取消（preventDefault）。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "IconButton 图标按钮",
+      "description": "仅显示图标的紧凑按钮。设置 pressed / defaultPressed 后成为切换按钮（收藏、点赞、静音等）。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "Add 增加条目计数；Settings 和 Delete 展示带可访问名称的图标操作。"
+        },
+        "colors": {
+          "title": "颜色",
+          "description": "color 设置语义颜色：neutral（默认）、primary、success、warning、danger 或 info。"
+        },
+        "variants": {
+          "title": "变体",
+          "description": "variant 设置视觉样式：ghost（默认，悬停前透明）、solid（以颜色填充）或 outline（描边）。"
+        },
+        "sizes-and-shapes": {
+          "title": "尺寸与形状",
+          "description": "三种尺寸（small、medium、large）和两种形状（circle、square）。"
+        },
+        "states": {
+          "title": "状态",
+          "description": "loading 用加载动画替换图标，并在忽略激活的同时保持按钮可聚焦（aria-busy + aria-disabled）；pressed 表示切换按钮处于开启状态；disabled 设置原生 disabled 属性，使按钮脱离 Tab 键顺序。"
+        },
+        "toggle": {
+          "title": "切换按钮",
+          "description": "Like 默认关闭并更新反馈；Bookmark 默认开启，Mute 默认关闭。"
+        },
+        "search": {
+          "title": "搜索按钮",
+          "description": "搜索操作就是带搜索图标和标签的 IconButton；设置 type=\"submit\" 时会提交所在表单，loading 会在搜索进行时阻止再次触发。需要可见文字时请使用 Button。"
+        },
+        "custom-colors": {
+          "title": "自定义颜色",
+          "description": "通过 CSS 自定义属性覆盖计算出的颜色：--icon-button-color（图标）、--icon-button-hover-bg（悬停背景）、--icon-button-pressed-color 与 --icon-button-pressed-bg（切换按钮的按下状态）。可写在行内样式、类名或祖先元素上。"
+        },
+        "tooltip": {
+          "title": "提示",
+          "description": "设置 showTooltip 和 tooltip，在悬停和键盘聚焦时描述按钮的操作。"
+        },
+        "label": {
+          "title": "标签与提示",
+          "description": "label 作为按钮的无障碍名称并显示为提示；图标可作为 children 传入。variant 设置视觉样式，color 设置语义颜色。"
+        }
+      },
+      "api": {
+        "IconButtonProps": {
+          "icon": "要显示的图标元素",
+          "color": "按钮的语义颜色",
+          "variant": "视觉样式：ghost（悬停前透明）、solid（以颜色填充）或 outline（描边）",
+          "size": "按钮尺寸",
+          "shape": "按钮形状",
+          "disabled": "禁用原生按钮并使其脱离 Tab 键顺序",
+          "loading": "用加载指示器替换图标，并忽略激活（点击、Enter、Space、表单提交），同时保持可聚焦：以 aria-busy + aria-disabled 表示，而不是原生 disabled 属性",
+          "pressed": "切换按钮的按下状态（受控，配合 onPressedChange 使用）；通过 aria-pressed 暴露",
+          "defaultPressed": "非受控切换按钮的初始按下状态",
+          "onPressedChange": "切换按钮被触发时，以新的按下状态调用",
+          "className": "额外的类名",
+          "tooltip": "提示配置（content、color、variant、shape、arrow）；需配合 showTooltip 使用",
+          "showTooltip": "在悬停和聚焦时显示提示",
+          "aria-label": "无障碍标签；按钮只包含图标，请始终设置",
+          "ref": "<button> 元素的 ref",
+          "children": "图标元素，可替代 icon 属性",
+          "label": "按钮的无障碍名称，同时显示为提示（除非 showTooltip 为 false）。优先于 aria-label"
+        }
+      },
+      "cssVars": {
+        "--icon-button-color": "图标颜色",
+        "--icon-button-hover-bg": "悬停时的背景色",
+        "--icon-button-pressed-color": "按下状态切换按钮的图标颜色",
+        "--icon-button-pressed-bg": "按下状态切换按钮的背景色",
+        "--icon-button-size": "按钮的宽高（所有尺寸；默认跟随当前密度的控件高度）",
+        "--icon-button-icon-size": "图标字号（所有尺寸）",
+        "--icon-button-radius": "square 形状的圆角（默认 --radius-lg）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本用法",
+            "description": "label 为纯图标按钮提供名称，并在悬停和聚焦时作为提示显示（Escape 关闭）。默认为 ghost 样式和 neutral 颜色。"
+          },
+          "sizes-shapes": {
+            "title": "尺寸、形状与颜色",
+            "description": "四种尺寸、圆形或方形，以及搭配 solid / outline / ghost 变体的通用语义颜色。"
+          },
+          "toggle": {
+            "title": "切换按钮",
+            "description": "toggle 会暴露 aria-pressed；激活时翻转 pressed 并触发可取消的 minerva-pressed-change。图钉无法取消（preventDefault）。"
+          },
+          "states": {
+            "title": "加载、禁用与提示",
+            "description": "点击刷新查看加载状态（仍可聚焦，但忽略激活）。tooltip 覆盖提示文本，tooltip-placement 调整位置，no-tooltip 移除提示。"
+          }
+        },
+        "minerva-icon-button": {
+          "props": {
+            "toggle": "使其成为切换按钮（暴露 aria-pressed）。",
+            "tooltipPlacement": "提示框的首选位置。",
+            "noTooltip": "隐藏提示框（label 仍为按钮命名）。",
+            "type": "按钮在表单中的行为：无（button）、提交或重置。",
+            "form": "按钮所属的表单（只读）。"
+          },
+          "events": {
+            "minerva-pressed-change": "切换按钮被激活（detail: { pressed }，即新状态）。可取消：preventDefault() 保持当前状态。"
+          },
+          "slots": {
+            "default": "图标（对辅助技术隐藏）。"
+          },
+          "cssVars": {
+            "--tooltip-max-width": "提示框的最大宽度（受视口限制）。",
+            "--tooltip-padding": "提示框的内边距。",
+            "--tooltip-radius": "提示框的圆角半径。",
+            "--tooltip-font-size": "提示框的字号。",
+            "--tooltip-bg": "提示框的背景（支持渐变）。",
+            "--tooltip-color": "提示框的文字颜色。",
+            "--tooltip-shadow": "提示框的阴影（默认 --shadow-md）。",
+            "--tooltip-z-index": "提示框的层叠顺序（默认 --z-popover）。"
+          },
+          "methods": {
+            "focus": "聚焦内部按钮。",
+            "blur": "使内部按钮失去焦点。",
+            "click": "点击内部按钮（禁用或加载时忽略）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "Add 增加条目计数；Settings 和 Delete 展示带可访问名称的图标操作。"
+          },
+          "toggle": {
+            "title": "切换按钮",
+            "description": "Like 默认关闭并更新反馈；Bookmark 默认开启，Mute 默认关闭。"
+          },
+          "variants-sizes": {
+            "title": "样式和尺寸",
+            "description": "IconButton 的样式和尺寸示例；预览随站点主题和色板更新。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "ja",
+  "renderer": "react",
+  "page": "prose",
+  "title": "Prose 文章スタイル",
+  "description": "記事、レンダリング済み Markdown、リッチテキストエディターなどのセマンティックな HTML 向けの、枠なしでテーマに追従するタイポグラフィです。同じルールを Sass mixin として提供しています：@use \"minerva-design/prose.scss\" as typography; の後、独自のセレクターで @include typography.prose; を使います。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Prose",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Prose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "source": "packages/react/src/components/Prose/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Merges the prose class onto its single child (e.g. an editor host) instead of rendering a wrapper <div>"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "ProseProps": {
+      "source": "react/src/components/Prose/types.ts",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLDivElement>"
+      ],
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Merges the prose class onto its single child (e.g. an editor host) instead of rendering a wrapper <div>"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Prose": {
+      "kind": "cssVars",
+      "source": "react/src/components/Prose",
+      "vars": [
+        {
+          "name": "--prose-font-size",
+          "description": "Base font size of the body text"
+        },
+        {
+          "name": "--prose-border-color",
+          "description": "Color of the blockquote, table, code block and rule borders"
+        },
+        {
+          "name": "--prose-code-bg",
+          "description": "Background color of inline code and table headers"
+        },
+        {
+          "name": "--prose-pre-bg",
+          "description": "Background color of code blocks"
+        },
+        {
+          "name": "--prose-radius",
+          "description": "Corner radius of code blocks (defaults to --radius-sm)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "as-child",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/prose/demos/as-child.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/prose/demos/as-child.tsx": "import { Prose } from \"minerva-design\";\n\nexport default function AsChildDemo() {\n  return (\n    <Prose asChild>\n      <article aria-label=\"Release notes\">\n        <h3>Release notes</h3>\n        <p>\n          With asChild the typography is applied to your own element (an article\n          or an editor host) without an extra wrapper.\n        </p>\n      </article>\n    </Prose>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "独自の要素にスタイルを適用",
+      "description": "asChild はラッパーなしで唯一の子要素（エディターのホストなど）にタイポグラフィを適用します。"
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/prose/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/prose/demos/basic.tsx": "import { Prose } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return (\n    <Prose>\n      <h2>Chapter one</h2>\n      <p>\n        Prose styles <a href=\"#notes\">links</a>, <code>inline code</code>,\n        lists, quotes and tables written as plain semantic HTML.\n      </p>\n      <blockquote>Sanitize untrusted HTML before rendering it.</blockquote>\n      <ul>\n        <li>No wrapper surface or padding</li>\n        <li>Author inline styles stay authoritative</li>\n      </ul>\n      <pre>\n        <code>{\"const answer = 42;\"}</code>\n      </pre>\n    </Prose>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "見出し、段落、リンク、リスト、引用、コードがテーマトークンを共有します。Prose は HTML をサニタイズしません。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Prose 文章スタイル",
+      "description": "記事、レンダリング済み Markdown、リッチテキストエディターなどのセマンティックな HTML 向けの、枠なしでテーマに追従するタイポグラフィです。同じルールを Sass mixin として提供しています：@use \"minerva-design/prose.scss\" as typography; の後、独自のセレクターで @include typography.prose; を使います。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "見出し、段落、リンク、リスト、引用、コードがテーマトークンを共有します。Prose は HTML をサニタイズしません。"
+        },
+        "as-child": {
+          "title": "独自の要素にスタイルを適用",
+          "description": "asChild はラッパーなしで唯一の子要素（エディターのホストなど）にタイポグラフィを適用します。"
+        }
+      },
+      "api": {
+        "ProseProps": {
+          "asChild": "ラッパーを描画せず、prose クラスを唯一の子要素にマージします",
+          "ref": "ルート要素への ref"
+        }
+      },
+      "cssVars": {
+        "--prose-font-size": "本文の基本フォントサイズ",
+        "--prose-border-color": "引用・表・コードブロック・区切り線の枠線の色",
+        "--prose-code-bg": "インラインコードと表ヘッダーの背景色",
+        "--prose-pre-bg": "コードブロックの背景色",
+        "--prose-radius": "コードブロックの角丸（既定値は --radius-sm）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "<minerva-prose> 内のセマンティックな HTML。見出し、段落、入れ子のリスト、インラインコード、引用がどの階層でもスタイルされます。"
+          },
+          "rich-content": {
+            "title": "レンダリングされた Markdown",
+            "description": "Markdown レンダラーやリッチテキストエディタが生成した HTML（表やコードブロックを含む）。Prose はサニタイズしないため、信頼できる HTML だけを挿入してください。"
+          },
+          "scopes": {
+            "title": "変数とシャドウルート",
+            "description": "--prose-* 変数でインスタンスごとに調整できます。シャドウルート内では、そのルートに一度だけルールが注入されます。"
+          }
+        },
+        "minerva-prose": {
+          "slots": {
+            "default": "セマンティックな HTML コンテンツ（見出し、段落、リスト、表、コードなど）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

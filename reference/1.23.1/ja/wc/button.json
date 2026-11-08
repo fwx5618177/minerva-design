@@ -1,0 +1,554 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "button",
+  "title": "Button ボタン",
+  "description": "フォーム送信やダイアログを開くなど、アクションやイベントを実行します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Button",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/button",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-button",
+        "props": [
+          {
+            "name": "color",
+            "typeText": "\"primary\" | \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\"",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"solid\" | \"outline\" | \"ghost\" | \"link\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "typeText": "\"square\" | \"rounded\" | \"circle\" | undefined",
+            "attribute": "shape",
+            "required": false
+          },
+          {
+            "name": "borderRadius",
+            "typeText": "\"none\" | \"small\" | \"medium\" | \"large\" | \"circle\" | \"square\" | number | undefined",
+            "attribute": "border-radius",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "attribute": "loading",
+            "required": false
+          },
+          {
+            "name": "fullWidth",
+            "typeText": "boolean",
+            "attribute": "full-width",
+            "required": false
+          },
+          {
+            "name": "active",
+            "typeText": "boolean",
+            "attribute": "active",
+            "required": false
+          },
+          {
+            "name": "type",
+            "typeText": "\"button\" | \"submit\" | \"reset\"",
+            "attribute": "type",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Label"
+          },
+          {
+            "name": "start",
+            "description": "Icon before the label"
+          },
+          {
+            "name": "end",
+            "description": "Icon after the label"
+          },
+          {
+            "name": "loading",
+            "description": "Text shown instead of the label while `loading`"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-button": {
+      "kind": "element",
+      "source": "web-components/src/components/button/button.ts",
+      "className": "MinervaButton",
+      "summary": "Button with colors, variants, sizes, icons and a loading state.",
+      "description": "A button with a semantic `color`, a visual `variant`, sizes, shapes, icons and a loading state (`<Button>` of React). Renders a native `<button>` in its shadow root; `type=\"submit\"` / `\"reset\"` act on the owning form (the element is form-associated).",
+      "properties": [
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "\"primary\" | \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\"",
+          "default": "\"primary\"",
+          "description": "Semantic color"
+        },
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"solid\" | \"outline\" | \"ghost\" | \"link\"",
+          "default": "\"solid\"",
+          "description": "Visual style: solid (filled), outline, ghost or link"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\"",
+          "default": "\"medium\"",
+          "description": "Button size"
+        },
+        {
+          "name": "shape",
+          "attribute": "shape",
+          "type": "\"square\" | \"rounded\" | \"circle\" | undefined",
+          "description": "Preset shape"
+        },
+        {
+          "name": "borderRadius",
+          "attribute": "border-radius",
+          "type": "\"none\" | \"small\" | \"medium\" | \"large\" | \"circle\" | \"square\" | number | undefined",
+          "description": "Corner radius preset, or a number of pixels"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the button"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a spinner and blocks activation (aria-busy / aria-disabled); the button stays focusable"
+        },
+        {
+          "name": "fullWidth",
+          "attribute": "full-width",
+          "type": "boolean",
+          "default": "false",
+          "description": "Stretches the button to the full width of its container"
+        },
+        {
+          "name": "active",
+          "attribute": "active",
+          "type": "boolean",
+          "default": "false",
+          "description": "Renders the button in its pressed / active state"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "\"button\" | \"submit\" | \"reset\"",
+          "default": "\"button\"",
+          "description": "What the button does in its form: nothing (\"button\"), submit it (through `requestSubmit()`, so validation runs) or reset it"
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the button"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "click",
+          "signature": "() => void"
+        }
+      ],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Label"
+        },
+        {
+          "name": "start",
+          "description": "Icon before the label"
+        },
+        {
+          "name": "end",
+          "description": "Icon after the label"
+        },
+        {
+          "name": "loading",
+          "description": "Text shown instead of the label while `loading`"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The native `<button>`"
+        },
+        {
+          "name": "label",
+          "description": "The label wrapper"
+        },
+        {
+          "name": "start-icon",
+          "description": "The icon before the label"
+        },
+        {
+          "name": "end-icon",
+          "description": "The icon after the label"
+        },
+        {
+          "name": "spinner",
+          "description": "The loading spinner (while loading)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--button-height",
+          "description": "Minimum height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--button-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--button-radius",
+          "description": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)"
+        },
+        {
+          "name": "--button-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--button-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--button-gap",
+          "description": "Space between the icons and the label"
+        },
+        {
+          "name": "--button-label-white-space",
+          "description": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Button": {
+      "kind": "cssVars",
+      "source": "react/src/components/Button",
+      "vars": [
+        {
+          "name": "--button-height",
+          "description": "Minimum height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--button-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--button-radius",
+          "description": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)"
+        },
+        {
+          "name": "--button-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--button-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--button-gap",
+          "description": "Space between the icons and the label"
+        },
+        {
+          "name": "--button-label-white-space",
+          "description": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/button/wc/basic.html": "<minerva-hstack gap=\"3\" wrap>\n  <minerva-button>Click me</minerva-button>\n  <output aria-live=\"polite\">Clicked 0 times</output>\n</minerva-hstack>\n",
+        "apps/docs/src/docs/pages/button/wc/basic.ts": "export function setup(root: HTMLElement) {\n  const button = root.querySelector(\"minerva-button\")!;\n  const output = root.querySelector(\"output\")!;\n  let count = 0;\n  const click = () => {\n    output.textContent = `Clicked ${++count} times`;\n  };\n  button.addEventListener(\"click\", click);\n  return () => button.removeEventListener(\"click\", click);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+    },
+    {
+      "id": "colors-variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/wc/colors-variants.html",
+      "files": {
+        "apps/docs/src/docs/pages/button/wc/colors-variants.html": "<div style=\"display: grid; gap: 12px\">\n  <div style=\"display: flex; flex-wrap: wrap; gap: 8px\">\n    <minerva-button color=\"primary\">Primary</minerva-button>\n    <minerva-button color=\"success\">Success</minerva-button>\n    <minerva-button color=\"warning\">Warning</minerva-button>\n    <minerva-button color=\"danger\">Danger</minerva-button>\n    <minerva-button color=\"info\">Info</minerva-button>\n    <minerva-button color=\"neutral\">Neutral</minerva-button>\n  </div>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 8px\">\n    <minerva-button variant=\"solid\">Solid</minerva-button>\n    <minerva-button variant=\"outline\">Outline</minerva-button>\n    <minerva-button variant=\"ghost\">Ghost</minerva-button>\n    <minerva-button variant=\"link\">Link</minerva-button>\n  </div>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "色とバリアント",
+      "description": "color は意味的な色（共通の ColorScheme）、variant は見た目のスタイルを指定します。"
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/button/wc/form.html": "<form\n  id=\"newsletter\"\n  style=\"display: flex; flex-wrap: wrap; gap: 8px; align-items: end\"\n>\n  <label style=\"display: grid; gap: 4px\">\n    Email\n    <input name=\"email\" type=\"email\" required placeholder=\"you@example.com\" />\n  </label>\n  <minerva-button type=\"submit\">Subscribe</minerva-button>\n  <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n    >Reset</minerva-button\n  >\n  <output id=\"result\" style=\"flex-basis: 100%\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/button/wc/form.ts": "// type=\"submit\" submits the owning form through requestSubmit(), so the\n// browser validates it first; type=\"reset\" resets it.\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#newsletter\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#result\")!;\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    result.value = `Subscribed ${new FormData(form).get(\"email\")}`;\n  };\n  const onReset = () => (result.value = \"\");\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "フォーム内",
+      "description": "この要素はフォーム関連要素です。type=\"submit\" はフォームを検証して送信し、type=\"reset\" はリセットします。"
+    },
+    {
+      "id": "sizes-shapes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/wc/sizes-shapes.html",
+      "files": {
+        "apps/docs/src/docs/pages/button/wc/sizes-shapes.html": "<minerva-button size=\"xsmall\">XS</minerva-button>\n<minerva-button size=\"small\">Small</minerva-button>\n<minerva-button size=\"medium\">Medium</minerva-button>\n<minerva-button size=\"large\">Large</minerva-button>\n<minerva-button size=\"xlarge\">XL</minerva-button>\n<minerva-button shape=\"rounded\">Rounded</minerva-button>\n<minerva-button shape=\"square\" variant=\"outline\">Square</minerva-button>\n<minerva-button shape=\"circle\" aria-label=\"Add item\">+</minerva-button>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "サイズと形",
+      "description": "5 つのサイズと 3 つの形。アイコンのみの円形ボタンには aria-label が必要で、内部のボタンに転送されます。"
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/wc/states.html",
+      "files": {
+        "apps/docs/src/docs/pages/button/wc/states.html": "<minerva-button id=\"save\" color=\"success\">\n  <span slot=\"start\" aria-hidden=\"true\">✓</span>\n  Save changes\n  <span slot=\"loading\">Saving…</span>\n</minerva-button>\n<minerva-button disabled>Disabled</minerva-button>\n<minerva-button active variant=\"outline\">Active</minerva-button>\n<minerva-button full-width variant=\"outline\">Full width</minerva-button>\n",
+        "apps/docs/src/docs/pages/button/wc/states.ts": "// `loading` keeps the button focusable (aria-busy / aria-disabled) and\n// blocks clicks; the `loading` slot replaces the label meanwhile.\nexport function setup(root: HTMLElement) {\n  const save = root.querySelector<HTMLElement & { loading: boolean }>(\"#save\")!;\n  const onClick = () => {\n    save.loading = true;\n    setTimeout(() => (save.loading = false), 1500);\n  };\n  save.addEventListener(\"click\", onClick);\n  return () => save.removeEventListener(\"click\", onClick);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "状態・アイコン・読み込み",
+      "description": "start / end スロットにアイコン、loading スロットは読み込み中にラベルを置き換えます。「保存」をクリックすると読み込み状態を確認できます。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Button ボタン",
+      "description": "フォーム送信やダイアログを開くなど、アクションやイベントを実行します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でセマンティックカラーを指定します：primary（デフォルト）、neutral、success、warning、danger、info。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを指定します：solid（デフォルト）、outline、ghost、link。どの色とも組み合わせられます。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "xsmall、small、medium（デフォルト）、large、xlarge の 5 種類。"
+        },
+        "shapes": {
+          "title": "形状と角丸",
+          "description": "プリセットの形状、または borderRadius のプリセット / ピクセル値で角丸を指定します。"
+        },
+        "states": {
+          "title": "状態",
+          "description": "読み込み中・無効・アクティブ状態。読み込み中は処理の実行中にクリック（およびフォーム送信）をブロックしますが、キーボードフォーカスはボタンに残ります。"
+        },
+        "with-icon": {
+          "title": "アイコン付き",
+          "description": "startIcon / endIcon でテキストとアイコンを組み合わせます（例：danger の再試行ボタン、neutral の ghost の戻るボタン）。アイコンのみのボタンには aria-label を指定してください。"
+        },
+        "icons-loading": {
+          "title": "アイコン・読み込みテキスト・全幅",
+          "description": "startIcon / endIcon でラベルの前後にアイコンを表示し、loadingText は読み込み中に内容を置き換え、fullWidth でボタンを全幅にします。"
+        },
+        "form": {
+          "title": "フォーム内の type",
+          "description": "Button の既定は type=\"button\" なので、<form> 内のボタン（プレビュー、行の追加、ダイアログを開くなど）が誤ってフォームを送信することはありません。送信ボタンには type=\"submit\"、リセットには type=\"reset\" を明示してください。"
+        }
+      },
+      "api": {
+        "ButtonProps": {
+          "type": "ネイティブのボタン種別。既定は \"button\"（HTML の既定 \"submit\" とは異なる）なので、フォーム内の Button が誤って送信することはありません。送信ボタンには type=\"submit\"、リセットボタンには \"reset\" を使います",
+          "onClick": "クリック時に呼ばれます（無効時は呼ばれません）",
+          "children": "ボタンの内容",
+          "className": "追加のクラス名",
+          "color": "ボタンのセマンティックカラー",
+          "variant": "見た目のスタイル：solid（塗りつぶし）、outline（枠線のみ）、ghost（ホバーまで透明）、link（テキストリンク風）",
+          "size": "ボタンのサイズ",
+          "aria-label": "アクセシブルなラベル。アイコンのみのボタンでは必須",
+          "disabled": "ボタンを無効にします",
+          "loading": "スピナーを表示し、実行をブロックします（aria-busy / aria-disabled）。ボタンはフォーカス可能なままなので、キーボードフォーカスが失われません",
+          "active": "押下/アクティブ状態で表示します",
+          "shape": "ボタンのプリセット形状",
+          "borderRadius": "角丸：プリセットまたはピクセル数。省略時はテーマの角丸（--radius-md）を使用します",
+          "style": "インラインスタイル",
+          "ref": "<button> 要素への ref",
+          "loadingText": "読み込み中に内容（とアイコン）の代わりに表示するテキスト",
+          "startIcon": "内容の前に表示するアイコン",
+          "endIcon": "内容の後に表示するアイコン",
+          "fullWidth": "ボタンをコンテナの全幅に広げます"
+        }
+      },
+      "cssVars": {
+        "--button-height": "最小の高さ（全サイズ。既定値は現在の密度におけるサイズ別のコントロール高さ）",
+        "--button-padding-x": "左右のパディング（全サイズ）",
+        "--button-radius": "角丸（既定は --radius-md。shape / borderRadius プロパティが優先）",
+        "--button-font-size": "フォントサイズ（全サイズ）",
+        "--button-font-weight": "フォントの太さ",
+        "--button-gap": "アイコンとラベルの間隔",
+        "--button-label-white-space": "ラベルの white-space：nowrap（既定、省略表示）または normal（折り返し）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+          },
+          "colors-variants": {
+            "title": "色とバリアント",
+            "description": "color は意味的な色（共通の ColorScheme）、variant は見た目のスタイルを指定します。"
+          },
+          "sizes-shapes": {
+            "title": "サイズと形",
+            "description": "5 つのサイズと 3 つの形。アイコンのみの円形ボタンには aria-label が必要で、内部のボタンに転送されます。"
+          },
+          "states": {
+            "title": "状態・アイコン・読み込み",
+            "description": "start / end スロットにアイコン、loading スロットは読み込み中にラベルを置き換えます。「保存」をクリックすると読み込み状態を確認できます。"
+          },
+          "form": {
+            "title": "フォーム内",
+            "description": "この要素はフォーム関連要素です。type=\"submit\" はフォームを検証して送信し、type=\"reset\" はリセットします。"
+          }
+        },
+        "minerva-button": {
+          "props": {
+            "form": "ボタンが属するフォーム（読み取り専用）。"
+          },
+          "slots": {
+            "default": "ラベル。",
+            "start": "ラベルの前のアイコン。",
+            "end": "ラベルの後のアイコン。",
+            "loading": "読み込み中にラベルの代わりに表示するテキスト。"
+          },
+          "methods": {
+            "focus": "内部のボタンにフォーカスします。",
+            "blur": "内部のボタンからフォーカスを外します。",
+            "click": "内部のボタンをクリックします（無効または読み込み中は無視）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+          },
+          "colors": {
+            "title": "カラー",
+            "description": "color でセマンティックカラーを指定します：primary（デフォルト）、neutral、success、warning、danger、info。"
+          },
+          "variants": {
+            "title": "バリアント",
+            "description": "variant で見た目のスタイルを指定します：solid（デフォルト）、outline、ghost、link。どの色とも組み合わせられます。"
+          },
+          "sizes": {
+            "title": "サイズ",
+            "description": "xsmall、small、medium（デフォルト）、large、xlarge の 5 種類。"
+          },
+          "shapes": {
+            "title": "形状と角丸",
+            "description": "プリセットの形状、または borderRadius のプリセット / ピクセル値で角丸を指定します。"
+          },
+          "states": {
+            "title": "状態",
+            "description": "読み込み中・無効・アクティブ状態。読み込み中は処理の実行中にクリック（およびフォーム送信）をブロックしますが、キーボードフォーカスはボタンに残ります。"
+          },
+          "with-icon": {
+            "title": "アイコン付き",
+            "description": "startIcon / endIcon でテキストとアイコンを組み合わせます（例：danger の再試行ボタン、neutral の ghost の戻るボタン）。アイコンのみのボタンには aria-label を指定してください。"
+          },
+          "icons-loading": {
+            "title": "アイコン・読み込みテキスト・全幅",
+            "description": "startIcon / endIcon でラベルの前後にアイコンを表示し、loadingText は読み込み中に内容を置き換え、fullWidth でボタンを全幅にします。"
+          },
+          "form": {
+            "title": "フォーム内の type",
+            "description": "下書きをプレビュー、リセット、保存します。ネイティブボタンはブラウザーのフォーム送信ではなく onPress を使います。"
+          }
+        }
+      },
+      "vue": {
+        "demos": {
+          "basic": {
+            "description": "ボタンを押すたびに表示される回数が 1 増えます。"
+          }
+        }
+      }
+    }
+  }
+}

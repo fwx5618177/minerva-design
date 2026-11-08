@@ -1,0 +1,539 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "horizontal-bar-chart",
+  "title": "Horizontal bar chart",
+  "description": "Bars growing from the left with the categories down the side: rankings, long names, diverging surveys and progress.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "data": {
+      "developers": "Developers",
+      "languagesAria": "Share of developers using each programming language",
+      "statements": {
+        "career": "I see a career path here",
+        "workload": "My workload is manageable",
+        "tools": "I have the tools I need",
+        "manager": "My manager supports me",
+        "pay": "I am paid fairly"
+      },
+      "likert": {
+        "stronglyDisagree": "Strongly disagree",
+        "disagree": "Disagree",
+        "agree": "Agree",
+        "stronglyAgree": "Strongly agree"
+      },
+      "surveyAria": "Employee survey answers, disagreement on the left and agreement on the right",
+      "status": {
+        "done": "Done",
+        "review": "In review",
+        "todo": "To do"
+      },
+      "teams": {
+        "platform": "Platform",
+        "payments": "Payments",
+        "mobile": "Mobile",
+        "growth": "Growth",
+        "design": "Design"
+      },
+      "progressAria": "Status of the milestone issues of each team",
+      "votes": "Votes",
+      "features": {
+        "darkMode": "Dark mode for every page and email",
+        "offlineMode": "Offline mode on mobile devices",
+        "exportPdf": "Export reports as PDF with charts",
+        "sso": "Single sign-on with SAML and OIDC",
+        "calendarSync": "Two-way calendar synchronization",
+        "bulkEdit": "Edit many records at once",
+        "customFields": "Custom fields on every object"
+      },
+      "featuresAria": "Votes of the most requested features",
+      "budget": "Budget",
+      "actual": "Actual",
+      "departments": {
+        "engineering": "Engineering",
+        "marketing": "Marketing",
+        "sales": "Sales",
+        "support": "Support",
+        "finance": "Finance"
+      },
+      "budgetAria": "Budget and actual spend per department",
+      "growth": "Change",
+      "regions": {
+        "northAmerica": "North America",
+        "europe": "Europe",
+        "asiaPacific": "Asia Pacific",
+        "latinAmerica": "Latin America",
+        "middleEast": "Middle East",
+        "africa": "Africa"
+      },
+      "growthAria": "Change of the monthly active users per region",
+      "activeUsers": "Users",
+      "apps": {
+        "messages": "Messages",
+        "photos": "Photos",
+        "maps": "Maps",
+        "music": "Music",
+        "notes": "Notes"
+      },
+      "appsAria": "Monthly active users per app",
+      "usersStatus": "{{app}}: {{users}} M users",
+      "tapBar": "Tap a bar",
+      "revenue": "Revenue",
+      "unitsSold": "Units sold",
+      "products": {
+        "headphones": "Wireless headphones",
+        "smartwatch": "Smartwatch",
+        "speaker": "Bluetooth speaker",
+        "keyboard": "Mechanical keyboard",
+        "charger": "Fast charger",
+        "webcam": "HD webcam",
+        "mouse": "Wireless mouse",
+        "tablet": "Tablet",
+        "cable": "USB-C cable",
+        "stand": "Laptop stand"
+      },
+      "rankBy": "Rank by",
+      "show": "Rows shown",
+      "topN": "Top {{n}}",
+      "allProducts": "All products",
+      "topProductsAria": "Best-selling products of last month, from highest to lowest",
+      "topShare": "These {{n}} products make {{share}} of the total.",
+      "gigawatts": "{{value}} GW",
+      "solarCapacity": "Solar capacity",
+      "play": "Play",
+      "pause": "Pause",
+      "replay": "Play again",
+      "restart": "Back to the start",
+      "raceAria": "Countries with the most installed solar capacity at the end of {{year}}",
+      "salaryBand": "Salary band",
+      "levels": {
+        "junior": "Junior",
+        "intermediate": "Intermediate",
+        "senior": "Senior",
+        "staff": "Staff",
+        "principal": "Principal",
+        "director": "Director"
+      },
+      "offer": "Offer",
+      "bandMin": "Minimum",
+      "bandMid": "Midpoint",
+      "bandMax": "Maximum",
+      "compaRatio": "Offer / midpoint",
+      "offerDown": "Offer −{{step}}",
+      "offerUp": "Offer +{{step}}",
+      "offerFits": "An offer of {{offer}} fits the {{levels}} bands.",
+      "offerOutside": "An offer of {{offer}} is outside every band.",
+      "salaryAria": "Yearly salary band of each job level, with the offer as a vertical line",
+      "budgetLeft": "Error budget left",
+      "releaseFreeze": "Release freeze",
+      "budgetAriaSlo": "Error budget left to each service over the last 30 days, worst first",
+      "budgetDetails": "SLO {{slo}}, measured availability {{availability}}",
+      "budgetMinutesLeft": "{{minutes}} of downtime left out of {{allowed}}.",
+      "budgetOverspent": "Budget overspent by {{minutes}}.",
+      "clickService": "Click a service to see its budget."
+    }
+  },
+  "components": [
+    {
+      "name": "HorizontalBarChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart whose untyped series are bars from the left (categories down the left side), `stacked` / `percent`, value `labels`. Same as Chart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart whose untyped series are bars from the left (categories down the left side), `stacked` / `percent`, value `labels`. Same as Chart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/horizontal-bar-chart/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "horizontal-bar-chart",
+        "props": [
+          {
+            "name": "width",
+            "typeText": "unknown",
+            "required": false,
+            "default": "100%"
+          },
+          {
+            "name": "height",
+            "typeText": "unknown",
+            "required": false,
+            "default": 320
+          },
+          {
+            "name": "legend",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "tooltip",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "crosshair",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "annotations",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "interaction",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "padding",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "palette",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "locale",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "labels",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "disableScroll",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "series",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "xAxis",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "yAxis",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "stacked",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "percent",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+            "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+          },
+          {
+            "name": "pointclick",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }",
+            "description": "A point or bar was tapped."
+          },
+          {
+            "name": "plotclick",
+            "typeText": "{ x: number; y: number }",
+            "description": "The plot area was tapped where there is no point (data coordinates)."
+          },
+          {
+            "name": "zoom",
+            "typeText": "{ x: [number, number]; y: [number, number] }",
+            "description": "Visible range after a pinch, a pan or a double-tap reset."
+          },
+          {
+            "name": "layout",
+            "typeText": "{ x: number; y: number; width: number; height: number }",
+            "description": "The plot area moved or was resized (px of the chart)."
+          },
+          {
+            "name": "pointdrag",
+            "typeText": "{ item: NativeChartHoverItem; x: number; y: number }",
+            "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed."
+          },
+          {
+            "name": "pointdrop",
+            "typeText": "{ item: NativeChartHoverItem; x: number; y: number }",
+            "description": "A dragged scatter point was released; update the series to move it."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-horizontal-bar-chart\": \"minerva-design/dist/weapp/horizontal-bar-chart/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Horizontal bar chart",
+      "description": "Bars growing from the left with the categories down the side: rankings, long names, diverging surveys and progress.",
+      "demos": {
+        "basic": {
+          "title": "Ranking",
+          "description": "The categories run from top to bottom in data order, so a sorted list reads as a ranking; labels writes the value at the end of every bar."
+        },
+        "diverging": {
+          "title": "Diverging survey",
+          "description": "Negative values grow to the left of zero: a stacked Likert scale puts disagreement on the left and agreement on the right, the axis format shows both sides as positive shares."
+        },
+        "progress": {
+          "title": "Stacked progress",
+          "description": "percent fills every row to 100%: the status of the issues of each team, while the tooltip keeps the counts."
+        },
+        "long-labels": {
+          "title": "Long labels",
+          "description": "Long category names stay readable on the left: the axis takes the width of the longest name instead of rotating the labels."
+        },
+        "grouped": {
+          "title": "Grouped",
+          "description": "Several series sit side by side in each row, here the budget and the actual spend of every department."
+        },
+        "negative": {
+          "title": "Positive and negative",
+          "description": "Each datum sets its color; labels of negative bars are written on their left side."
+        },
+        "top-n": {
+          "title": "Top N",
+          "description": "A RadioGroup picks the metric and a Select how many rows to keep: the data is sorted and cut before it reaches the chart, and the height follows the number of rows. The output gives the share of the total that the top rows make."
+        },
+        "race": {
+          "title": "Bar chart race",
+          "description": "A setInterval, cleared on pause and on unmount, interpolates the installed solar capacity between year ends and re-sorts the rows at every step. Each country keeps its datum color while it moves, and Intl.DisplayNames writes its name."
+        },
+        "salary-bands": {
+          "title": "Salary bands",
+          "description": "Floating bars go from y0 to y: the salary band of each job level. A y line annotation follows the offer set with the buttons, the bands that contain it turn green, and renderTooltip shows the minimum, midpoint, maximum and compa-ratio."
+        },
+        "error-budget": {
+          "title": "Error budgets",
+          "description": "The error budget left to each service, worst first, colored by threshold; overspent budgets grow to the left of zero. onPointClick writes the SLO, the measured availability and the downtime minutes left in an output, and onPlotClick clears it."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Tap a bar: onPointClick receives the app and its users; labels writes the values at the bar ends."
+          }
+        }
+      },
+      "data": {
+        "developers": "Developers",
+        "languagesAria": "Share of developers using each programming language",
+        "statements": {
+          "career": "I see a career path here",
+          "workload": "My workload is manageable",
+          "tools": "I have the tools I need",
+          "manager": "My manager supports me",
+          "pay": "I am paid fairly"
+        },
+        "likert": {
+          "stronglyDisagree": "Strongly disagree",
+          "disagree": "Disagree",
+          "agree": "Agree",
+          "stronglyAgree": "Strongly agree"
+        },
+        "surveyAria": "Employee survey answers, disagreement on the left and agreement on the right",
+        "status": {
+          "done": "Done",
+          "review": "In review",
+          "todo": "To do"
+        },
+        "teams": {
+          "platform": "Platform",
+          "payments": "Payments",
+          "mobile": "Mobile",
+          "growth": "Growth",
+          "design": "Design"
+        },
+        "progressAria": "Status of the milestone issues of each team",
+        "votes": "Votes",
+        "features": {
+          "darkMode": "Dark mode for every page and email",
+          "offlineMode": "Offline mode on mobile devices",
+          "exportPdf": "Export reports as PDF with charts",
+          "sso": "Single sign-on with SAML and OIDC",
+          "calendarSync": "Two-way calendar synchronization",
+          "bulkEdit": "Edit many records at once",
+          "customFields": "Custom fields on every object"
+        },
+        "featuresAria": "Votes of the most requested features",
+        "budget": "Budget",
+        "actual": "Actual",
+        "departments": {
+          "engineering": "Engineering",
+          "marketing": "Marketing",
+          "sales": "Sales",
+          "support": "Support",
+          "finance": "Finance"
+        },
+        "budgetAria": "Budget and actual spend per department",
+        "growth": "Change",
+        "regions": {
+          "northAmerica": "North America",
+          "europe": "Europe",
+          "asiaPacific": "Asia Pacific",
+          "latinAmerica": "Latin America",
+          "middleEast": "Middle East",
+          "africa": "Africa"
+        },
+        "growthAria": "Change of the monthly active users per region",
+        "activeUsers": "Users",
+        "apps": {
+          "messages": "Messages",
+          "photos": "Photos",
+          "maps": "Maps",
+          "music": "Music",
+          "notes": "Notes"
+        },
+        "appsAria": "Monthly active users per app",
+        "usersStatus": "{{app}}: {{users}} M users",
+        "tapBar": "Tap a bar",
+        "revenue": "Revenue",
+        "unitsSold": "Units sold",
+        "products": {
+          "headphones": "Wireless headphones",
+          "smartwatch": "Smartwatch",
+          "speaker": "Bluetooth speaker",
+          "keyboard": "Mechanical keyboard",
+          "charger": "Fast charger",
+          "webcam": "HD webcam",
+          "mouse": "Wireless mouse",
+          "tablet": "Tablet",
+          "cable": "USB-C cable",
+          "stand": "Laptop stand"
+        },
+        "rankBy": "Rank by",
+        "show": "Rows shown",
+        "topN": "Top {{n}}",
+        "allProducts": "All products",
+        "topProductsAria": "Best-selling products of last month, from highest to lowest",
+        "topShare": "These {{n}} products make {{share}} of the total.",
+        "gigawatts": "{{value}} GW",
+        "solarCapacity": "Solar capacity",
+        "play": "Play",
+        "pause": "Pause",
+        "replay": "Play again",
+        "restart": "Back to the start",
+        "raceAria": "Countries with the most installed solar capacity at the end of {{year}}",
+        "salaryBand": "Salary band",
+        "levels": {
+          "junior": "Junior",
+          "intermediate": "Intermediate",
+          "senior": "Senior",
+          "staff": "Staff",
+          "principal": "Principal",
+          "director": "Director"
+        },
+        "offer": "Offer",
+        "bandMin": "Minimum",
+        "bandMid": "Midpoint",
+        "bandMax": "Maximum",
+        "compaRatio": "Offer / midpoint",
+        "offerDown": "Offer −{{step}}",
+        "offerUp": "Offer +{{step}}",
+        "offerFits": "An offer of {{offer}} fits the {{levels}} bands.",
+        "offerOutside": "An offer of {{offer}} is outside every band.",
+        "salaryAria": "Yearly salary band of each job level, with the offer as a vertical line",
+        "budgetLeft": "Error budget left",
+        "releaseFreeze": "Release freeze",
+        "budgetAriaSlo": "Error budget left to each service over the last 30 days, worst first",
+        "budgetDetails": "SLO {{slo}}, measured availability {{availability}}",
+        "budgetMinutesLeft": "{{minutes}} of downtime left out of {{allowed}}.",
+        "budgetOverspent": "Budget overspent by {{minutes}}.",
+        "clickService": "Click a service to see its budget."
+      },
+      "api": {
+        "HorizontalBarChartProps": {
+          "series": "Series drawn as bars from the left unless they set a type; the categories run from top to bottom",
+          "labels": "Writes the value at the end of every bar"
+        }
+      },
+      "wc": {
+        "demos": {
+          "ranking": {
+            "title": "Most visited pages",
+            "description": "Categories down the left side keep long names readable; labels write the value at the end of every bar."
+          },
+          "survey": {
+            "title": "Survey answers, 100 % stacked",
+            "description": "Stacked and percent: every row adds up to 100 %; click a legend item to hide an answer."
+          }
+        },
+        "minerva-horizontal-bar-chart": {
+          "props": {
+            "stacked": "Stacks the bars of every series instead of grouping them",
+            "percent": "Scales the stacks to 100% (implies stacked)",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

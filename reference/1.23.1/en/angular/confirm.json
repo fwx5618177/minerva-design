@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "confirm",
+  "title": "Confirm",
+  "description": "Asks the user to confirm an action: a themed replacement for window.confirm. Use the declarative ConfirmDialog or await confirm() from anywhere; with a ConfirmProvider the dialog renders inside your app tree, without one a standalone host is mounted on demand, and on the server confirm() resolves false.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {
+    "usage": {
+      "title": "When to use which: useConfirm() or confirm()",
+      "hook": "Inside components, call useConfirm(): its dialogs follow the nearest ConfigProvider scope. Under a nested provider the modal portals into its host, with its theme, palette and tokens, and the default button labels use its language. A ConfirmProvider still renders them when there is one.",
+      "function": "Outside React (event buses, API clients, router guards and other non-component modules), import confirm() directly: no hook is available there, and its dialogs use the root theme and language."
+    }
+  },
+  "components": [
+    {
+      "name": "ConfirmDialog",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnConfirmDialog. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnConfirmDialog. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnConfirmDialog"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-confirm-dialog",
+        "props": [
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "description",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "color",
+            "typeText": "\"primary\" | \"warning\" | \"danger\"",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "confirmDisabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "cancelLabel",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "confirmLabel",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "confirm",
+            "typeText": "void",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "void",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "cancelled",
+            "typeText": "void",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "void",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ConfirmProvider",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnConfirmProvider. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnConfirmProvider. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnConfirmProvider"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-confirm-provider",
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "queued-confirmations",
+      "title": "Queued confirmations",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnConfirmProvider, MnButton } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnConfirmProvider, MnButton],\n  template: `\n<mn-confirm-provider #confirmation=\"mnConfirmProvider\"><button mnButton (click)=\"confirmation.confirm({title:'Delete draft?',description:'This is the first queued request.',color:'danger'});confirmation.confirm({title:'Archive project?',description:'The second request waits for the first.'})\">Queue two confirmations</button></mn-confirm-provider>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "confirm-a-destructive-action",
+      "title": "Confirm a destructive action",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnButton, MnConfirmDialog } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnButton, MnConfirmDialog],\n  template: `\n<button mnButton color=\"danger\" (click)=\"open=true\">Delete project</button><mn-confirm-dialog title=\"Delete this project?\" description=\"This action cannot be undone.\" color=\"danger\" [(open)]=\"open\" (confirm)=\"deleted=true;open=false\"/><output>{{deleted?'Project deleted':''}}</output>\n  `,\n})\nexport class Example {\n  open = false;\n  deleted = false;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "controlled-loading-and-recovery",
+      "title": "Controlled loading and recovery",
+      "description": "The declarative dialog emits confirm; the owner sets loading and completes or retries its operation. This example uses Complete request as an explicit stand-in for the server response and can be reopened.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnButton, MnConfirmDialog } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnButton, MnConfirmDialog],\n  template: `\n<button mnButton (click)=\"open=true;loading=false;completed=false\">Preview processing</button><mn-confirm-dialog title=\"Processing request\" description=\"Confirm starts the caller-owned operation; complete it below.\" [(open)]=\"open\" [loading]=\"loading\" (confirm)=\"loading=true\"><button mnButton variant=\"outline\" [disabled]=\"!loading\" (click)=\"loading=false;open=false;completed=true\">Complete request</button></mn-confirm-dialog><output>{{completed?'Request completed':loading?'Processing':'Ready'}}</output>\n  `,\n})\nexport class Example {\n  open = false;\n  loading = false;\n  completed = false;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// Inside a component: follows the nearest ConfigProvider scope\nfunction DeleteButton() {\n  const confirm = useConfirm();\n  return (\n    <Button onClick={async () => (await confirm({ title: \"Delete?\" })) && remove()}>\n      Delete\n    </Button>\n  );\n}\n\n// Outside React (API client, event bus, router guard...): root scope\nimport { confirm } from \"minerva-design\";\nrouter.beforeLeave(() => confirm({ title: \"Discard changes?\" }));",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Confirm",
+      "description": "Asks the user to confirm an action: a themed replacement for window.confirm. Use the declarative ConfirmDialog or await confirm() from anywhere; with a ConfirmProvider the dialog renders inside your app tree, without one a standalone host is mounted on demand, and on the server confirm() resolves false.",
+      "usage": {
+        "title": "When to use which: useConfirm() or confirm()",
+        "hook": "Inside components, call useConfirm(): its dialogs follow the nearest ConfigProvider scope. Under a nested provider the modal portals into its host, with its theme, palette and tokens, and the default button labels use its language. A ConfirmProvider still renders them when there is one.",
+        "function": "Outside React (event buses, API clients, router guards and other non-component modules), import confirm() directly: no hook is available there, and its dialogs use the root theme and language."
+      },
+      "demos": {
+        "imperative": {
+          "title": "Imperative confirm()",
+          "description": "await confirm({...}) resolves true when confirmed and false when cancelled (button, Escape or backdrop). No provider needed."
+        },
+        "colors": {
+          "title": "Colors",
+          "description": "color sets the tone of the confirm button: primary (default), warning, or danger for destructive actions (its label then defaults to \"Delete\"). The cancel button is always a neutral outline button."
+        },
+        "provider": {
+          "title": "With ConfirmProvider",
+          "description": "useConfirm() returns a confirm rendered by the provider (inside the caller's ConfigProvider scope), so dialogs share your app's context. Concurrent requests are shown one at a time."
+        },
+        "declarative": {
+          "title": "Declarative ConfirmDialog",
+          "description": "Controlled dialog; loading shows a spinner and locks cancel while onConfirm runs."
+        },
+        "scoped": {
+          "title": "Scoped: useConfirm() vs confirm()",
+          "description": "Both buttons sit in a nested ConfigProvider (dark theme, tech palette, Chinese). useConfirm() opens its dialog inside that scope (dark tokens, Chinese button labels); confirm() opens it at the root, with the page theme and language."
+        }
+      },
+      "api": {
+        "ConfirmDialogProps": {
+          "open": "Whether the dialog is open (controlled)",
+          "onOpenChange": "Called with false when the user cancels (cancel button, close, Escape, backdrop click)",
+          "onConfirm": "Called when the confirm button is pressed; the dialog does not close by itself"
+        },
+        "ConfirmOptions": {
+          "title": "Title (the dialog's accessible name)",
+          "description": "Explanation below the title (accessible description)",
+          "confirmLabel": "Label of the confirm button; defaults to \"Confirm\", or \"Delete\" for color=\"danger\"",
+          "cancelLabel": "Label of the cancel button; defaults to the localized \"Cancel\"",
+          "closeLabel": "Accessible label of the close (×) button; defaults to the localized \"Close\"",
+          "color": "Semantic color of the confirm button: primary, warning or danger (destructive; defaults its label to \"Delete\")",
+          "loading": "Shows a spinner on the confirm button and disables cancel",
+          "confirmDisabled": "Natively disables the confirm button (removes it from the tab order); with loading alone it stays focusable but cannot be activated again"
+        },
+        "ConfirmProviderProps": {
+          "children": "Application subtree; useConfirm() / confirm() render their dialogs here (useConfirm() dialogs inside the caller's ConfigProvider scope)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "A declarative <minerva-confirm-dialog> opened with show(). color=\"danger\" marks a destructive action; minerva-confirm and minerva-cancel (with its reason) report the answer."
+          },
+          "async": {
+            "title": "Async confirmation",
+            "description": "onConfirm may return a promise: the Confirm button shows its loading state until it settles, and a rejection keeps the dialog open. Extra content goes in the default slot."
+          },
+          "imperative": {
+            "title": "Imperative confirm()",
+            "description": "confirm({ title, ... }) appends a dialog, resolves true or false and removes it once closed: a themed replacement for window.confirm. Concurrent calls are queued. Without a host and without a <minerva-confirm-provider>, the dialog is appended to document.body (root theme and language)."
+          },
+          "scoped": {
+            "title": "Scoped confirm and provider",
+            "description": "confirm({ host }) (or confirmFor(host)) is the equivalent of useConfirm(): the dialog renders inside the host's <minerva-config> scope (dark, tech palette, Chinese labels) and is queued by the closest <minerva-confirm-provider>. confirm() without a host renders in the provider's own scope (here the root theme and language), like the global confirm()."
+          }
+        },
+        "minerva-confirm-dialog": {
+          "props": {
+            "label": "Title (or use the header slot); names the dialog."
+          },
+          "events": {
+            "minerva-confirm": "The Confirm button was pressed; cancelable: preventDefault() keeps the dialog open (close it yourself).",
+            "minerva-cancel": "The confirmation was cancelled and the dialog closed (detail: { reason }).",
+            "minerva-open-change": "The user asked to close (detail: { open, reason }); cancelable: preventDefault() keeps it open.",
+            "minerva-after-open": "Fired once the panel is open and focus has moved in.",
+            "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+          },
+          "slots": {
+            "default": "Optional extra content below the description.",
+            "header": "Title (alternative to the label attribute)."
+          },
+          "cssVars": {
+            "--modal-width": "Width of the panel (defaults to the width of the size, capped by the viewport).",
+            "--modal-max-height": "Maximum height of the panel (the body scrolls beyond).",
+            "--modal-padding": "Horizontal padding of the header, description, body and footer.",
+            "--modal-radius": "Corner radius of the panel (defaults to --radius-xl).",
+            "--modal-shadow": "Shadow of the panel (defaults to --shadow-xl).",
+            "--modal-background": "Background of the panel.",
+            "--modal-z-index": "Stacking order of the panel (defaults to --z-modal)."
+          },
+          "methods": {
+            "show": "Opens the dialog.",
+            "hide": "Closes the dialog (no event)."
+          }
+        },
+        "minerva-confirm-provider": {
+          "props": {
+            "confirm": "Asks for a confirmation rendered by this provider (its scope, or the scope of options.host); resolves true when confirmed (read-only)."
+          },
+          "slots": {
+            "default": "Application content: confirm({ host }) / confirmFor(host) calls from inside are queued here."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

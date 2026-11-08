@@ -1,0 +1,703 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.23.1",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "alert",
+  "title": "Alert アラート",
+  "description": "システム通知や操作結果など、重要なメッセージをページ内に表示します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.23.1",
+    "sourceCommit": "6ccf4f2c7a65dd5b27e517c9a50ea4867f8e7980",
+    "sourceDigest": "sha256:2005faebbf738765fe81a5c952fa47a51311aa5d05e3220f71c542b8b1fe369b",
+    "referenceSourceDigest": "sha256:3616b5d4e7cf7e0eb1fbe04c879d1630cc3dfd5c28f16762b8ad6f3f3525ef82"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Alert",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Alert"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "title",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Alert title"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "success",
+              "warning"
+            ],
+            "typeText": "AlertColor | undefined",
+            "typeRef": "type:3c33aca85f8e2fdc7e4e",
+            "default": "info",
+            "required": false,
+            "description": "Semantic (status) color, which also sets the default icon and the role"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "enum",
+            "values": [
+              "outline",
+              "solid",
+              "subtle"
+            ],
+            "typeText": "AlertVariant | undefined",
+            "typeRef": "type:914f8d89f552bcd0ed5b",
+            "default": "subtle",
+            "required": false,
+            "description": "Visual style: `subtle` (tinted background), `outline` (colored border) or `solid` (filled)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "AlertSize | undefined",
+            "typeRef": "type:aa54de962734661a5ebf",
+            "default": "medium",
+            "required": false,
+            "description": "Alert size (padding and text sizes)"
+          },
+          {
+            "name": "showIcon",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Shows the status icon of the color"
+          },
+          {
+            "name": "icon",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Custom icon, replacing the status icon"
+          },
+          {
+            "name": "iconLabel",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the status icon"
+          },
+          {
+            "name": "closable",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a close button; pressing it hides the alert and calls `onClose`"
+          },
+          {
+            "name": "closeIcon",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Custom close icon"
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the close button"
+          },
+          {
+            "name": "action",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Action area rendered on the right, e.g. buttons"
+          },
+          {
+            "name": "banner",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Banner mode for page-level notices: full width, square corners, no side borders"
+          },
+          {
+            "name": "elevation",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Adds a drop shadow"
+          },
+          {
+            "name": "rounded",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Rounds the corners"
+          },
+          {
+            "name": "borderRadius",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Custom corner radius"
+          },
+          {
+            "name": "animation",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Plays an entrance animation (fade + slide; none under reduced motion)"
+          },
+          {
+            "name": "collapsible",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Lets the description be expanded and collapsed (requires a title)"
+          },
+          {
+            "name": "expanded",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Whether the description is expanded (controlled; pair with `onExpand`)"
+          },
+          {
+            "name": "defaultExpanded",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Whether the description is initially expanded (uncontrolled)"
+          },
+          {
+            "name": "expandLabel",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the toggle while collapsed"
+          },
+          {
+            "name": "collapseLabel",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the toggle while expanded"
+          },
+          {
+            "name": "role",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "enum",
+            "values": [
+              "alert",
+              "status"
+            ],
+            "typeText": "\"alert\" | \"status\" | undefined",
+            "typeRef": "type:dc784dc1d31507abf08f",
+            "required": false,
+            "description": "Role of the alert: danger and warning interrupt (\"alert\", assertive live region), info and success are polite (\"status\")"
+          }
+        ],
+        "events": [
+          {
+            "name": "onClose",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "function",
+            "typeText": "((event: GestureResponderEvent) => void) | undefined",
+            "typeRef": "type:94093aa6cac3220ab87b",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GestureResponderEvent",
+                "typeRef": "type:2a25eb9466bc75075bdf"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the close button is pressed"
+          },
+          {
+            "name": "onExpand",
+            "source": "packages/native/src/components/Alert/Alert.tsx",
+            "kind": "function",
+            "typeText": "((expanded: boolean) => void) | undefined",
+            "typeRef": "type:f04ed2f90390dcf10786",
+            "parameters": [
+              {
+                "name": "expanded",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the requested expanded state"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:AlertProps": {
+      "source": "native/src/components/Alert/Alert.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Alert title"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Description (body) of the alert"
+        },
+        {
+          "name": "color",
+          "type": "AlertColor",
+          "required": false,
+          "default": "\"info\"",
+          "description": "Semantic (status) color, which also sets the default icon and the role"
+        },
+        {
+          "name": "variant",
+          "type": "AlertVariant",
+          "required": false,
+          "default": "\"subtle\"",
+          "description": "Visual style: `subtle` (tinted background), `outline` (colored border) or `solid` (filled)"
+        },
+        {
+          "name": "size",
+          "type": "AlertSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Alert size (padding and text sizes)"
+        },
+        {
+          "name": "showIcon",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Shows the status icon of the color"
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Custom icon, replacing the status icon"
+        },
+        {
+          "name": "iconLabel",
+          "type": "string",
+          "required": false,
+          "default": "the \"alert.icon.<color>\" message",
+          "description": "Accessible label of the status icon"
+        },
+        {
+          "name": "closable",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a close button; pressing it hides the alert and calls `onClose`"
+        },
+        {
+          "name": "closeIcon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Custom close icon"
+        },
+        {
+          "name": "onClose",
+          "type": "(event: GestureResponderEvent) => void",
+          "required": false,
+          "description": "Called when the close button is pressed"
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "required": false,
+          "default": "the \"alert.close\" message",
+          "description": "Accessible label of the close button"
+        },
+        {
+          "name": "action",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Action area rendered on the right, e.g. buttons"
+        },
+        {
+          "name": "banner",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Banner mode for page-level notices: full width, square corners, no side borders"
+        },
+        {
+          "name": "elevation",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Adds a drop shadow"
+        },
+        {
+          "name": "rounded",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Rounds the corners"
+        },
+        {
+          "name": "borderRadius",
+          "type": "number",
+          "required": false,
+          "description": "Custom corner radius"
+        },
+        {
+          "name": "animation",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Plays an entrance animation (fade + slide; none under reduced motion)"
+        },
+        {
+          "name": "collapsible",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Lets the description be expanded and collapsed (requires a title)"
+        },
+        {
+          "name": "expanded",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether the description is expanded (controlled; pair with `onExpand`)"
+        },
+        {
+          "name": "defaultExpanded",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Whether the description is initially expanded (uncontrolled)"
+        },
+        {
+          "name": "onExpand",
+          "type": "(expanded: boolean) => void",
+          "required": false,
+          "description": "Called with the requested expanded state"
+        },
+        {
+          "name": "expandLabel",
+          "type": "string",
+          "required": false,
+          "default": "the \"alert.expand\" message",
+          "description": "Accessible label of the toggle while collapsed"
+        },
+        {
+          "name": "collapseLabel",
+          "type": "string",
+          "required": false,
+          "default": "the \"alert.collapse\" message",
+          "description": "Accessible label of the toggle while expanded"
+        },
+        {
+          "name": "role",
+          "type": "\"alert\" | \"status\"",
+          "required": false,
+          "default": "\"alert\" for danger / warning, else \"status\"",
+          "description": "Role of the alert: danger and warning interrupt (\"alert\", assertive live region), info and success are polite (\"status\")"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the root view"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Alert": {
+      "kind": "cssVars",
+      "source": "react/src/components/Alert",
+      "vars": [
+        {
+          "name": "--alert-padding",
+          "description": "Padding (every size; defaults to the padding of the size)"
+        },
+        {
+          "name": "--alert-radius",
+          "description": "Corner radius (defaults to --radius-sm, --radius-lg when rounded)"
+        },
+        {
+          "name": "--alert-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--alert-icon-size",
+          "description": "Size of the status icon (every size)"
+        },
+        {
+          "name": "--alert-gap",
+          "description": "Space between the icon, the content and the actions"
+        },
+        {
+          "name": "--alert-shadow",
+          "description": "Shadow of the elevated alert (defaults to --shadow-sm)"
+        },
+        {
+          "name": "--alert-margin-bottom",
+          "description": "Space below the alert"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/alert/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/alert/native/basic.tsx": "import { Alert } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <Alert title=\"Changes saved\" color=\"success\">\n      Your preferences were updated.\n    </Alert>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.23.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Alert アラート",
+      "description": "システム通知や操作結果など、重要なメッセージをページ内に表示します。",
+      "demos": {
+        "colors": {
+          "title": "カラー",
+          "description": "color で状態を指定します：info（既定）、success、warning、danger。アイコンと role もこれで決まります。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを指定します：subtle（既定・淡い背景）、outline（色付きの枠線）、solid（色で塗りつぶし）。"
+        },
+        "with-title": {
+          "title": "タイトル付き",
+          "description": "コンテンツの上にタイトルを追加します。showIcon={false} でアイコンを非表示にします。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "small、medium（デフォルト）、large。"
+        },
+        "closable": {
+          "title": "閉じられるアラート",
+          "description": "closable で閉じるボタンを追加します。closeIcon でアイコンを置き換え、閉じると onClose が呼び出されます。"
+        },
+        "with-action": {
+          "title": "アクション付き",
+          "description": "action で右側にボタンやリンクを表示します。"
+        },
+        "collapsible": {
+          "title": "折りたたみ",
+          "description": "タイトルがある場合、collapsible でコンテンツを展開・折りたたみできます。expanded + onExpand で制御するか、defaultExpanded で初期状態だけを指定します。"
+        },
+        "banner": {
+          "title": "バナー",
+          "description": "ページ上部の通知に適したバナーモード。"
+        },
+        "appearance": {
+          "title": "外観",
+          "description": "カスタムアイコン、影、outline / solid バリアント、角丸のオプション。"
+        },
+        "animations": {
+          "title": "アニメーション",
+          "description": "登場アニメーションを選択するか、無効にします。"
+        },
+        "return-focus": {
+          "title": "閉じた後のフォーカス",
+          "description": "閉じるボタンでアラートを閉じても、フォーカスがページに落ちることはありません。アラートの次のフォーカス可能な要素（なければ前の要素、それもなければコンテナー）、または returnFocus（要素・ref・関数）に移動します。"
+        }
+      },
+      "api": {
+        "AlertProps": {
+          "title": "アラートのタイトル",
+          "children": "アラートのコンテンツ",
+          "color": "セマンティック（状態）カラー。既定のアイコンと role も決まります",
+          "variant": "見た目のスタイル：subtle（淡い背景）、outline（透明な背景＋色付きの枠線）、solid（色で塗りつぶし）",
+          "size": "アラートのサイズ",
+          "showIcon": "カラーに対応するステータスアイコンを表示する",
+          "icon": "ステータスアイコンを置き換えるカスタムアイコン",
+          "closable": "閉じるボタンを表示する",
+          "closeIcon": "カスタムの閉じるアイコン",
+          "onClose": "閉じるボタンがクリックされたときに呼び出されます",
+          "animation": "登場アニメーションを再生する",
+          "animationName": "登場アニメーションの名前",
+          "className": "追加のクラス名",
+          "style": "インラインスタイル",
+          "action": "右側に表示するアクション領域（例：ボタン）",
+          "banner": "バナーモード。ページ上部の通知に適しています",
+          "elevation": "ドロップシャドウを追加する",
+          "rounded": "角を丸くする",
+          "borderRadius": "カスタムの角丸の大きさ",
+          "collapsible": "コンテンツの展開・折りたたみを可能にする（タイトルが必要）",
+          "expanded": "コンテンツが展開されているかどうか（制御）。onExpand と組み合わせて使用します",
+          "defaultExpanded": "コンテンツを最初に展開するかどうか（非制御）",
+          "onExpand": "コンテンツが展開または折りたたまれたときに、新しい状態で呼び出される",
+          "ref": "ルートの <div> 要素への ref",
+          "closeLabel": "閉じるボタンのアクセシブルなラベル",
+          "expandLabel": "内容が折りたたまれているときの切り替えボタンのアクセシブルなラベル",
+          "collapseLabel": "内容が展開されているときの切り替えボタンのアクセシブルなラベル",
+          "iconLabel": "ステータスアイコンのアクセシブルなラベル",
+          "role": "アラートの ARIA ロール。危険と警告は割り込み（\"alert\"）、情報と成功は控えめ（\"status\"）に読み上げられます",
+          "returnFocus": "閉じるボタンで閉じた後にフォーカスを受け取る要素（要素・ref・関数）。未指定の場合はアラートの次のフォーカス可能な要素（なければ前の要素、それもなければコンテナー）に移動し、<body> には落ちません"
+        }
+      },
+      "cssVars": {
+        "--alert-padding": "内側の余白（全サイズ共通。既定値は各サイズの余白）",
+        "--alert-radius": "角丸（既定値は --radius-sm、rounded のときは --radius-lg）",
+        "--alert-font-size": "フォントサイズ（全サイズ共通）",
+        "--alert-icon-size": "ステータスアイコンのサイズ（全サイズ共通）",
+        "--alert-gap": "アイコン・内容・アクション間の間隔",
+        "--alert-shadow": "浮き上がった表示の影（既定値は --shadow-sm）",
+        "--alert-margin-bottom": "アラート下側の余白"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "見出し付きの 4 つのステータス色。danger と warning は role=\"alert\"、info と success は role=\"status\" を使います。"
+          },
+          "variants-sizes": {
+            "title": "バリアント・サイズ・外観",
+            "description": "3 種類のバリアントとサイズ、hide-icon、elevation、角丸なし、animation-name / no-animation、カスタム icon スロット、バナーモード。"
+          },
+          "closable": {
+            "title": "閉じられるアラート",
+            "description": "closable はキャンセル可能な minerva-close を発火します。preventDefault() でアラートを残せます。そうでなければフォーカスを外に移して自身を非表示にします。action スロットにボタンを置けます。"
+          },
+          "collapsible": {
+            "title": "折りたたみ",
+            "description": "collapsible（見出しが必要）でトグルが追加されます。collapsed で初期状態を設定し、minerva-expanded-change が変化を通知します。"
+          }
+        },
+        "minerva-alert": {
+          "props": {
+            "heading": "タイトルのテキスト（または heading スロット）。",
+            "hideIcon": "ステータスアイコンを非表示にします。",
+            "noAnimation": "登場アニメーションを無効にします。",
+            "square": "角を丸めません。",
+            "collapsed": "メッセージが折りたたまれているかどうか。",
+            "alertRole": "ARIA ロール（既定値: danger / warning は \"alert\"、それ以外は \"status\"）。"
+          },
+          "events": {
+            "minerva-close": "閉じるボタンが実行されました。キャンセル可能：preventDefault() でアラートを表示したままにします。",
+            "minerva-expanded-change": "ユーザーがメッセージを展開 / 折りたたみました（detail: { expanded }）。キャンセル可能。"
+          },
+          "slots": {
+            "default": "メッセージ。",
+            "heading": "タイトル（heading 属性の代替）。",
+            "icon": "ステータスアイコンを置き換えるカスタムアイコン。",
+            "action": "末尾のアクション領域（ボタンなど）。",
+            "close-icon": "カスタムの閉じるアイコン。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}
