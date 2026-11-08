@@ -259,230 +259,253 @@ const cssSize = (value: number | string) =>
         </div>
       }
       <div mnHook="media-player" mnPart="controls" [class]="s.controls">
-        <div
-          mnHook="media-player"
-          mnPart="seek"
-          role="slider"
-          tabindex="0"
-          [class]="s.slider + ' ' + s.seek"
-          [attr.aria-label]="scope.t('mediaPlayer.seek')"
-          aria-valuemin="0"
-          [attr.aria-valuemax]="round(duration())"
-          [attr.aria-valuenow]="round(currentTime())"
-          [attr.aria-valuetext]="seekText()"
-          [attr.aria-disabled]="duration() ? null : 'true'"
-          [style.--_mp-value]="progress() + '%'"
-          [style.--_mp-buffered]="bufferedPercent() + '%'"
-          (pointerdown)="dragSeek($event)"
-          (pointermove)="dragSeek($event)"
-          (keydown)="seekKeys($event)"
-        >
-          <span [class]="s.track"></span><span [class]="s.buffered"></span
-          ><span [class]="s.fill"></span><span [class]="s.thumb"></span>
+        <div [class]="isVideo() ? s.timeline : s.audioTimeline">
+          @if (isVideo()) {
+            <span
+              mnHook="media-player"
+              mnPart="time"
+              [class]="s.time"
+              [attr.title]="timeText()"
+              >{{ timeText() }}</span
+            >
+          }
+          <div
+            mnHook="media-player"
+            mnPart="seek"
+            role="slider"
+            tabindex="0"
+            [class]="s.slider + ' ' + s.seek"
+            [attr.aria-label]="scope.t('mediaPlayer.seek')"
+            aria-valuemin="0"
+            [attr.aria-valuemax]="round(duration())"
+            [attr.aria-valuenow]="round(currentTime())"
+            [attr.aria-valuetext]="seekText()"
+            [attr.aria-disabled]="duration() ? null : 'true'"
+            [style.--_mp-value]="progress() + '%'"
+            [style.--_mp-buffered]="bufferedPercent() + '%'"
+            (pointerdown)="dragSeek($event)"
+            (pointermove)="dragSeek($event)"
+            (keydown)="seekKeys($event)"
+          >
+            <span [class]="s.track"></span><span [class]="s.buffered"></span
+            ><span [class]="s.fill"></span><span [class]="s.thumb"></span>
+          </div>
         </div>
-        <button
-          type="button"
-          mnHook="media-player"
-          mnPart="button"
-          [class]="s.button"
-          [attr.aria-label]="
-            isPaused()
-              ? scope.t('mediaPlayer.play')
-              : scope.t('mediaPlayer.pause')
-          "
-          [disabled]="failed()"
-          (click)="toggle()"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path [attr.d]="isPaused() ? icons.play : icons.pause" />
-          </svg>
-        </button>
-        @if (skipSeconds() > 0) {
+        <div [class]="s.actions">
           <button
             type="button"
             mnHook="media-player"
             mnPart="button"
-            [class]="s.button + ' ' + s.skipButton"
+            [class]="s.button"
             [attr.aria-label]="
-              scope.t('mediaPlayer.skipBack', { count: skipSeconds() })
+              isPaused()
+                ? scope.t('mediaPlayer.play')
+                : scope.t('mediaPlayer.pause')
             "
             [disabled]="failed()"
-            (click)="seek(currentTime() - skipSeconds())"
+            (click)="toggle()"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path [attr.d]="icons.skipBack" />
+              <path [attr.d]="isPaused() ? icons.play : icons.pause" />
             </svg>
           </button>
-          <button
-            type="button"
-            mnHook="media-player"
-            mnPart="button"
-            [class]="s.button + ' ' + s.skipButton"
-            [attr.aria-label]="
-              scope.t('mediaPlayer.skipForward', { count: skipSeconds() })
-            "
-            [disabled]="failed()"
-            (click)="seek(currentTime() + skipSeconds())"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path [attr.d]="icons.skipForward" />
-            </svg>
-          </button>
-        }
-        @if (!isVideo() && showSpinner()) {
-          <span
-            mnHook="media-player"
-            mnPart="spinner"
-            role="status"
-            [class]="s.spinner"
-            [attr.aria-label]="scope.t('mediaPlayer.loading')"
-          ></span>
-        }
-        <span mnHook="media-player" mnPart="time" [class]="s.time">{{
-          timeText()
-        }}</span>
-        <span [class]="s.spacer"></span>
-        <button
-          type="button"
-          mnHook="media-player"
-          mnPart="button"
-          [class]="s.button"
-          [attr.aria-label]="
-            muted()
-              ? scope.t('mediaPlayer.unmute')
-              : scope.t('mediaPlayer.mute')
-          "
-          [attr.aria-pressed]="muted()"
-          (click)="toggleMute()"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path
-              [attr.d]="muted() || volume() === 0 ? icons.muted : icons.volume"
-            />
-          </svg>
-        </button>
-        <div
-          mnHook="media-player"
-          mnPart="volume"
-          role="slider"
-          tabindex="0"
-          [class]="s.slider + ' ' + s.volume"
-          [attr.aria-label]="scope.t('mediaPlayer.volume')"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          [attr.aria-valuenow]="volumePercent()"
-          [attr.aria-valuetext]="volumePercent() + '%'"
-          [style.--_mp-value]="volumePercent() + '%'"
-          (pointerdown)="dragVolume($event)"
-          (pointermove)="dragVolume($event)"
-          (keydown)="volumeKeys($event)"
-        >
-          <span [class]="s.track"></span><span [class]="s.fill"></span
-          ><span [class]="s.thumb"></span>
-        </div>
-        @if (playbackRates().length > 1) {
-          <button
-            type="button"
-            mnHook="media-player"
-            mnPart="button"
-            [class]="s.button + ' ' + s.rate"
-            [attr.aria-label]="
-              scope.t('mediaPlayer.playbackRate', { rate: rateText() })
-            "
-            (click)="cycleRate()"
-          >
-            {{ rateText() }}
-          </button>
-        }
-        @if (tracks().length > 0) {
-          <span
-            #captionsControl
-            [class]="s.captionsControl"
-            (focusout)="onCaptionsFocusOut($event)"
-          >
+          @if (skipSeconds() > 0) {
             <button
-              #captionsButton
               type="button"
               mnHook="media-player"
               mnPart="button"
-              [class]="
-                trackIndex() >= 0 ? s.button + ' ' + s.captionsOn : s.button
+              [class]="s.button + ' ' + s.skipButton"
+              [attr.aria-label]="
+                scope.t('mediaPlayer.skipBack', { count: skipSeconds() })
               "
-              [attr.aria-label]="scope.t('mediaPlayer.captions')"
-              aria-haspopup="menu"
-              [attr.aria-expanded]="captionsMenu()"
-              (click)="captionsMenu.set(!captionsMenu())"
+              [disabled]="failed()"
+              (click)="seek(currentTime() - skipSeconds())"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path [attr.d]="icons.captions" />
+                <path [attr.d]="icons.skipBack" />
               </svg>
             </button>
-            @if (captionsMenu()) {
-              <div
-                mnHook="media-player"
-                mnPart="captions-menu"
-                role="menu"
-                [class]="s.captionsMenu"
-                [attr.aria-label]="scope.t('mediaPlayer.captions')"
-                (keydown)="captionsMenuKeys($event)"
-              >
-                @for (option of captionsOptions(); track option.index) {
-                  <button
-                    type="button"
-                    role="menuitemradio"
-                    [class]="s.captionsOption"
-                    [attr.aria-checked]="option.index === trackIndex()"
-                    [attr.tabindex]="option.index === trackIndex() ? 0 : -1"
-                    (click)="chooseTrack(option.index); closeCaptionsMenu(true)"
-                  >
-                    {{ option.label }}
-                  </button>
-                }
-              </div>
-            }
-          </span>
-        }
-        @if (isVideo() && pictureInPicture() && pipSupported()) {
+            <button
+              type="button"
+              mnHook="media-player"
+              mnPart="button"
+              [class]="s.button + ' ' + s.skipButton"
+              [attr.aria-label]="
+                scope.t('mediaPlayer.skipForward', { count: skipSeconds() })
+              "
+              [disabled]="failed()"
+              (click)="seek(currentTime() + skipSeconds())"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path [attr.d]="icons.skipForward" />
+              </svg>
+            </button>
+          }
+          @if (!isVideo() && showSpinner()) {
+            <span
+              mnHook="media-player"
+              mnPart="spinner"
+              role="status"
+              [class]="s.spinner"
+              [attr.aria-label]="scope.t('mediaPlayer.loading')"
+            ></span>
+          }
+          @if (!isVideo()) {
+            <span
+              mnHook="media-player"
+              mnPart="time"
+              [class]="s.time"
+              [attr.title]="timeText()"
+              >{{ timeText() }}</span
+            >
+          }
+          <span [class]="s.spacer"></span>
           <button
             type="button"
             mnHook="media-player"
             mnPart="button"
             [class]="s.button"
             [attr.aria-label]="
-              pip()
-                ? scope.t('mediaPlayer.exitPictureInPicture')
-                : scope.t('mediaPlayer.pictureInPicture')
+              muted()
+                ? scope.t('mediaPlayer.unmute')
+                : scope.t('mediaPlayer.mute')
             "
-            [attr.aria-pressed]="pip()"
-            (click)="togglePip()"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path [attr.d]="icons.pictureInPicture" />
-            </svg>
-          </button>
-        }
-        @if (isVideo()) {
-          <button
-            type="button"
-            mnHook="media-player"
-            mnPart="button"
-            [class]="s.button"
-            [attr.aria-label]="
-              fullscreen()
-                ? scope.t('mediaPlayer.exitFullscreen')
-                : scope.t('mediaPlayer.fullscreen')
-            "
-            (click)="toggleFullscreen()"
+            [attr.aria-pressed]="muted()"
+            (click)="toggleMute()"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path
                 [attr.d]="
-                  fullscreen() ? icons.exitFullscreen : icons.fullscreen
+                  muted() || volume() === 0 ? icons.muted : icons.volume
                 "
               />
             </svg>
           </button>
-        }
+          <div
+            mnHook="media-player"
+            mnPart="volume"
+            role="slider"
+            tabindex="0"
+            [class]="s.slider + ' ' + s.volume"
+            [attr.aria-label]="scope.t('mediaPlayer.volume')"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="volumePercent()"
+            [attr.aria-valuetext]="volumePercent() + '%'"
+            [style.--_mp-value]="volumePercent() + '%'"
+            (pointerdown)="dragVolume($event)"
+            (pointermove)="dragVolume($event)"
+            (keydown)="volumeKeys($event)"
+          >
+            <span [class]="s.track"></span><span [class]="s.fill"></span
+            ><span [class]="s.thumb"></span>
+          </div>
+          @if (playbackRates().length > 1) {
+            <button
+              type="button"
+              mnHook="media-player"
+              mnPart="button"
+              [class]="s.button + ' ' + s.rate"
+              [attr.aria-label]="
+                scope.t('mediaPlayer.playbackRate', { rate: rateText() })
+              "
+              (click)="cycleRate()"
+            >
+              {{ rateText() }}
+            </button>
+          }
+          @if (tracks().length > 0) {
+            <span
+              #captionsControl
+              [class]="s.captionsControl"
+              (focusout)="onCaptionsFocusOut($event)"
+            >
+              <button
+                #captionsButton
+                type="button"
+                mnHook="media-player"
+                mnPart="button"
+                [class]="
+                  trackIndex() >= 0 ? s.button + ' ' + s.captionsOn : s.button
+                "
+                [attr.aria-label]="scope.t('mediaPlayer.captions')"
+                aria-haspopup="menu"
+                [attr.aria-expanded]="captionsMenu()"
+                (click)="captionsMenu.set(!captionsMenu())"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path [attr.d]="icons.captions" />
+                </svg>
+              </button>
+              @if (captionsMenu()) {
+                <div
+                  mnHook="media-player"
+                  mnPart="captions-menu"
+                  role="menu"
+                  [class]="s.captionsMenu"
+                  [attr.aria-label]="scope.t('mediaPlayer.captions')"
+                  (keydown)="captionsMenuKeys($event)"
+                >
+                  @for (option of captionsOptions(); track option.index) {
+                    <button
+                      type="button"
+                      role="menuitemradio"
+                      [class]="s.captionsOption"
+                      [attr.aria-checked]="option.index === trackIndex()"
+                      [attr.tabindex]="option.index === trackIndex() ? 0 : -1"
+                      (click)="
+                        chooseTrack(option.index); closeCaptionsMenu(true)
+                      "
+                    >
+                      {{ option.label }}
+                    </button>
+                  }
+                </div>
+              }
+            </span>
+          }
+          @if (isVideo() && pictureInPicture() && pipSupported()) {
+            <button
+              type="button"
+              mnHook="media-player"
+              mnPart="button"
+              [class]="s.button"
+              [attr.aria-label]="
+                pip()
+                  ? scope.t('mediaPlayer.exitPictureInPicture')
+                  : scope.t('mediaPlayer.pictureInPicture')
+              "
+              [attr.aria-pressed]="pip()"
+              (click)="togglePip()"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path [attr.d]="icons.pictureInPicture" />
+              </svg>
+            </button>
+          }
+          @if (isVideo()) {
+            <button
+              type="button"
+              mnHook="media-player"
+              mnPart="button"
+              [class]="s.button"
+              [attr.aria-label]="
+                fullscreen()
+                  ? scope.t('mediaPlayer.exitFullscreen')
+                  : scope.t('mediaPlayer.fullscreen')
+              "
+              (click)="toggleFullscreen()"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  [attr.d]="
+                    fullscreen() ? icons.exitFullscreen : icons.fullscreen
+                  "
+                />
+              </svg>
+            </button>
+          }
+        </div>
       </div>
     }`,
 })

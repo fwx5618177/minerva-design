@@ -936,6 +936,10 @@ export class MinervaMediaPlayer extends MinervaElement {
           ></span>`
         : nothing;
     const volumePercent = Math.round(shownVolume * 100);
+    const timeText = `${formatMediaTime(currentTime, duration)} / ${formatMediaTime(duration)}`;
+    const time = html`<span part="time" class="time" title=${timeText}
+      >${timeText}</span
+    >`;
 
     return html`<div
       part="root"
@@ -972,117 +976,118 @@ export class MinervaMediaPlayer extends MinervaElement {
           : nothing
       }
       <div part="controls" class="controls">
-        <div
-          part="seek"
-          class="slider seek"
-          role="slider"
-          tabindex="0"
-          aria-label=${t("mediaPlayer.seek")}
-          aria-valuemin="0"
-          aria-valuemax=${Math.round(duration)}
-          aria-valuenow=${Math.round(currentTime)}
-          aria-valuetext=${t("mediaPlayer.timeOf", {
-            current: formatMediaTime(currentTime, duration),
-            duration: formatMediaTime(duration),
-          })}
-          aria-disabled=${duration ? nothing : "true"}
-          style="--_mp-value:${
-            mediaProgress(currentTime, duration) * 100
-          }%;--_mp-buffered:${mediaProgress(this.buffered, duration) * 100}%"
-          @pointerdown=${this.dragSeek}
-          @pointermove=${this.dragSeek}
-          @keydown=${this.seekKeys}
-        >
-          <span class="track"></span><span class="buffered"></span
-          ><span class="fill"></span><span class="thumb"></span>
+        <div class=${isVideo ? "timeline" : "audioTimeline"}>
+          ${isVideo ? time : nothing}
+          <div
+            part="seek"
+            class="slider seek"
+            role="slider"
+            tabindex="0"
+            aria-label=${t("mediaPlayer.seek")}
+            aria-valuemin="0"
+            aria-valuemax=${Math.round(duration)}
+            aria-valuenow=${Math.round(currentTime)}
+            aria-valuetext=${t("mediaPlayer.timeOf", {
+              current: formatMediaTime(currentTime, duration),
+              duration: formatMediaTime(duration),
+            })}
+            aria-disabled=${duration ? nothing : "true"}
+            style="--_mp-value:${
+              mediaProgress(currentTime, duration) * 100
+            }%;--_mp-buffered:${mediaProgress(this.buffered, duration) * 100}%"
+            @pointerdown=${this.dragSeek}
+            @pointermove=${this.dragSeek}
+            @keydown=${this.seekKeys}
+          >
+            <span class="track"></span><span class="buffered"></span
+            ><span class="fill"></span><span class="thumb"></span>
+          </div>
         </div>
-        ${this.button(
-          paused ? t("mediaPlayer.play") : t("mediaPlayer.pause"),
-          icon(paused ? "play" : "pause"),
-          () => this.toggle(),
-          { disabled: failed },
-        )}
-        ${
-          skip > 0
-            ? html`${this.button(
-                t("mediaPlayer.skipBack", { count: skip }),
-                icon("skipBack"),
-                () => this.seek(this.currentTime - skip),
-                { disabled: failed, extra: "skipButton" },
-              )}${this.button(
-                t("mediaPlayer.skipForward", { count: skip }),
-                icon("skipForward"),
-                () => this.seek(this.currentTime + skip),
-                { disabled: failed, extra: "skipButton" },
-              )}`
-            : nothing
-        }
-        ${isVideo ? nothing : spinner}
-        <span part="time" class="time"
-          >${formatMediaTime(currentTime, duration)} /
-          ${formatMediaTime(duration)}</span
-        >
-        <span class="spacer"></span>
-        ${this.button(
-          muted ? t("mediaPlayer.unmute") : t("mediaPlayer.mute"),
-          icon(muted || this.volume === 0 ? "muted" : "volume"),
-          () => this.toggleMute(),
-          { pressed: muted },
-        )}
-        <div
-          part="volume"
-          class="slider volume"
-          role="slider"
-          tabindex="0"
-          aria-label=${t("mediaPlayer.volume")}
-          aria-valuemin="0"
-          aria-valuemax="100"
-          aria-valuenow=${volumePercent}
-          aria-valuetext="${volumePercent}%"
-          style="--_mp-value:${shownVolume * 100}%"
-          @pointerdown=${this.dragVolume}
-          @pointermove=${this.dragVolume}
-          @keydown=${this.volumeKeys}
-        >
-          <span class="track"></span><span class="fill"></span
-          ><span class="thumb"></span>
+        <div class="actions">
+          ${this.button(
+            paused ? t("mediaPlayer.play") : t("mediaPlayer.pause"),
+            icon(paused ? "play" : "pause"),
+            () => this.toggle(),
+            { disabled: failed },
+          )}
+          ${
+            skip > 0
+              ? html`${this.button(
+                  t("mediaPlayer.skipBack", { count: skip }),
+                  icon("skipBack"),
+                  () => this.seek(this.currentTime - skip),
+                  { disabled: failed, extra: "skipButton" },
+                )}${this.button(
+                  t("mediaPlayer.skipForward", { count: skip }),
+                  icon("skipForward"),
+                  () => this.seek(this.currentTime + skip),
+                  { disabled: failed, extra: "skipButton" },
+                )}`
+              : nothing
+          }
+          ${isVideo ? nothing : spinner} ${isVideo ? nothing : time}
+          <span class="spacer"></span>
+          ${this.button(
+            muted ? t("mediaPlayer.unmute") : t("mediaPlayer.mute"),
+            icon(muted || this.volume === 0 ? "muted" : "volume"),
+            () => this.toggleMute(),
+            { pressed: muted },
+          )}
+          <div
+            part="volume"
+            class="slider volume"
+            role="slider"
+            tabindex="0"
+            aria-label=${t("mediaPlayer.volume")}
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow=${volumePercent}
+            aria-valuetext="${volumePercent}%"
+            style="--_mp-value:${shownVolume * 100}%"
+            @pointerdown=${this.dragVolume}
+            @pointermove=${this.dragVolume}
+            @keydown=${this.volumeKeys}
+          >
+            <span class="track"></span><span class="fill"></span
+            ><span class="thumb"></span>
+          </div>
+          ${
+            this.playbackRates.length > 1
+              ? this.button(
+                  t("mediaPlayer.playbackRate", {
+                    rate: formatPlaybackRate(rate),
+                  }),
+                  formatPlaybackRate(rate),
+                  () => this.cycleRate(),
+                  { extra: "rate" },
+                )
+              : nothing
+          }
+          ${this.renderCaptionsControl()}
+          ${
+            isVideo && this.pictureInPicture && pipSupported
+              ? this.button(
+                  this.pip
+                    ? t("mediaPlayer.exitPictureInPicture")
+                    : t("mediaPlayer.pictureInPicture"),
+                  icon("pictureInPicture"),
+                  () => this.togglePip(),
+                  { pressed: this.pip },
+                )
+              : nothing
+          }
+          ${
+            isVideo
+              ? this.button(
+                  this.fullscreen
+                    ? t("mediaPlayer.exitFullscreen")
+                    : t("mediaPlayer.fullscreen"),
+                  icon(this.fullscreen ? "exitFullscreen" : "fullscreen"),
+                  () => this.toggleFullscreen(),
+                )
+              : nothing
+          }
         </div>
-        ${
-          this.playbackRates.length > 1
-            ? this.button(
-                t("mediaPlayer.playbackRate", {
-                  rate: formatPlaybackRate(rate),
-                }),
-                formatPlaybackRate(rate),
-                () => this.cycleRate(),
-                { extra: "rate" },
-              )
-            : nothing
-        }
-        ${this.renderCaptionsControl()}
-        ${
-          isVideo && this.pictureInPicture && pipSupported
-            ? this.button(
-                this.pip
-                  ? t("mediaPlayer.exitPictureInPicture")
-                  : t("mediaPlayer.pictureInPicture"),
-                icon("pictureInPicture"),
-                () => this.togglePip(),
-                { pressed: this.pip },
-              )
-            : nothing
-        }
-        ${
-          isVideo
-            ? this.button(
-                this.fullscreen
-                  ? t("mediaPlayer.exitFullscreen")
-                  : t("mediaPlayer.fullscreen"),
-                icon(this.fullscreen ? "exitFullscreen" : "fullscreen"),
-                () => this.toggleFullscreen(),
-              )
-            : nothing
-        }
       </div>
     </div>`;
   }

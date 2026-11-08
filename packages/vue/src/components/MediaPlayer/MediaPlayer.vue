@@ -717,197 +717,216 @@ const icons = MEDIA_ICON_PATHS;
         {{ t("mediaPlayer.error") }}
       </div>
       <div :class="styles.controls" v-bind="hooks('media-player', 'controls')">
-        <div
-          :class="[styles.slider, styles.seek]"
-          role="slider"
-          tabindex="0"
-          :aria-label="t('mediaPlayer.seek')"
-          aria-valuemin="0"
-          :aria-valuemax="Math.round(duration)"
-          :aria-valuenow="Math.round(currentTime)"
-          :aria-valuetext="seekText"
-          :aria-disabled="duration ? undefined : 'true'"
-          :style="seekStyle"
-          v-bind="hooks('media-player', 'seek')"
-          @pointerdown="dragSeek"
-          @pointermove="dragSeek"
-          @keydown="seekKeys"
-        >
-          <span :class="styles.track" />
-          <span :class="styles.buffered" />
-          <span :class="styles.fill" />
-          <span :class="styles.thumb" />
+        <div :class="isVideo ? styles.timeline : styles.audioTimeline">
+          <span
+            v-if="isVideo"
+            :class="styles.time"
+            :title="timeText"
+            v-bind="hooks('media-player', 'time')"
+            >{{ timeText }}</span
+          >
+          <div
+            :class="[styles.slider, styles.seek]"
+            role="slider"
+            tabindex="0"
+            :aria-label="t('mediaPlayer.seek')"
+            aria-valuemin="0"
+            :aria-valuemax="Math.round(duration)"
+            :aria-valuenow="Math.round(currentTime)"
+            :aria-valuetext="seekText"
+            :aria-disabled="duration ? undefined : 'true'"
+            :style="seekStyle"
+            v-bind="hooks('media-player', 'seek')"
+            @pointerdown="dragSeek"
+            @pointermove="dragSeek"
+            @keydown="seekKeys"
+          >
+            <span :class="styles.track" />
+            <span :class="styles.buffered" />
+            <span :class="styles.fill" />
+            <span :class="styles.thumb" />
+          </div>
         </div>
-        <button
-          type="button"
-          :class="styles.button"
-          :aria-label="paused ? t('mediaPlayer.play') : t('mediaPlayer.pause')"
-          :disabled="failed"
-          v-bind="hooks('media-player', 'button')"
-          @click="toggle"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path :d="paused ? icons.play : icons.pause" />
-          </svg>
-        </button>
-        <template v-if="skipSeconds > 0">
+        <div :class="styles.actions">
           <button
             type="button"
-            :class="[styles.button, styles.skipButton]"
-            :aria-label="t('mediaPlayer.skipBack', { count: skipSeconds })"
+            :class="styles.button"
+            :aria-label="
+              paused ? t('mediaPlayer.play') : t('mediaPlayer.pause')
+            "
             :disabled="failed"
             v-bind="hooks('media-player', 'button')"
-            @click="seek(currentTime - skipSeconds)"
+            @click="toggle"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path :d="icons.skipBack" />
+              <path :d="paused ? icons.play : icons.pause" />
             </svg>
           </button>
+          <template v-if="skipSeconds > 0">
+            <button
+              type="button"
+              :class="[styles.button, styles.skipButton]"
+              :aria-label="t('mediaPlayer.skipBack', { count: skipSeconds })"
+              :disabled="failed"
+              v-bind="hooks('media-player', 'button')"
+              @click="seek(currentTime - skipSeconds)"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path :d="icons.skipBack" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              :class="[styles.button, styles.skipButton]"
+              :aria-label="t('mediaPlayer.skipForward', { count: skipSeconds })"
+              :disabled="failed"
+              v-bind="hooks('media-player', 'button')"
+              @click="seek(currentTime + skipSeconds)"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path :d="icons.skipForward" />
+              </svg>
+            </button>
+          </template>
+          <span
+            v-if="!isVideo && showSpinner"
+            :class="styles.spinner"
+            role="status"
+            :aria-label="t('mediaPlayer.loading')"
+            v-bind="hooks('media-player', 'spinner')"
+          />
+          <span
+            v-if="!isVideo"
+            :title="timeText"
+            :class="styles.time"
+            v-bind="hooks('media-player', 'time')"
+            >{{ timeText }}</span
+          >
+          <span :class="styles.spacer" />
           <button
             type="button"
-            :class="[styles.button, styles.skipButton]"
-            :aria-label="t('mediaPlayer.skipForward', { count: skipSeconds })"
-            :disabled="failed"
+            :class="styles.button"
+            :aria-label="
+              muted ? t('mediaPlayer.unmute') : t('mediaPlayer.mute')
+            "
+            :aria-pressed="muted"
             v-bind="hooks('media-player', 'button')"
-            @click="seek(currentTime + skipSeconds)"
+            @click="toggleMute"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path :d="icons.skipForward" />
-            </svg>
-          </button>
-        </template>
-        <span
-          v-if="!isVideo && showSpinner"
-          :class="styles.spinner"
-          role="status"
-          :aria-label="t('mediaPlayer.loading')"
-          v-bind="hooks('media-player', 'spinner')"
-        />
-        <span :class="styles.time" v-bind="hooks('media-player', 'time')">{{
-          timeText
-        }}</span>
-        <span :class="styles.spacer" />
-        <button
-          type="button"
-          :class="styles.button"
-          :aria-label="muted ? t('mediaPlayer.unmute') : t('mediaPlayer.mute')"
-          :aria-pressed="muted"
-          v-bind="hooks('media-player', 'button')"
-          @click="toggleMute"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path :d="muted || volume === 0 ? icons.muted : icons.volume" />
-          </svg>
-        </button>
-        <div
-          :class="[styles.slider, styles.volume]"
-          role="slider"
-          tabindex="0"
-          :aria-label="t('mediaPlayer.volume')"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          :aria-valuenow="Math.round(shownVolume * 100)"
-          :aria-valuetext="`${Math.round(shownVolume * 100)}%`"
-          :style="{ '--_mp-value': `${shownVolume * 100}%` }"
-          v-bind="hooks('media-player', 'volume')"
-          @pointerdown="dragVolume"
-          @pointermove="dragVolume"
-          @keydown="volumeKeys"
-        >
-          <span :class="styles.track" />
-          <span :class="styles.fill" />
-          <span :class="styles.thumb" />
-        </div>
-        <button
-          v-if="playbackRates.length > 1"
-          type="button"
-          :class="[styles.button, styles.rate]"
-          :aria-label="
-            t('mediaPlayer.playbackRate', { rate: formatPlaybackRate(rate) })
-          "
-          v-bind="hooks('media-player', 'button')"
-          @click="cycleRate"
-        >
-          {{ formatPlaybackRate(rate) }}
-        </button>
-        <span
-          v-if="tracks.length > 0"
-          ref="captionsControl"
-          :class="styles.captionsControl"
-          @focusout="onCaptionsFocusOut"
-        >
-          <button
-            ref="captionsButton"
-            type="button"
-            :class="[styles.button, trackIndex >= 0 && styles.captionsOn]"
-            :aria-label="t('mediaPlayer.captions')"
-            aria-haspopup="menu"
-            :aria-expanded="captionsMenu"
-            v-bind="hooks('media-player', 'button')"
-            @click="captionsMenu = !captionsMenu"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path :d="icons.captions" />
+              <path :d="muted || volume === 0 ? icons.muted : icons.volume" />
             </svg>
           </button>
           <div
-            v-if="captionsMenu"
-            role="menu"
-            :aria-label="t('mediaPlayer.captions')"
-            :class="styles.captionsMenu"
-            v-bind="hooks('media-player', 'captions-menu')"
-            @keydown="captionsMenuKeys"
+            :class="[styles.slider, styles.volume]"
+            role="slider"
+            tabindex="0"
+            :aria-label="t('mediaPlayer.volume')"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            :aria-valuenow="Math.round(shownVolume * 100)"
+            :aria-valuetext="`${Math.round(shownVolume * 100)}%`"
+            :style="{ '--_mp-value': `${shownVolume * 100}%` }"
+            v-bind="hooks('media-player', 'volume')"
+            @pointerdown="dragVolume"
+            @pointermove="dragVolume"
+            @keydown="volumeKeys"
+          >
+            <span :class="styles.track" />
+            <span :class="styles.fill" />
+            <span :class="styles.thumb" />
+          </div>
+          <button
+            v-if="playbackRates.length > 1"
+            type="button"
+            :class="[styles.button, styles.rate]"
+            :aria-label="
+              t('mediaPlayer.playbackRate', { rate: formatPlaybackRate(rate) })
+            "
+            v-bind="hooks('media-player', 'button')"
+            @click="cycleRate"
+          >
+            {{ formatPlaybackRate(rate) }}
+          </button>
+          <span
+            v-if="tracks.length > 0"
+            ref="captionsControl"
+            :class="styles.captionsControl"
+            @focusout="onCaptionsFocusOut"
           >
             <button
-              v-for="option in captionsOptions"
-              :key="option.index"
+              ref="captionsButton"
               type="button"
-              role="menuitemradio"
-              :aria-checked="option.index === trackIndex"
-              :tabindex="option.index === trackIndex ? 0 : -1"
-              :class="styles.captionsOption"
-              @click="
-                chooseTrack(option.index);
-                closeCaptionsMenu(true);
-              "
+              :class="[styles.button, trackIndex >= 0 && styles.captionsOn]"
+              :aria-label="t('mediaPlayer.captions')"
+              aria-haspopup="menu"
+              :aria-expanded="captionsMenu"
+              v-bind="hooks('media-player', 'button')"
+              @click="captionsMenu = !captionsMenu"
             >
-              {{ option.label }}
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path :d="icons.captions" />
+              </svg>
             </button>
-          </div>
-        </span>
-        <button
-          v-if="isVideo && pictureInPicture && pipSupported"
-          type="button"
-          :class="styles.button"
-          :aria-label="
-            pip
-              ? t('mediaPlayer.exitPictureInPicture')
-              : t('mediaPlayer.pictureInPicture')
-          "
-          :aria-pressed="pip"
-          v-bind="hooks('media-player', 'button')"
-          @click="togglePip"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path :d="icons.pictureInPicture" />
-          </svg>
-        </button>
-        <button
-          v-if="isVideo"
-          type="button"
-          :class="styles.button"
-          :aria-label="
-            fullscreen
-              ? t('mediaPlayer.exitFullscreen')
-              : t('mediaPlayer.fullscreen')
-          "
-          v-bind="hooks('media-player', 'button')"
-          @click="toggleFullscreen"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path :d="fullscreen ? icons.exitFullscreen : icons.fullscreen" />
-          </svg>
-        </button>
+            <div
+              v-if="captionsMenu"
+              role="menu"
+              :aria-label="t('mediaPlayer.captions')"
+              :class="styles.captionsMenu"
+              v-bind="hooks('media-player', 'captions-menu')"
+              @keydown="captionsMenuKeys"
+            >
+              <button
+                v-for="option in captionsOptions"
+                :key="option.index"
+                type="button"
+                role="menuitemradio"
+                :aria-checked="option.index === trackIndex"
+                :tabindex="option.index === trackIndex ? 0 : -1"
+                :class="styles.captionsOption"
+                @click="
+                  chooseTrack(option.index);
+                  closeCaptionsMenu(true);
+                "
+              >
+                {{ option.label }}
+              </button>
+            </div>
+          </span>
+          <button
+            v-if="isVideo && pictureInPicture && pipSupported"
+            type="button"
+            :class="styles.button"
+            :aria-label="
+              pip
+                ? t('mediaPlayer.exitPictureInPicture')
+                : t('mediaPlayer.pictureInPicture')
+            "
+            :aria-pressed="pip"
+            v-bind="hooks('media-player', 'button')"
+            @click="togglePip"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path :d="icons.pictureInPicture" />
+            </svg>
+          </button>
+          <button
+            v-if="isVideo"
+            type="button"
+            :class="styles.button"
+            :aria-label="
+              fullscreen
+                ? t('mediaPlayer.exitFullscreen')
+                : t('mediaPlayer.fullscreen')
+            "
+            v-bind="hooks('media-player', 'button')"
+            @click="toggleFullscreen"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path :d="fullscreen ? icons.exitFullscreen : icons.fullscreen" />
+            </svg>
+          </button>
+        </div>
       </div>
     </template>
   </div>

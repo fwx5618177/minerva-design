@@ -164,3 +164,39 @@ export async function checkVideoKeyboard({
     );
   }
 }
+
+export async function checkVideoFontLayout({
+  evaluate,
+  root,
+  controls,
+  label,
+}) {
+  const original = await evaluate(
+    `(()=>{const root=${root};const original=root.style.cssText;root.style.setProperty('--font-family-sans','monospace');root.style.setProperty('--font-size-sm','20px');return original;})()`,
+  );
+  try {
+    await checkVideoControlLayout(evaluate, controls, label);
+    const dimensions = await evaluate(
+      `(()=>{const host=${root},scope=host.shadowRoot||host;const time=scope.querySelector('[data-part="time"],[part~="time"]'),seek=scope.querySelector('[data-part="seek"],[part~="seek"]');return {time:time.textContent,timeWidth:time.clientWidth,timeScroll:time.scrollWidth,seekWidth:seek.getBoundingClientRect().width};})()`,
+    );
+    assert.match(
+      dimensions.time.trim(),
+      /^\d+:\d{2}(?::\d{2})?\s*\/\s*\d+:\d{2}(?::\d{2})?$/,
+      label + ": elapsed and total time must both remain present",
+    );
+    assert.ok(
+      dimensions.timeWidth > 0 &&
+        dimensions.timeScroll <= dimensions.timeWidth + 1,
+      label +
+        ": the complete time must remain readable: " +
+        JSON.stringify(dimensions),
+    );
+    assert.ok(
+      dimensions.seekWidth >= 63,
+      label + ": the seek bar must remain usable",
+    );
+    return { check: "media-player-font-layout", label, ...dimensions };
+  } finally {
+    await evaluate(`(${root}).style.cssText=${JSON.stringify(original)}`);
+  }
+}

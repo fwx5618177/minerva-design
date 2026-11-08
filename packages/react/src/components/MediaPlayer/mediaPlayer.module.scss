@@ -90,6 +90,41 @@
   padding: var(--space-2) var(--space-3);
 }
 
+.timeline,
+.actions {
+  display: flex;
+  flex: 0 0 100%;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  width: 100%;
+  min-width: 0;
+}
+
+.timeline {
+  .seek {
+    flex: 1 1 0;
+  }
+
+  .time {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.audioTimeline {
+  display: contents;
+}
+
+.actions {
+  flex-wrap: wrap;
+}
+
+.video .actions {
+  flex-wrap: nowrap;
+}
+
 .video .controls {
   position: absolute;
   inset: auto 0 0;
@@ -370,7 +405,9 @@
 // Keyboard seeking and volume shortcuts remain available; audio is unchanged.
 @container (max-width: 480px) {
   .video .controls {
-    column-gap: var(--space-1);
+    .actions {
+      column-gap: var(--space-1);
+    }
 
     .skipButton,
     .volume {

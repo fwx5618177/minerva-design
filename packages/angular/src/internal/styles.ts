@@ -1044,7 +1044,9 @@ export const loadingStateStyles: ClassMap<
 
 /** components/MediaPlayer/mediaPlayer.module.scss */
 export const mediaPlayerStyles: ClassMap<
+  | "actions"
   | "audio"
+  | "audioTimeline"
   | "bare"
   | "buffered"
   | "button"
@@ -1070,12 +1072,15 @@ export const mediaPlayerStyles: ClassMap<
   | "spinner"
   | "thumb"
   | "time"
+  | "timeline"
   | "title"
   | "track"
   | "video"
   | "volume"
 > = {
+  actions: "actions",
   audio: "audio",
+  audioTimeline: "audioTimeline",
   bare: "bare",
   buffered: "buffered",
   button: "button",
@@ -1101,6 +1106,7 @@ export const mediaPlayerStyles: ClassMap<
   spinner: "spinner",
   thumb: "thumb",
   time: "time",
+  timeline: "timeline",
   title: "title",
   track: "track",
   video: "video",

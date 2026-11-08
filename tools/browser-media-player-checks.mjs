@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   checkPresentationMedia,
   checkVideoKeyboard,
+  checkVideoFontLayout,
   checkVideoControlLayout,
   checkVideoControlContrast,
 } from "./browser-media-player-presentation.mjs";
@@ -197,6 +198,15 @@ export async function checkMediaPlayerDocs({
     });
     if (width === 390)
       results.push(
+        await checkVideoFontLayout({
+          evaluate,
+          root: `document.querySelector('#demo-video [data-part="root"]')`,
+          controls: `document.querySelector('#demo-video [data-part="controls"]')`,
+          label: "react-font-390",
+        }),
+      );
+    if (width === 390)
+      results.push(
         await checkVideoKeyboard({
           call,
           evaluate,
@@ -248,6 +258,39 @@ export async function checkMediaPlayerDocs({
       originalTheme === null
         ? "localStorage.removeItem('minerva-docs-theme')"
         : `localStorage.setItem('minerva-docs-theme',${JSON.stringify(originalTheme)})`,
+    );
+    await call("Page.reload");
+    await wait(`document.querySelector('#demo-video video')?.readyState>=2`);
+  }
+  const originalLanguage = await evaluate(
+    "localStorage.getItem('minerva-docs-language')",
+  );
+  try {
+    for (const language of ["en", "zh", "ja", "fr"]) {
+      await evaluate(
+        `localStorage.setItem('minerva-docs-language','${language}')`,
+      );
+      await page("media-player", 390);
+      await call("Page.reload");
+      await wait(`document.querySelector('#demo-video video')?.readyState>=2`);
+      results.push(
+        await checkVideoControlLayout(
+          evaluate,
+          undefined,
+          `react-${language}-390`,
+        ),
+      );
+      if (capture && language === "en")
+        await capture(
+          "media-player-basic-en-390",
+          '#demo-video [data-part="root"]',
+        );
+    }
+  } finally {
+    await evaluate(
+      originalLanguage === null
+        ? "localStorage.removeItem('minerva-docs-language')"
+        : `localStorage.setItem('minerva-docs-language',${JSON.stringify(originalLanguage)})`,
     );
     await call("Page.reload");
     await wait(`document.querySelector('#demo-video video')?.readyState>=2`);
@@ -318,6 +361,14 @@ export async function checkMediaPlayerDocs({
           controls,
           `${framework}-390-${index}`,
         ),
+      );
+      results.push(
+        await checkVideoFontLayout({
+          evaluate,
+          root: host,
+          controls,
+          label: `${framework}-font-390-${index}`,
+        }),
       );
     }
     if (videos.length)

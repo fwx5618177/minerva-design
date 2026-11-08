@@ -200,6 +200,15 @@ export function MinervaChrome({
       {...hooks("media-player", "spinner")}
     />
   );
+  const time = (
+    <span
+      className={styles.time}
+      title={timeText}
+      {...hooks("media-player", "time")}
+    >
+      {timeText}
+    </span>
+  );
   return (
     <>
       {title && (
@@ -223,210 +232,218 @@ export function MinervaChrome({
         </div>
       )}
       <div className={styles.controls} {...hooks("media-player", "controls")}>
-        <div
-          className={cn(styles.slider, styles.seek)}
-          role="slider"
-          tabIndex={0}
-          aria-label={t("mediaPlayer.seek")}
-          aria-valuemin={0}
-          aria-valuemax={Math.round(duration)}
-          aria-valuenow={Math.round(currentTime)}
-          aria-valuetext={t("mediaPlayer.timeOf", {
-            current: formatMediaTime(currentTime, duration),
-            duration: formatMediaTime(duration),
-          })}
-          aria-disabled={duration ? undefined : true}
-          style={
-            {
-              "--_mp-value": `${progress * 100}%`,
-              "--_mp-buffered": `${bufferedFraction * 100}%`,
-            } as CSSProperties
-          }
-          onPointerDown={dragSeek}
-          onPointerMove={dragSeek}
-          onKeyDown={seekKeys}
-          {...hooks("media-player", "seek")}
-        >
-          <span className={styles.track} />
-          <span className={styles.buffered} />
-          <span className={styles.fill} />
-          <span className={styles.thumb} />
-        </div>
-        <button
-          type="button"
-          className={styles.button}
-          aria-label={paused ? t("mediaPlayer.play") : t("mediaPlayer.pause")}
-          disabled={!!error}
-          onClick={toggle}
-          {...hooks("media-player", "button")}
-        >
-          <Icon name={paused ? "play" : "pause"} />
-        </button>
-        {skipSeconds > 0 && (
-          <>
-            <button
-              type="button"
-              className={cn(styles.button, styles.skipButton)}
-              aria-label={t("mediaPlayer.skipBack", { count: skipSeconds })}
-              disabled={!!error}
-              onClick={() => seek(currentTime - skipSeconds)}
-              {...hooks("media-player", "button")}
-            >
-              <Icon name="skipBack" />
-            </button>
-            <button
-              type="button"
-              className={cn(styles.button, styles.skipButton)}
-              aria-label={t("mediaPlayer.skipForward", { count: skipSeconds })}
-              disabled={!!error}
-              onClick={() => seek(currentTime + skipSeconds)}
-              {...hooks("media-player", "button")}
-            >
-              <Icon name="skipForward" />
-            </button>
-          </>
-        )}
-        {!isVideo && spinner}
-        <span className={styles.time} {...hooks("media-player", "time")}>
-          {timeText}
-        </span>
-        <span className={styles.spacer} />
-        <button
-          type="button"
-          className={styles.button}
-          aria-label={muted ? t("mediaPlayer.unmute") : t("mediaPlayer.mute")}
-          aria-pressed={muted}
-          onClick={toggleMute}
-          {...hooks("media-player", "button")}
-        >
-          <Icon name={muted || volume === 0 ? "muted" : "volume"} />
-        </button>
-        <div
-          className={cn(styles.slider, styles.volume)}
-          role="slider"
-          tabIndex={0}
-          aria-label={t("mediaPlayer.volume")}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={Math.round(shownVolume * 100)}
-          aria-valuetext={`${Math.round(shownVolume * 100)}%`}
-          style={{ "--_mp-value": `${shownVolume * 100}%` } as CSSProperties}
-          onPointerDown={dragVolume}
-          onPointerMove={dragVolume}
-          onKeyDown={volumeKeys}
-          {...hooks("media-player", "volume")}
-        >
-          <span className={styles.track} />
-          <span className={styles.fill} />
-          <span className={styles.thumb} />
-        </div>
-        {playbackRates.length > 1 && (
-          <button
-            type="button"
-            className={cn(styles.button, styles.rate)}
-            aria-label={t("mediaPlayer.playbackRate", {
-              rate: formatPlaybackRate(rate),
+        <div className={isVideo ? styles.timeline : styles.audioTimeline}>
+          {isVideo && time}
+          <div
+            className={cn(styles.slider, styles.seek)}
+            role="slider"
+            tabIndex={0}
+            aria-label={t("mediaPlayer.seek")}
+            aria-valuemin={0}
+            aria-valuemax={Math.round(duration)}
+            aria-valuenow={Math.round(currentTime)}
+            aria-valuetext={t("mediaPlayer.timeOf", {
+              current: formatMediaTime(currentTime, duration),
+              duration: formatMediaTime(duration),
             })}
-            onClick={cycleRate}
+            aria-disabled={duration ? undefined : true}
+            style={
+              {
+                "--_mp-value": `${progress * 100}%`,
+                "--_mp-buffered": `${bufferedFraction * 100}%`,
+              } as CSSProperties
+            }
+            onPointerDown={dragSeek}
+            onPointerMove={dragSeek}
+            onKeyDown={seekKeys}
+            {...hooks("media-player", "seek")}
+          >
+            <span className={styles.track} />
+            <span className={styles.buffered} />
+            <span className={styles.fill} />
+            <span className={styles.thumb} />
+          </div>
+        </div>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.button}
+            aria-label={paused ? t("mediaPlayer.play") : t("mediaPlayer.pause")}
+            disabled={!!error}
+            onClick={toggle}
             {...hooks("media-player", "button")}
           >
-            {formatPlaybackRate(rate)}
+            <Icon name={paused ? "play" : "pause"} />
           </button>
-        )}
-        {tracks.length > 0 && (
-          // Focus leaving the menu by keyboard closes it.
-          <span
-            ref={captionsControlRef}
-            className={styles.captionsControl}
-            onBlur={(event) => {
-              const next = event.relatedTarget as Node | null;
-              if (next && !event.currentTarget.contains(next)) {
-                setCaptionsMenu(false);
-              }
-            }}
+          {skipSeconds > 0 && (
+            <>
+              <button
+                type="button"
+                className={cn(styles.button, styles.skipButton)}
+                aria-label={t("mediaPlayer.skipBack", { count: skipSeconds })}
+                disabled={!!error}
+                onClick={() => seek(currentTime - skipSeconds)}
+                {...hooks("media-player", "button")}
+              >
+                <Icon name="skipBack" />
+              </button>
+              <button
+                type="button"
+                className={cn(styles.button, styles.skipButton)}
+                aria-label={t("mediaPlayer.skipForward", {
+                  count: skipSeconds,
+                })}
+                disabled={!!error}
+                onClick={() => seek(currentTime + skipSeconds)}
+                {...hooks("media-player", "button")}
+              >
+                <Icon name="skipForward" />
+              </button>
+            </>
+          )}
+          {!isVideo && spinner}
+          {!isVideo && time}
+          <span className={styles.spacer} />
+          <button
+            type="button"
+            className={styles.button}
+            aria-label={muted ? t("mediaPlayer.unmute") : t("mediaPlayer.mute")}
+            aria-pressed={muted}
+            onClick={toggleMute}
+            {...hooks("media-player", "button")}
           >
+            <Icon name={muted || volume === 0 ? "muted" : "volume"} />
+          </button>
+          <div
+            className={cn(styles.slider, styles.volume)}
+            role="slider"
+            tabIndex={0}
+            aria-label={t("mediaPlayer.volume")}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(shownVolume * 100)}
+            aria-valuetext={`${Math.round(shownVolume * 100)}%`}
+            style={{ "--_mp-value": `${shownVolume * 100}%` } as CSSProperties}
+            onPointerDown={dragVolume}
+            onPointerMove={dragVolume}
+            onKeyDown={volumeKeys}
+            {...hooks("media-player", "volume")}
+          >
+            <span className={styles.track} />
+            <span className={styles.fill} />
+            <span className={styles.thumb} />
+          </div>
+          {playbackRates.length > 1 && (
             <button
-              ref={captionsButtonRef}
               type="button"
-              className={cn(
-                styles.button,
-                trackIndex >= 0 && styles.captionsOn,
-              )}
-              aria-label={t("mediaPlayer.captions")}
-              aria-haspopup="menu"
-              aria-expanded={captionsMenu}
-              onClick={() => setCaptionsMenu((open) => !open)}
+              className={cn(styles.button, styles.rate)}
+              aria-label={t("mediaPlayer.playbackRate", {
+                rate: formatPlaybackRate(rate),
+              })}
+              onClick={cycleRate}
               {...hooks("media-player", "button")}
             >
-              <Icon name="captions" />
+              {formatPlaybackRate(rate)}
             </button>
-            {captionsMenu && (
-              <div
-                role="menu"
-                tabIndex={-1}
+          )}
+          {tracks.length > 0 && (
+            // Focus leaving the menu by keyboard closes it.
+            <span
+              ref={captionsControlRef}
+              className={styles.captionsControl}
+              onBlur={(event) => {
+                const next = event.relatedTarget as Node | null;
+                if (next && !event.currentTarget.contains(next)) {
+                  setCaptionsMenu(false);
+                }
+              }}
+            >
+              <button
+                ref={captionsButtonRef}
+                type="button"
+                className={cn(
+                  styles.button,
+                  trackIndex >= 0 && styles.captionsOn,
+                )}
                 aria-label={t("mediaPlayer.captions")}
-                className={styles.captionsMenu}
-                onKeyDown={captionsMenuKeys}
-                {...hooks("media-player", "captions-menu")}
+                aria-haspopup="menu"
+                aria-expanded={captionsMenu}
+                onClick={() => setCaptionsMenu((open) => !open)}
+                {...hooks("media-player", "button")}
               >
-                {[-1, ...tracks.keys()].map((index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    role="menuitemradio"
-                    aria-checked={index === trackIndex}
-                    tabIndex={index === trackIndex ? 0 : -1}
-                    className={styles.captionsOption}
-                    onClick={() => {
-                      chooseTrack(index);
-                      closeCaptionsMenu(true);
-                    }}
-                  >
-                    {index === trackIndex && (
-                      <span aria-hidden="true" className={styles.captionsCheck}>
-                        ✓
-                      </span>
-                    )}
-                    {index < 0
-                      ? t("mediaPlayer.captionsOff")
-                      : tracks[index]?.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </span>
-        )}
-        {isVideo && pictureInPicture && pipSupported && (
-          <button
-            type="button"
-            className={styles.button}
-            aria-label={
-              pip
-                ? t("mediaPlayer.exitPictureInPicture")
-                : t("mediaPlayer.pictureInPicture")
-            }
-            aria-pressed={pip}
-            onClick={togglePip}
-            {...hooks("media-player", "button")}
-          >
-            <Icon name="pictureInPicture" />
-          </button>
-        )}
-        {isVideo && (
-          <button
-            type="button"
-            className={styles.button}
-            aria-label={
-              fullscreen
-                ? t("mediaPlayer.exitFullscreen")
-                : t("mediaPlayer.fullscreen")
-            }
-            onClick={toggleFullscreen}
-            {...hooks("media-player", "button")}
-          >
-            <Icon name={fullscreen ? "exitFullscreen" : "fullscreen"} />
-          </button>
-        )}
+                <Icon name="captions" />
+              </button>
+              {captionsMenu && (
+                <div
+                  role="menu"
+                  tabIndex={-1}
+                  aria-label={t("mediaPlayer.captions")}
+                  className={styles.captionsMenu}
+                  onKeyDown={captionsMenuKeys}
+                  {...hooks("media-player", "captions-menu")}
+                >
+                  {[-1, ...tracks.keys()].map((index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={index === trackIndex}
+                      tabIndex={index === trackIndex ? 0 : -1}
+                      className={styles.captionsOption}
+                      onClick={() => {
+                        chooseTrack(index);
+                        closeCaptionsMenu(true);
+                      }}
+                    >
+                      {index === trackIndex && (
+                        <span
+                          aria-hidden="true"
+                          className={styles.captionsCheck}
+                        >
+                          ✓
+                        </span>
+                      )}
+                      {index < 0
+                        ? t("mediaPlayer.captionsOff")
+                        : tracks[index]?.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </span>
+          )}
+          {isVideo && pictureInPicture && pipSupported && (
+            <button
+              type="button"
+              className={styles.button}
+              aria-label={
+                pip
+                  ? t("mediaPlayer.exitPictureInPicture")
+                  : t("mediaPlayer.pictureInPicture")
+              }
+              aria-pressed={pip}
+              onClick={togglePip}
+              {...hooks("media-player", "button")}
+            >
+              <Icon name="pictureInPicture" />
+            </button>
+          )}
+          {isVideo && (
+            <button
+              type="button"
+              className={styles.button}
+              aria-label={
+                fullscreen
+                  ? t("mediaPlayer.exitFullscreen")
+                  : t("mediaPlayer.fullscreen")
+              }
+              onClick={toggleFullscreen}
+              {...hooks("media-player", "button")}
+            >
+              <Icon name={fullscreen ? "exitFullscreen" : "fullscreen"} />
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
