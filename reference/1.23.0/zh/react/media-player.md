@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.0",
-  "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
-  "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
-  "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+  "sourceCommit": "413e3d54e2177f8469c443a6547c4472e608839c",
+  "sourceDigest": "sha256:8c8e874e213d698b4d05cabed92eed392c90c5b0fa91c66def67eab19184e86c",
+  "referenceSourceDigest": "sha256:e694adbf6015cdc21809df819193e0a84c030845fb2910749dbd1c4c15ccca99"
 }
 ```
 
@@ -63,8 +63,7 @@ locale 支持中英日法，messages 覆盖控件文案，theme 选择浅色 / �
 440 Hz 测试音
 
 ```tsx
-import { MediaPlayer } from "minerva-design/media-player";
-import "minerva-design/media-player/style.css";
+import { MediaPlayer as CompatibleMediaPlayer } from "minerva-design";
 ```
 
 ## MediaControls
@@ -837,6 +836,45 @@ Support: stable
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
 
+## Example: 音频波形与 A–B 循环
+
+本地音频解码生成真实波形，支持点击跳转、变速及区间循环。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/audio-waveform.tsx
+
+```tsx
+import "minerva-design/media-player/style.css";
+import { MediaPlayer } from "minerva-design/media-player";
+import { useTheme } from "minerva-design";
+import { useTranslation } from "react-i18next";
+const base = `${import.meta.env.BASE_URL}media-player/`;
+export default function Demo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ width: "100%", maxWidth: 640 }}>
+      <MediaPlayer
+        kind="audio"
+        src={`${base}sample.m4a`}
+        title={t("docs.media-player.data.tone")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+        waveform="auto"
+        showLoopToggle
+        controls={{ skip: true, abRepeat: true }}
+      />
+    </div>
+  );
+}
+
+```
+
 ## Example: 音频
 
 类型由 MIME 或地址推断；音频显示封面与波形，并复用同一套控制。skipSeconds={0} 隐藏快进快退按钮。
@@ -967,6 +1005,7 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/demos/capture.tsx
 
 ```tsx
+import "minerva-design/media-player/style.css";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "minerva-design";
 import { MediaPlayer } from "minerva-design/media-player";
@@ -990,6 +1029,88 @@ export default function CaptureDemo() {
 
 ```
 
+## Example: 紧凑静音预览
+
+紧凑预览静音起播并循环；完整控制栏在完整视图中展示。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/compact.tsx
+
+```tsx
+import "minerva-design/media-player/style.css";
+import { MediaPlayer } from "minerva-design/media-player";
+import { useTheme } from "minerva-design";
+import { useTranslation } from "react-i18next";
+const base = `${import.meta.env.BASE_URL}media-player/`;
+export default function Demo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ width: "100%", maxWidth: 640 }}>
+      <MediaPlayer
+        src={`${base}sample.mp4`}
+        title={t("docs.media-player.demos.compact.title")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+        variant="compact"
+        autoPlay
+        defaultLoop
+        maxWidth={360}
+      />
+    </div>
+  );
+}
+
+```
+
+## Example: 桌面完整播放器 · PC 同款
+
+与 PC 客户端使用同一个完整播放器；PC 仅额外适配提示浮层和保存文件。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/desktop.tsx
+
+```tsx
+import "minerva-design/media-player/style.css";
+import { MediaPlayer } from "minerva-design/media-player";
+import { useTheme } from "minerva-design";
+import { useTranslation } from "react-i18next";
+const base = `${import.meta.env.BASE_URL}media-player/`;
+export default function Demo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  return (
+    <div style={{ width: "100%", maxWidth: 640 }}>
+      <MediaPlayer
+        src={`${base}sample.mp4`}
+        title={t("docs.media-player.demos.desktop.title")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+        showTitle
+        showLoopToggle
+        controls={{
+          skip: true,
+          abRepeat: true,
+          screenshot: true,
+          record: true,
+        }}
+      />
+    </div>
+  );
+}
+
+```
+
 ## Example: 播放列表与 A–B 循环
 
 视频与音频共用一个播放器。内置上一首 / 下一首及播完自动切换，音频显示波形；用 A–B 重复播放片段。独立入口的时间回调接收 (currentTime, duration)。
@@ -1003,6 +1124,7 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/demos/playlist.tsx
 
 ```tsx
+import "minerva-design/media-player/style.css";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "minerva-design";
 import { MediaPlayer } from "minerva-design/media-player";
@@ -1045,6 +1167,7 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/demos/quality.tsx
 
 ```tsx
+import "minerva-design/media-player/style.css";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "minerva-design";
 import { MediaPlayer, type PlayerSource } from "minerva-design/media-player";
@@ -1109,6 +1232,46 @@ export default function RatesSkipDemo() {
         aria-label="Flower, speed and skip"
       />
       <output>Speed: {rate}×</output>
+    </div>
+  );
+}
+
+```
+
+## Example: 加载失败与换源恢复
+
+使用不存在的资源查看错误与重试，再切换到有效资源恢复播放。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/media-player/demos/recovery.tsx
+
+```tsx
+import "minerva-design/media-player/style.css";
+import { MediaPlayer } from "minerva-design/media-player";
+import { useTheme } from "minerva-design";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { Button } from "minerva-design";
+export default function RecoveryDemo() {
+  const { t, i18n } = useTranslation();
+  const { resolvedTheme } = useTheme();
+  const [valid, setValid] = useState(true);
+  return (
+    <div style={{ display: "grid", gap: 12, maxWidth: 640 }}>
+      <Button onClick={() => setValid(!valid)}>
+        {t(`docs.media-player.demos.recovery.${valid ? "break" : "restore"}`)}
+      </Button>
+      <MediaPlayer
+        src={`${import.meta.env.BASE_URL}media-player/${valid ? "sample.mp4" : "missing.mp4"}`}
+        title={t("docs.media-player.demos.recovery.title")}
+        locale={i18n.language}
+        theme={resolvedTheme}
+      />
     </div>
   );
 }
@@ -1193,6 +1356,7 @@ Documentation context imports: none
 ### apps/docs/src/docs/pages/media-player/demos/streams.tsx
 
 ```tsx
+import "minerva-design/media-player/style.css";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, useTheme } from "minerva-design";

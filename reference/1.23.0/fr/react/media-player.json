@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.23.0",
-    "sourceCommit": "9a519eee781183dcbac39a62a86bec9e0bd877a9",
-    "sourceDigest": "sha256:0d31b0bc3c28394756a1142132ddf7b2beac9f7ce2f5b2253e04712431d7c736",
-    "referenceSourceDigest": "sha256:0a033a9f6bc21722c87a78202ae3fce0d891270ea8a01d043a5a748c0439d696"
+    "sourceCommit": "413e3d54e2177f8469c443a6547c4472e608839c",
+    "sourceDigest": "sha256:8c8e874e213d698b4d05cabed92eed392c90c5b0fa91c66def67eab19184e86c",
+    "referenceSourceDigest": "sha256:e694adbf6015cdc21809df819193e0a84c030845fb2910749dbd1c4c15ccca99"
   },
   "content": {
     "advanced": {
@@ -809,6 +809,21 @@
   },
   "examples": [
     {
+      "id": "audio-waveform",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/audio-waveform.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/audio-waveform.tsx": "import \"minerva-design/media-player/style.css\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\nimport { useTheme } from \"minerva-design\";\nimport { useTranslation } from \"react-i18next\";\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nexport default function Demo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ width: \"100%\", maxWidth: 640 }}>\n      <MediaPlayer\n        kind=\"audio\"\n        src={`${base}sample.m4a`}\n        title={t(\"docs.media-player.data.tone\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        waveform=\"auto\"\n        showLoopToggle\n        controls={{ skip: true, abRepeat: true }}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Forme d’onde et boucle A–B",
+      "description": "Audio local avec forme d’onde réelle, recherche, vitesse et boucle."
+    },
+    {
       "id": "audio",
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/demos/audio.tsx",
@@ -842,7 +857,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/demos/capture.tsx",
       "files": {
-        "apps/docs/src/docs/pages/media-player/demos/capture.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nexport default function CaptureDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}\n        title={t(\"docs.media-player.data.pattern\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        controls={{ screenshot: true, record: true }}\n        maxRecordingSeconds={15}\n      />\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/media-player/demos/capture.tsx": "import \"minerva-design/media-player/style.css\";\nimport { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nexport default function CaptureDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        src={`${import.meta.env.BASE_URL}media-player/sample.mp4`}\n        title={t(\"docs.media-player.data.pattern\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        controls={{ screenshot: true, record: true }}\n        maxRecordingSeconds={15}\n      />\n    </div>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
@@ -853,11 +868,41 @@
       "description": "Utilisez les icônes intégrées ou S / R. Ici, l’enregistrement est limité à 15 secondes. Canvas et MediaRecorder doivent être disponibles ; les médias externes doivent autoriser la lecture par Canvas."
     },
     {
+      "id": "compact",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/compact.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/compact.tsx": "import \"minerva-design/media-player/style.css\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\nimport { useTheme } from \"minerva-design\";\nimport { useTranslation } from \"react-i18next\";\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nexport default function Demo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ width: \"100%\", maxWidth: 640 }}>\n      <MediaPlayer\n        src={`${base}sample.mp4`}\n        title={t(\"docs.media-player.demos.compact.title\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        variant=\"compact\"\n        autoPlay\n        defaultLoop\n        maxWidth={360}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Aperçu compact muet",
+      "description": "Aperçu compact en boucle avec démarrage muet."
+    },
+    {
+      "id": "desktop",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/desktop.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/desktop.tsx": "import \"minerva-design/media-player/style.css\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\nimport { useTheme } from \"minerva-design\";\nimport { useTranslation } from \"react-i18next\";\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nexport default function Demo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ width: \"100%\", maxWidth: 640 }}>\n      <MediaPlayer\n        src={`${base}sample.mp4`}\n        title={t(\"docs.media-player.demos.desktop.title\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        showTitle\n        showLoopToggle\n        controls={{\n          skip: true,\n          abRepeat: true,\n          screenshot: true,\n          record: true,\n        }}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Lecteur complet pour ordinateur",
+      "description": "Le même lecteur que le client PC ; seuls les infobulles et les fichiers sauvegardés sont adaptés."
+    },
+    {
       "id": "playlist",
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/demos/playlist.tsx",
       "files": {
-        "apps/docs/src/docs/pages/media-player/demos/playlist.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nexport default function PlaylistDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        title={t(\"docs.media-player.demos.playlist.title\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        playlist={[\n          {\n            src: `${base}sample.mp4`,\n            title: t(\"docs.media-player.data.pattern\"),\n          },\n          { src: `${base}sample.m4a`, title: t(\"docs.media-player.data.tone\") },\n        ]}\n        controls={{ skip: true, abRepeat: true }}\n      />\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/media-player/demos/playlist.tsx": "import \"minerva-design/media-player/style.css\";\nimport { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nexport default function PlaylistDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        title={t(\"docs.media-player.demos.playlist.title\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n        playlist={[\n          {\n            src: `${base}sample.mp4`,\n            title: t(\"docs.media-player.data.pattern\"),\n          },\n          { src: `${base}sample.m4a`, title: t(\"docs.media-player.data.tone\") },\n        ]}\n        controls={{ skip: true, abRepeat: true }}\n      />\n    </div>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
@@ -872,7 +917,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/demos/quality.tsx",
       "files": {
-        "apps/docs/src/docs/pages/media-player/demos/quality.tsx": "import { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer, type PlayerSource } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nconst source: PlayerSource = {\n  src: `${base}sample.mp4`,\n  type: \"mp4\",\n  defaultQuality: \"144p\",\n  qualities: [\n    { id: \"144p\", label: \"144p\", height: 144, src: `${base}sample.mp4` },\n    { id: \"72p\", label: \"72p\", height: 72, src: `${base}sample-small.mp4` },\n  ],\n};\nexport default function QualityDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        src={source}\n        title={t(\"docs.media-player.data.pattern\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/media-player/demos/quality.tsx": "import \"minerva-design/media-player/style.css\";\nimport { useTranslation } from \"react-i18next\";\nimport { useTheme } from \"minerva-design\";\nimport { MediaPlayer, type PlayerSource } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nconst source: PlayerSource = {\n  src: `${base}sample.mp4`,\n  type: \"mp4\",\n  defaultQuality: \"144p\",\n  qualities: [\n    { id: \"144p\", label: \"144p\", height: 144, src: `${base}sample.mp4` },\n    { id: \"72p\", label: \"72p\", height: 72, src: `${base}sample-small.mp4` },\n  ],\n};\nexport default function QualityDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ maxWidth: 640 }}>\n      <MediaPlayer\n        src={source}\n        title={t(\"docs.media-player.data.pattern\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
@@ -898,6 +943,22 @@
       "description": "playbackRates configure Paramètres → Vitesse de lecture ; onRateChange signale les changements. skipSeconds règle le saut ; aspectRatio ou height définit la taille vidéo."
     },
     {
+      "id": "recovery",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/media-player/demos/recovery.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/media-player/demos/recovery.tsx": "import \"minerva-design/media-player/style.css\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\nimport { useTheme } from \"minerva-design\";\nimport { useTranslation } from \"react-i18next\";\nimport { useState } from \"react\";\nimport { Button } from \"minerva-design\";\nexport default function RecoveryDemo() {\n  const { t, i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  const [valid, setValid] = useState(true);\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 640 }}>\n      <Button onClick={() => setValid(!valid)}>\n        {t(`docs.media-player.demos.recovery.${valid ? \"break\" : \"restore\"}`)}\n      </Button>\n      <MediaPlayer\n        src={`${import.meta.env.BASE_URL}media-player/${valid ? \"sample.mp4\" : \"missing.mp4\"}`}\n        title={t(\"docs.media-player.demos.recovery.title\")}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Erreur et récupération",
+      "description": "Testez une ressource manquante puis rétablissez une source valide."
+    },
+    {
       "id": "resume",
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/demos/resume.tsx",
@@ -917,7 +978,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/media-player/demos/streams.tsx",
       "files": {
-        "apps/docs/src/docs/pages/media-player/demos/streams.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nconst sources = {\n  hls: { src: `${base}hls/index.m3u8`, type: \"hls\" as const },\n  dash: { src: `${base}dash/index.mpd`, type: \"dash\" as const },\n  flv: { src: `${base}sample.flv`, type: \"flv\" as const },\n};\n\nexport default function StreamsDemo() {\n  const [format, setFormat] = useState<keyof typeof sources>(\"hls\");\n  const { i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 640 }}>\n      <div style={{ display: \"flex\", gap: 8, flexWrap: \"wrap\" }}>\n        {(Object.keys(sources) as (keyof typeof sources)[]).map((name) => (\n          <Button\n            key={name}\n            size=\"small\"\n            variant=\"outline\"\n            active={format === name}\n            onClick={() => setFormat(name)}\n          >\n            {name.toUpperCase()}\n          </Button>\n        ))}\n      </div>\n      <MediaPlayer\n        title={format.toUpperCase()}\n        src={sources[format]}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/media-player/demos/streams.tsx": "import \"minerva-design/media-player/style.css\";\nimport { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, useTheme } from \"minerva-design\";\nimport { MediaPlayer } from \"minerva-design/media-player\";\n\nconst base = `${import.meta.env.BASE_URL}media-player/`;\nconst sources = {\n  hls: { src: `${base}hls/index.m3u8`, type: \"hls\" as const },\n  dash: { src: `${base}dash/index.mpd`, type: \"dash\" as const },\n  flv: { src: `${base}sample.flv`, type: \"flv\" as const },\n};\n\nexport default function StreamsDemo() {\n  const [format, setFormat] = useState<keyof typeof sources>(\"hls\");\n  const { i18n } = useTranslation();\n  const { resolvedTheme } = useTheme();\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 640 }}>\n      <div style={{ display: \"flex\", gap: 8, flexWrap: \"wrap\" }}>\n        {(Object.keys(sources) as (keyof typeof sources)[]).map((name) => (\n          <Button\n            key={name}\n            size=\"small\"\n            variant=\"outline\"\n            active={format === name}\n            onClick={() => setFormat(name)}\n          >\n            {name.toUpperCase()}\n          </Button>\n        ))}\n      </div>\n      <MediaPlayer\n        title={format.toUpperCase()}\n        src={sources[format]}\n        locale={i18n.language}\n        theme={resolvedTheme}\n      />\n    </div>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
@@ -947,7 +1008,7 @@
   "installation": "./setup.md",
   "snippets": [
     {
-      "source": "import { MediaPlayer } from \"minerva-design/media-player\";\nimport \"minerva-design/media-player/style.css\";",
+      "source": "import { MediaPlayer as CompatibleMediaPlayer } from \"minerva-design\";",
       "language": "tsx"
     }
   ],
@@ -992,6 +1053,24 @@
         "capture": {
           "title": "Capture et enregistrement",
           "description": "Utilisez les icônes intégrées ou S / R. Ici, l’enregistrement est limité à 15 secondes. Canvas et MediaRecorder doivent être disponibles ; les médias externes doivent autoriser la lecture par Canvas."
+        },
+        "desktop": {
+          "title": "Lecteur complet pour ordinateur",
+          "description": "Le même lecteur que le client PC ; seuls les infobulles et les fichiers sauvegardés sont adaptés."
+        },
+        "audio-waveform": {
+          "title": "Forme d’onde et boucle A–B",
+          "description": "Audio local avec forme d’onde réelle, recherche, vitesse et boucle."
+        },
+        "compact": {
+          "title": "Aperçu compact muet",
+          "description": "Aperçu compact en boucle avec démarrage muet."
+        },
+        "recovery": {
+          "title": "Erreur et récupération",
+          "description": "Testez une ressource manquante puis rétablissez une source valide.",
+          "restore": "Source valide",
+          "break": "Source manquante"
         }
       },
       "api": {
