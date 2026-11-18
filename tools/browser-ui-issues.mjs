@@ -1,8 +1,8 @@
 // Production-browser regression lane for component/doc issues #15–22.
 // Uses an isolated Chrome profile and owns/cleans up its preview process.
 import { spawn } from "node:child_process";
-import { mkdtemp, rm, writeFile, mkdir } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { writeFile, mkdir } from "node:fs/promises";
+import { launchChrome } from "./chrome-cdp.mjs";
 import { join } from "node:path";
 import assert from "node:assert/strict";
 import { checkQuadrantPointer } from "./browser-quadrant-checks.mjs";
@@ -14,40 +14,6 @@ import { checkCdnFiles } from "./browser-cdn-checks.mjs";
 import { checkMediaPlayerDocs } from "./browser-media-player-checks.mjs";
 import { checkModalIframeFocus } from "./browser-modal-focus.mjs";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const connect = async (url) => {
-  const socket = new WebSocket(url);
-  const pending = new Map();
-  const listeners = [];
-  let next = 1;
-  await new Promise((resolve, reject) => {
-    socket.addEventListener("open", resolve, { once: true });
-    socket.addEventListener("error", reject, { once: true });
-  });
-  socket.addEventListener("message", (event) => {
-    const message = JSON.parse(event.data);
-    if (message.id && pending.has(message.id)) {
-      const { resolve, reject } = pending.get(message.id);
-      pending.delete(message.id);
-      if (message.error) reject(new Error(message.error.message));
-      else resolve(message.result);
-      return;
-    }
-    for (const listener of listeners) listener(message);
-  });
-  const send = (method, params = {}, sessionId) =>
-    new Promise((resolve, reject) => {
-      const id = next++;
-      pending.set(id, { resolve, reject });
-      socket.send(JSON.stringify({ id, method, params, sessionId }));
-    });
-  return {
-    send,
-    on: (listener) => listeners.push(listener),
-    close: () => socket.close(),
-  };
-};
-
-import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const DOCS = join(ROOT, "apps/docs");
@@ -58,20 +24,7 @@ assert.ok(
 );
 const BASE = `http://127.0.0.1:${PORT}/minerva-design/`;
 const ARTIFACTS = join(ROOT, ".artifacts/ui-issues");
-const chromePath = [
-  process.env.CHROME_PATH,
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-  "/Applications/Chromium.app/Contents/MacOS/Chromium",
-  "/usr/bin/google-chrome",
-  "/usr/bin/chromium",
-  "/usr/bin/chromium-browser",
-].find((path) => path && existsSync(path));
-if (!chromePath)
-  throw Error(
-    "Chrome/Chromium is required. Set CHROME_PATH to its executable.",
-  );
-const profile = await mkdtemp(join(tmpdir(), "minerva-ui-e2e-"));
-let browser, cdp, previewError;
+let browser, previewError;
 const preview = spawn(
   process.execPath,
   [
@@ -109,57 +62,8 @@ try {
   }
   if (!ready)
     throw Error("Production docs preview did not start. Run pnpm build first.");
-  browser = spawn(
-    chromePath,
-    [
-      "--headless=new",
-      "--remote-debugging-port=0",
-      "--remote-debugging-address=127.0.0.1",
-      `--user-data-dir=${profile}`,
-      "--no-first-run",
-      "--disable-background-networking",
-      "--disable-extensions",
-      "--window-size=1280,900",
-      "about:blank",
-    ],
-    { stdio: ["ignore", "ignore", "pipe"] },
-  );
-  const endpoint = await new Promise((resolve, reject) => {
-    let s = "";
-    const timer = setTimeout(() => reject(Error("Chrome timeout")), 20000);
-    browser.stderr.on("data", (d) => {
-      s += d;
-      const m = s.match(/DevTools listening on (ws:\/\/\S+)/);
-      if (m) {
-        clearTimeout(timer);
-        resolve(m[1]);
-      }
-    });
-    browser.once("exit", (c) => reject(Error("Chrome exited " + c)));
-  });
-  cdp = await connect(endpoint);
-  const { targetId } = await cdp.send("Target.createTarget", {
-    url: "about:blank",
-  });
-  const { sessionId } = await cdp.send("Target.attachToTarget", {
-    targetId,
-    flatten: true,
-  });
-  const call = (method, params) => cdp.send(method, params, sessionId);
-  const evaluate = async (expression) => {
-    const r = await call("Runtime.evaluate", {
-      expression,
-      returnByValue: true,
-      awaitPromise: true,
-    });
-    if (r.exceptionDetails)
-      throw Error(
-        r.exceptionDetails.exception?.description ?? r.exceptionDetails.text,
-      );
-    return r.result.value;
-  };
-  await call("Page.enable");
-  await call("Runtime.enable");
+  browser = await launchChrome();
+  const { call, evaluate } = browser;
   const wait = async (expression) => {
     for (let i = 0; i < 150; i++) {
       if (await evaluate(`Boolean(${expression})`)) return;
@@ -407,14 +311,7 @@ try {
   );
   console.log(JSON.stringify(results, null, 2));
 } finally {
-  cdp?.close();
-  browser?.kill("SIGKILL");
+  await browser?.close();
   preview.kill("SIGTERM");
   await sleep(300);
-  await rm(profile, {
-    recursive: true,
-    force: true,
-    maxRetries: 5,
-    retryDelay: 100,
-  });
 }
