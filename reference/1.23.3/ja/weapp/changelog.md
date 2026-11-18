@@ -1,0 +1,53 @@
+# 変更履歴
+
+minerva-design の各バージョンの変更点を新しい順に掲載します。次のリリースに向けてマージ済みの変更も含みます。
+
+Package: minerva-design@1.23.3
+
+Renderer: weapp
+
+Locale: ja
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.23.3",
+  "sourceCommit": "701bc5e143b35324946db80bfe8336f93933f86e",
+  "sourceDigest": "sha256:96e12a2f39f4691c9ba257d9f8247a4fd810c72b772e3da161b9f71eb1e5795d",
+  "referenceSourceDigest": "sha256:35253c549c1c2f3c71b2980b1a393121d92facacf74d97b2ceeaabceaa79878c"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.23.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+リリースノートは各プルリクエストに追加された changeset から生成され、英語で記載されています。
+
+### 次のリリース
+
+前回のリリース以降にマージされた変更（未処理の changeset）です。次のリリースでバージョン {{version}} として公開されます。
+
+次期
+
+### リリース済みバージョン
+
+最新
+
+npm
+
+メジャー変更
+
+マイナー変更
+
+パッチ変更
+
+コミット {{hash}}
+
+npm の minerva-design {{version}}
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
