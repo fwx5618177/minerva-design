@@ -49,13 +49,69 @@ describe("component playground", () => {
     expect(preview()).toHaveTextContent("My workspace");
     await user.click(view.getByRole("switch", { name: "Notifications" }));
     expect(preview()).toHaveTextContent("Notifications disabled");
-    await user.click(view.getByRole("button", { name: "Try button" }));
-    expect(view.getByRole("status")).toHaveTextContent("Clicks: 1");
+    await user.click(view.getByRole("button", { name: "Save release" }));
+    expect(view.getByRole("status")).toHaveTextContent("Saves: 1");
 
     await user.click(screen.getByRole("button", { name: "Reset playground" }));
-    expect(view.getByRole("status")).toHaveTextContent("Clicks: 0");
-    expect(view.getByRole("textbox")).toHaveValue("Minerva Studio");
+    expect(view.getByRole("status")).toHaveTextContent("Saves: 0");
+    expect(view.getByRole("textbox", { name: "Workspace name" })).toHaveValue(
+      "Minerva Studio",
+    );
     expect(preview()).toHaveTextContent("Notifications enabled");
+  });
+
+  it("finds a release action and saves the edited release plan", async () => {
+    const user = userEvent.setup();
+    renderHome();
+    const view = within(preview());
+    await user.click(view.getByRole("button", { name: /Search workspace/ }));
+    const dialog = within(
+      screen.getByRole("dialog", { name: /Workspace commands/ }),
+    );
+    await user.type(dialog.getByRole("combobox"), "schedule");
+    await user.click(dialog.getByRole("option", { name: /Schedule release/ }));
+    expect(
+      screen.queryByRole("dialog", { name: /Workspace commands/ }),
+    ).toBeNull();
+    expect(view.getByRole("textbox", { name: "Release date" })).toHaveFocus();
+    await user.click(view.getByRole("textbox", { name: "Release date" }));
+    const calendar = within(
+      screen.getByRole("dialog", { name: "Release date" }),
+    );
+    await user.click(calendar.getByRole("gridcell", { name: "2026-11-27" }));
+    expect(view.getByRole("textbox", { name: "Release date" })).toHaveValue(
+      "2026-11-27",
+    );
+    await user.click(
+      view.getByRole("checkbox", { name: "Review component states" }),
+    );
+    expect(view.getByText("2 of 3 checks complete")).toBeInTheDocument();
+    await user.click(view.getByRole("button", { name: "Save release" }));
+    expect(view.getByRole("status")).toHaveTextContent("Release saved");
+    await user.click(screen.getByRole("button", { name: "Reset playground" }));
+    expect(
+      view.getByRole("checkbox", { name: "Review component states" }),
+    ).not.toBeChecked();
+  });
+
+  it("opens workspace commands by keyboard and excludes disabled save actions", async () => {
+    const user = userEvent.setup();
+    renderHome();
+    await user.click(screen.getByRole("switch", { name: "Disable button" }));
+    await user.keyboard("{Control>}{Shift>}k{/Shift}{/Control}");
+    const dialog = within(
+      screen.getByRole("dialog", { name: /Workspace commands/ }),
+    );
+    expect(dialog.queryByRole("option", { name: /Save release/ })).toBeNull();
+    await user.type(dialog.getByRole("combobox"), "theme");
+    await user.keyboard("{Enter}");
+    expect(
+      screen.queryByRole("dialog", { name: /Workspace commands/ }),
+    ).toBeNull();
+    expect(preview().closest("[data-minerva-theme-scope]")).toHaveAttribute(
+      "data-theme",
+      "dark",
+    );
   });
 
   it("scopes the density and writes the disabled flag into the source", async () => {

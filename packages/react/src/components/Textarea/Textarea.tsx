@@ -1,3 +1,5 @@
+import { useMergedRefs } from "../../internal/mergeRefs";
+import { useFocusModality } from "../../internal/useFocusModality";
 import { cn } from "../../utils/cn";
 import { isAriaInvalid } from "../../internal/forms-field";
 import { warnLengthBounds } from "../../internal/devWarnings";
@@ -19,6 +21,8 @@ export const Textarea = ({
   ref,
   ...rest
 }: TextareaProps) => {
+  const focusRef = useFocusModality<HTMLTextAreaElement>();
+  const mergedRef = useMergedRefs(focusRef, ref);
   const field = useFormControlProps(rest);
   if (process.env.NODE_ENV !== "production") {
     // Controlled `value` misuse is reported by React (native <textarea>).
@@ -28,7 +32,7 @@ export const Textarea = ({
 
   return (
     <textarea
-      ref={ref}
+      ref={mergedRef}
       className={cn(
         styles.textarea,
         styles[variant],

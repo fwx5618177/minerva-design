@@ -53,7 +53,7 @@ function focusRules(...files: string[]): Map<string, CSSStyleDeclaration> {
 function expectRing(style: CSSStyleDeclaration | undefined) {
   expect(style).toBeDefined();
   expect(style!.getPropertyValue("box-shadow")).toMatch(
-    /0 0 0 var\(--minerva-focus-ring-width, 3px\)/,
+    /0 0 0 var\(--minerva-focus-ring-width, var\(--_minerva-focus-ring-width, 2px\)\)/,
   );
   expect(style!.getPropertyValue("outline").split(/\s+/).sort()).toEqual(
     ["2px", "solid", "transparent"].sort(),
@@ -106,6 +106,11 @@ describe("tabbing through a form shows the focus ring on each control", () => {
     for (const [control, frame, selector] of steps) {
       await user.tab();
       expect(control).toHaveFocus();
+      expect(
+        document.documentElement.style.getPropertyValue(
+          "--_minerva-focus-ring-width",
+        ),
+      ).toBe("2px");
       const box = control.closest<HTMLElement>(frame)!;
       expect(box.contains(document.activeElement)).toBe(true);
       expectRing(rules.get(selector));

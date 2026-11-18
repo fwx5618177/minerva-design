@@ -44,8 +44,9 @@
   "rules": {
     "title": "Visual rules: borders and focus",
     "borders": "No one-sided borders: Minerva never marks state with a stripe on one edge (no left accent bar on a highlighted item, no underline border on a selected tab, no alert or blockquote stripe, no one-sided inset shadow). Indicators are full shapes: a background fill, a full ring, a rounded pill or a dot. Dividers between rows and sections are separator shapes (a 1px line drawn by a pseudo-element or a separator element), never a border-bottom of the row. Follow the same rule in your overrides; table grid lines and the Divider element itself are the only documented exceptions.",
-    "focus": "Focus on text-like controls (Input, Textarea, Select trigger, NumberInput, TagInput, AutoComplete, TimePicker, Cascader, JsonField, KeyValueEditor, the Command search, Pagination fields) replaces the native browser outline: the border switches to the focus color and a box-shadow ring surrounds the control. Text fields show it on every focus, mouse included (:focus / :focus-within); triggers that are buttons use :focus-visible. The ring color comes from the theme's --focus-ring-color, tuned per palette for light and dark. Customize it with the variables below, on :root, a theme scope or one control.",
-    "forced": "Forced colors (Windows High Contrast): box-shadows are not painted there, so every focus rule also sets outline: 2px solid transparent. The system turns that outline into a visible system color, so focus never disappears. Keep it if you restyle the ring."
+    "focus": "Pointer focus changes the control border without a heavy outer halo. Tab, navigation keys and command shortcuts add one 2px keyboard ring. Input, Textarea, Select, NumberInput, Cascader, Command search and composed fields share this treatment across React, Vue, Angular and Web Components. Normal rings use --primary-color-text; invalid fields use --danger-color-text. Public --minerva-focus-* overrides remain available; setting an explicit ring width intentionally keeps that ring for pointer focus too.",
+    "forced": "Windows High Contrast uses a system-colored Highlight outline on the outer frame. Inner native inputs do not draw a second indicator. Keep this fallback and place application resets in an earlier cascade layer.",
+    "ownership": "Framework components manage input modality automatically. For custom DOM controls, acquireFocusModality(document) from minerva-design/core returns a cleanup function. Owners in the same document share one listener pair; the last cleanup restores the prior private style. Acquire only after mounting in the browser, use the element’s ownerDocument, and release during teardown. Public focus variables continue to take precedence."
   },
   "stability": {
     "title": "Stability policy",
@@ -60,6 +61,10 @@
     "wcTheming": "Tokens, themes and locales for the web components."
   },
   "demos": {
+    "focus-treatment": {
+      "title": "Focus and control states",
+      "description": "Click a field, then use Tab to compare pointer and keyboard focus. The calendar and command dialog use real components; invalid and read-only fields retain their own states."
+    },
     "restyle-button": {
       "title": "Restyle Button",
       "description": "Pill-shaped buttons through --button-* variables, a thicker outline variant, uppercase labels and a colored spinner while loading: React (data-* hooks) on the first row, <minerva-button> (::part() / :state()) on the second."
@@ -96,5 +101,18 @@
       "title": "Success toasts",
       "description": "Success toasts get a green outline and background, and leaving toasts fade while data-state=\"closed\" / toast--closed. React toasts are portalled: the compound selector still matches them."
     }
+  },
+  "focusDemo": {
+    "name": "Project name",
+    "placeholder": "Minerva Studio",
+    "date": "Release date",
+    "invalid": "Email address",
+    "error": "Enter a complete email address.",
+    "readonly": "Read-only workspace",
+    "notes": "Release notes",
+    "notesPlaceholder": "Describe this release…",
+    "commands": "Quick actions",
+    "schedule": "Schedule release",
+    "clear": "Clear date"
   }
 }

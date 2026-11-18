@@ -2,12 +2,13 @@
 // every library stylesheet (React + web components share the React SCSS).
 //
 // - Every text-like control has a focus rule with the design-system
-//   treatment (styles/_mixins.scss `control-focus`): a box-shadow ring and
+//   treatment (styles/_mixins.scss `control-focus`): a modality-aware ring and
 //   `outline: 2px solid transparent` (forced colors paint that outline with
 //   a system color once box-shadows are dropped).
 // - No focus rule anywhere removes the outline (`none` / `0` / `auto`)
 //   without a replacement: a box-shadow ring on the same rule, or an
-//   outline / ring from a `:focus-visible` rule of the same element.
+//   outline / ring from a `:focus-visible` rule of the same element, or the
+//   explicit enclosing frame of a native field in forced colors.
 // - Controls composed from Input / Textarea (TagInput, AutoComplete,
 //   TimePicker, JsonField, KeyValueEditor) render those controls (or their
 //   stylesheet in the shadow root), so they inherit the treatment.
@@ -132,6 +133,12 @@ const FOCUS_CONTAINERS: Array<{
       "Mobile navigation drawer surface, focused on open (its links show the ring).",
   },
 ];
+// Native children delegate their indicator to these owning frames. This also
+// prevents a second system outline in forced colors.
+const INNER_FRAMES: Record<string, string> = {
+  ".root .field:focus": ".root:focus-within",
+  ".search .input:focus": ".search:focus-within",
+};
 const selectorsOf = (decl: Declaration) => splitTopLevel(decl.selector);
 const inForcedColors = (decl: Declaration) =>
   decl.context.some((c) => c.includes("forced-colors"));
@@ -161,7 +168,7 @@ const base = (selector: string) =>
 
 describe("text-like controls: focus treatment", () => {
   it.each(CONTROLS)(
-    "%s has a box-shadow ring and a transparent outline",
+    "%s uses the inherited modality width and preserves public overrides",
     (_name, file, selector) => {
       const path = `${COMPONENTS}/${file}`;
       const rules = declarations({ file: path, css: compileScss(path) }).filter(
@@ -172,7 +179,9 @@ describe("text-like controls: focus treatment", () => {
       expect(shadow, `${selector} box-shadow`).toBeDefined();
       expect(hasRing(shadow!.value), shadow!.value).toBe(true);
       // the ring comes from the shared tokens
-      expect(shadow!.value).toContain("var(--minerva-focus-ring-width");
+      expect(shadow!.value).toContain(
+        "var(--minerva-focus-ring-width, var(--_minerva-focus-ring-width, 2px))",
+      );
       expect(outline?.value, `${selector} outline`).toBe(
         "2px solid transparent",
       );
@@ -194,6 +203,21 @@ describe("text-like controls: focus treatment", () => {
       expect(border).toMatch(/--minerva-focus-border-color|inset 0 0 0 1px/);
     },
   );
+
+  it.each([
+    ["Input/input.module.scss", ".root .field:focus"],
+    ["NumberInput/numberInput.module.scss", ".root .field:focus"],
+    ["Command/command.module.scss", ".search .input:focus"],
+  ])("%s delegates native focus decoration to its frame", (file, selector) => {
+    const path = `${COMPONENTS}/${file}`;
+    const rules = declarations({ file: path, css: compileScss(path) }).filter(
+      (d) => selectorsOf(d).includes(selector),
+    );
+    expect(rules.find((d) => d.property === "outline")?.value).toBe(
+      "2px solid transparent",
+    );
+    expect(rules.find((d) => d.property === "box-shadow")?.value).toBe("none");
+  });
 
   it.each(COMPOSED)(
     "%s is built on the Input / Textarea treatment",
@@ -217,6 +241,20 @@ describe("no focus rule removes the outline without a replacement", () => {
       const sameRule = decls.filter(
         (d) => d.file === decl.file && d.selector === decl.selector,
       );
+      const frame = INNER_FRAMES[decl.selector];
+      if (
+        frame &&
+        inForcedColors(decl) &&
+        decls.some(
+          (d) =>
+            d.file === decl.file &&
+            selectorsOf(d).includes(frame) &&
+            inForcedColors(d) &&
+            d.property === "outline" &&
+            d.value === "2px solid Highlight",
+        )
+      )
+        continue;
       if (sameRule.some((d) => d.property === "box-shadow" && hasRing(d.value)))
         continue;
       // mouse focus only: keyboard focus keeps its indicator

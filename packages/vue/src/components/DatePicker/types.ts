@@ -3,6 +3,7 @@ export interface DatePickerProps {
   modelValue?: string | null;
   defaultValue?: string;
   placeholder?: string;
+  /** Accessible name of the input; use FormField for a visible label. */
   label?: string;
   ariaLabel?: string;
   ariaLabelledby?: string;

@@ -1,3 +1,4 @@
+import { useFocusModality } from "../../internal/useFocusModality";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import { IconChevronDown, IconX } from "../../internal/icons";
@@ -111,6 +112,8 @@ const Cascader = ({
   const [searchValue, setSearchValue] = useState("");
 
   const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
+  const anchorRef = useFocusModality<HTMLDivElement>();
+  const setAnchorRef = useMergedRefs(anchorRef, setAnchor);
   const [input, setInput] = useState<HTMLInputElement | null>(null);
   const setInputRef = useMergedRefs<HTMLInputElement>(setInput, ref);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -324,7 +327,7 @@ const Cascader = ({
     <div
       {...pickDataAttributes(rest)}
       className={cn(styles.cascader, className)}
-      ref={setAnchor}
+      ref={setAnchorRef}
       style={{ width, ...style }}
       onBlur={handleBlur}
       {...hooks("cascader", "root", {

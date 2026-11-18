@@ -1,3 +1,4 @@
+import { injectFocusModality } from "../../internal/focus-modality";
 import { NgTemplateOutlet } from "@angular/common";
 import { MnTooltipProvider } from "./tooltip-provider";
 import {
@@ -223,6 +224,11 @@ export interface CommandItem {
   }`,
 })
 export class MnCommandDialog extends MnDialogBase {
+  constructor() {
+    super();
+    injectFocusModality();
+  }
+
   readonly title = input("Commands");
   readonly description = input("Search for a command");
   readonly items = input<readonly CommandItem[]>([]);

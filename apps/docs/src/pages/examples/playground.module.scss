@@ -1,67 +1,293 @@
 .playground {
-  text-align: left;
+  position: relative;
+  isolation: isolate;
   min-width: 0;
+  text-align: start;
+  --pointer-x: 65%;
+  --pointer-y: 50%;
+  &::before {
+    position: absolute;
+    z-index: -1;
+    inset: -36px -16px;
+    border-radius: 48px;
+    background: radial-gradient(ellipse 420px 320px at var(--pointer-x) var(--pointer-y), color-mix(in srgb, var(--ds-accent) 8%, transparent), transparent 80%);
+    pointer-events: none;
+    content: "";
+  }
 }
 .header {
-  margin-bottom: 32px;
-  text-align: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 32px;
+  margin-bottom: 28px;
+  text-align: start;
   h2 {
-    margin: 0 0 12px;
+    margin: 0;
     color: var(--ds-fg-strong);
-    font-size: clamp(28px, 4vw, 40px);
+    font-size: clamp(25px, 3vw, 32px);
     font-weight: 600;
     letter-spacing: -0.045em;
     line-height: 1.15;
     text-wrap: balance;
   }
   p {
-    max-width: 560px;
-    margin: 0 auto;
+    max-width: 600px;
+    margin: 0;
     color: var(--ds-fg-muted);
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.6;
     text-wrap: pretty;
   }
 }
 .workbench {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: 40px;
+  grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.65fr);
+  gap: 28px;
   align-items: start;
-  @media (max-width: 720px) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
-  }
 }
 .controls {
   min-width: 0;
-  padding-block: 8px;
+  padding: 24px 0;
+  // The provider controls remain part of the surrounding documentation theme.
+  border-block-start: 1px solid var(--ds-border);
+}
+.controlHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+  span {
+    color: var(--ds-fg-muted);
+    font-family: monospace;
+    font-size: 12px;
+  }
+  h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ds-fg-strong);
+  }
 }
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding-top: 8px;
+  padding-top: 16px;
   border-top: 1px solid var(--ds-border);
 }
-// The scoped theme's own surface, so the frame follows the preview theme
 .preview {
   min-width: 0;
-  padding: 32px;
+  padding: 0 20px 20px;
   border: 1px solid var(--border-color);
   border-radius: var(--ds-radius-xl);
   background: var(--surface-muted-color);
   color: var(--text-color);
+  box-shadow: 0 20px 60px -36px color-mix(in srgb, var(--ds-fg-strong) 25%, transparent);
   transition:
     background-color 150ms,
     color 150ms;
-  @media (max-width: 480px) {
-    padding: 12px;
+}
+.appBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  border-bottom: 1px solid var(--border-color);
+}
+.workspaceIdentity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  > span:last-child {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
+}
+.workspaceMark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.commandBar {
+  padding-block: 16px;
+  > button {
+    width: 100%;
+    justify-content: space-between;
+    color: var(--text-secondary-color);
+  }
+  kbd {
+    margin-inline-start: auto;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-family: inherit;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+  }
+}
+.releaseHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary-color);
+}
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.checklist {
+  padding-block: 8px;
+}
+.checklistHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  h4 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  > span {
+    color: var(--text-secondary-color);
+    font-size: 11px;
+  }
+}
+.progressTrack {
+  height: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  background: var(--border-color);
+  > span {
+    display: block;
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 180ms ease;
+  }
+}
+.task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 11px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+  transition: background-color 140ms;
+  &:hover {
+    background: var(--surface-muted-color);
+  }
+  &[data-complete="true"] .taskIndex {
+    color: var(--primary-color);
+  }
+}
+.taskIndex {
+  font-family: monospace;
+  color: var(--text-secondary-color);
+  font-size: 10px;
+}
+.notificationRow {
+  font-size: 13px;
+  p {
+    margin: 6px 0 0;
+    color: var(--text-secondary-color);
+    font-size: 12px;
+  }
+}
+.saveRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  output {
+    color: var(--text-secondary-color);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  button {
+    flex-shrink: 0;
   }
 }
 .source {
   margin-top: 24px;
+}
+@media (max-width: 840px) {
+  .header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .workbench {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .controls {
+    padding: 20px;
+    background: var(--ds-bg);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius);
+  }
+}
+@media (max-width: 480px) {
+  .preview {
+    padding: 0 10px 10px;
+  }
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .saveRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .appBar > :last-child {
+    display: none;
+  }
+  .controls {
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .playground::before {
+    background: none;
+  }
+  .preview,
+  .task,
+  .progressTrack > span {
+    transition: none;
+  }
+}
+.commandBar > button > [data-part="label"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+@media (max-width: 840px) {
+  .controls {
+    order: 2;
+  }
 }

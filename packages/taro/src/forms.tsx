@@ -147,6 +147,7 @@ export function Textarea({
         "mn-textarea",
         `mn-variant-${variant}`,
         `mn-size-${size}`,
+        (invalid ?? field.invalid) && "mn-invalid",
         className,
       )}
       style={{ minHeight: rows * 24, ...(style as object) }}

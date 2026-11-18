@@ -18,13 +18,17 @@ const NON_TEXT_INPUT_TYPES = [
  * and contenteditable hosts. Always `false` without a DOM (SSR).
  */
 export function isEditableTarget(target: EventTarget | null): boolean {
-  if (typeof HTMLElement === "undefined" || !(target instanceof HTMLElement)) {
+  const realm = (target as Node | null)?.ownerDocument?.defaultView;
+  const ElementClass = realm?.HTMLElement ?? globalThis.HTMLElement;
+  if (typeof ElementClass !== "function" || !(target instanceof ElementClass)) {
     return false;
   }
   if (target.isContentEditable) return true;
-  if (target instanceof HTMLTextAreaElement) return true;
-  if (target instanceof HTMLSelectElement) return true;
-  if (target instanceof HTMLInputElement) {
+  if (target instanceof (realm?.HTMLTextAreaElement ?? HTMLTextAreaElement))
+    return true;
+  if (target instanceof (realm?.HTMLSelectElement ?? HTMLSelectElement))
+    return true;
+  if (target instanceof (realm?.HTMLInputElement ?? HTMLInputElement)) {
     return !NON_TEXT_INPUT_TYPES.includes(target.type);
   }
   return false;

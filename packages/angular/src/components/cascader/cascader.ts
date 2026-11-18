@@ -1,3 +1,4 @@
+import { injectFocusModality } from "../../internal/focus-modality";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -483,6 +484,7 @@ export class MnCascader extends MnFormValueControl<CascaderValue | null> {
 
   constructor() {
     super();
+    injectFocusModality();
     const dropdown = () => this.dropdownRef()?.nativeElement;
     anchoredPosition({
       anchor: () => this.host.nativeElement,

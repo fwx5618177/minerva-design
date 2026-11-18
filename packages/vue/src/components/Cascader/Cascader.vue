@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFocusModality } from "../../internal/focus-modality";
 /**
  * Cascader: pick a value from a tree of options, one column per level.
  * Supports search, lazy loading (loadData), hover expansion and full keyboard
@@ -105,6 +106,7 @@ const expandedPath = computed(() =>
 const searchValue = ref("");
 
 const anchor = ref<HTMLElement | null>(null);
+useFocusModality(anchor);
 const inputComponent = ref<unknown>(null);
 const floating = ref<{ element: HTMLElement | null } | null>(null);
 const input = (): HTMLInputElement | null =>

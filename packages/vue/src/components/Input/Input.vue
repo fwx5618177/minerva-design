@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFocusModality } from "../../internal/focus-modality";
 /**
  * Input: a single-line text input with optional prefix / suffix, clear
  * button, character count and password visibility toggle. `v-model` (or
@@ -56,6 +57,7 @@ const attrs = useAttrs();
 const { t } = useI18n();
 const countId = useId();
 const inputRef = ref<HTMLInputElement | null>(null);
+useFocusModality(inputRef);
 
 const value = useControllable<string | number>(props, "modelValue", {
   defaultProp: "defaultValue",

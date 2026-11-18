@@ -38,9 +38,28 @@ function block(css: string, selector: string): string {
 
 function expectRing(declarations: string) {
   expect(declarations).toMatch(
-    /box-shadow:[^;]*0 0 0 var\(--minerva-focus-ring-width,\s*3px\)/,
+    /box-shadow:[^;]*0 0 0 var\(--minerva-focus-ring-width,\s*var\(--_minerva-focus-ring-width,\s*2px\)\)/,
   );
   expect(declarations).toMatch(/outline:\s*2px solid transparent/);
+  // happy-dom does not evaluate :focus-within/:focus-visible. Compute the
+  // actual compiled focus declarations on a probe while document modality
+  // changes, rather than pretending it paints those pseudo classes.
+  const probe = document.createElement("div");
+  probe.style.cssText = declarations;
+  probe.style.setProperty("--primary-color", "#2563eb");
+  probe.style.setProperty("--primary-color-text", "#1d4ed8");
+  document.body.append(probe);
+  try {
+    document.dispatchEvent(new Event("pointerdown"));
+    expect(getComputedStyle(probe).boxShadow).toMatch(/0 0 0 0px/);
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab" }));
+    expect(getComputedStyle(probe).boxShadow).toMatch(/0 0 0 2px/);
+    probe.style.setProperty("--minerva-focus-ring-width", "4px");
+    document.dispatchEvent(new Event("pointerdown"));
+    expect(getComputedStyle(probe).boxShadow).toMatch(/0 0 0 4px/);
+  } finally {
+    probe.remove();
+  }
 }
 
 interface Case {
@@ -159,7 +178,8 @@ describe("text-like elements focus treatment (web components)", () => {
     expectRing(block(cssOf("minerva-textarea"), ".textarea:focus"));
   });
 
-  it("no adopted stylesheet leaves the inner field without its frame ring", () => {
+  it("no adopted stylesheet leaves the inner field without its frame ring", async () => {
+    await mount(`<minerva-input></minerva-input>`);
     // the inner native field drops its outline; its frame draws the focus
     const css = cssOf("minerva-input");
     expect(block(css, ".field")).toMatch(/outline:\s*none/);

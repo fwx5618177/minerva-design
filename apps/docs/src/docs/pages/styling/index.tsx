@@ -96,26 +96,22 @@ minerva-page-tab:state(current) { }
 /* your slotted trigger, from the states of its host */
 minerva-menu:state(open) > [slot="trigger"] { }`;
 
-const focusCode = `/* The focus ring of every text-like control. Unset by default: the
-   ring falls back to the theme's --focus-ring-color (per palette, light
-   and dark), a 3px width and --primary-color for the border */
-:root {
-  --minerva-focus-ring-width: 4px;
+const focusCode = `/* Default: pointer focus changes the border; keyboard navigation adds
+   one 2px ring. The frame owns the indicator, including composed controls. */
+.search-field {
+  --input-focus-color: var(--success-color);
+  --minerva-focus-ring-color: var(--success-color-text);
+}
+
+/* Optional explicit override: keeps a ring even for pointer focus.
+   Prefer the automatic default for ordinary forms. */
+.high-visibility {
+  --minerva-focus-ring-width: 3px;
   --minerva-focus-border-color: var(--primary-color-text);
 }
 
-/* One control: component variables still win for the border */
-.search-field {
-  --input-focus-color: var(--success-color);
-  --minerva-focus-ring-color: color-mix(in srgb, var(--success-color) 45%, transparent);
-}
-
-/* Restyling the ring yourself? Keep the transparent outline:
-   forced colors (High Contrast) paint it, box-shadows are dropped */
-[data-minerva="input"][data-part="root"]:focus-within {
-  box-shadow: 0 0 0 2px var(--primary-color);
-  outline: 2px solid transparent;
-}`;
+/* Keep the system-colored outline fallback in Windows High Contrast.
+   Do not globally suppress :focus or add a second outline to inner inputs. */`;
 
 const layerCode = `/* The library ships inside @layer minerva: unlayered rules win,
    whatever their specificity or order */
@@ -131,6 +127,15 @@ const layerCode = `/* The library ships inside @layer minerva: unlayered rules w
 
 /* Unlayered resets now beat the library too: layer them */
 @import url("modern-normalize.css") layer(reset);`;
+
+const focusOwnershipCode = `import { acquireFocusModality } from "minerva-design/core";
+
+// Custom DOM controls: acquire after mounting and release on teardown.
+// Framework components already manage this lifecycle automatically.
+export function mountCustomControl(element: HTMLElement) {
+  const release = acquireFocusModality(element.ownerDocument);
+  return () => release();
+}`;
 
 const policyCode = `import { stylingHooks, wcSelector } from "minerva-design/styling-hooks";
 
@@ -269,6 +274,8 @@ const StylingDoc: React.FC = () => {
         <p className={styles.prose}>{k("rules.focus")}</p>
         <CodeBlock code={focusCode} language="css" />
         <p className={styles.callout}>{k("rules.forced")}</p>
+        <p className={styles.prose}>{k("rules.ownership")}</p>
+        <CodeBlock code={focusOwnershipCode} language="ts" />
       </section>
     </>
   );

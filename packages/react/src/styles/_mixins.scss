@@ -115,44 +115,49 @@
 }
 
 // ---- Focus treatment of text-like controls ----
-// Input, Textarea, Select trigger, NumberInput, Cascader, Command search,
-// Pagination fields (and everything built on them: TagInput, AutoComplete,
-// TimePicker, JsonField, KeyValueEditor). Instead of the native outline:
-// - the border switches to the focus color (a full border color change);
-// - a ring drawn with box-shadow around the whole control;
-// - `outline: 2px solid transparent`: invisible normally, but forced colors
-//   (Windows High Contrast) drop box-shadows and paint the outline with a
-//   system color, so focus stays visible there.
-// Text fields show it on every focus (mouse included: `:focus` /
-// `:focus-within`), checked by tests/docs/focus-rules.test.ts.
-//
-// Theme hooks (set on :root, a theme scope or the control):
-// --minerva-focus-ring-color (defaults to the theme's --focus-ring-color,
-// tuned per palette for light and dark), --minerva-focus-ring-width
-// (defaults to 3px) and --minerva-focus-border-color (defaults to
-// --primary-color; a component variable such as --input-focus-color wins).
+// Pointer focus changes the frame; keyboard focus adds one crisp ring.
+// The DOM focus-modality listener sets the inherited private width to 0px
+// for pointer input and 2px for keyboard input, including portaled / shadow
+// controls. Without that listener the accessible keyboard treatment wins.
+// Public --minerva-focus-* overrides retain precedence over modality.
+// Transparent outlines preserve the forced-colors fallback.
 $focus-ring-color: var(--minerva-focus-ring-color, var(--focus-ring-color));
 $focus-ring-width: var(--minerva-focus-ring-width, 3px);
 $focus-border-color: var(--minerva-focus-border-color, var(--primary-color));
-$focus-ring-danger: color-mix(in srgb, var(--danger-color) 40%, transparent);
+$focus-ring-danger: var(--minerva-focus-ring-color, var(--danger-color-text));
 
-// The outer ring layer (a full ring: no offset, no blur)
+// Non-text controls retain their established focus-ring defaults.
 @function focus-ring($color: $focus-ring-color) {
   @return 0 0 0 $focus-ring-width $color;
 }
 
-// $inset-border: the control draws its 1px border as an inset box-shadow
-// (Input, Select): the focus color goes into that layer.
-@mixin control-focus($border-color: $focus-border-color, $ring-color: $focus-ring-color, $inset-border: false) {
+@mixin control-focus($border-color: $focus-border-color, $ring-color: var(--minerva-focus-ring-color, var(--primary-color-text)), $inset-border: false) {
+  $ring: 0 0 0 var(--minerva-focus-ring-width, var(--_minerva-focus-ring-width, 2px)) $ring-color;
   @if $inset-border {
     box-shadow:
       inset 0 0 0 1px $border-color,
-      focus-ring($ring-color);
+      $ring;
   } @else {
     border-color: $border-color;
-    box-shadow: focus-ring($ring-color);
+    box-shadow: $ring;
   }
 
   outline: 2px solid transparent;
   outline-offset: 1px;
+
+  @media (forced-colors: active) {
+    outline: 2px solid Highlight;
+  }
+}
+
+// A native field inside a framed control must not acquire a second outline
+// from the global native-control rules. The frame owns forced-colors too.
+@mixin control-inner-focus {
+  outline: 2px solid transparent;
+  outline-offset: 0;
+  box-shadow: none;
+
+  @media (forced-colors: active) {
+    outline: none;
+  }
 }

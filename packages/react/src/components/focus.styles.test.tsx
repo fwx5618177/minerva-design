@@ -1,6 +1,6 @@
 // Focus treatment of the text-like controls (styles/_mixins.scss
 // `control-focus`): the native outline is replaced by a border color change
-// plus a box-shadow ring, with `outline: 2px solid transparent` so forced
+// plus a modality-aware box-shadow ring, with `outline: 2px solid transparent` so forced
 // colors still paint a visible outline.
 //
 // happy-dom does not compute pseudo-class styles, so each case asserts that
@@ -57,7 +57,9 @@ const words = (value: string) => value.trim().split(/\s+/).sort();
 
 function expectRing(style: CSSStyleDeclaration) {
   const shadow = style.getPropertyValue("box-shadow");
-  expect(shadow).toMatch(/0 0 0 var\(--minerva-focus-ring-width, 3px\)/);
+  expect(shadow).toMatch(
+    /0 0 0 var\(--minerva-focus-ring-width, var\(--_minerva-focus-ring-width, 2px\)\)/,
+  );
   expect(words(style.getPropertyValue("outline"))).toEqual(
     words("2px solid transparent"),
   );
@@ -189,7 +191,7 @@ describe("text-like controls focus treatment (React)", () => {
   );
 
   it.each(CASES.filter((c) => c.name !== "Cascader"))(
-    "$name: mouse focus shows the ring too (focus / focus-within, not focus-visible)",
+    "$name: mouse focus reaches the shared border rule",
     async ({ element, field, frame, selector }) => {
       const user = userEvent.setup();
       render(element);
@@ -202,7 +204,7 @@ describe("text-like controls focus treatment (React)", () => {
     },
   );
 
-  it("the inner native field drops its outline only inside a ringed frame", () => {
+  it("the inner native field delegates decoration to its framed control", () => {
     const sheet = inject(scss("Input/input.module.scss"));
     expect(
       words(rule(sheet, ".field").style.getPropertyValue("outline")),
@@ -211,7 +213,7 @@ describe("text-like controls focus treatment (React)", () => {
     expectRing(rule(sheet, ".invalid:focus-within").style);
   });
 
-  it("Select trigger: keyboard focus and the open state share the ring", async () => {
+  it("Select trigger: keyboard focus and the open state share the modality-aware frame", async () => {
     const sheet = inject(scss("Select/select.module.scss"));
     const user = userEvent.setup();
     render(

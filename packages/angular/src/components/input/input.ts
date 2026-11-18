@@ -1,3 +1,4 @@
+import { injectFocusModality } from "../../internal/focus-modality";
 import { NgTemplateOutlet } from "@angular/common";
 import {
   ChangeDetectionStrategy,
@@ -185,6 +186,11 @@ const optionalNumber = (value: unknown): number | undefined =>
   `,
 })
 export class MnInput extends MnFormValueControl<string> {
+  constructor() {
+    super();
+    injectFocusModality();
+  }
+
   /** Current text (two-way: `[(value)]`) */
   readonly value = model<string | undefined>(undefined);
   /**

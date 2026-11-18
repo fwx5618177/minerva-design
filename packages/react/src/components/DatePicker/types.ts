@@ -23,9 +23,9 @@ export interface DatePickerProps extends DataAttributes {
    * @default "Select date" (localized)
    */
   placeholder?: string;
-  /** Visible label of the input; without it the input is labelled "Date" (localized) */
+  /** Accessible name of the input; defaults to localized "Date". Use FormField for a visible label. */
   label?: string;
-  /** Accessible label of the input when no visible label is shown */
+  /** Accessible name of the input when label is not set. */
   "aria-label"?: string;
   /**
    * Id(s) of the element(s) labelling the input; inside a FormControl it

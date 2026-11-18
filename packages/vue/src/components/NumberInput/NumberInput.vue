@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFocusModality } from "../../internal/focus-modality";
 /**
  * NumberInput: numeric text field (role="spinbutton") with keyboard stepping
  * (arrows, Page Up / Down, Home / End to min / max when bounded), an
@@ -25,6 +26,9 @@ import { useI18n } from "../../config/useI18n";
 import type { NumberInputProps } from "./types";
 
 defineOptions({ name: "NumberInput", inheritAttrs: false });
+
+const focusRef = ref<HTMLInputElement | null>(null);
+useFocusModality(focusRef);
 
 const props = withDefaults(defineProps<NumberInputProps>(), {
   modelValue: undefined,
@@ -244,6 +248,7 @@ const decrementDisabled = computed(
 <template>
   <div v-bind="rootAttrs">
     <input
+      ref="focusRef"
       :class="styles.field"
       v-bind="inputAttrs"
       @input="onInput"

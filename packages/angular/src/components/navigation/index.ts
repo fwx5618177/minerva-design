@@ -1,3 +1,4 @@
+import { injectFocusModality } from "../../internal/focus-modality";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -332,6 +333,10 @@ export class MnPageTab {
     }`,
 })
 export class MnPagination {
+  constructor() {
+    injectFocusModality();
+  }
+
   protected readonly scope = injectScope();
   readonly page = model(1);
   readonly pageSize = model(10);

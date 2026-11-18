@@ -1,3 +1,4 @@
+import { injectFocusModality } from "../../internal/focus-modality";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -69,6 +70,11 @@ export type TextareaSize = "small" | "medium" | "large";
   template: ``,
 })
 export class MnTextarea extends MnFormValueControl<string> {
+  constructor() {
+    super();
+    injectFocusModality();
+  }
+
   /** Current text (two-way: `[(value)]`) */
   readonly value = model<string | undefined>(undefined);
   /**

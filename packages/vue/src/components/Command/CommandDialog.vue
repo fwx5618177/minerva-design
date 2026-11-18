@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFocusModality } from "../../internal/focus-modality";
 /**
  * CommandDialog: a searchable command palette in a modal. Filter with the
  * input, move with ArrowUp / ArrowDown, choose with Enter or a click. An
@@ -51,6 +52,8 @@ defineSlots<{
   "shortcut-label"?: () => unknown;
   "enter-label"?: () => unknown;
 }>();
+// Track opening intent before the portaled search field exists.
+useFocusModality();
 const slots = useSlots();
 const { t } = useI18n();
 

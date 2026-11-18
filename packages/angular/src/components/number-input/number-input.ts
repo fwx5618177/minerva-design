@@ -1,3 +1,4 @@
+import { injectFocusModality } from "../../internal/focus-modality";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -163,6 +164,11 @@ const nullableNumber = (value: unknown): number | null => {
   `,
 })
 export class MnNumberInput extends MnFormValueControl<number | null> {
+  constructor() {
+    super();
+    injectFocusModality();
+  }
+
   /**
    * Current value (two-way: `[(value)]`); `null` is an empty field. Updated
    * and emitted (`valueChange`, React `onChange`) with committed values only:

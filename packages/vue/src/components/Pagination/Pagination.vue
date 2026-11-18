@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFocusModality } from "../../internal/focus-modality";
 /**
  * Pagination: page navigation (`<nav>` landmark) with page / prev / next /
  * jump buttons, an optional total, quick jumper, page size selector, simple
@@ -87,6 +88,7 @@ const slots = defineSlots<{
 const attrs = useAttrs();
 const { t } = useI18n();
 const navRef = ref<HTMLElement | null>(null);
+useFocusModality(navRef);
 
 /** Renders a render-prop result (VNode, text, number) */
 const Render: FunctionalComponent<{ content: VNodeChild }> = (p) =>

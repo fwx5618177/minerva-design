@@ -1,3 +1,4 @@
+import { useFocusModality } from "../../internal/useFocusModality";
 import { useId, useRef, useState, type ChangeEvent } from "react";
 import { IconEye, IconEyeOff, IconX } from "../../internal/icons";
 import { cn } from "../../utils/cn";
@@ -51,6 +52,7 @@ export const Input = ({
 }: InputProps) => {
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
+  useFocusModality(inputRef);
   const mergedRef = useMergedRefs(inputRef, ref);
   const countId = useId();
   const field = useFormControlProps({

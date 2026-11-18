@@ -1,3 +1,4 @@
+import { useFocusModality } from "../../internal/useFocusModality";
 import {
   useEffect,
   useId,
@@ -55,6 +56,7 @@ const CommandPanel = ({
   enterLabel,
   onSelect,
 }: CommandPanelProps) => {
+  const inputRef = useFocusModality<HTMLInputElement>();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const baseId = useId();
@@ -108,6 +110,7 @@ const CommandPanel = ({
           ⌕
         </span>
         <input
+          ref={inputRef}
           className={styles.input}
           type="text"
           role="combobox"
@@ -198,6 +201,8 @@ export const CommandDialog = ({
   enterLabel,
   className,
 }: CommandDialogProps) => {
+  // Track opening intent before the portaled search field exists.
+  useFocusModality();
   const { t } = useI18n();
   if (process.env.NODE_ENV !== "production") {
     warnControlledProps("CommandDialog", {

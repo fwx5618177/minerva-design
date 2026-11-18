@@ -13,6 +13,8 @@ import { checkQuadrantCard } from "./browser-quadrant-card-checks.mjs";
 import { checkCdnFiles } from "./browser-cdn-checks.mjs";
 import { checkMediaPlayerDocs } from "./browser-media-player-checks.mjs";
 import { checkModalIframeFocus } from "./browser-modal-focus.mjs";
+import { checkFocusPresentation } from "./browser-focus-presentation.mjs";
+import { checkHomeWorkbench } from "./browser-home-workbench.mjs";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -92,6 +94,36 @@ try {
     await sleep(300);
   };
   const results = [];
+  await checkHomeWorkbench({
+    call,
+    evaluate,
+    wait,
+    page,
+    results,
+    capture: async (name) => {
+      await mkdir(ARTIFACTS, { recursive: true });
+      const { data } = await call("Page.captureScreenshot", { format: "png" });
+      await writeFile(
+        join(ARTIFACTS, `${name}.png`),
+        Buffer.from(data, "base64"),
+      );
+    },
+  });
+  await checkFocusPresentation({
+    call,
+    evaluate,
+    wait,
+    page,
+    results,
+    capture: async (name) => {
+      await mkdir(ARTIFACTS, { recursive: true });
+      const { data } = await call("Page.captureScreenshot", { format: "png" });
+      await writeFile(
+        join(ARTIFACTS, `${name}.png`),
+        Buffer.from(data, "base64"),
+      );
+    },
+  });
   await checkMediaPlayerDocs({
     call,
     evaluate,

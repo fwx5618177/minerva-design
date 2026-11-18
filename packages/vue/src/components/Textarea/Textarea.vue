@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { useFocusModality } from "../../internal/focus-modality";
 /**
  * Textarea: multi-line text input sharing Input's look. Manual resizing is
  * disabled (set `rows` or layout dimensions instead). `v-model` (or
  * `defaultValue`); FormControl-aware.
  */
-import { computed, useAttrs, type StyleValue } from "vue";
+import { computed, ref, useAttrs, type StyleValue } from "vue";
 import styles from "@react-styles/components/Textarea/textarea.module.scss";
 import { hooks } from "../../internal/hooks";
 import { useControllable } from "../../internal/controllable";
@@ -29,6 +30,8 @@ const props = withDefaults(defineProps<TextareaProps>(), {
 });
 defineEmits<{ "update:modelValue": [value: string] }>();
 
+const focusRef = ref<HTMLTextAreaElement | null>(null);
+useFocusModality(focusRef);
 const attrs = useAttrs();
 const value = useControllable<string | number>(props, "modelValue", {
   defaultProp: "defaultValue",
@@ -91,5 +94,5 @@ const textareaAttrs = computed(() => {
 </script>
 
 <template>
-  <textarea v-bind="textareaAttrs" @input="onInput" />
+  <textarea ref="focusRef" v-bind="textareaAttrs" @input="onInput" />
 </template>

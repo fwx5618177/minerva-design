@@ -73,7 +73,8 @@ export class MinervaRadio extends MinervaElement {
         pointer-events: none;
       }
       :host(:focus-visible) .radioMark {
-        box-shadow: 0 0 0 3px var(--focus-ring-color);
+        box-shadow: 0 0 0 var(--minerva-focus-ring-width, 3px)
+          var(--minerva-focus-ring-color, var(--focus-ring-color));
       }
       @media (forced-colors: active) {
         :host(:focus-visible) .radioMark {

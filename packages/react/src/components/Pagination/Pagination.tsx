@@ -1,3 +1,4 @@
+import { useFocusModality } from "../../internal/useFocusModality";
 import React, {
   useEffect,
   useRef,
@@ -110,6 +111,7 @@ const Pagination = ({
 }: PaginationProps) => {
   const { t } = useI18n();
   const navRef = useRef<HTMLElement>(null);
+  useFocusModality(navRef);
   const mergedRef = useMergedRefs(navRef, ref);
 
   if (process.env.NODE_ENV !== "production") {

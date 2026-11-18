@@ -1,3 +1,5 @@
+import { useMergedRefs } from "../../internal/mergeRefs";
+import { useFocusModality } from "../../internal/useFocusModality";
 import { useState, type FocusEvent, type KeyboardEvent } from "react";
 import { IconChevronDown, IconChevronUp } from "../../internal/icons";
 import {
@@ -49,6 +51,8 @@ export const NumberInput = ({
   ...rest
 }: NumberInputProps) => {
   const { t } = useI18n();
+  const focusRef = useFocusModality<HTMLInputElement>();
+  const mergedRef = useMergedRefs(focusRef, ref);
   const field = useFormControlProps({ ...rest, disabled, readOnly });
   const isDisabled = !!field.disabled;
   const isLocked = isDisabled || !!field.readOnly;
@@ -199,7 +203,7 @@ export const NumberInput = ({
       })}
     >
       <input
-        ref={ref}
+        ref={mergedRef}
         inputMode="decimal"
         type="text"
         className={styles.field}

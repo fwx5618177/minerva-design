@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFocusModality } from "../../internal/focus-modality";
 /**
  * Search input + results of CommandDialog (internal). Mounted only while the
  * dialog is shown, so every opening starts with an empty query and the first
@@ -22,6 +23,8 @@ const props = defineProps<{
 const emit = defineEmits<{ select: [item: CommandItem] }>();
 defineSlots<{ empty?: () => unknown; enter?: () => unknown }>();
 
+const focusRef = ref<HTMLInputElement | null>(null);
+useFocusModality(focusRef);
 const query = ref("");
 const activeIndex = ref(0);
 const baseId = useId();
@@ -85,6 +88,7 @@ const onKeyDown = (event: KeyboardEvent) => {
   <div :class="styles.search" v-bind="hooks('command-dialog', 'search')">
     <span :class="styles.searchIcon" aria-hidden="true">⌕</span>
     <input
+      ref="focusRef"
       :class="styles.input"
       type="text"
       role="combobox"

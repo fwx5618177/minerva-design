@@ -1,3 +1,4 @@
+import { injectFocusModality } from "../../internal/focus-modality";
 import { DOCUMENT } from "@angular/common";
 import {
   ChangeDetectionStrategy,
@@ -321,6 +322,7 @@ export class MnSelect
 
   constructor() {
     super();
+    injectFocusModality();
     anchoredPosition({
       anchor: () => this.triggerRef().nativeElement,
       floating: () => this.positionerRef()?.nativeElement,

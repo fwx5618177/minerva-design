@@ -7,6 +7,7 @@ import {
   type PropertyValues,
 } from "lit";
 import type { DefinableElement } from "./define";
+import { acquireFocusModality } from "@minerva/dom";
 import { emit, type EmitOptions, type MinervaEventName } from "./events";
 import { markServerRendered, scheduleHostSettle } from "./hydration";
 import { setCustomStates, type HookStates } from "./styling-hooks";
@@ -62,6 +63,7 @@ const attributeName = (name: PropertyKey, options: PropertyDeclaration) =>
     : String(name).toLowerCase();
 
 export class MinervaElement extends LitElement {
+  private releaseFocusModality?: () => void;
   /** Registered tag name; every concrete element overrides it. */
   static tagName = "";
   /** Minerva elements rendered by this element (registered before it). */
@@ -141,9 +143,24 @@ export class MinervaElement extends LitElement {
   }
 
   override connectedCallback(): void {
+    this.releaseFocusModality?.();
+    this.releaseFocusModality = acquireFocusModality(this.ownerDocument);
     super.connectedCallback();
     if (this.hasUpdated) this.reconnectedCallback();
     scheduleHostSettle(this);
+  }
+
+  override disconnectedCallback(): void {
+    this.releaseFocusModality?.();
+    this.releaseFocusModality = undefined;
+    super.disconnectedCallback();
+  }
+
+  adoptedCallback(): void {
+    this.releaseFocusModality?.();
+    this.releaseFocusModality = this.isConnected
+      ? acquireFocusModality(this.ownerDocument)
+      : undefined;
   }
 
   /**

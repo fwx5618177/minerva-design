@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFocusModality } from "../../internal/focus-modality";
 /**
  * Select: a single-choice dropdown following the WAI-ARIA "select-only
  * combobox" pattern. The trigger is a `<button role="combobox">`; the popup
@@ -135,6 +136,7 @@ const open = useControllable<boolean>(props, "open", {
 
 const listboxId = useId();
 const trigger = shallowRef<HTMLButtonElement | null>(null);
+useFocusModality(trigger);
 const native = shallowRef<HTMLSelectElement | null>(null);
 const listbox = shallowRef<HTMLElement | null>(null);
 const highlighted = ref<string | null>(null);

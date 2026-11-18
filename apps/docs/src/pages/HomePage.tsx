@@ -1,3 +1,4 @@
+import Logo from "@/site/Logo";
 import { FrameworkIcon } from "@/site/FrameworkIcon";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
@@ -85,51 +86,81 @@ const HomePage: React.FC = () => {
   return (
     <div className={styles.home}>
       <section className={styles.hero} aria-labelledby="home-title">
-        {/* newest version (the upcoming one while changesets are pending) */}
-        <Link to="/changelog" className={styles.release}>
-          <Tag size="small" shape="circle" variant="solid">
-            v{LATEST_VERSION}
-          </Tag>
-          <span>{t("docs.changelog.title")}</span>
-          <IoArrowForward aria-hidden />
-        </Link>
-        <h1 id="home-title" className={styles.title}>
-          {t("home.title")}
-        </h1>
-        <p className={styles.subtitle}>{t("home.subtitle")}</p>
-        <div className={styles.ctas}>
-          <TextLink asChild variant="action">
-            <Link to="/installation" className={styles.ctaPrimary}>
-              {t("home.getStarted")}
-              <IoArrowForward aria-hidden />
-            </Link>
-          </TextLink>
-          <TextLink asChild variant="action">
-            <Link to="/button" className={styles.ctaSecondary}>
-              {t("home.browse")}
-            </Link>
-          </TextLink>
+        <div className={styles.heroIntro}>
+          {/* newest version (the upcoming one while changesets are pending) */}
+          <Link to="/changelog" className={styles.release}>
+            <Tag size="small" shape="circle" variant="solid">
+              v{LATEST_VERSION}
+            </Tag>
+            <span>{t("docs.changelog.title")}</span>
+            <IoArrowForward aria-hidden />
+          </Link>
+          <h1 id="home-title" className={styles.title}>
+            {t("home.title")}
+          </h1>
+          <p className={styles.subtitle}>{t("home.subtitle")}</p>
+          <div className={styles.ctas}>
+            <TextLink asChild variant="action">
+              <Link to="/installation" className={styles.ctaPrimary}>
+                {t("home.getStarted")}
+                <IoArrowForward aria-hidden />
+              </Link>
+            </TextLink>
+            <TextLink asChild variant="action">
+              <Link to="/button" className={styles.ctaSecondary}>
+                {t("home.browse")}
+              </Link>
+            </TextLink>
+          </div>
         </div>
-
-        <Tabs
-          value={manager}
-          onChange={(value) => setManager(value as Manager)}
-          variant="soft"
-          className={styles.install}
-        >
-          <TabList aria-label={t("home.installLabel")}>
+        <div className={styles.installPanel}>
+          <div className={styles.panelHeading}>
+            <span>{t("home.heroPackage")}</span>
+            <span>v{LATEST_VERSION}</span>
+          </div>
+          <div className={styles.packageIdentity}>
+            <span className={styles.packageMark} aria-hidden>
+              <Logo size={28} />
+            </span>
+            <div>
+              <strong>minerva-design</strong>
+              <span>{t("home.heroPackageDescription")}</span>
+            </div>
+          </div>
+          <Tabs
+            value={manager}
+            onChange={(value) => setManager(value as Manager)}
+            variant="soft"
+            className={styles.install}
+          >
+            <TabList aria-label={t("home.installLabel")}>
+              {(Object.keys(INSTALL) as Manager[]).map((m) => (
+                <Tab key={m} value={m}>
+                  {m}
+                </Tab>
+              ))}
+            </TabList>
             {(Object.keys(INSTALL) as Manager[]).map((m) => (
-              <Tab key={m} value={m}>
-                {m}
-              </Tab>
+              <TabPanel key={m} value={m}>
+                <CodeBlock code={INSTALL[m]} language="bash" />
+              </TabPanel>
             ))}
-          </TabList>
-          {(Object.keys(INSTALL) as Manager[]).map((m) => (
-            <TabPanel key={m} value={m}>
-              <CodeBlock code={INSTALL[m]} language="bash" />
-            </TabPanel>
-          ))}
-        </Tabs>
+          </Tabs>
+          <div className={styles.packageFacts}>
+            <div>
+              <strong>10</strong>
+              <span>{t("home.heroFrameworks")}</span>
+            </div>
+            <div>
+              <strong>{docPages.length}</strong>
+              <span>{t("home.heroPages")}</span>
+            </div>
+            <div>
+              <strong>4</strong>
+              <span>{t("home.heroLanguages")}</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Live components, rendered with the library's own theme */}

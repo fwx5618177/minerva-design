@@ -1,7 +1,7 @@
 @use "../../styles/mixins" as *;
 
 // Every visible line is drawn with box-shadow (inset 1px as border + outer
-// focus halo) so rounded corners stay crisp: a real border and a box-shadow
+// focus indicator) so rounded corners stay crisp: a real border and a box-shadow
 // rasterize differently and leave 1px notches at the corners at 1x DPR.
 //
 // Public CSS variables (set them on the input or any ancestor):
@@ -14,7 +14,7 @@
 // @css-var --input-focus-color Border color while hovered / focused (focus: then --minerva-focus-border-color)
 //
 // Focus: the shared control-focus treatment (styles/_mixins.scss): border
-// color + box-shadow ring (--minerva-focus-ring-color / -width) and a
+// color + modality-aware ring (--minerva-focus-ring-color / -width) and a
 // transparent outline that forced colors make visible.
 //
 // Internal plumbing uses the --_input-* prefix.
@@ -216,4 +216,9 @@
 .root:has(.field[readonly]):not(.disabled, .unstyled) {
   background-color: var(--readonly-surface-color);
   cursor: default;
+}
+
+// The enclosing frame owns the single focus indicator.
+.root .field:focus {
+  @include control-inner-focus;
 }

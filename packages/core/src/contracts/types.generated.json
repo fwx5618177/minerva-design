@@ -195,6 +195,7 @@
       { "name": "reason", "required": true, "typeText": "CommandOpenChangeReason", "typeRef": "type:3324952958566de739d7" }
     ]
   },
+  "type:02007543cc5d35d5f15b": { "typeText": "(string | AutoCompleteOption)[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:c032ad69b755beb77a50" },
   "type:022201489f12d5b27630": { "typeText": "`section-${string} billing honorific-prefix`", "kind": "primitive", "nullable": false, "optional": false },
   "type:0236a5c83c6f8bc2b6b9": { "typeText": "\"shipping tel-national webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping tel-national webauthn" },
   "type:023f7aa1fcf35af8cd91": {
@@ -520,7 +521,6 @@
   "type:04bcee736c3a30c244a5": { "typeText": "\"billing given-name\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing given-name" },
   "type:04e01b157427d8edc666": { "typeText": "Node", "kind": "external", "nullable": false, "optional": false, "name": "Node", "source": "typescript/lib/lib.dom.d.ts" },
   "type:04e08f25b7c01a45d8b9": { "typeText": "\"no\"", "kind": "literal", "nullable": false, "optional": false, "value": "no" },
-  "type:04e0b379590fae5faf76": { "typeText": "KeyValueEntry[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:f8f4de6fea143b9c499c" },
   "type:0513399924e17cd52a6e": {
     "typeText": "((month: Date) => void) | undefined",
     "kind": "union",
@@ -706,6 +706,21 @@
   },
   "type:079370450145709bdc15": { "typeText": "\"light\"", "kind": "literal", "nullable": false, "optional": false, "value": "light" },
   "type:07990785f283a4f782d2": { "typeText": "\"datalist\"", "kind": "literal", "nullable": false, "optional": false, "value": "datalist" },
+  "type:07ba23a1f53e5e5df917": {
+    "typeText": "(key: string, value: number) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "key", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
+          { "name": "value", "position": 1, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
+        ],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:07c70bf8def4ad71052d": { "typeText": "\"shipping transaction-amount webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping transaction-amount webauthn" },
   "type:07edb4f0d37b5b0a97d1": { "typeText": "KeyboardEvent<HTMLSpanElement>", "kind": "external", "nullable": false, "optional": false, "name": "KeyboardEvent", "source": "@types/react" },
   "type:07f705d233d59b43cc05": { "typeText": "\"funnel\"", "kind": "literal", "nullable": false, "optional": false, "value": "funnel" },
@@ -1784,7 +1799,6 @@
     "name": "__type",
     "source": "react-native/types/public/ReactNativeRenderer.d.ts"
   },
-  "type:0a0dd99a2907ba8f10a1": { "typeText": "CascaderOption[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:d321d49c86ce9e3c8867" },
   "type:0a28660bc09f1fd51bc4": {
     "typeText": "MouseEvent<HTMLDivElement, MouseEvent> | KeyboardEvent<HTMLDivElement>",
     "kind": "union",
@@ -2667,6 +2681,13 @@
     ]
   },
   "type:12b5e783086e715b7702": { "typeText": "MenuEntry[] | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:70ad1aeb0ed71bd0c9b2"] },
+  "type:12bc7b5b3ff3867ba9ee": {
+    "typeText": "((value: string | number, event: ITouchEvent) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:5d3b859c3f9fa17ef6db"]
+  },
   "type:12be99ac32eab1da806c": {
     "typeText": "readonly MediaPlayerTrack[] | undefined",
     "kind": "union",
@@ -2712,6 +2733,13 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:103352f1cef0e6cdaea9", "type:f32ffaddbcdf3bbb116c", "type:be10fe5a64a7f3b792d0", "type:8b646ee93eb1cdeaaa97"]
+  },
+  "type:134edd885465bd2be7c1": {
+    "typeText": "((value: string) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:69bb9f958510edf5a0bd"]
   },
   "type:135b2b4c5ec55a253d70": { "typeText": "\"size\"", "kind": "literal", "nullable": false, "optional": false, "value": "size" },
   "type:1365925cee3e95ff294a": {
@@ -2784,6 +2812,18 @@
   },
   "type:149748009e738caf5334": { "typeText": "MenuEntry[] | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:c67adfd0ac762b4745d5"] },
   "type:149d41d21bc4ddc91623": { "typeText": "NativeLocale | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:c19fdc9405e03d1737fd"] },
+  "type:149d73f188af0cbf53a7": {
+    "typeText": "(value: string[]) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string[]", "typeRef": "type:19a96e1d6cef0c4dc643" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:149e6afef08bc88de412": {
     "typeText": "((value: Date) => void) | undefined",
     "kind": "union",
@@ -3134,21 +3174,6 @@
     "source": "react-native/Libraries/StyleSheet/StyleSheet.d.ts"
   },
   "type:179cc80812dd69acf1b6": { "typeText": "`section-${string} shipping cc-exp-year webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:179cf515deeb49dd59fe": {
-    "typeText": "(a: AutoCompleteOption, b: AutoCompleteOption) => number",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "a", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:3a1fe1d09f0928842790" },
-          { "name": "b", "position": 1, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:3a1fe1d09f0928842790" }
-        ],
-        "returnType": { "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-      }
-    ]
-  },
   "type:17a15424d408e96b5986": {
     "typeText": "ChartTextAnnotation",
     "kind": "object",
@@ -3290,18 +3315,6 @@
     ]
   },
   "type:1878cc8720534c1997f4": { "typeText": "\"descending\"", "kind": "literal", "nullable": false, "optional": false, "value": "descending" },
-  "type:18afc60c28d6e450a055": {
-    "typeText": "(path: CascaderOption[]) => void | Promise<void>",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "path", "position": 0, "required": true, "rest": false, "typeText": "CascaderOption[]", "typeRef": "type:0a0dd99a2907ba8f10a1" }],
-        "returnType": { "typeText": "void | Promise<void>", "typeRef": "type:3c4871f2062b3b734ba0" }
-      }
-    ]
-  },
   "type:18d5a047170663319f71": {
     "typeText": "readonly (readonly [string | number, string | number, number | null])[]",
     "kind": "array",
@@ -3482,17 +3495,22 @@
   },
   "type:1a4f2feb64c43d09ffc3": { "typeText": "\"ray\"", "kind": "literal", "nullable": false, "optional": false, "value": "ray" },
   "type:1a510f126387b644d467": { "typeText": "UploadLabels | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:800feb56f3db9bbf240f"] },
+  "type:1a7b3c5fbc9683d8c2ae": { "typeText": "KeyValueEntry[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:bb206060a4f6536eefe3" },
   "type:1a85fe2184348a3aac82": { "typeText": "`section-${string} shipping cc-exp webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:1a98f3b15294c0c1d839": { "typeText": "`section-${string} billing bday-day`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:1ab7b9c19427af29978a": {
-    "typeText": "{ x: number; y: number; }",
-    "kind": "object",
+  "type:1ab8c8304f1ede216d48": {
+    "typeText": "(option: CascaderOption, level: number) => ReactNode",
+    "kind": "function",
     "nullable": false,
     "optional": false,
-    "source": "packages/taro/src/forms.tsx",
-    "fields": [
-      { "name": "x", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
-      { "name": "y", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "option", "position": 0, "required": true, "rest": false, "typeText": "CascaderOption", "typeRef": "type:f8493c057de25af2ef11" },
+          { "name": "level", "position": 1, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
+        ],
+        "returnType": { "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" }
+      }
     ]
   },
   "type:1ac7f81b9f620642d47d": {
@@ -3617,13 +3635,6 @@
     "source": "react-native/types/public/ReactNativeRenderer.d.ts"
   },
   "type:1b8e4db413c81bcf5a2a": { "typeText": "`section-${string} shipping work tel-country-code webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:1b9a3ed855bdee4729f2": {
-    "typeText": "((visible: boolean) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:eb16a42cd63935d6f25a"]
-  },
   "type:1ba15f7a63257b629992": { "typeText": "\"shipping cc-family-name webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping cc-family-name webauthn" },
   "type:1ba5fc4b72075e313326": {
     "typeText": "TradingWilliamsRIndicator",
@@ -3824,6 +3835,18 @@
   },
   "type:1df636ebfa956249b8a8": { "typeText": "`section-${string} billing home tel-country-code`", "kind": "primitive", "nullable": false, "optional": false },
   "type:1e1d9cf2aa57c75f33e1": { "typeText": "`section-${string} billing country webauthn`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:1e1e1466e97fd990831e": {
+    "typeText": "(visible: boolean) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "visible", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:1e330ed060165e92d2d1": { "typeText": "readonly GraphGroup[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:84cb7339e9565d370968" },
   "type:1e3b5884a3a7673a4553": {
     "typeText": "ButtonVariant | undefined",
@@ -4089,6 +4112,13 @@
   "type:2017eda0dd9a8fc63a8c": { "typeText": "`section-${string} cc-exp`", "kind": "primitive", "nullable": false, "optional": false },
   "type:20200e745cc85bc9a314": { "typeText": "T[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:b3438710ea76e93708b7" },
   "type:2046dbc6aaf4151f71d2": { "typeText": "\"cc-exp-year webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "cc-exp-year webauthn" },
+  "type:204a557c21b2c93fdcc4": {
+    "typeText": "((value: number) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:f8da4ba7724d1ac3625b"]
+  },
   "type:20569ad2ad077ad0035f": {
     "typeText": "(mode: AppShellSidebarMode) => void",
     "kind": "function",
@@ -4156,6 +4186,18 @@
     "optional": false,
     "name": "__type",
     "source": "react-native/types/public/ReactNativeRenderer.d.ts"
+  },
+  "type:20e69a63cb39c4068657": {
+    "typeText": "(option: AutoCompleteOption) => ReactNode",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "option", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:bdcb02788b509d34a550" }],
+        "returnType": { "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" }
+      }
+    ]
   },
   "type:20ffff043f02c24349d0": {
     "typeText": "Bar3DSeries",
@@ -4339,7 +4381,6 @@
       }
     ]
   },
-  "type:21ebe81e8ee65bc53b30": { "typeText": "(string | AutoCompleteOption)[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:9ddb3dd0c43a02ee9634" },
   "type:21ee91f24523c47ecd7c": { "typeText": "\"radio-group\"", "kind": "literal", "nullable": false, "optional": false, "value": "radio-group" },
   "type:2205ae6de8d6335408ad": { "typeText": "\"floating\"", "kind": "literal", "nullable": false, "optional": false, "value": "floating" },
   "type:22104e9a200932b161e3": { "typeText": "\"timer\"", "kind": "literal", "nullable": false, "optional": false, "value": "timer" },
@@ -5043,6 +5084,20 @@
     "members": ["type:16535f0fd6ab598eec83", "type:cdd51296d21c994694d0"]
   },
   "type:280c2aef9c7b769980fe": { "typeText": "`section-${string} shipping address-line2`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:282a59e60e231731028a": {
+    "typeText": "((entries: KeyValueEntry[]) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:7fcde5806724df29d368"]
+  },
+  "type:284fc17f5ec0afd8dea2": {
+    "typeText": "() => ReactNode",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [{ "parameters": [], "returnType": { "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" } }]
+  },
   "type:286966565c4497e61813": {
     "typeText": "Chart3DProjection",
     "kind": "union",
@@ -5374,13 +5429,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:59d1544970e6a8f2a83f"]
   },
-  "type:2c46e91935fd5bd8d1ac": {
-    "typeText": "string | ((value: string) => string) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:e15e314d298fc0d116fc", "type:9300707fa198043e4355"]
-  },
   "type:2c4e71470bb18b5216d9": { "typeText": "\"note\"", "kind": "literal", "nullable": false, "optional": false, "value": "note" },
   "type:2c5698ef1448ce62631d": {
     "typeText": "(row: T, index: number) => ReactNode",
@@ -5396,13 +5444,6 @@
         "returnType": { "typeText": "ReactNode", "typeRef": "type:d947e2db6b7ed3e4c192" }
       }
     ]
-  },
-  "type:2c5ae9d65af2553e2cc2": {
-    "typeText": "CascaderOption[] | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:0a0dd99a2907ba8f10a1"]
   },
   "type:2c627a1475429a2bc9bc": { "typeText": "\"action\" | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:e56203fc0796fcea1aed"] },
   "type:2c67592f3a0996019a5b": {
@@ -5462,6 +5503,18 @@
     ]
   },
   "type:2cadc5150ff75aa226eb": { "typeText": "\"color\"", "kind": "literal", "nullable": false, "optional": false, "value": "color" },
+  "type:2cbdf8161da09e2bd887": {
+    "typeText": "(path: CascaderOption[]) => void | Promise<void>",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "path", "position": 0, "required": true, "rest": false, "typeText": "CascaderOption[]", "typeRef": "type:ff68458d1d39aa191e05" }],
+        "returnType": { "typeText": "void | Promise<void>", "typeRef": "type:3c4871f2062b3b734ba0" }
+      }
+    ]
+  },
   "type:2cc2e24324879bcc4737": {
     "typeText": "\"dialog\" | \"alertdialog\" | undefined",
     "kind": "union",
@@ -5524,6 +5577,13 @@
     "optional": false,
     "source": "packages/web-components/src/components/slider/slider.ts",
     "fields": [{ "name": "value", "required": true, "typeText": "SliderValue", "typeRef": "type:35ce1d2f89f8eab1e586" }]
+  },
+  "type:2d0a88510548343699c2": {
+    "typeText": "((input: string, path: CascaderOption[]) => boolean) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:3328e78600a3a993fd1e"]
   },
   "type:2d0f9047aa0399b04f26": {
     "typeText": "(date: Date | undefined) => void",
@@ -6267,6 +6327,21 @@
     "members": ["type:5a31a6cb341d546e1769", "type:a20a07757afda00c8624", "type:7a3d1d0c5a063572047b", "type:9a724b7be9b10e398929"],
     "values": ["escape", "outside", "select", "shortcut"]
   },
+  "type:3328e78600a3a993fd1e": {
+    "typeText": "(input: string, path: CascaderOption[]) => boolean",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "input", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
+          { "name": "path", "position": 1, "required": true, "rest": false, "typeText": "CascaderOption[]", "typeRef": "type:ff68458d1d39aa191e05" }
+        ],
+        "returnType": { "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }
+      }
+    ]
+  },
   "type:3359c694e29a22db62eb": { "typeText": "\"shipping bday-year webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping bday-year webauthn" },
   "type:335b732be658c046bd66": { "typeText": "`section-${string} billing honorific-suffix webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:335dc275144317e11062": { "typeText": "\"buy\"", "kind": "literal", "nullable": false, "optional": false, "value": "buy" },
@@ -6328,6 +6403,13 @@
   "type:340c3e3115b7618533b4": { "typeText": "\"shift-away\"", "kind": "literal", "nullable": false, "optional": false, "value": "shift-away" },
   "type:34170b110e25197f6f9c": { "typeText": "\"months\"", "kind": "literal", "nullable": false, "optional": false, "value": "months" },
   "type:3421ea0c7e0b22aff305": { "typeText": "\"cancel\"", "kind": "literal", "nullable": false, "optional": false, "value": "cancel" },
+  "type:3426c056e77a49888f6a": {
+    "typeText": "((option: AutoCompleteOption) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:38a508064271b004dfa0"]
+  },
   "type:342f3b52fe7531116a1a": { "typeText": "`section-${string} shipping address-level3`", "kind": "primitive", "nullable": false, "optional": false },
   "type:3439f360c8a2b0649d25": {
     "typeText": "ChartRendererKind",
@@ -6773,6 +6855,21 @@
     ]
   },
   "type:3873f9105900201e8357": { "typeText": "readonly WaterfallStep[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:80751904fd5f9c643ada" },
+  "type:38885ef0e81976f19985": {
+    "typeText": "(input: string, option: AutoCompleteOption) => boolean",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "input", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
+          { "name": "option", "position": 1, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:bdcb02788b509d34a550" }
+        ],
+        "returnType": { "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }
+      }
+    ]
+  },
   "type:38965db39b14aa5baefc": {
     "typeText": "(event: GestureResponderEvent) => void",
     "kind": "function",
@@ -6783,6 +6880,31 @@
         "parameters": [{ "name": "event", "position": 0, "required": true, "rest": false, "typeText": "GestureResponderEvent", "typeRef": "type:2a25eb9466bc75075bdf" }],
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
+    ]
+  },
+  "type:38a508064271b004dfa0": {
+    "typeText": "(option: AutoCompleteOption) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "option", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:bdcb02788b509d34a550" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
+  "type:38b50bc9e5200aff1fe7": {
+    "typeText": "RatingDimension",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "RatingDimension",
+    "source": "packages/taro/src/forms.tsx",
+    "fields": [
+      { "name": "key", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
+      { "name": "label", "required": true, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" },
+      { "name": "value", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
     ]
   },
   "type:38e77bafa2d5e318a079": { "typeText": "\"shipping cc-csc webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping cc-csc webauthn" },
@@ -6917,24 +7039,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:78a7e4aea31fdbdac3d3"]
   },
-  "type:3a1fe1d09f0928842790": {
-    "typeText": "AutoCompleteOption",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "AutoCompleteOption",
-    "source": "packages/taro/src/forms.tsx",
-    "fields": [
-      { "name": "value", "required": true, "typeText": "string | number", "typeRef": "type:db6728f51c2e69f0d2ca" },
-      { "name": "label", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
-      { "name": "disabled", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" },
-      { "name": "highlight", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" },
-      { "name": "icon", "required": false, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" },
-      { "name": "description", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
-      { "name": "group", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
-      { "name": "style", "required": false, "typeText": "CSSProperties | undefined", "typeRef": "type:953c30e5c14e6cc907b6" }
-    ]
-  },
   "type:3a370aa21ec0aa39a8d9": { "typeText": "\"shipping additional-name\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping additional-name" },
   "type:3a38bf6f689ec1b86b9e": {
     "typeText": "((point: QuadrantPoint, index: number) => Record<string, string | number | boolean | undefined>) | undefined",
@@ -6976,6 +7080,18 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:82d5e78d4a6eac3a900f"]
   },
+  "type:3a7829809a725eaa2b52": {
+    "typeText": "(open: boolean) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "open", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:3a861a88ba11daf458e9": {
     "typeText": "Chart3DProjection | undefined",
     "kind": "union",
@@ -6992,13 +7108,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:973efa0aae7940d84a2b"]
   },
   "type:3ab92a6fd89285d0ab6d": { "typeText": "`section-${string} work tel`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:3ac42f2415051edb3541": {
-    "typeText": "((value: string) => string) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:d315c2a5610f397d88a8"]
-  },
   "type:3ad89d0ec29cf2f3dfa6": {
     "typeText": "(value: string) => void",
     "kind": "function",
@@ -7558,6 +7667,18 @@
     ]
   },
   "type:4122187a0b2369d2c3a7": { "typeText": "\"organization webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "organization webauthn" },
+  "type:4135677ef3dabcab0883": {
+    "typeText": "(value: number | null) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "number | null", "typeRef": "type:4ebff2838e5c7cb671be" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:413c6a7bb82a25e28be4": {
     "typeText": "((palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null) => void) | undefined",
     "kind": "union",
@@ -7715,13 +7836,6 @@
     "optional": false,
     "signatures": [{ "parameters": [], "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" } }]
   },
-  "type:42e603275ddad4ed131d": {
-    "typeText": "((option: CascaderOption, level: number) => ReactNode) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:8b67328d70b96ae8efcf"]
-  },
   "type:43020c7f8ce6ae9726e8": {
     "typeText": "\"solid\" | \"dashed\" | \"dotted\" | undefined",
     "kind": "union",
@@ -7786,21 +7900,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:365d48144a20d262225f"]
-  },
-  "type:43cedde41180ea78bd83": {
-    "typeText": "(labels: string[], path: CascaderOption[]) => ReactNode",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "labels", "position": 0, "required": true, "rest": false, "typeText": "string[]", "typeRef": "type:19a96e1d6cef0c4dc643" },
-          { "name": "path", "position": 1, "required": true, "rest": false, "typeText": "CascaderOption[]", "typeRef": "type:0a0dd99a2907ba8f10a1" }
-        ],
-        "returnType": { "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" }
-      }
-    ]
   },
   "type:43e80194e551ba3a0283": {
     "typeText": "\"shipping mobile tel-local-prefix webauthn\"",
@@ -7941,6 +8040,17 @@
         "parameters": [{ "name": "error", "position": 0, "required": true, "rest": false, "typeText": "MediaError | null", "typeRef": "type:51209ef9d6ffb1f06cd8" }],
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
+    ]
+  },
+  "type:45da47ac35ffebcb2589": {
+    "typeText": "{ x: number; y: number; }",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "source": "packages/taro/src/forms.tsx",
+    "fields": [
+      { "name": "x", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
+      { "name": "y", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
     ]
   },
   "type:45ee1fdd35b458af497d": {
@@ -8205,6 +8315,7 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:21eaaf3962a3cb846d33"]
   },
+  "type:48670a951c082e2f9658": { "typeText": "RatingDimension[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:38b50bc9e5200aff1fe7" },
   "type:486c3b234232b950e048": {
     "typeText": "(open: boolean, reason?: OverlayCloseReason | undefined) => void",
     "kind": "function",
@@ -8365,21 +8476,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:bdb0b70f4b3b4645c603"]
   },
   "type:499ee615b95fe88b7135": { "typeText": "`section-${string} billing address-level2 webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:49b9c7811b9bfbf48e87": {
-    "typeText": "(value: string | number, event: ITouchEvent) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string | number", "typeRef": "type:db6728f51c2e69f0d2ca" },
-          { "name": "event", "position": 1, "required": true, "rest": false, "typeText": "ITouchEvent", "typeRef": "type:7276d9ff893f9fea3df5" }
-        ],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:49de679d702e511f2775": { "typeText": "`section-${string} shipping address-line1 webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:49e6b37018cf95b597ae": {
     "typeText": "ThemeMode",
@@ -8388,6 +8484,13 @@
     "optional": false,
     "members": ["type:079370450145709bdc15", "type:175434645bf5b1a1fd63", "type:1819182eb441e26a0fb1"],
     "values": ["dark", "light", "system"]
+  },
+  "type:49f558c24e859befbfce": {
+    "typeText": "((value: string) => string) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:a2c8f41468f11b297ec1"]
   },
   "type:49fb055a2799eb975c4f": { "typeText": "\"safe-password\"", "kind": "literal", "nullable": false, "optional": false, "value": "safe-password" },
   "type:4a005fc48380dc779688": {
@@ -8652,21 +8755,6 @@
       }
     ]
   },
-  "type:4c1896c8bc6e49123efb": {
-    "typeText": "(checked: boolean, event: ITouchEvent) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "checked", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" },
-          { "name": "event", "position": 1, "required": true, "rest": false, "typeText": "ITouchEvent", "typeRef": "type:7276d9ff893f9fea3df5" }
-        ],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:4c1ff5eedc7e9f348698": { "typeText": "\"words\"", "kind": "literal", "nullable": false, "optional": false, "value": "words" },
   "type:4c21315047a86e15f822": { "typeText": "PointerEventHandler<HTMLElement>", "kind": "external", "nullable": false, "optional": false, "name": "PointerEventHandler", "source": "@types/react" },
   "type:4c22ccd733bbe4832cfb": {
@@ -8711,14 +8799,6 @@
   },
   "type:4c882ff708f3156e229a": { "typeText": "(() => void) | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:2bb65405207cb0c13b3d"] },
   "type:4cb560e4b17534688391": { "typeText": "readonly PickerOption<PickerValue>[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:33e468ca94f2ffc31caa" },
-  "type:4cdb8fc9d05a20b7419c": {
-    "typeText": "{ value: string; }",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "source": "packages/web-components/src/components/radio/radio.ts",
-    "fields": [{ "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }]
-  },
   "type:4ce2fa5a8ed3a1e3234f": { "typeText": "\"billing tel-extension webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing tel-extension webauthn" },
   "type:4ce33b6728fa6fe2ba12": {
     "typeText": "() => void",
@@ -8981,13 +9061,6 @@
     ]
   },
   "type:4f9d7b06805be5e920ab": { "typeText": "\"tel-area-code webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "tel-area-code webauthn" },
-  "type:4fa2cef955c0f95ea9fa": {
-    "typeText": "KeyValueEntry[] | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:04e0b379590fae5faf76"]
-  },
   "type:4fa3ec54aeab273e76b5": { "typeText": "\"standard\"", "kind": "literal", "nullable": false, "optional": false, "value": "standard" },
   "type:4fae0a6fb2b4c90ed712": {
     "typeText": "CustomBilingualTheme",
@@ -9120,13 +9193,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:8dd60ef2db1b06f9a10c"]
   },
-  "type:50fa59bc97326a27933e": {
-    "typeText": "((entries: KeyValueEntry[]) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:7d955cf01c4fd565c16e"]
-  },
   "type:51209ef9d6ffb1f06cd8": { "typeText": "MediaError | null", "kind": "union", "nullable": true, "optional": false, "members": ["type:c5bee59b714cbc06e946", "type:f476368737c5d02e6dc2"] },
   "type:51324877387476e0482a": {
     "typeText": "boolean | ((total: number, range: [number, number]) => ReactNode) | undefined",
@@ -9134,13 +9200,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:4688eff171cafdabbf74", "type:a9c60e5471fe99b924c5", "type:dd4d9e9a64f865adc2f8"]
-  },
-  "type:513c05ba0d2095d0207b": {
-    "typeText": "{ title?: ReactNode; description?: ReactNode; } | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:a3fba68e690e7e281bfd"]
   },
   "type:5153c562db0d2b011c8a": {
     "typeText": "((value: number) => string) | undefined",
@@ -9198,18 +9257,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:4c4f3b84a7afb6bbeaa2"]
-  },
-  "type:51894dd0d48656283a03": {
-    "typeText": "(value: string) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
   },
   "type:518bdb4db2c8f63e0452": {
     "typeText": "\"step\" | \"linear\" | undefined",
@@ -9304,13 +9351,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:1fe0547d3de1e8540842", "type:6d7be5495688120a32b5"]
   },
   "type:5275724184db37089e40": { "typeText": "\"weeks\"", "kind": "literal", "nullable": false, "optional": false, "value": "weeks" },
-  "type:5278b4ebc8560cdb2114": {
-    "typeText": "((option: AutoCompleteOption) => string) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:e055d5cdef8833c73970"]
-  },
   "type:52ac6626344deb4971c2": { "typeText": "`section-${string} work tel-local webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:52c0129d77637e76fbb0": { "typeText": "`section-${string} street-address webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:52c69fae8858d622a27b": {
@@ -9321,6 +9361,18 @@
     "members": ["type:16535f0fd6ab598eec83", "type:9fcfedaaeeead024acbc"]
   },
   "type:52cd14f4c116ae3769a6": { "typeText": "`section-${string} billing one-time-code webauthn`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:52d518409797904f7a46": {
+    "typeText": "(option: AutoCompleteOption) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "option", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:bdcb02788b509d34a550" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:52de91d1f5d7fec35a77": {
     "typeText": "string | Node | null",
     "kind": "union",
@@ -9648,6 +9700,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:43c7b074c346ddf99391", "type:0a829f63acb2784df7ac", "type:bf53b25ec1603d406cfb", "type:f43dd3e76343fbd483d1", "type:26f7996af4ebcb338eef"]
   },
+  "type:55c1709074f2609450e3": {
+    "typeText": "(() => ReactNode) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:284fc17f5ec0afd8dea2"]
+  },
   "type:55ce35412b0ad1ed857b": {
     "typeText": "KeyValueEntry[] | undefined",
     "kind": "union",
@@ -9684,6 +9743,13 @@
   },
   "type:564ea857986a411f266d": { "typeText": "\"clipPath\"", "kind": "literal", "nullable": false, "optional": false, "value": "clipPath" },
   "type:565763637d0a2c3cf692": { "typeText": "T", "kind": "parameter", "nullable": false, "optional": false, "name": "T" },
+  "type:566531cce97a095e642a": {
+    "typeText": "((input: string, option: AutoCompleteOption) => boolean) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:38885ef0e81976f19985"]
+  },
   "type:5679ce74364791161e40": { "typeText": "\"colgroup\"", "kind": "literal", "nullable": false, "optional": false, "value": "colgroup" },
   "type:5687f5bcf412d8a6c293": { "typeText": "`section-${string} mobile tel`", "kind": "primitive", "nullable": false, "optional": false },
   "type:568c389c081db2846412": {
@@ -9752,13 +9818,6 @@
   },
   "type:570e046f31acac7bed53": { "typeText": "`section-${string} billing home tel-national`", "kind": "primitive", "nullable": false, "optional": false },
   "type:571066fd5dd35e39005c": { "typeText": "\"cool\"", "kind": "literal", "nullable": false, "optional": false, "value": "cool" },
-  "type:5722c29850834cdead8e": {
-    "typeText": "((open: boolean) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:f5f7624f5f78222d9df9"]
-  },
   "type:574c343b06fdfdaad97a": { "typeText": "\"nickname\"", "kind": "literal", "nullable": false, "optional": false, "value": "nickname" },
   "type:574ce7945ba62b3ce312": {
     "typeText": "((row: T, index: number) => ReactNode) | undefined",
@@ -9854,6 +9913,13 @@
   },
   "type:57f978deeb892beac6f9": { "typeText": "`section-${string} shipping bday-month`", "kind": "primitive", "nullable": false, "optional": false },
   "type:58069a5581d70e9990a9": { "typeText": "\"feed\"", "kind": "literal", "nullable": false, "optional": false, "value": "feed" },
+  "type:5808c636b3c7d415f975": {
+    "typeText": "Record<string, { key?: string | undefined; value?: string | undefined; }> | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:6a9ffec2075ed8bee48f"]
+  },
   "type:580dd96da6bcae1a6d5f": {
     "typeText": "(mode: AppShellSidebarMode) => void",
     "kind": "function",
@@ -10177,19 +10243,6 @@
     ]
   },
   "type:5a31a6cb341d546e1769": { "typeText": "\"select\"", "kind": "literal", "nullable": false, "optional": false, "value": "select" },
-  "type:5a3e681e79edfb7b5274": {
-    "typeText": "RatingDimension",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "RatingDimension",
-    "source": "packages/taro/src/forms.tsx",
-    "fields": [
-      { "name": "key", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
-      { "name": "label", "required": true, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" },
-      { "name": "value", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-    ]
-  },
   "type:5a46411b731e1d03e391": {
     "typeText": "((flipped: boolean) => void) | undefined",
     "kind": "union",
@@ -10433,6 +10486,21 @@
     "members": ["type:16535f0fd6ab598eec83", "type:85264c17ce71d274a2fc"]
   },
   "type:5d2b488b76f96bffd07d": { "typeText": "\"close-slot\"", "kind": "literal", "nullable": false, "optional": false, "value": "close-slot" },
+  "type:5d3b859c3f9fa17ef6db": {
+    "typeText": "(value: string | number, event: ITouchEvent) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string | number", "typeRef": "type:db6728f51c2e69f0d2ca" },
+          { "name": "event", "position": 1, "required": true, "rest": false, "typeText": "ITouchEvent", "typeRef": "type:7276d9ff893f9fea3df5" }
+        ],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:5d41dbcd550049d8b738": { "typeText": "\"billing tel-local-prefix webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing tel-local-prefix webauthn" },
   "type:5d520cc4099ed6070916": {
     "typeText": "((labels: string[], selectedOptions: CascaderOption[]) => string) | undefined",
@@ -10559,18 +10627,6 @@
     ]
   },
   "type:5e744f189a396d4a6e3e": { "typeText": "\"billing home email\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing home email" },
-  "type:5e77b04d7289970beac5": {
-    "typeText": "(value: number) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:5e77e83d29468fb39c06": {
     "typeText": "((event: ShapeToggleEvent) => void) | undefined",
     "kind": "union",
@@ -10896,6 +10952,13 @@
     ]
   },
   "type:621892a6ee9b272b4c1e": { "typeText": "`section-${string} billing work tel-area-code`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:624077f025da37ad704a": {
+    "typeText": "((checked: boolean, event: ITouchEvent) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:71041592831a4c7ed833"]
+  },
   "type:624bfece114287832788": {
     "typeText": "{ open: boolean; }",
     "kind": "object",
@@ -10904,21 +10967,7 @@
     "source": "packages/web-components/src/components/autocomplete/autocomplete.ts",
     "fields": [{ "name": "open", "required": true, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }]
   },
-  "type:6250f3a83a916a3fe5cc": {
-    "typeText": "((value: string) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:51894dd0d48656283a03"]
-  },
   "type:6254fac626ecf8c2673c": { "typeText": "\"footer\"", "kind": "literal", "nullable": false, "optional": false, "value": "footer" },
-  "type:625658d1eea3101d9d15": {
-    "typeText": "((option: AutoCompleteOption) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:e5694d5f5057b2b8f4e4"]
-  },
   "type:6266f2783a49e4734996": {
     "typeText": "(open: boolean) => void",
     "kind": "function",
@@ -11024,13 +11073,6 @@
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
     ]
-  },
-  "type:632f7ea286743241ff8a": {
-    "typeText": "SelectionOption[] | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:c5976ead5a69c1daa5a3"]
   },
   "type:632fce58d5c9935b033b": { "typeText": "\"cc-exp-month webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "cc-exp-month webauthn" },
   "type:6334e940ea14837073e0": { "typeText": "\"execute\"", "kind": "literal", "nullable": false, "optional": false, "value": "execute" },
@@ -11207,13 +11249,6 @@
     "signatures": [{ "parameters": [], "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" } }]
   },
   "type:648e271ee24a6991d02a": { "typeText": "\"mobile tel-extension webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "mobile tel-extension webauthn" },
-  "type:6491e6bdcb723898937d": {
-    "typeText": "((checked: boolean, event: ITouchEvent) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:4c1896c8bc6e49123efb"]
-  },
   "type:6492882e2d04c1e96624": { "typeText": "\"textarea\"", "kind": "literal", "nullable": false, "optional": false, "value": "textarea" },
   "type:64b4572c35cf4944a190": {
     "typeText": "{ value: string; }",
@@ -11224,35 +11259,8 @@
     "fields": [{ "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }]
   },
   "type:64bac3aa2a3e3661abef": { "typeText": "`section-${string} address-level2 webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:64c999d97654a9c30211": {
-    "typeText": "(value: string) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:64d25ea79e00cc988cdc": { "typeText": "`section-${string} cc-family-name webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:64e357c9fe25eb109e87": { "typeText": "`section-${string} cc-type webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:6509b7e5bf6200cc04bf": {
-    "typeText": "(input: string, path: CascaderOption[]) => boolean",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "input", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
-          { "name": "path", "position": 1, "required": true, "rest": false, "typeText": "CascaderOption[]", "typeRef": "type:0a0dd99a2907ba8f10a1" }
-        ],
-        "returnType": { "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }
-      }
-    ]
-  },
   "type:651e27e97cc11c5303c0": {
     "typeText": "PaginationVariant | undefined",
     "kind": "union",
@@ -11713,13 +11721,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:0a829f63acb2784df7ac", "type:bf53b25ec1603d406cfb", "type:f43dd3e76343fbd483d1", "type:26f7996af4ebcb338eef", "type:8cc8ceed29c81c33b324"]
   },
-  "type:6941f846c1bbc7af1b95": {
-    "typeText": "((input: string, path: CascaderOption[]) => boolean) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:6509b7e5bf6200cc04bf"]
-  },
   "type:6944d41289e0c556e050": { "typeText": "T", "kind": "parameter", "nullable": false, "optional": false, "name": "T" },
   "type:6956f68b326cee0d326e": { "typeText": "\"username\"", "kind": "literal", "nullable": false, "optional": false, "value": "username" },
   "type:697054a38914863f2613": {
@@ -11749,13 +11750,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:543510f20b600c242d15"]
   },
-  "type:6999ee8adb6148dd3898": {
-    "typeText": "{ x: number; y: number; } | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:1ab7b9c19427af29978a"]
-  },
   "type:69a1e5b632955ab61091": {
     "typeText": "() => FieldState<unknown>",
     "kind": "function",
@@ -11769,6 +11763,18 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:48f45ace2d5588821430"]
+  },
+  "type:69bb9f958510edf5a0bd": {
+    "typeText": "(value: string) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
   },
   "type:69bd7b8ae3861328f291": {
     "typeText": "((point: QuadrantPoint, index: number) => ReactNode) | undefined",
@@ -11819,6 +11825,14 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:a66091c0a1d512534da9", "type:0d58919a6f06795d83ba", "type:93ed167dc1516e9573c2", "type:a23afdd5ab6c523c27b0"]
+  },
+  "type:6a9ffec2075ed8bee48f": {
+    "typeText": "Record<string, { key?: string | undefined; value?: string | undefined; }>",
+    "kind": "external",
+    "nullable": false,
+    "optional": false,
+    "name": "Record",
+    "source": "typescript/lib/lib.es5.d.ts"
   },
   "type:6aa044b6216b17c6d050": { "typeText": "\"g\"", "kind": "literal", "nullable": false, "optional": false, "value": "g" },
   "type:6aa19c789ea11a652a7f": { "typeText": "\"shipping tel-extension webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping tel-extension webauthn" },
@@ -11984,6 +11998,7 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:c5bee59b714cbc06e946", "type:e15e314d298fc0d116fc", "type:4688eff171cafdabbf74", "type:a9c60e5471fe99b924c5"]
   },
+  "type:6bec96b4f6e1680e7e2d": { "typeText": "SelectionOption[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:978e5da983b7ace32033" },
   "type:6bfb5c56d003b945983e": { "typeText": "\"given-name\"", "kind": "literal", "nullable": false, "optional": false, "value": "given-name" },
   "type:6bfc4f7627a20cd6625f": {
     "typeText": "(event: Chart3DHoverEvent | null) => void",
@@ -12173,6 +12188,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:d3ae842be3c3f50ea351"]
   },
+  "type:6d27f2cc4dea1f530257": {
+    "typeText": "{ x: number; y: number; } | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:45da47ac35ffebcb2589"]
+  },
   "type:6d32465eb306d45e44dd": {
     "typeText": "(value: string) => void",
     "kind": "function",
@@ -12200,6 +12222,13 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:16f7878c6a68bd2a7c1c", "type:a2fc2179f6038d112121", "type:d72c67a1187199b3d620", "type:7f223790a09a458ce2eb"]
+  },
+  "type:6d73d4f4e9132e07a4e3": {
+    "typeText": "{ title?: ReactNode; description?: ReactNode; } | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:7b72db92399db840d344"]
   },
   "type:6d7be5495688120a32b5": { "typeText": "\"polygon\"", "kind": "literal", "nullable": false, "optional": false, "value": "polygon" },
   "type:6d903afc9065a575f8bf": {
@@ -12449,13 +12478,6 @@
       }
     ]
   },
-  "type:6f67df9ae82b94208765": {
-    "typeText": "((path: CascaderOption[]) => void | Promise<void>) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:18afc60c28d6e450a055"]
-  },
   "type:6f7dfc48dc936a0f82f9": { "typeText": "\"caption\"", "kind": "literal", "nullable": false, "optional": false, "value": "caption" },
   "type:6f996af871815000d153": {
     "typeText": "{ open: boolean; }",
@@ -12566,6 +12588,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:d4c9b81d44f968a4e4f2", "type:0a94cfa34b4dfc5a8aca"]
   },
+  "type:7050f98f44925d33a39c": {
+    "typeText": "((option: AutoCompleteOption) => ReactNode) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:20e69a63cb39c4068657"]
+  },
   "type:70628cef98713c7081b1": {
     "typeText": "(event: GestureResponderEvent) => boolean",
     "kind": "external",
@@ -12575,21 +12604,6 @@
     "source": "react-native/types/public/ReactNativeRenderer.d.ts"
   },
   "type:70798022019a67db0cd2": { "typeText": "\"street-address\"", "kind": "literal", "nullable": false, "optional": false, "value": "street-address" },
-  "type:707ee41b85b9f6c45bdd": {
-    "typeText": "(value: (string | number)[], selectedOptions: CascaderOption[]) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "value", "position": 0, "required": true, "rest": false, "typeText": "(string | number)[]", "typeRef": "type:6a8218963ce603035852" },
-          { "name": "selectedOptions", "position": 1, "required": true, "rest": false, "typeText": "CascaderOption[]", "typeRef": "type:0a0dd99a2907ba8f10a1" }
-        ],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:7087acd01ef7dd9f1d5c": { "typeText": "boolean", "kind": "union", "nullable": false, "optional": false, "members": ["type:4688eff171cafdabbf74", "type:a9c60e5471fe99b924c5"] },
   "type:7091edc537fa4b4dab31": { "typeText": "TableRowKey", "kind": "union", "nullable": false, "optional": false, "members": ["type:e15e314d298fc0d116fc", "type:7d1137535c313783dadd"] },
   "type:709346f1271a27b0461e": { "typeText": "\"process\"", "kind": "literal", "nullable": false, "optional": false, "value": "process" },
@@ -12653,6 +12667,21 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:960b0d23907d7db17489"]
+  },
+  "type:71041592831a4c7ed833": {
+    "typeText": "(checked: boolean, event: ITouchEvent) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "checked", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" },
+          { "name": "event", "position": 1, "required": true, "rest": false, "typeText": "ITouchEvent", "typeRef": "type:7276d9ff893f9fea3df5" }
+        ],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
   },
   "type:710c520fa6a29c08e725": {
     "typeText": "((keys: TableRowKey[], rows: T[]) => void) | undefined",
@@ -13363,6 +13392,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:f5afe1732e25c850bf2a", "type:6fbcbe76ea2625e99243", "type:ba310e72941679383ef4"]
   },
+  "type:77645a3818c5dc208038": {
+    "typeText": "((option: AutoCompleteOption) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:52d518409797904f7a46"]
+  },
   "type:77b8f24e1309232ec94e": {
     "typeText": "(event: ChartHoverEvent) => ReactNode",
     "kind": "function",
@@ -13624,6 +13660,13 @@
     "members": ["type:16535f0fd6ab598eec83", "type:1efe1e675ee55388a883"]
   },
   "type:7a34a00f608969cf43aa": { "typeText": "\"name webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "name webauthn" },
+  "type:7a3796661791b9c080fc": {
+    "typeText": "((option: AutoCompleteOption) => string) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:b6ac51a46f1411f9fb2f"]
+  },
   "type:7a379754bcf1ba058b19": { "typeText": "\"billing mobile tel\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing mobile tel" },
   "type:7a3d1d0c5a063572047b": { "typeText": "\"escape\"", "kind": "literal", "nullable": false, "optional": false, "value": "escape" },
   "type:7a472fd39c240870d9ef": {
@@ -13647,6 +13690,13 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:fa16d7f26b51b723b177"]
+  },
+  "type:7a93a5206b51278ffac6": {
+    "typeText": "((value: string[]) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:dbd7239d67d0309e7490"]
   },
   "type:7a9b9d9d419b761fafaf": {
     "typeText": "TabsVariant | undefined",
@@ -13749,6 +13799,17 @@
     ]
   },
   "type:7b6b2fe931c56bad3df1": { "typeText": "\"shipping cc-family-name\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping cc-family-name" },
+  "type:7b72db92399db840d344": {
+    "typeText": "{ title?: ReactNode; description?: ReactNode; }",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "source": "packages/taro/src/forms.tsx",
+    "fields": [
+      { "name": "title", "required": false, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" },
+      { "name": "description", "required": false, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" }
+    ]
+  },
   "type:7b804ed398c0a0e202b5": {
     "typeText": "((event: GestureResponderEvent) => void) | undefined",
     "kind": "union",
@@ -13900,19 +13961,19 @@
       }
     ]
   },
-  "type:7d955cf01c4fd565c16e": {
-    "typeText": "(entries: KeyValueEntry[]) => void",
+  "type:7da04bf4cbce81ca6c1d": { "typeText": "\"click\"", "kind": "literal", "nullable": false, "optional": false, "value": "click" },
+  "type:7db37a99232cffac8d08": {
+    "typeText": "(open: boolean) => void",
     "kind": "function",
     "nullable": false,
     "optional": false,
     "signatures": [
       {
-        "parameters": [{ "name": "entries", "position": 0, "required": true, "rest": false, "typeText": "KeyValueEntry[]", "typeRef": "type:04e0b379590fae5faf76" }],
+        "parameters": [{ "name": "open", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
     ]
   },
-  "type:7da04bf4cbce81ca6c1d": { "typeText": "\"click\"", "kind": "literal", "nullable": false, "optional": false, "value": "click" },
   "type:7dc66a73e047680501c2": {
     "typeText": "() => void | Promise<void>",
     "kind": "function",
@@ -14145,6 +14206,18 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:1fe0547d3de1e8540842", "type:0ad72496e005bbd5017a", "type:e4f9ab37dc4cfeeaa992", "type:c600e708e6645bb5abfa", "type:742c77c034b650c2fafe"]
+  },
+  "type:7fcde5806724df29d368": {
+    "typeText": "(entries: KeyValueEntry[]) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "entries", "position": 0, "required": true, "rest": false, "typeText": "KeyValueEntry[]", "typeRef": "type:1a7b3c5fbc9683d8c2ae" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
   },
   "type:7fcf8e9c14a413a51d69": {
     "typeText": "\"none\" | \"auto\" | \"box-none\" | \"box-only\" | undefined",
@@ -14521,14 +14594,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:2656f2f33f35f9313dc0", "type:7d44aa9a91f96449e991", "type:16f7878c6a68bd2a7c1c", "type:a2fc2179f6038d112121"]
   },
-  "type:836b86aafe184fabe22e": {
-    "typeText": "Record<string, { key?: string | undefined; value?: string | undefined; }>",
-    "kind": "external",
-    "nullable": false,
-    "optional": false,
-    "name": "Record",
-    "source": "typescript/lib/lib.es5.d.ts"
-  },
   "type:838fdde2997cd21e7cde": {
     "typeText": "((event: ShapeDrillEvent) => void) | undefined",
     "kind": "union",
@@ -14728,6 +14793,13 @@
   "type:854e9f2df932b352302e": { "typeText": "\"enclosed\"", "kind": "literal", "nullable": false, "optional": false, "value": "enclosed" },
   "type:8551006c7c6ae4610aea": { "typeText": "RefObject<HTMLElement | null>", "kind": "external", "nullable": false, "optional": false, "name": "RefObject", "source": "@types/react" },
   "type:857436854265dee430fb": { "typeText": "`section-${string} billing mobile tel-local-prefix webauthn`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:8576ba8e74babd35bf06": {
+    "typeText": "((key: string, value: number) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:07ba23a1f53e5e5df917"]
+  },
   "type:85c3c0588323940d3ef1": { "typeText": "HTMLDivElement | null", "kind": "union", "nullable": true, "optional": false, "members": ["type:c5bee59b714cbc06e946", "type:5c05fd5434236b72ea66"] },
   "type:85cc49356c495bdbffec": {
     "typeText": "(value: string) => void",
@@ -15000,6 +15072,13 @@
     "members": ["type:16535f0fd6ab598eec83", "type:fb0cc3c8cc3762ac904d"]
   },
   "type:88ad714d471f60c7a848": { "typeText": "\"shipping bday-year\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping bday-year" },
+  "type:88afdb1f443a7f8a5798": {
+    "typeText": "((labels: string[], path: CascaderOption[]) => ReactNode) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:94bb50fe845d3ea2124e"]
+  },
   "type:88bfb12797fad9324381": { "typeText": "\"billing home tel webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing home tel webauthn" },
   "type:88c6d90a79c9ac8fe571": {
     "typeText": "(event: GestureResponderEvent) => void",
@@ -15075,13 +15154,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:4f06486fcfc29e19132d"]
   },
   "type:895a951b0737881bcd83": { "typeText": "`section-${string} family-name webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:896a59ebe2714742ad21": {
-    "typeText": "((labels: string[], path: CascaderOption[]) => ReactNode) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:43cedde41180ea78bd83"]
-  },
   "type:8970828593d95304144f": {
     "typeText": "(tag: string) => string",
     "kind": "function",
@@ -15422,21 +15494,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:bbb6ee2c92143864c700", "type:ce6d6f36773c24a7e9f6"]
   },
   "type:8b646ee93eb1cdeaaa97": { "typeText": "\"xsmall\"", "kind": "literal", "nullable": false, "optional": false, "value": "xsmall" },
-  "type:8b67328d70b96ae8efcf": {
-    "typeText": "(option: CascaderOption, level: number) => ReactNode",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "option", "position": 0, "required": true, "rest": false, "typeText": "CascaderOption", "typeRef": "type:d321d49c86ce9e3c8867" },
-          { "name": "level", "position": 1, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-        ],
-        "returnType": { "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" }
-      }
-    ]
-  },
   "type:8b7388c98305c5015a4d": {
     "typeText": "(page: number) => string",
     "kind": "function",
@@ -15456,18 +15513,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:036a220ad39d464e1bea"]
-  },
-  "type:8b9c7379b75eb496dfb6": {
-    "typeText": "(open: boolean) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "open", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
   },
   "type:8b9d71faa2cc483b9008": { "typeText": "Partial<EdgeInsets>", "kind": "external", "nullable": false, "optional": false, "name": "Partial", "source": "typescript/lib/lib.es5.d.ts" },
   "type:8ba12c70c3842b17f668": {
@@ -15770,17 +15815,17 @@
     ]
   },
   "type:8ecdd5e7631a216c989f": { "typeText": "readonly PickerOption[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:2f2b2a7cc7e8afb9a17a" },
-  "type:8f01d7e919add3d9d07a": {
-    "typeText": "((value: number) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:5e77b04d7289970beac5"]
-  },
   "type:8f1ee3f52b6103190e82": { "typeText": "\"shipping mobile tel-area-code webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping mobile tel-area-code webauthn" },
   "type:8f27e6562e751eb08ab4": { "typeText": "\"redUp\"", "kind": "literal", "nullable": false, "optional": false, "value": "redUp" },
   "type:8f499700d73a25c372cd": { "typeText": "\"comfortable\"", "kind": "literal", "nullable": false, "optional": false, "value": "comfortable" },
   "type:8f4a93c4a7628bdf80c7": { "typeText": "`section-${string} shipping cc-family-name webauthn`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:8f4be1ba8c0405ba3ef0": {
+    "typeText": "((open: boolean) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:7db37a99232cffac8d08"]
+  },
   "type:8f4f35f46b8677df6906": { "typeText": "ChooseFile", "kind": "external", "nullable": false, "optional": false, "name": "ChooseFile", "source": "@tarojs/taro/types/api/media/image.d.ts" },
   "type:8f5b7eae2503e02b4315": { "typeText": "\"shipping cc-type webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping cc-type webauthn" },
   "type:8f698677c441324a61e9": {
@@ -15942,18 +15987,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:82d412f1512979b363e2"]
   },
   "type:909c36ccbf8eca086a22": { "typeText": "`section-${string} mobile tel-local`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:90a42a6ea76f76cf805a": {
-    "typeText": "(option: AutoCompleteOption) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "option", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:3a1fe1d09f0928842790" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:90ab9756f2f4522792f2": { "typeText": "File", "kind": "external", "nullable": false, "optional": false, "name": "File", "source": "typescript/lib/lib.dom.d.ts" },
   "type:90aba9d271601c8561a3": {
     "typeText": "(id: ToastQueueId) => void",
@@ -16193,13 +16226,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:78a7399d28add039674a"]
   },
   "type:9268c8f60e4b132a1b08": { "typeText": "\"polyline\"", "kind": "literal", "nullable": false, "optional": false, "value": "polyline" },
-  "type:92756eef70a5ba6e341b": {
-    "typeText": "((value: string[]) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:d579227762d84eff4322"]
-  },
   "type:927c2668d4c7d60e5bfa": { "typeText": "\"adjustable\"", "kind": "literal", "nullable": false, "optional": false, "value": "adjustable" },
   "type:928ae50ac9e0097b4225": { "typeText": "`section-${string} billing tel-national`", "kind": "primitive", "nullable": false, "optional": false },
   "type:929ba4a6ad4c1874b6c1": { "typeText": "`section-${string} shipping tel-national`", "kind": "primitive", "nullable": false, "optional": false },
@@ -16227,18 +16253,6 @@
     "optional": false,
     "name": "Readonly",
     "source": "typescript/lib/lib.es5.d.ts"
-  },
-  "type:9300707fa198043e4355": {
-    "typeText": "(value: string) => string",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }],
-        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
-      }
-    ]
   },
   "type:93054e2bf6dc655052f1": {
     "typeText": "((row: T, index: number) => string) | undefined",
@@ -16429,6 +16443,21 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:1fe0547d3de1e8540842", "type:9d7f3d5f1dbbf2c2ab45"]
+  },
+  "type:94bb50fe845d3ea2124e": {
+    "typeText": "(labels: string[], path: CascaderOption[]) => ReactNode",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "labels", "position": 0, "required": true, "rest": false, "typeText": "string[]", "typeRef": "type:19a96e1d6cef0c4dc643" },
+          { "name": "path", "position": 1, "required": true, "rest": false, "typeText": "CascaderOption[]", "typeRef": "type:ff68458d1d39aa191e05" }
+        ],
+        "returnType": { "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" }
+      }
+    ]
   },
   "type:94d0a71909fe4260f80c": {
     "typeText": "((name: string) => string) | undefined",
@@ -16733,6 +16762,19 @@
   "type:976d39149c8a6e2768df": { "typeText": "\"billing home email webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing home email webauthn" },
   "type:977c66a367baae2a93fe": { "typeText": "\"billing home tel-local webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing home tel-local webauthn" },
   "type:977ecbee81bf97be0c48": { "typeText": "\"price\"", "kind": "literal", "nullable": false, "optional": false, "value": "price" },
+  "type:978e5da983b7ace32033": {
+    "typeText": "SelectionOption",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "SelectionOption",
+    "source": "packages/taro/src/forms.tsx",
+    "fields": [
+      { "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
+      { "name": "label", "required": true, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" },
+      { "name": "disabled", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" }
+    ]
+  },
   "type:9790ed6a7bb3755f3146": { "typeText": "\"remove\"", "kind": "literal", "nullable": false, "optional": false, "value": "remove" },
   "type:97ad1d5b72e0340395e4": {
     "typeText": "\"side\" | \"tick\" | undefined",
@@ -16964,6 +17006,13 @@
   "type:99b0224638bc345ffb76": { "typeText": "\"number\"", "kind": "literal", "nullable": false, "optional": false, "value": "number" },
   "type:99b3bc72f8eaa1aa33e3": { "typeText": "`section-${string} billing tel webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:99ca12d1e0ab3819e34a": { "typeText": "\"bday-month webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "bday-month webauthn" },
+  "type:99ce24e6361b318f3528": {
+    "typeText": "((open: boolean) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:3a7829809a725eaa2b52"]
+  },
   "type:99d8f827b22a96d28e1f": { "typeText": "\"shipping tel-local-prefix webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping tel-local-prefix webauthn" },
   "type:99e945a6e042d8f8061a": {
     "typeText": "(value: number) => void",
@@ -17378,13 +17427,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:6c65c68f1077d90bcd1c"]
   },
   "type:9dd0494570e785b865c5": { "typeText": "\"dotted\"", "kind": "literal", "nullable": false, "optional": false, "value": "dotted" },
-  "type:9ddb3dd0c43a02ee9634": {
-    "typeText": "string | AutoCompleteOption",
-    "kind": "union",
-    "nullable": false,
-    "optional": false,
-    "members": ["type:e15e314d298fc0d116fc", "type:3a1fe1d09f0928842790"]
-  },
   "type:9e0659898680e0074dd3": {
     "typeText": "Partial<Record<\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | \"default\", string>>",
     "kind": "external",
@@ -17817,18 +17859,6 @@
       { "name": "renderer", "required": false, "typeText": "ChartRendererPreference | undefined", "typeRef": "type:dc7d7e6f384ddec86e04" }
     ]
   },
-  "type:a183efe8528b5b4f9845": {
-    "typeText": "(value: string[]) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string[]", "typeRef": "type:19a96e1d6cef0c4dc643" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:a19933b947b6b569f8dc": { "typeText": "\"shipping username webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping username webauthn" },
   "type:a1a1a624a4439e8561ad": { "typeText": "\"calendarHeatmap\"", "kind": "literal", "nullable": false, "optional": false, "value": "calendarHeatmap" },
   "type:a1b36c68bdbfedde2f8f": {
@@ -17928,6 +17958,18 @@
       "type:d73c040d4bcf2f60de73"
     ]
   },
+  "type:a2c8f41468f11b297ec1": {
+    "typeText": "(value: string) => string",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }],
+        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+      }
+    ]
+  },
   "type:a2db9f2e556c03b8fb9b": { "typeText": "TableRowKey", "kind": "union", "nullable": false, "optional": false, "members": ["type:e15e314d298fc0d116fc", "type:7d1137535c313783dadd"] },
   "type:a2dc79840661498eae07": {
     "typeText": "readonly (string | ChordGroup)[] | undefined",
@@ -17947,6 +17989,20 @@
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
     ]
+  },
+  "type:a2e7ad956690ddcc1060": {
+    "typeText": "CascaderOption[] | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:ff68458d1d39aa191e05"]
+  },
+  "type:a2eb7f725c936a517c43": {
+    "typeText": "((path: CascaderOption[]) => void | Promise<void>) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:2cbdf8161da09e2bd887"]
   },
   "type:a2ef6c3a5896bf204a55": { "typeText": "\"mobile tel-local webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "mobile tel-local webauthn" },
   "type:a2f465209355a62c56d9": {
@@ -18056,17 +18112,6 @@
     "nullable": false,
     "optional": false,
     "signatures": [{ "parameters": [], "returnType": { "typeText": "FormSnapshot", "typeRef": "type:1cbcbf584a4f7ba4bd59" } }]
-  },
-  "type:a3fba68e690e7e281bfd": {
-    "typeText": "{ title?: ReactNode; description?: ReactNode; }",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "source": "packages/taro/src/forms.tsx",
-    "fields": [
-      { "name": "title", "required": false, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" },
-      { "name": "description", "required": false, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" }
-    ]
   },
   "type:a4008254cc1713ee223c": {
     "typeText": "(items: UploadItem[]) => void",
@@ -18912,6 +18957,13 @@
       }
     ]
   },
+  "type:aac30a6fca94d345f120": {
+    "typeText": "((a: AutoCompleteOption, b: AutoCompleteOption) => number) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:fa39d23a597e2cec0520"]
+  },
   "type:aad0f898d707fb96f877": { "typeText": "\"sunburst\"", "kind": "literal", "nullable": false, "optional": false, "value": "sunburst" },
   "type:aad78061c49788cbf5eb": { "typeText": "\"bullet\"", "kind": "literal", "nullable": false, "optional": false, "value": "bullet" },
   "type:ab1516221b1d6a882dae": { "typeText": "\"work tel-extension\"", "kind": "literal", "nullable": false, "optional": false, "value": "work tel-extension" },
@@ -19216,6 +19268,13 @@
     "members": ["type:16535f0fd6ab598eec83", "type:484fe50eacf1500c3873"]
   },
   "type:adc9caa72f6f8f0dba07": { "typeText": "\"editorial\"", "kind": "literal", "nullable": false, "optional": false, "value": "editorial" },
+  "type:add16cce098bbe2e19a6": {
+    "typeText": "((value: string) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:f28e125cb44913ffe9ca"]
+  },
   "type:adf9b3655a304338a429": { "typeText": "\"address\"", "kind": "literal", "nullable": false, "optional": false, "value": "address" },
   "type:ae04c24da4045f2135ec": {
     "typeText": "DatetimeColumn",
@@ -19229,13 +19288,6 @@
   "type:ae1c016717241fd6aec3": { "typeText": "`section-${string} transaction-currency`", "kind": "primitive", "nullable": false, "optional": false },
   "type:ae1e7393091e1c1ebbf9": { "typeText": "\"var\"", "kind": "literal", "nullable": false, "optional": false, "value": "var" },
   "type:ae3777dfeb3ef2e5c9c8": { "typeText": "\"extendedLine\"", "kind": "literal", "nullable": false, "optional": false, "value": "extendedLine" },
-  "type:ae4152ac939956368740": {
-    "typeText": "((value: string | number, event: ITouchEvent) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:49b9c7811b9bfbf48e87"]
-  },
   "type:ae814d4c4b7cca8c6692": {
     "typeText": "AnswerSheetItem",
     "kind": "object",
@@ -19318,19 +19370,6 @@
         ],
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
-    ]
-  },
-  "type:af6fb957f1d322f77b9e": {
-    "typeText": "SelectionOption",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "SelectionOption",
-    "source": "packages/taro/src/forms.tsx",
-    "fields": [
-      { "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
-      { "name": "label", "required": true, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" },
-      { "name": "disabled", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" }
     ]
   },
   "type:af76f60b08e788b4c475": { "typeText": "\"billing home tel-national\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing home tel-national" },
@@ -19519,6 +19558,13 @@
       { "name": "props", "required": true, "typeText": "Partial<FieldProps<unknown>>", "typeRef": "type:5bbe7ba6cfd1ecd90697" }
     ],
     "typeArguments": ["type:8b3a3c70e1c8a1efb9bc"]
+  },
+  "type:b1670a98a38ef8f12168": {
+    "typeText": "string | ((value: string) => string) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:e15e314d298fc0d116fc", "type:c6268fd6ea625919efa8"]
   },
   "type:b168b9e303763f5fef70": {
     "typeText": "(error: unknown) => void",
@@ -20088,12 +20134,17 @@
     ]
   },
   "type:b6a679622fd5c3372639": { "typeText": "\"postal-code webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "postal-code webauthn" },
-  "type:b6ccbc578476c21caba1": {
-    "typeText": "((option: AutoCompleteOption) => ReactNode) | undefined",
-    "kind": "union",
+  "type:b6ac51a46f1411f9fb2f": {
+    "typeText": "(option: AutoCompleteOption) => string",
+    "kind": "function",
     "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:ea53247e85e6a5cfb478"]
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "option", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:bdcb02788b509d34a550" }],
+        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+      }
+    ]
   },
   "type:b6db4cf38ad90a1d245b": {
     "typeText": "((items: UploadItem[]) => void) | undefined",
@@ -20687,6 +20738,19 @@
       { "name": "children", "required": false, "typeText": "NavTreeItem[] | undefined", "typeRef": "type:1dc1ef6f10cdbed2e087" }
     ]
   },
+  "type:bb206060a4f6536eefe3": {
+    "typeText": "KeyValueEntry",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "KeyValueEntry",
+    "source": "packages/taro/src/forms.tsx",
+    "fields": [
+      { "name": "id", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
+      { "name": "key", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
+      { "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+    ]
+  },
   "type:bb2eb244cd23c9a1b2fa": { "typeText": "KeyboardEvent<HTMLInputElement>", "kind": "external", "nullable": false, "optional": false, "name": "KeyboardEvent", "source": "@types/react" },
   "type:bb51b5d1eb18e5b14cd6": {
     "typeText": "((mode: AppShellSidebarMode) => void) | undefined",
@@ -20987,6 +21051,24 @@
       { "name": "renderer", "required": false, "typeText": "ChartRendererPreference | undefined", "typeRef": "type:dc7d7e6f384ddec86e04" }
     ]
   },
+  "type:bdcb02788b509d34a550": {
+    "typeText": "AutoCompleteOption",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "AutoCompleteOption",
+    "source": "packages/taro/src/forms.tsx",
+    "fields": [
+      { "name": "value", "required": true, "typeText": "string | number", "typeRef": "type:db6728f51c2e69f0d2ca" },
+      { "name": "label", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
+      { "name": "disabled", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" },
+      { "name": "highlight", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" },
+      { "name": "icon", "required": false, "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" },
+      { "name": "description", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
+      { "name": "group", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
+      { "name": "style", "required": false, "typeText": "CSSProperties | undefined", "typeRef": "type:953c30e5c14e6cc907b6" }
+    ]
+  },
   "type:bdd49a843c891e730f1a": {
     "typeText": "\"shipping work tel-country-code webauthn\"",
     "kind": "literal",
@@ -21202,6 +21284,13 @@
       }
     ]
   },
+  "type:c032ad69b755beb77a50": {
+    "typeText": "string | AutoCompleteOption",
+    "kind": "union",
+    "nullable": false,
+    "optional": false,
+    "members": ["type:e15e314d298fc0d116fc", "type:bdcb02788b509d34a550"]
+  },
   "type:c033764e851c1abb33f2": {
     "typeText": "Chart3DSeriesType",
     "kind": "union",
@@ -21373,6 +21462,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:7dcf3d9c13f3af9cb242", "type:64648e464a2c9d9f72be", "type:c012dd406b0a2f7b4026", "type:ce2253bf62ef50b31a93"]
   },
+  "type:c3930c35166c946dbe2e": {
+    "typeText": "((value: string[]) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:149d73f188af0cbf53a7"]
+  },
   "type:c398137161d5c8728e9d": {
     "typeText": "((move: DashboardCardMove) => boolean) | undefined",
     "kind": "union",
@@ -21543,7 +21639,6 @@
     "fields": [{ "name": "type", "required": true, "typeText": "\"VALIDATE\"", "typeRef": "type:aa7e37a21e09d83ac497" }]
   },
   "type:c59382f9551703242861": { "typeText": "string | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:e15e314d298fc0d116fc"] },
-  "type:c5976ead5a69c1daa5a3": { "typeText": "SelectionOption[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:af6fb957f1d322f77b9e" },
   "type:c5bee59b714cbc06e946": { "typeText": "null", "kind": "primitive", "nullable": true, "optional": false },
   "type:c5de634c8fd491634a82": {
     "typeText": "() => void",
@@ -21583,6 +21678,18 @@
       { "name": "text", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
       { "name": "color", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
       { "name": "id", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" }
+    ]
+  },
+  "type:c6268fd6ea625919efa8": {
+    "typeText": "(value: string) => string",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }],
+        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+      }
     ]
   },
   "type:c62c4ce84667ba137554": { "typeText": "\"multiple\"", "kind": "literal", "nullable": false, "optional": false, "value": "multiple" },
@@ -22051,13 +22158,6 @@
     ]
   },
   "type:ca69a503f41a0e6de14d": { "typeText": "\"billing tel-local-suffix\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing tel-local-suffix" },
-  "type:ca6ddb8b636af04eb65e": {
-    "typeText": "Record<string, { key?: string | undefined; value?: string | undefined; }> | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:836b86aafe184fabe22e"]
-  },
   "type:ca7e35d62e5d38797257": { "typeText": "\"billing new-password\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing new-password" },
   "type:ca92a0f85bdaf8dddd2e": {
     "typeText": "((values: PickerValue[], selectedOptions: PickerOption[]) => void) | undefined",
@@ -22488,6 +22588,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:a426db165f3624d555ef"]
   },
+  "type:d019bf7256ee352d464e": {
+    "typeText": "((value: (string | number)[], selectedOptions: CascaderOption[]) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:ed14a967e8aadcf3eb7c"]
+  },
   "type:d026d0ae76351d82d285": {
     "typeText": "(value: string) => void",
     "kind": "function",
@@ -22657,13 +22764,6 @@
     "source": "packages/web-components/src/components/select/select.ts",
     "fields": [{ "name": "open", "required": true, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }]
   },
-  "type:d1d318a67eb23fef6b3c": {
-    "typeText": "(() => ReactNode) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:f6086a17830b6db62f81"]
-  },
   "type:d21f33da7ee58bcde787": { "typeText": "`section-${string} mobile tel-area-code webauthn`", "kind": "primitive", "nullable": false, "optional": false },
   "type:d25c08167036572526e2": { "typeText": "\"treeitem\"", "kind": "literal", "nullable": false, "optional": false, "value": "treeitem" },
   "type:d25e35577009001e8f67": {
@@ -22679,21 +22779,6 @@
     ]
   },
   "type:d2761a2c2432a18ce65a": { "typeText": "`section-${string} billing organization webauthn`", "kind": "primitive", "nullable": false, "optional": false },
-  "type:d28b6bfb11cb14313d8c": {
-    "typeText": "(input: string, option: AutoCompleteOption) => boolean",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "input", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
-          { "name": "option", "position": 1, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:3a1fe1d09f0928842790" }
-        ],
-        "returnType": { "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }
-      }
-    ]
-  },
   "type:d2989c2313a0fcac484f": { "typeText": "\"captions\"", "kind": "literal", "nullable": false, "optional": false, "value": "captions" },
   "type:d2ab2b62b257892140e4": {
     "typeText": "(share: number) => string",
@@ -22776,34 +22861,6 @@
         "parameters": [{ "name": "flipped", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
-    ]
-  },
-  "type:d315c2a5610f397d88a8": {
-    "typeText": "(value: string) => string",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }],
-        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
-      }
-    ]
-  },
-  "type:d321d49c86ce9e3c8867": {
-    "typeText": "CascaderOption",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "CascaderOption",
-    "source": "packages/taro/src/forms.tsx",
-    "fields": [
-      { "name": "value", "required": true, "typeText": "string | number", "typeRef": "type:db6728f51c2e69f0d2ca" },
-      { "name": "label", "required": true, "typeText": "string | number", "typeRef": "type:db6728f51c2e69f0d2ca" },
-      { "name": "disabled", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" },
-      { "name": "children", "required": false, "typeText": "CascaderOption[] | undefined", "typeRef": "type:2c5ae9d65af2553e2cc2" },
-      { "name": "isLeaf", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" },
-      { "name": "loading", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" }
     ]
   },
   "type:d35e952ad7cee7e50bdb": {
@@ -23044,7 +23101,6 @@
       }
     ]
   },
-  "type:d4e35871fc46c81af1ca": { "typeText": "RatingDimension[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:5a3e681e79edfb7b5274" },
   "type:d50ca65ccde85c362571": { "typeText": "\"math\"", "kind": "literal", "nullable": false, "optional": false, "value": "math" },
   "type:d54a1a80f61361f9b34a": {
     "typeText": "((expanded: boolean) => void) | undefined",
@@ -23067,18 +23123,6 @@
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:b005fd5c70451b0fee68", "type:87ba5bcaecd76d99b6a0", "type:a16a1c741e69a89d1d62"]
-  },
-  "type:d579227762d84eff4322": {
-    "typeText": "(value: string[]) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string[]", "typeRef": "type:19a96e1d6cef0c4dc643" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
   },
   "type:d586363317763d2fd3f3": {
     "typeText": "((event: ChartHoverEvent) => void) | undefined",
@@ -23749,14 +23793,19 @@
     "members": ["type:16535f0fd6ab598eec83", "type:7d1137535c313783dadd", "type:4688eff171cafdabbf74", "type:a9c60e5471fe99b924c5", "type:db6c47a950e394a72434"]
   },
   "type:dbca6dbacfbb25805694": { "typeText": "\"fade\"", "kind": "literal", "nullable": false, "optional": false, "value": "fade" },
-  "type:dbdd2300caf2c099f097": { "typeText": "NavTreeItem[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:e0a51856731d063c2c10" },
-  "type:dbf2d1fc2e6268735e01": {
-    "typeText": "((value: (string | number)[], selectedOptions: CascaderOption[]) => void) | undefined",
-    "kind": "union",
+  "type:dbd7239d67d0309e7490": {
+    "typeText": "(value: string[]) => void",
+    "kind": "function",
     "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:707ee41b85b9f6c45bdd"]
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string[]", "typeRef": "type:19a96e1d6cef0c4dc643" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
   },
+  "type:dbdd2300caf2c099f097": { "typeText": "NavTreeItem[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:e0a51856731d063c2c10" },
   "type:dbfa104bfbb3d42d05d2": { "typeText": "\"address-line3\"", "kind": "literal", "nullable": false, "optional": false, "value": "address-line3" },
   "type:dc0b3aac55ba81dd83ff": {
     "typeText": "(event: GestureResponderEvent) => void",
@@ -24178,25 +24227,6 @@
   "type:e03de10752a3309339a8": { "typeText": "\"nearest\"", "kind": "literal", "nullable": false, "optional": false, "value": "nearest" },
   "type:e047206ed50174ed1541": { "typeText": "KeyValueEntry[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:7293f221fa59c610a5a2" },
   "type:e052f090f1fafcf48bab": { "typeText": "\"home tel-extension webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "home tel-extension webauthn" },
-  "type:e055d5cdef8833c73970": {
-    "typeText": "(option: AutoCompleteOption) => string",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "option", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:3a1fe1d09f0928842790" }],
-        "returnType": { "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
-      }
-    ]
-  },
-  "type:e06cbacc9b3cbb4274e2": {
-    "typeText": "((a: AutoCompleteOption, b: AutoCompleteOption) => number) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:179cf515deeb49dd59fe"]
-  },
   "type:e06cd4d3586a1d6d03c6": {
     "typeText": "() => ReactNode",
     "kind": "function",
@@ -24472,6 +24502,13 @@
       { "name": "metadata", "required": false, "typeText": "Record<string, string | number | boolean> | undefined", "typeRef": "type:1e5aeb59515cd3a2a7d9" }
     ]
   },
+  "type:e336cf3d594fa8ddd9f1": {
+    "typeText": "((value: number | null) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:4135677ef3dabcab0883"]
+  },
   "type:e348409d7f7f30f5394b": {
     "typeText": "readonly Readonly<{ name: string; label?: string | undefined; }>[]",
     "kind": "array",
@@ -24600,18 +24637,6 @@
     ]
   },
   "type:e475f95f7fcbc61157fa": { "typeText": "\"section\"", "kind": "literal", "nullable": false, "optional": false, "value": "section" },
-  "type:e49112d957dcc5e02234": {
-    "typeText": "(value: number | null) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "number | null", "typeRef": "type:4ebff2838e5c7cb671be" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:e4bdfc457972809a67b5": {
     "typeText": "[number, number] | undefined",
     "kind": "union",
@@ -24644,6 +24669,17 @@
     "members": ["type:16535f0fd6ab598eec83", "type:f1a8391991d53d311a31"]
   },
   "type:e53aa32806277f4ee54d": { "typeText": "\"shipping mobile tel-national webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping mobile tel-national webauthn" },
+  "type:e53abf968e65f360d817": {
+    "typeText": "{ checked: true; value: string; }",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "source": "packages/web-components/src/components/radio/radio.ts",
+    "fields": [
+      { "name": "checked", "required": true, "typeText": "true", "typeRef": "type:a9c60e5471fe99b924c5" },
+      { "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
+    ]
+  },
   "type:e54adf9eea9935a3df48": {
     "typeText": "Partial<Record<ThemeMode, string>> | undefined",
     "kind": "union",
@@ -24666,18 +24702,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:84b1c9892eeab522a64f"]
   },
   "type:e56203fc0796fcea1aed": { "typeText": "\"action\"", "kind": "literal", "nullable": false, "optional": false, "value": "action" },
-  "type:e5694d5f5057b2b8f4e4": {
-    "typeText": "(option: AutoCompleteOption) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "option", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:3a1fe1d09f0928842790" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:e57e5551fdd4f629cf59": {
     "typeText": "NavTreeItem",
     "kind": "object",
@@ -25302,13 +25326,6 @@
       }
     ]
   },
-  "type:e8b60f7768b23c0e6938": {
-    "typeText": "((input: string, option: AutoCompleteOption) => boolean) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:d28b6bfb11cb14313d8c"]
-  },
   "type:e8bf5d1a1efc215c833e": { "typeText": "`section-${string} shipping address-level1`", "kind": "primitive", "nullable": false, "optional": false },
   "type:e8c8a59a8d51e2e1f1c5": { "typeText": "\"shipping tel-area-code\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping tel-area-code" },
   "type:e8d75db727b677b5aacf": {
@@ -25388,6 +25405,13 @@
   "type:e991820a8a4a56a1d799": { "typeText": "\"series\"", "kind": "literal", "nullable": false, "optional": false, "value": "series" },
   "type:e9983f20568075b29f9b": { "typeText": "\"textbox\"", "kind": "literal", "nullable": false, "optional": false, "value": "textbox" },
   "type:e99ede12b017065e942d": { "typeText": "\"dialog\"", "kind": "literal", "nullable": false, "optional": false, "value": "dialog" },
+  "type:e9ad2a0c7beb53e8ae33": {
+    "typeText": "KeyValueEntry[] | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:1a7b3c5fbc9683d8c2ae"]
+  },
   "type:e9c01ef85f554903c42a": { "typeText": "\"billing tel-country-code webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing tel-country-code webauthn" },
   "type:e9d18cd18484e45b2d02": {
     "typeText": "\"ma\" | \"ema\" | \"wma\"",
@@ -25438,25 +25462,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:eddc87b67d233941af29"]
   },
   "type:ea2d66a252edd90e52b9": { "typeText": "\"mark\"", "kind": "literal", "nullable": false, "optional": false, "value": "mark" },
-  "type:ea53247e85e6a5cfb478": {
-    "typeText": "(option: AutoCompleteOption) => ReactNode",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "option", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:3a1fe1d09f0928842790" }],
-        "returnType": { "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" }
-      }
-    ]
-  },
-  "type:ea55e5fc11276e7f75f5": {
-    "typeText": "((option: AutoCompleteOption) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:90a42a6ea76f76cf805a"]
-  },
   "type:ea62ee9e97c8217c2c62": {
     "typeText": "((follow: boolean) => void) | undefined",
     "kind": "union",
@@ -25475,13 +25480,6 @@
         "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
       }
     ]
-  },
-  "type:ea6d46a6161657c3060e": {
-    "typeText": "((value: string[]) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:a183efe8528b5b4f9845"]
   },
   "type:eaa2e73c4f3fbe5e997b": {
     "typeText": "(view: ChartView) => void",
@@ -25507,18 +25505,6 @@
     "optional": false,
     "members": ["type:0fd2675e39cbabc5695e", "type:e56203fc0796fcea1aed", "type:b0731306ff69c11c5193", "type:7a3d1d0c5a063572047b", "type:db5b011006c465dab90f", "type:3e9cc7a20dca844de159"],
     "values": ["action", "close-button", "dismiss", "escape", "overflow", "timeout"]
-  },
-  "type:eb16a42cd63935d6f25a": {
-    "typeText": "(visible: boolean) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "visible", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
   },
   "type:eb1ea4bd646844f434b1": { "typeText": "\"shipping address-level1\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping address-level1" },
   "type:eb559501f1b6c751cd1a": {
@@ -25709,6 +25695,21 @@
     "members": ["type:16535f0fd6ab598eec83", "type:aea80c22c12cf872dbe3", "type:dad854e149410bb54cd2"]
   },
   "type:ed0ab322e1d135b832f1": { "typeText": "\"change\"", "kind": "literal", "nullable": false, "optional": false, "value": "change" },
+  "type:ed14a967e8aadcf3eb7c": {
+    "typeText": "(value: (string | number)[], selectedOptions: CascaderOption[]) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "value", "position": 0, "required": true, "rest": false, "typeText": "(string | number)[]", "typeRef": "type:6a8218963ce603035852" },
+          { "name": "selectedOptions", "position": 1, "required": true, "rest": false, "typeText": "CascaderOption[]", "typeRef": "type:ff68458d1d39aa191e05" }
+        ],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:ed250d0176d688d7922a": { "typeText": "PickerOption[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:2f2b2a7cc7e8afb9a17a" },
   "type:ed2cb2e2be913bf0bba5": { "typeText": "T", "kind": "parameter", "nullable": false, "optional": false, "name": "T", "constraint": "type:e15e314d298fc0d116fc" },
   "type:ed2f18ded9f4e54967d5": { "typeText": "`section-${string} shipping home tel-country-code`", "kind": "primitive", "nullable": false, "optional": false },
@@ -26069,6 +26070,13 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:7022851c3eb60e43c2fd"]
   },
+  "type:f05b1ad1923973e24dfc": {
+    "typeText": "((visible: boolean) => void) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:1e1e1466e97fd990831e"]
+  },
   "type:f063d93643ed3d044c0c": {
     "typeText": "RadarChartOptions",
     "kind": "object",
@@ -26162,13 +26170,6 @@
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:64648e464a2c9d9f72be", "type:a80bade9a3a1abc6cec0", "type:1878cc8720534c1997f4", "type:df355901b99032802e49"]
   },
-  "type:f1732a1ac5226db324f6": {
-    "typeText": "((open: boolean) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:8b9c7379b75eb496dfb6"]
-  },
   "type:f177005de5150c7873fd": { "typeText": "\"ruby\"", "kind": "literal", "nullable": false, "optional": false, "value": "ruby" },
   "type:f18a915ce12597733d64": { "typeText": "\"shipping mobile email webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping mobile email webauthn" },
   "type:f18b471c692c1f55531b": {
@@ -26203,6 +26204,13 @@
     "members": ["type:16535f0fd6ab598eec83", "type:7d1137535c313783dadd", "type:db6c47a950e394a72434"]
   },
   "type:f1cbddc0306c35539f33": { "typeText": "\"columnheader\"", "kind": "literal", "nullable": false, "optional": false, "value": "columnheader" },
+  "type:f1cbe00681917f5bf87e": {
+    "typeText": "((option: CascaderOption, level: number) => ReactNode) | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:1ab8c8304f1ede216d48"]
+  },
   "type:f1cf4d8d6d043d73b3e2": {
     "typeText": "((event: PointerEvent) => void) | undefined",
     "kind": "union",
@@ -26235,6 +26243,14 @@
     "nullable": true,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:c5bee59b714cbc06e946", "type:b538ed12153828b0ee63", "type:141ab3f6412869be652b"]
+  },
+  "type:f1ffcacf1df75f125128": {
+    "typeText": "{ value: string; }",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "source": "packages/web-components/src/components/radio/radio.ts",
+    "fields": [{ "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }]
   },
   "type:f20441df009b824b223d": {
     "typeText": "typeof import(\"monaco-editor\") | undefined",
@@ -26316,6 +26332,18 @@
       { "name": "group", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
       { "name": "keywords", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
       { "name": "disabled", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" }
+    ]
+  },
+  "type:f28e125cb44913ffe9ca": {
+    "typeText": "(value: string) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
     ]
   },
   "type:f29487d33151ed5bcb4e": { "typeText": "\"go\"", "kind": "literal", "nullable": false, "optional": false, "value": "go" },
@@ -26604,13 +26632,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:e15e314d298fc0d116fc", "type:7d1137535c313783dadd"]
   },
   "type:f59ec1ce9b84d3276f77": { "typeText": "\"-moz-initial\"", "kind": "literal", "nullable": false, "optional": false, "value": "-moz-initial" },
-  "type:f5a719e9dbbd9a2557bd": {
-    "typeText": "((value: string) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:64c999d97654a9c30211"]
-  },
   "type:f5aedf1b4b153751edb3": {
     "typeText": "(value: string) => void",
     "kind": "function",
@@ -26642,25 +26663,6 @@
   },
   "type:f5ebf33b3bdd583e50ec": { "typeText": "\"checkbox\"", "kind": "literal", "nullable": false, "optional": false, "value": "checkbox" },
   "type:f5f17d4e8bbb90392ce4": { "typeText": "\"always\"", "kind": "literal", "nullable": false, "optional": false, "value": "always" },
-  "type:f5f7624f5f78222d9df9": {
-    "typeText": "(open: boolean) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [{ "name": "open", "position": 0, "required": true, "rest": false, "typeText": "boolean", "typeRef": "type:7087acd01ef7dd9f1d5c" }],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
-  "type:f6086a17830b6db62f81": {
-    "typeText": "() => ReactNode",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [{ "parameters": [], "returnType": { "typeText": "ReactNode", "typeRef": "type:a991edaa7809b6d75ba2" } }]
-  },
   "type:f612ad4ccbeed997ce22": {
     "typeText": "PrimaryColor | null | undefined",
     "kind": "union",
@@ -26745,21 +26747,6 @@
     "members": ["type:16535f0fd6ab598eec83", "type:8e7927c7c21690fbb931", "type:7554d121649c556e3d98"]
   },
   "type:f6c757a6539360eb31a2": { "typeText": "\"shipping home tel-national webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "shipping home tel-national webauthn" },
-  "type:f6d8a22aae01cb54df59": {
-    "typeText": "(key: string, value: number) => void",
-    "kind": "function",
-    "nullable": false,
-    "optional": false,
-    "signatures": [
-      {
-        "parameters": [
-          { "name": "key", "position": 0, "required": true, "rest": false, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
-          { "name": "value", "position": 1, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
-        ],
-        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
-      }
-    ]
-  },
   "type:f6da7fa4316a949cb36f": { "typeText": "\"removals text\"", "kind": "literal", "nullable": false, "optional": false, "value": "removals text" },
   "type:f6f69fb0a466cd4be84f": {
     "typeText": "readonly AnswerSheetGroup[] | undefined",
@@ -26795,13 +26782,6 @@
     ]
   },
   "type:f74702050a3f9022077c": { "typeText": "\"billing work tel-extension webauthn\"", "kind": "literal", "nullable": false, "optional": false, "value": "billing work tel-extension webauthn" },
-  "type:f74ccc51156e563b6ca9": {
-    "typeText": "((key: string, value: number) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:f6d8a22aae01cb54df59"]
-  },
   "type:f75395f7e8e1b928a574": { "typeText": "MenuEntry[] | undefined", "kind": "union", "nullable": false, "optional": true, "members": ["type:16535f0fd6ab598eec83", "type:29924efb2bf4bd085765"] },
   "type:f76bdf01ce28c4552577": { "typeText": "\"longPosition\"", "kind": "literal", "nullable": false, "optional": false, "value": "longPosition" },
   "type:f783ebc121963a477ac1": { "typeText": "`section-${string} shipping work tel-local webauthn`", "kind": "primitive", "nullable": false, "optional": false },
@@ -26892,6 +26872,22 @@
   },
   "type:f82d1e881e4b8c863d52": { "typeText": "\"invalid\"", "kind": "literal", "nullable": false, "optional": false, "value": "invalid" },
   "type:f82f3a2898f0f64af810": { "typeText": "\"numeric\"", "kind": "literal", "nullable": false, "optional": false, "value": "numeric" },
+  "type:f8493c057de25af2ef11": {
+    "typeText": "CascaderOption",
+    "kind": "object",
+    "nullable": false,
+    "optional": false,
+    "name": "CascaderOption",
+    "source": "packages/taro/src/forms.tsx",
+    "fields": [
+      { "name": "value", "required": true, "typeText": "string | number", "typeRef": "type:db6728f51c2e69f0d2ca" },
+      { "name": "label", "required": true, "typeText": "string | number", "typeRef": "type:db6728f51c2e69f0d2ca" },
+      { "name": "disabled", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" },
+      { "name": "children", "required": false, "typeText": "CascaderOption[] | undefined", "typeRef": "type:a2e7ad956690ddcc1060" },
+      { "name": "isLeaf", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" },
+      { "name": "loading", "required": false, "typeText": "boolean | undefined", "typeRef": "type:c54e4f1388c4caae77ff" }
+    ]
+  },
   "type:f873389dd48ee45f31e8": {
     "typeText": "ChartLabelPosition | undefined",
     "kind": "union",
@@ -26946,32 +26942,24 @@
       { "name": "mono", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" }
     ]
   },
+  "type:f8da4ba7724d1ac3625b": {
+    "typeText": "(value: number) => void",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [{ "name": "value", "position": 0, "required": true, "rest": false, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }],
+        "returnType": { "typeText": "void", "typeRef": "type:7ba5db05423263a0fe9d" }
+      }
+    ]
+  },
   "type:f8e0612024a12cd2f2f9": {
     "typeText": "((event: AccessibilityActionEvent) => void) | undefined",
     "kind": "union",
     "nullable": false,
     "optional": true,
     "members": ["type:16535f0fd6ab598eec83", "type:2682ec598f623327b562"]
-  },
-  "type:f8f4de6fea143b9c499c": {
-    "typeText": "KeyValueEntry",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "name": "KeyValueEntry",
-    "source": "packages/taro/src/forms.tsx",
-    "fields": [
-      { "name": "id", "required": false, "typeText": "string | undefined", "typeRef": "type:c59382f9551703242861" },
-      { "name": "key", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" },
-      { "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
-    ]
-  },
-  "type:f905982cb9ff6c44b0c2": {
-    "typeText": "((value: number | null) => void) | undefined",
-    "kind": "union",
-    "nullable": false,
-    "optional": true,
-    "members": ["type:16535f0fd6ab598eec83", "type:e49112d957dcc5e02234"]
   },
   "type:f9332c9c83f588b1b33b": {
     "typeText": "(day: string) => void",
@@ -27004,17 +26992,6 @@
       { "name": "x", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
       { "name": "y", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" },
       { "name": "quadrant", "required": true, "typeText": "keyof QuadrantRegions", "typeRef": "type:3619c943e5fcb3ed927b" }
-    ]
-  },
-  "type:f97e56eeb0e601839cf4": {
-    "typeText": "{ checked: true; value: string; }",
-    "kind": "object",
-    "nullable": false,
-    "optional": false,
-    "source": "packages/web-components/src/components/radio/radio.ts",
-    "fields": [
-      { "name": "checked", "required": true, "typeText": "true", "typeRef": "type:a9c60e5471fe99b924c5" },
-      { "name": "value", "required": true, "typeText": "string", "typeRef": "type:e15e314d298fc0d116fc" }
     ]
   },
   "type:f984bb8a4da81b85ba62": {
@@ -27097,6 +27074,21 @@
     ]
   },
   "type:fa2b97f0bbdd755619b3": { "typeText": "`section-${string} work tel-local-suffix webauthn`", "kind": "primitive", "nullable": false, "optional": false },
+  "type:fa39d23a597e2cec0520": {
+    "typeText": "(a: AutoCompleteOption, b: AutoCompleteOption) => number",
+    "kind": "function",
+    "nullable": false,
+    "optional": false,
+    "signatures": [
+      {
+        "parameters": [
+          { "name": "a", "position": 0, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:bdcb02788b509d34a550" },
+          { "name": "b", "position": 1, "required": true, "rest": false, "typeText": "AutoCompleteOption", "typeRef": "type:bdcb02788b509d34a550" }
+        ],
+        "returnType": { "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
+      }
+    ]
+  },
   "type:fa442586b63c7e0979b4": { "typeText": "\"top-left\"", "kind": "literal", "nullable": false, "optional": false, "value": "top-left" },
   "type:fa4d5ddec3d3162d12a7": { "typeText": "{}", "kind": "object", "nullable": false, "optional": false, "source": "packages/web-components/src/components/alert/alert.ts", "fields": [] },
   "type:fa59cae1f97c56396921": { "typeText": "\"decimal\"", "kind": "literal", "nullable": false, "optional": false, "value": "decimal" },
@@ -27338,6 +27330,13 @@
       { "name": "toIndex", "required": true, "typeText": "number", "typeRef": "type:7d1137535c313783dadd" }
     ]
   },
+  "type:fd9b90151401e164cfe6": {
+    "typeText": "SelectionOption[] | undefined",
+    "kind": "union",
+    "nullable": false,
+    "optional": true,
+    "members": ["type:16535f0fd6ab598eec83", "type:6bec96b4f6e1680e7e2d"]
+  },
   "type:fd9eae7f0815d9e946a0": {
     "typeText": "(event: ShapeDrillEvent) => void",
     "kind": "function",
@@ -27488,6 +27487,7 @@
     "name": "bivarianceHack",
     "source": "@types/react"
   },
+  "type:ff68458d1d39aa191e05": { "typeText": "CascaderOption[]", "kind": "array", "nullable": false, "optional": false, "elementType": "type:f8493c057de25af2ef11" },
   "type:ff8a76f68d078a08c791": {
     "typeText": "(paused: boolean) => void",
     "kind": "function",

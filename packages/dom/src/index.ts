@@ -6,6 +6,7 @@
 // @minerva/core.
 export * from "./dom";
 export * from "./focus-scope";
+export * from "./focus-modality";
 export * from "./dismissable-layer";
 export * from "./scroll-lock";
 export * from "./hide-others";

@@ -27,6 +27,20 @@ const panel = () =>
   });
 
 describe("home page", () => {
+  it("uses the shared favicon logo in both product identities", () => {
+    const { container } = renderHome();
+    const logos = [
+      ...container.querySelectorAll<HTMLImageElement>("[data-minerva-logo]"),
+    ];
+    expect(logos).toHaveLength(2);
+    expect(logos[0]).toHaveAttribute(
+      "src",
+      expect.stringMatching(/\/favicon\.svg$/),
+    );
+    expect(logos[1]).toHaveAttribute("src", logos[0].getAttribute("src"));
+    expect(logos.map((logo) => logo.width)).toEqual([28, 24]);
+  });
+
   it("distinguishes native renderers from Web Components adapters", () => {
     renderHome();
     const group = screen.getByRole("group", { name: "Supported frameworks" });
@@ -114,10 +128,10 @@ describe("home page", () => {
     await user.click(view.getByRole("combobox", { name: "Corners" }));
     await user.click(screen.getByRole("option", { name: "Square" }));
     expect(scope).toHaveAttribute("data-radius", "none");
-    await user.click(view.getByRole("button", { name: "Try button" }));
-    expect(within(preview).getByRole("status")).toHaveTextContent("Clicks: 1");
+    await user.click(view.getByRole("button", { name: "Save release" }));
+    expect(within(preview).getByRole("status")).toHaveTextContent("Saves: 1");
     await user.click(view.getByRole("switch", { name: "Disable button" }));
-    expect(view.getByRole("button", { name: "Try button" })).toBeDisabled();
+    expect(view.getByRole("button", { name: "Save release" })).toBeDisabled();
     await user.click(view.getByRole("button", { name: "View example source" }));
     expect(view.getByRole("region", { name: "TSX code" })).toHaveTextContent(
       'palette="graphite"',

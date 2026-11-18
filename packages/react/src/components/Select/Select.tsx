@@ -1,3 +1,4 @@
+import { useFocusModality } from "../../internal/useFocusModality";
 import {
   Children,
   createContext,
@@ -223,6 +224,7 @@ const Select = ({
   const [trigger, setTrigger] = useState<HTMLButtonElement | null>(null);
   const triggerRef = useMergedRefs<HTMLButtonElement>(setTrigger, ref);
   const nativeRef = useRef<HTMLSelectElement>(null);
+  useFocusModality(nativeRef);
   const [highlighted, setHighlighted] = useState<string | null>(null);
   const [typeahead] = useState(() => createTypeahead());
 

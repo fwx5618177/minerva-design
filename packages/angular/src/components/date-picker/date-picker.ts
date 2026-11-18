@@ -293,9 +293,9 @@ export class MnDatePicker extends MnFormValueControl<string> {
   readonly open = model(false);
   /** Placeholder of the input @default "Select date" (localized) */
   readonly placeholder = input<string | undefined>(undefined);
-  /** Visible label of the input; without it the input is labelled "Date" (localized) */
+  /** Accessible name of the input; defaults to localized "Date". Use FormField for a visible label. */
   readonly label = input<string | undefined>(undefined);
-  /** Accessible label of the input when no visible label is shown */
+  /** Accessible name of the input when label is not set. */
   readonly ariaLabel = input<string | undefined>(undefined, {
     alias: "aria-label",
   });

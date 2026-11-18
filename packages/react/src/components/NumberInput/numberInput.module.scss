@@ -28,7 +28,7 @@
   }
 
   // focus (mouse included): the shared control-focus treatment
-  // (styles/_mixins.scss): border color + ring + transparent outline
+  // (styles/_mixins.scss): border color + modality-aware ring
   &:focus-within:not(.invalid) {
     @include control-focus;
   }
@@ -187,4 +187,9 @@
 
 .root:has(.field[readonly]) .stepper {
   display: none;
+}
+
+// The enclosing frame owns the single focus indicator.
+.root .field:focus {
+  @include control-inner-focus;
 }

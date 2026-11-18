@@ -190,6 +190,7 @@ export const docPages: DocPageMeta[] = [
     id: "styling",
     category: "gettingStarted",
     demos: [
+      "focus-treatment",
       "restyle-button",
       "restyle-modal",
       "restyle-tabs",

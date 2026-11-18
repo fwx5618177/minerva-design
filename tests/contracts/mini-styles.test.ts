@@ -8,6 +8,32 @@ const styleDirectory = join(
   dirname(fileURLToPath(import.meta.url)),
   "../../tools/styles",
 );
+
+it.each(["taro", "uni", "weapp"])(
+  "%s standalone invalid textarea retains its semantic border",
+  (renderer) => {
+    const style = document.createElement("style");
+    style.textContent = ["mini-controls.css", `${renderer}-components.css`]
+      .map((name) => readFileSync(join(styleDirectory, name), "utf8"))
+      .join("\n");
+    const host = document.createElement("div");
+    host.style.setProperty("--danger-color", "#dc2626");
+    host.style.setProperty("--border-color", "#d1d5db");
+    const field = document.createElement("textarea");
+    field.className = "mn-input mn-textarea mn-invalid";
+    host.append(field);
+    document.head.append(style);
+    document.body.append(host);
+    try {
+      expect(getComputedStyle(field).borderTopColor).toBe("#dc2626");
+      field.classList.remove("mn-invalid");
+      expect(getComputedStyle(field).borderTopColor).toBe("#d1d5db");
+    } finally {
+      host.remove();
+      style.remove();
+    }
+  },
+);
 function miniStyles() {
   const external = readdirSync(styleDirectory)
     .filter((name) => name.endsWith(".css"))
