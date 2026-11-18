@@ -56,7 +56,35 @@ const columns: ChartOptions = {
 };
 
 describe("lifted bars", () => {
-  it("keeps the band and lifts the hovered column: thicker, never longer", () => {
+  it.each([false, true])(
+    "keeps translucent=%s columns within their data bounds without an outline",
+    (translucent) => {
+      const { marks } = marksAt(
+        {
+          ...columns,
+          series: [
+            {
+              type: "bar",
+              color: "#b48b6b",
+              opacity: translucent ? 0.4 : 1,
+              data: [3, 5, 2],
+            },
+          ],
+        },
+        1,
+        2.5,
+      );
+      const [bar] = bars(marks);
+      expect(liftedBarRect(bar)).toEqual({
+        x: bar.x,
+        y: bar.y,
+        width: bar.width,
+        height: bar.height,
+      });
+      expect(bar.ring).toBeNull();
+    },
+  );
+  it("keeps the band and the hovered column's original dimensions", () => {
     const { marks, scales } = marksAt(columns, 1, 2.5);
     expect(marks.map((m) => m.kind)).toEqual(["band", "bar"]);
     const [bar] = bars(marks);
@@ -66,7 +94,7 @@ describe("lifted bars", () => {
       base: "bottom",
       backdrop: false,
       radius: 3,
-      ring: contrastRing([0x4f / 255, 0x46 / 255, 0xe5 / 255, 1]),
+      ring: null,
     });
     // the bar as drawn: from the baseline to its value
     expect(bar.y).toBeCloseTo(scales.yToPx(5));
@@ -74,13 +102,11 @@ describe("lifted bars", () => {
     const r = liftedBarRect(bar);
     expect(r.y).toBe(bar.y);
     expect(r.height).toBe(bar.height);
-    expect(bar.grow).toBeGreaterThan(0);
-    expect(r.width).toBeCloseTo(bar.width + bar.grow * 2);
-    // a few pixels: 20% of the thickness at most
-    expect(bar.grow * 2).toBeLessThanOrEqual(bar.width * 0.2);
+    expect(r.width).toBe(bar.width);
+    expect(r.x).toBe(bar.x);
   });
 
-  it("grows horizontal bars across their height", () => {
+  it("keeps horizontal bars within their original height", () => {
     const { marks, scales } = marksAt(
       { ...columns, orientation: "horizontal" },
       1,
@@ -92,7 +118,8 @@ describe("lifted bars", () => {
     const r = liftedBarRect(bar);
     expect(r.x).toBe(bar.x);
     expect(r.width).toBe(bar.width);
-    expect(r.height).toBeCloseTo(bar.height + bar.grow * 2);
+    expect(r.height).toBe(bar.height);
+    expect(r.y).toBe(bar.y);
   });
 
   it("puts the base of negative columns at their top", () => {
@@ -157,7 +184,7 @@ describe("lifted bars", () => {
       2,
     );
     const [bar] = bars(marks);
-    expect(bar.grow).toBeGreaterThan(0);
+    expect(bar.grow).toBe(0);
   });
 
   it("gives boxes and candles a band only", () => {
@@ -291,7 +318,10 @@ describe("canvas host", () => {
       (c, k) => k > clip && c.name === "fill" && c.fill === bar.color,
     );
     const ring = calls.findIndex(
-      (c, k) => k > fill && c.name === "stroke" && c.fill === bar.ring,
+      (c, k) =>
+        k > fill &&
+        c.name === "stroke" &&
+        c.fill === contrastRing([0x4f / 255, 0x46 / 255, 0xe5 / 255, 1]),
     );
     // the value label (the tooltip repeats it later)
     const label = calls.findIndex(
@@ -299,8 +329,8 @@ describe("canvas host", () => {
     );
     expect(clip).toBeGreaterThanOrEqual(0);
     expect(fill).toBeGreaterThan(clip);
-    expect(ring).toBeGreaterThan(fill);
-    expect(label).toBeGreaterThan(ring);
+    expect(ring).toBe(-1);
+    expect(label).toBeGreaterThan(fill);
   });
 
   it("draws the lifted bar of a combo chart before the data, without a veil", () => {
@@ -446,7 +476,7 @@ describe("DOM lift layer", () => {
       expect(layers.indexOf(data)).toBeLessThan(layers.indexOf(liftLayer()));
   });
 
-  it("lifts the hovered bar with a ring and plays its entry once", async () => {
+  it("emphasizes the hovered bar without a border or halo and plays its entry once", async () => {
     const c = await mount(columns);
     const p = c.toPixel(1, 2.5)!;
     move(p.x, p.y);
@@ -456,11 +486,11 @@ describe("DOM lift layer", () => {
     const [el] = liftedBars();
     expect(el).toBeDefined();
     expect(el.style.background).toContain("rgb");
-    expect(el.style.boxShadow).toContain("inset");
+    expect(el.style.boxShadow).toBe("none");
     expect(el.style.borderRadius).toBe("3px");
     expect(animate).toHaveBeenCalledTimes(1);
     const [from] = animate.mock.calls[0][0] as Keyframe[];
-    expect(String(from.transform)).toMatch(/^scaleX\(0\.\d+\)$/);
+    expect(from.transform).toBe("scaleX(1)");
     // the same bar: no new entry
     move(p.x + 1, p.y);
     await new Promise<void>((resolve) =>

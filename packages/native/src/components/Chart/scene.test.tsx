@@ -132,8 +132,16 @@ describe("chart scene: layers of the hover state", () => {
     const lifted = hostElements(under)
       .slice(1)
       .map((el) => StyleSheet.flatten(el.props.style))
-      .filter((s) => s?.borderWidth);
+      .filter(
+        (s) =>
+          s?.backgroundColor ===
+          hover.marks.find((m) => m.kind === "bar")?.color,
+      );
     expect(lifted.length).toBeGreaterThan(0);
+    for (const bar of lifted) {
+      expect(bar.borderWidth ?? 0).toBe(0);
+      expect(bar.shadowOpacity ?? 0).toBe(0);
+    }
 
     const order = paintOrder();
     expect(below(order, "hover-under", "data")).toBe(true);
@@ -172,11 +180,17 @@ describe("chart scene: layers of the hover state", () => {
     // the lifted bar comes after the veil, in the same layer
     const hover = hostElements(part("hover")!).slice(1);
     const veil = hover.findIndex((el) => el.props.dataSet?.part === "veil");
+    const mark = ref
+      .current!.getController()!
+      .getScene()!
+      .hover!.marks.find((m) => m.kind === "bar")!;
     const bar = hover.findIndex(
-      (el) => StyleSheet.flatten(el.props.style)?.borderWidth,
+      (el) =>
+        StyleSheet.flatten(el.props.style)?.backgroundColor === mark.color,
     );
     expect(veil).toBeGreaterThanOrEqual(0);
     expect(bar).toBeGreaterThan(veil);
+    expect(StyleSheet.flatten(hover[bar].props.style).borderWidth ?? 0).toBe(0);
   });
 });
 

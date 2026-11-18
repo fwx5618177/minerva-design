@@ -1144,7 +1144,8 @@ export type BarBase = "top" | "right" | "bottom" | "left";
 /**
  * A hovered bar redrawn above the data (below the value labels): thicker
  * by `grow` on both sides across its thickness, never longer (the length
- * is the value), lifted with a shadow and a ring in a contrasting color
+ * is the value). Ordinary bars retain their bounds without a ring;
+ * floating ranges / Gantt tasks can grow with a ring and shadow.
  */
 export interface BarHoverMark {
   kind: "bar";
@@ -1160,9 +1161,8 @@ export interface BarHoverMark {
   /** The fill is translucent: drawn over the plot background */
   backdrop: boolean;
   /**
-   * Ring inside the edge (CSS): contrasting with solid fills, the solid
-   * color of translucent ones; `null` for the parts drawn over a lifted bar
-   * (the progress of a Gantt task)
+   * Ring inside floating ranges / tasks (CSS); ordinary bars and the
+   * progress drawn over a task have no ring.
    */
   ring: string | null;
   /** Corner radius, like the data layer */
@@ -1445,7 +1445,9 @@ const liftedBars = (
   if (!shape) return [];
   const vertical = shape.base === "top" || shape.base === "bottom";
   const thickness = vertical ? shape.width : shape.height;
-  const grow = barGrow(model, sc, s, thickness);
+  // Hover must not add geometry around ordinary bars: enlarged redraws
+  // and their halos create double edges and obscure adjacent plot content.
+  const grow = s.floating ? barGrow(model, sc, s, thickness) : 0;
   const fill = s.pointColors?.[i] ?? s.color;
   const alpha = fill[3] * barOpacity(s, i);
   const translucent = alpha < TRANSLUCENT;
@@ -1457,9 +1459,11 @@ const liftedBars = (
       index: i,
       color: toCss(fill, barOpacity(s, i)),
       backdrop: alpha < 0.98,
-      ring: translucent
-        ? toCss([fill[0], fill[1], fill[2], 1])
-        : contrastRing(fill),
+      ring: !s.floating
+        ? null
+        : translucent
+          ? toCss([fill[0], fill[1], fill[2], 1])
+          : contrastRing(fill),
       grow,
     },
   ];
