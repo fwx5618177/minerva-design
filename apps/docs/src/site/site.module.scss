@@ -273,7 +273,7 @@ $bp-xl: 1280px;
 .primaryNav {
   display: none;
 
-  @media (min-width: $bp-md) {
+  @media (min-width: $bp-lg) {
     display: block;
   }
 
@@ -316,6 +316,9 @@ $bp-xl: 1280px;
   align-items: center;
   gap: 4px;
   margin-left: auto;
+  min-width: 0;
+  flex: 1;
+  justify-content: flex-end;
 
   @media (min-width: $bp-md) {
     gap: 8px;
@@ -359,7 +362,7 @@ $bp-xl: 1280px;
     color: var(--ds-fg-muted);
   }
 
-  @media (max-width: ($bp-md - 1)) {
+  @media (max-width: ($bp-lg - 1)) {
     width: 32px;
     padding: 0;
     justify-content: center;
@@ -373,7 +376,10 @@ $bp-xl: 1280px;
   }
 
   @media (min-width: $bp-lg) {
-    min-width: 240px;
+    min-width: 0;
+    width: 240px;
+    max-width: 240px;
+    flex: 0 1 240px;
   }
 }
 
@@ -387,14 +393,16 @@ $bp-xl: 1280px;
   flex: 1;
   text-align: left;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  @media (max-width: ($bp-md - 1)) {
+  @media (max-width: ($bp-lg - 1)) {
     display: none;
   }
 }
 
 .searchButton .searchKbd {
-  @media (max-width: ($bp-md - 1)) {
+  @media (max-width: ($bp-lg - 1)) {
     display: none;
   }
 }

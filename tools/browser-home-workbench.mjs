@@ -28,40 +28,65 @@ export async function checkHomeWorkbench({
         ...(type === "mouseMoved" ? {} : { clickCount: 1 }),
       });
   };
-  for (const width of [1440, 1024, 768, 390]) {
-    await page("", width, "react");
-    await wait(
-      `${preview}?.querySelector('[data-minerva="date-picker"] input')`,
-    );
-    const geometry = await evaluate(
-      `(()=>{const preview=${preview};const r=preview.getBoundingClientRect();return {viewport:innerWidth,pageWidth:document.documentElement.scrollWidth,frame:{left:r.left,right:r.right,width:r.width},fields:[...preview.querySelectorAll('input:not([type=checkbox])')].map(el=>{const q=el.getBoundingClientRect();return {left:q.left,right:q.right,width:q.width}}),logos:[...document.querySelectorAll('[data-minerva-logo]')].map(el=>el.getAttribute('src'))}})()`,
-    );
-    assert.ok(geometry.pageWidth <= width, JSON.stringify(geometry));
-    assert.ok(
-      geometry.frame.left >= 0 && geometry.frame.right <= width + 1,
-      JSON.stringify(geometry),
-    );
-    assert.ok(
-      geometry.fields.every(
-        (r) =>
-          r.width > 0 &&
-          r.left >= geometry.frame.left &&
-          r.right <= geometry.frame.right + 1,
-      ),
-      JSON.stringify(geometry),
-    );
-    assert.ok(
-      geometry.logos.length >= 3 && new Set(geometry.logos).size === 1,
-      JSON.stringify(geometry),
-    );
+  await page("", 1440, "react");
+  const originalLocale = await evaluate("document.documentElement.lang");
+  const switchLocale = async (locale) => {
+    await page("", 1440, "react");
     await evaluate(
-      "window.scrollTo({top:0,behavior:'instant'});new Promise(r=>requestAnimationFrame(r))",
+      `localStorage.setItem("minerva-docs-language", "${locale}")`,
     );
-    if (capture) await capture(`home-${width}`);
-    await evaluate(`${preview}.scrollIntoView({block:'center'})`);
-    if (capture) await capture(`workbench-${width}`);
-    results.push({ check: "home-workbench-responsive", width, ...geometry });
+    await call("Page.navigate", {
+      url: await evaluate(
+        `location.href.split("#")[0].split("?")[0] + "?ui-locale=${locale}#/"`,
+      ),
+    });
+    await wait(
+      `document.documentElement.lang === "${locale}" && ${preview}?.querySelector("input")`,
+    );
+  };
+  for (const locale of ["en", "zh", "ja", "fr"]) {
+    await switchLocale(locale);
+    for (const width of [1440, 1024, 768, 390]) {
+      await page("", width, "react");
+      await wait(
+        `${preview}?.querySelector('[data-minerva="date-picker"] input')`,
+      );
+      const geometry = await evaluate(
+        `(()=>{const preview=${preview};const r=preview.getBoundingClientRect();return {viewport:innerWidth,pageWidth:document.documentElement.scrollWidth,frame:{left:r.left,right:r.right,width:r.width},overflow:[...document.querySelectorAll("body *")].filter(el=>{const q=el.getBoundingClientRect();return q.left>=0 && q.right>innerWidth+1}).slice(0,8).map(el=>({tag:el.tagName,class:el.className,right:el.getBoundingClientRect().right})),fields:[...preview.querySelectorAll('input:not([type=checkbox])')].map(el=>{const q=el.getBoundingClientRect();return {left:q.left,right:q.right,width:q.width}}),logos:[...document.querySelectorAll('[data-minerva-logo]')].map(el=>el.getAttribute('src'))}})()`,
+      );
+      assert.ok(geometry.pageWidth <= width, JSON.stringify(geometry));
+      assert.ok(
+        geometry.frame.left >= 0 && geometry.frame.right <= width + 1,
+        JSON.stringify(geometry),
+      );
+      assert.ok(
+        geometry.fields.every(
+          (r) =>
+            r.width > 0 &&
+            r.left >= geometry.frame.left &&
+            r.right <= geometry.frame.right + 1,
+        ),
+        JSON.stringify(geometry),
+      );
+      assert.ok(
+        geometry.logos.length >= 3 && new Set(geometry.logos).size === 1,
+        JSON.stringify(geometry),
+      );
+      await evaluate(
+        "window.scrollTo({top:0,behavior:'instant'});new Promise(r=>requestAnimationFrame(r))",
+      );
+      if (capture) await capture(`home-${locale}-${width}`);
+      await evaluate(`${preview}.scrollIntoView({block:'center'})`);
+      if (capture) await capture(`workbench-${locale}-${width}`);
+      results.push({
+        check: "home-workbench-responsive",
+        locale,
+        width,
+        ...geometry,
+      });
+    }
   }
+  await switchLocale(originalLocale);
   await page("", 1280, "react");
   await wait(`${preview}?.querySelector('button')`);
   await click(
