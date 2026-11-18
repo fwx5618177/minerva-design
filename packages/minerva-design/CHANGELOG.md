@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.23.3
+
+### Patch Changes
+
+- c259350: Keep hovered columns and horizontal bars at their original size without outlines, background halos or shadows, preventing double edges and obscured plot content. Preserve floating-range and Gantt-task emphasis.
+
 ## 1.23.2
 
 ### Patch Changes
