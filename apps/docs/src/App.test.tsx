@@ -41,7 +41,7 @@ describe("docs site", () => {
 
       // Landing page, with the site chrome
       expect(await h1()).toHaveTextContent(
-        "Accessible UI components for ten frameworks.",
+        "Accessible UI for web and native apps.",
       );
       expect(screen.getByRole("banner")).toBeInTheDocument();
       expect(screen.getByRole("contentinfo")).toBeInTheDocument();
