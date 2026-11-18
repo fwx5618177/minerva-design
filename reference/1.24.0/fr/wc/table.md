@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.0",
-  "sourceCommit": "1ec7f8c462afcd58cce98803534b965221e88a0b",
-  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
-  "referenceSourceDigest": "sha256:8a812cab75521530ab1b07dd5007874119a188b16270406440b165747fa6efc7"
+  "sourceCommit": "db705542be0061d51c135e72566fe0abba4dd3d4",
+  "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
+  "referenceSourceDigest": "sha256:868994bef86fb46d4fdff6c4dc3922a69254cd143c59b0400b1091300bf56a2b"
 }
 ```
 
@@ -185,7 +185,7 @@ Support: stable
     "typeText": "CustomEvent<TableSelectionChangeDetail<T>>",
     "detailType": {
       "typeText": "TableSelectionChangeDetail<T>",
-      "typeRef": "type:51682357021dfbdbbff5"
+      "typeRef": "type:5eb33a188994dbc354e3"
     },
     "bubbles": true,
     "composed": true,
@@ -561,6 +561,14 @@ React-only API (composition part or provider); the custom elements cover it with
       {
         "name": "retry-button",
         "description": "The retry button of the error state"
+      },
+      {
+        "name": "pagination-root",
+        "description": "The nested Pagination navigation"
+      },
+      {
+        "name": "pagination-item",
+        "description": "The nested Pagination page controls"
       },
       {
         "name": "pagination",
@@ -941,6 +949,7 @@ type Pagination = {
   total?: number;
   showTotal?: boolean;
   showSizeChanger?: boolean;
+  showQuickJumper?: boolean;
   pageSizeOptions?: number[];
 };
 type PageDetail = { page: number; pageSize: number };
@@ -983,6 +992,7 @@ export function setup(root: HTMLElement) {
     total: TOTAL,
     showTotal: true,
     showSizeChanger: true,
+    showQuickJumper: true,
     pageSizeOptions: [5, 10, 20],
   };
   load({ page: 1, pageSize: 5 });

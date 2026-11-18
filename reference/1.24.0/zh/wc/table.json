@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.0",
-    "sourceCommit": "1ec7f8c462afcd58cce98803534b965221e88a0b",
-    "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
-    "referenceSourceDigest": "sha256:8a812cab75521530ab1b07dd5007874119a188b16270406440b165747fa6efc7"
+    "sourceCommit": "db705542be0061d51c135e72566fe0abba4dd3d4",
+    "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
+    "referenceSourceDigest": "sha256:868994bef86fb46d4fdff6c4dc3922a69254cd143c59b0400b1091300bf56a2b"
   },
   "content": {},
   "components": [
@@ -167,7 +167,7 @@
             "typeText": "CustomEvent<TableSelectionChangeDetail<T>>",
             "detailType": {
               "typeText": "TableSelectionChangeDetail<T>",
-              "typeRef": "type:51682357021dfbdbbff5"
+              "typeRef": "type:5eb33a188994dbc354e3"
             },
             "bubbles": true,
             "composed": true,
@@ -567,6 +567,14 @@
           "description": "The retry button of the error state"
         },
         {
+          "name": "pagination-root",
+          "description": "The nested Pagination navigation"
+        },
+        {
+          "name": "pagination-item",
+          "description": "The nested Pagination page controls"
+        },
+        {
           "name": "pagination",
           "description": "The `<minerva-pagination>` (its root and item parts are exported as pagination-root / pagination-item)"
         }
@@ -855,7 +863,7 @@
       "entry": "apps/docs/src/docs/pages/table/wc/pagination.html",
       "files": {
         "apps/docs/src/docs/pages/table/wc/pagination.html": "<minerva-data-table\n  id=\"orders\"\n  row-key=\"id\"\n  size=\"small\"\n  loading-rows=\"5\"\n></minerva-data-table>\n",
-        "apps/docs/src/docs/pages/table/wc/pagination.ts": "// The table does not slice `rows`: on `minerva-page-change` load the\n// requested page (simulated server call, `loading` shows skeleton rows).\ntype Order = { id: number; item: string; amount: string };\ntype Column = { key: string; header: string; align?: \"right\" };\ntype Pagination = {\n  current?: number;\n  pageSize?: number;\n  total?: number;\n  showTotal?: boolean;\n  showSizeChanger?: boolean;\n  pageSizeOptions?: number[];\n};\ntype PageDetail = { page: number; pageSize: number };\n\nconst TOTAL = 42;\nconst ITEMS = [\"Keyboard\", \"Monitor\", \"Headset\", \"Webcam\", \"Dock\", \"Mouse\"];\n\nexport function setup(root: HTMLElement) {\n  const table = root.querySelector<\n    HTMLElement & {\n      columns: Column[];\n      rows: Order[];\n      loading: boolean;\n      pagination: Pagination;\n    }\n  >(\"#orders\")!;\n  let timer: ReturnType<typeof setTimeout> | undefined;\n  const load = ({ page, pageSize }: PageDetail) => {\n    table.loading = true;\n    clearTimeout(timer);\n    timer = setTimeout(() => {\n      const first = (page - 1) * pageSize + 1;\n      const count = Math.max(0, Math.min(pageSize, TOTAL - first + 1));\n      table.rows = Array.from({ length: count }, (_, i) => ({\n        id: first + i,\n        item: ITEMS[(first + i) % ITEMS.length],\n        amount: `$${((first + i) * 17.5).toFixed(2)}`,\n      }));\n      table.loading = false;\n    }, 400);\n  };\n  table.columns = [\n    { key: \"id\", header: \"#\" },\n    { key: \"item\", header: \"Item\" },\n    { key: \"amount\", header: \"Amount\", align: \"right\" },\n  ];\n  table.pagination = {\n    current: 1,\n    pageSize: 5,\n    total: TOTAL,\n    showTotal: true,\n    showSizeChanger: true,\n    pageSizeOptions: [5, 10, 20],\n  };\n  load({ page: 1, pageSize: 5 });\n  const onPage = (event: Event) =>\n    load((event as CustomEvent<PageDetail>).detail);\n  table.addEventListener(\"minerva-page-change\", onPage);\n  return () => {\n    clearTimeout(timer);\n    table.removeEventListener(\"minerva-page-change\", onPage);\n  };\n}\n"
+        "apps/docs/src/docs/pages/table/wc/pagination.ts": "// The table does not slice `rows`: on `minerva-page-change` load the\n// requested page (simulated server call, `loading` shows skeleton rows).\ntype Order = { id: number; item: string; amount: string };\ntype Column = { key: string; header: string; align?: \"right\" };\ntype Pagination = {\n  current?: number;\n  pageSize?: number;\n  total?: number;\n  showTotal?: boolean;\n  showSizeChanger?: boolean;\n  showQuickJumper?: boolean;\n  pageSizeOptions?: number[];\n};\ntype PageDetail = { page: number; pageSize: number };\n\nconst TOTAL = 42;\nconst ITEMS = [\"Keyboard\", \"Monitor\", \"Headset\", \"Webcam\", \"Dock\", \"Mouse\"];\n\nexport function setup(root: HTMLElement) {\n  const table = root.querySelector<\n    HTMLElement & {\n      columns: Column[];\n      rows: Order[];\n      loading: boolean;\n      pagination: Pagination;\n    }\n  >(\"#orders\")!;\n  let timer: ReturnType<typeof setTimeout> | undefined;\n  const load = ({ page, pageSize }: PageDetail) => {\n    table.loading = true;\n    clearTimeout(timer);\n    timer = setTimeout(() => {\n      const first = (page - 1) * pageSize + 1;\n      const count = Math.max(0, Math.min(pageSize, TOTAL - first + 1));\n      table.rows = Array.from({ length: count }, (_, i) => ({\n        id: first + i,\n        item: ITEMS[(first + i) % ITEMS.length],\n        amount: `$${((first + i) * 17.5).toFixed(2)}`,\n      }));\n      table.loading = false;\n    }, 400);\n  };\n  table.columns = [\n    { key: \"id\", header: \"#\" },\n    { key: \"item\", header: \"Item\" },\n    { key: \"amount\", header: \"Amount\", align: \"right\" },\n  ];\n  table.pagination = {\n    current: 1,\n    pageSize: 5,\n    total: TOTAL,\n    showTotal: true,\n    showSizeChanger: true,\n    showQuickJumper: true,\n    pageSizeOptions: [5, 10, 20],\n  };\n  load({ page: 1, pageSize: 5 });\n  const onPage = (event: Event) =>\n    load((event as CustomEvent<PageDetail>).detail);\n  table.addEventListener(\"minerva-page-change\", onPage);\n  return () => {\n    clearTimeout(timer);\n    table.removeEventListener(\"minerva-page-change\", onPage);\n  };\n}\n"
       },
       "dependencies": [],
       "contextImports": [],
@@ -933,6 +941,10 @@
         "selection": {
           "title": "行选择",
           "description": "rowSelection 添加复选框列和全选复选框（部分选中时为半选状态）。全选会跳过禁用行；选中行带有 aria-selected 和高亮。"
+        },
+        "pagination": {
+          "title": "表格分页",
+          "description": "同时控制页码和每页条数，再将切分后的数据传给 Table。切换每页条数或跳转页码时，显示范围和订单数据同步更新。"
         }
       },
       "api": {
@@ -1084,6 +1096,10 @@
           "basic": {
             "title": "原生示例",
             "description": "在手机预览中操作原生组件。"
+          },
+          "pagination": {
+            "title": "成员分页",
+            "description": "数据拥有者将 24 行按每页 5 行切分，并在 onChange 中更新 current。原生端分页提供页码按钮和总数；每页条数选择和快速跳转属于 Web 控件。"
           }
         }
       }

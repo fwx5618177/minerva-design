@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.0",
-    "sourceCommit": "1ec7f8c462afcd58cce98803534b965221e88a0b",
-    "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
-    "referenceSourceDigest": "sha256:8a812cab75521530ab1b07dd5007874119a188b16270406440b165747fa6efc7"
+    "sourceCommit": "db705542be0061d51c135e72566fe0abba4dd3d4",
+    "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
+    "referenceSourceDigest": "sha256:868994bef86fb46d4fdff6c4dc3922a69254cd143c59b0400b1091300bf56a2b"
   },
   "content": {},
   "components": [
@@ -1210,7 +1210,7 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/table/demos/data-table.tsx",
       "files": {
-        "apps/docs/src/docs/pages/table/demos/data-table.tsx": "import { useState } from \"react\";\nimport { Button, DataTable } from \"minerva-design\";\n\nconst all = Array.from({ length: 42 }, (_, i) => ({\n  id: i + 1,\n  name: `User ${i + 1}`,\n  email: `user${i + 1}@example.com`,\n}));\n\nconst columns = [\n  { key: \"id\", header: \"ID\", width: 60 },\n  { key: \"name\", header: \"Name\" },\n  { key: \"email\", header: \"Email\" },\n];\n\nexport default function DataTableDemo() {\n  const [page, setPage] = useState(1);\n  const [failed, setFailed] = useState(false);\n  // Rows are paginated by the data owner (here: a slice of a local array).\n  const rows = all.slice((page - 1) * 5, page * 5);\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        size=\"small\"\n        onClick={() => setFailed(true)}\n      >\n        Simulate an error\n      </Button>\n      <DataTable\n        aria-label=\"Users\"\n        columns={columns}\n        data={rows}\n        rowKey={(row) => row.id}\n        error={failed ? \"Could not load the users.\" : undefined}\n        onRetry={() => setFailed(false)}\n        pagination={{\n          current: page,\n          pageSize: 5,\n          total: all.length,\n          onChange: setPage,\n        }}\n      />\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/table/demos/data-table.tsx": "import { useState } from \"react\";\nimport { Button, DataTable } from \"minerva-design\";\n\nconst all = Array.from({ length: 42 }, (_, i) => ({\n  id: i + 1,\n  name: `User ${i + 1}`,\n  email: `user${i + 1}@example.com`,\n}));\n\nconst columns = [\n  { key: \"id\", header: \"ID\", width: 60 },\n  { key: \"name\", header: \"Name\" },\n  { key: \"email\", header: \"Email\" },\n];\n\nexport default function DataTableDemo() {\n  const [page, setPage] = useState(1);\n  const [pageSize, setPageSize] = useState(5);\n  const [failed, setFailed] = useState(false);\n  // Rows are paginated by the data owner (here: a slice of a local array).\n  const rows = all.slice((page - 1) * pageSize, page * pageSize);\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        size=\"small\"\n        onClick={() => setFailed(true)}\n      >\n        Simulate an error\n      </Button>\n      <DataTable\n        aria-label=\"Users\"\n        columns={columns}\n        data={rows}\n        rowKey={(row) => row.id}\n        error={failed ? \"Could not load the users.\" : undefined}\n        onRetry={() => setFailed(false)}\n        pagination={{\n          current: page,\n          pageSize,\n          showSizeChanger: true,\n          pageSizeOptions: [5, 10, 20],\n          showQuickJumper: true,\n          showTotal: true,\n          totalRender: (total, [from, to]) => `${from}–${to} of ${total} users`,\n          total: all.length,\n          onChange: (nextPage, nextSize) => {\n            setPage(\n              Math.min(nextPage, Math.max(1, Math.ceil(all.length / nextSize))),\n            );\n            setPageSize(nextSize);\n          },\n        }}\n      />\n    </div>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
@@ -1233,6 +1233,21 @@
       "contextImports": [],
       "title": "固定列与滚动",
       "description": "scroll.x 设置最小宽度，scroll.y 限制高度并固定表头。固定列必须设置 width，并连续声明在开头（left）或末尾（right）；ellipsis 截断长文本。 当固定列的实测总宽度使滚动区域不足 120px 时，组件自动取消固定，所有字段和操作仍可通过横向滚动访问。"
+    },
+    {
+      "id": "pagination",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/demos/pagination.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/table/demos/pagination.tsx": "import { useState } from \"react\";\nimport { Pagination, Table } from \"minerva-design\";\n\nconst orders = Array.from({ length: 42 }, (_, index) => ({\n  id: index + 1,\n  order: `ORD-${String(index + 1).padStart(3, \"0\")}`,\n  customer: [\"Alex Morgan\", \"Sam Rivera\", \"Taylor Chen\", \"Jordan Lee\"][\n    index % 4\n  ],\n  amount: `$${(125 + index * 17.5).toFixed(2)}`,\n}));\nconst columns = [\n  { key: \"order\", header: \"Order\", width: 140 },\n  { key: \"customer\", header: \"Customer\" },\n  { key: \"amount\", header: \"Amount\", align: \"right\" as const },\n];\n\nexport default function PaginationDemo() {\n  const [page, setPage] = useState(1);\n  const [pageSize, setPageSize] = useState(5);\n  const rows = orders.slice((page - 1) * pageSize, page * pageSize);\n\n  return (\n    <div style={{ display: \"grid\", gap: 16 }}>\n      <Table\n        aria-label=\"Paginated orders\"\n        columns={columns}\n        data={rows}\n        rowKey={(row) => row.id}\n      />\n      <Pagination\n        current={page}\n        pageSize={pageSize}\n        total={orders.length}\n        showSizeChanger\n        pageSizeOptions={[5, 10, 20]}\n        showQuickJumper\n        showTotal\n        totalRender={(total, [from, to]) => `${from}–${to} of ${total} orders`}\n        onChange={(nextPage, nextSize) => {\n          setPage(\n            Math.min(\n              nextPage,\n              Math.max(1, Math.ceil(orders.length / nextSize)),\n            ),\n          );\n          setPageSize(nextSize);\n        }}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "表格分页",
+      "description": "同时控制页码和每页条数，再将切分后的数据传给 Table。切换每页条数或跳转页码时，显示范围和订单数据同步更新。"
     },
     {
       "id": "selection",
@@ -1338,6 +1353,10 @@
         "selection": {
           "title": "行选择",
           "description": "rowSelection 添加复选框列和全选复选框（部分选中时为半选状态）。全选会跳过禁用行；选中行带有 aria-selected 和高亮。"
+        },
+        "pagination": {
+          "title": "表格分页",
+          "description": "同时控制页码和每页条数，再将切分后的数据传给 Table。切换每页条数或跳转页码时，显示范围和订单数据同步更新。"
         }
       },
       "api": {
@@ -1489,6 +1508,10 @@
           "basic": {
             "title": "原生示例",
             "description": "在手机预览中操作原生组件。"
+          },
+          "pagination": {
+            "title": "成员分页",
+            "description": "数据拥有者将 24 行按每页 5 行切分，并在 onChange 中更新 current。原生端分页提供页码按钮和总数；每页条数选择和快速跳转属于 Web 控件。"
           }
         }
       }

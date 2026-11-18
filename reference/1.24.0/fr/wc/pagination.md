@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.0",
-  "sourceCommit": "1ec7f8c462afcd58cce98803534b965221e88a0b",
-  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
-  "referenceSourceDigest": "sha256:8a812cab75521530ab1b07dd5007874119a188b16270406440b165747fa6efc7"
+  "sourceCommit": "db705542be0061d51c135e72566fe0abba4dd3d4",
+  "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
+  "referenceSourceDigest": "sha256:868994bef86fb46d4fdff6c4dc3922a69254cd143c59b0400b1091300bf56a2b"
 }
 ```
 
@@ -175,7 +175,7 @@ Support: stable
     "typeText": "CustomEvent<PaginationChangeDetail>",
     "detailType": {
       "typeText": "PaginationChangeDetail",
-      "typeRef": "type:471a98f18e5c772ee6df"
+      "typeRef": "type:fff5c8343b292113fd0b"
     },
     "bubbles": true,
     "composed": true,
@@ -217,7 +217,7 @@ Support: stable
     "source": "web-components/src/components/pagination/pagination.ts",
     "className": "MinervaPagination",
     "summary": "Page navigation with jumper, page size selector and total.",
-    "description": "Page navigation (`<Pagination>` of React): page buttons with jump items or a compact list with gaps, prev / next, a simple mode with a page input, a quick jumper, a native page-size select and a total. Arrow keys (swapped in RTL), Home and End on the page buttons change the page and move focus to it; focus never gets lost when the focused button is disabled or removed by a page change.",
+    "description": "Page navigation (`<Pagination>` of React): page buttons with jump items or a compact list with gaps, prev / next, a simple mode with a page input, a quick jumper, a page-size Select dropdown and a total. Arrow keys (swapped in RTL), Home and End on the page buttons change the page and move focus to it; focus never gets lost when the focused button is disabled or removed by a page change.",
     "properties": [
       {
         "name": "current",
@@ -259,7 +259,7 @@ Support: stable
         "attribute": "show-size-changer",
         "type": "boolean",
         "default": "false",
-        "description": "Shows a page size selector (native `<select>`)"
+        "description": "Shows a page size Select dropdown"
       },
       {
         "name": "pageSizeOptions",
@@ -410,7 +410,23 @@ Support: stable
       },
       {
         "name": "size-changer",
-        "description": "The page size `<select>`"
+        "description": "The page size selector wrapper"
+      },
+      {
+        "name": "size-changer-trigger",
+        "description": "The Select combobox trigger"
+      },
+      {
+        "name": "size-changer-value",
+        "description": "The selected page size label"
+      },
+      {
+        "name": "size-changer-icon",
+        "description": "The Select chevron"
+      },
+      {
+        "name": "size-changer-content",
+        "description": "The page size listbox"
       },
       {
         "name": "simple-input",

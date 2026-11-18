@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.0",
-  "sourceCommit": "1ec7f8c462afcd58cce98803534b965221e88a0b",
-  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
-  "referenceSourceDigest": "sha256:8a812cab75521530ab1b07dd5007874119a188b16270406440b165747fa6efc7"
+  "sourceCommit": "db705542be0061d51c135e72566fe0abba4dd3d4",
+  "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
+  "referenceSourceDigest": "sha256:868994bef86fb46d4fdff6c4dc3922a69254cd143c59b0400b1091300bf56a2b"
 }
 ```
 
@@ -889,7 +889,7 @@ export default function ManyPagesDemo() {
 
 ## Example: 响应式
 
-responsive 会在小屏幕上调整布局。
+responsive 会在小屏幕上精简页码按钮。每页条数和快速跳页仍可使用，空间不足时自动换行。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -977,7 +977,7 @@ export default function SimpleDemo() {
 
 ## Example: 每页条数
 
-showSizeChanger 添加每页条数选择器；切换后 onChange 收到第 1 页和新的每页条数。
+showSizeChanger 使用组件库的 Select 选择每页条数。在 onChange 中同步更新受控的 current 和 pageSize；切换条数会回到第 1 页。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 

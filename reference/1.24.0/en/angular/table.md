@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.0",
-  "sourceCommit": "1ec7f8c462afcd58cce98803534b965221e88a0b",
-  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
-  "referenceSourceDigest": "sha256:8a812cab75521530ab1b07dd5007874119a188b16270406440b165747fa6efc7"
+  "sourceCommit": "db705542be0061d51c135e72566fe0abba4dd3d4",
+  "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
+  "referenceSourceDigest": "sha256:868994bef86fb46d4fdff6c4dc3922a69254cd143c59b0400b1091300bf56a2b"
 }
 ```
 
@@ -616,6 +616,258 @@ Native Angular: MnTableRow. Native standalone component/directive; see platform 
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Paginated rows
+
+Compose MnDataTable with MnPagination and pass only the current slice of rows. Both page and pageSize are controlled; changing page size returns to page 1. The output reports the visible range and total.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: @angular/core, minerva-design
+
+Documentation context imports: none
+
+### example.ts
+
+```tsx
+import { Component } from '@angular/core';
+import { MnDataTable, MnPagination } from 'minerva-design/angular';
+
+@Component({
+  selector: 'app-example',
+  imports: [MnDataTable, MnPagination],
+  template: `
+<mn-data-table caption="Paginated members" [columns]="columns" [rows]="rows.slice((page-1)*pageSize,page*pageSize)"/><mn-pagination [total]="rows.length" [(page)]="page" [(pageSize)]="pageSize" [pageSizeOptions]="[5,10,20]" showSizeChanger showJumper/><output aria-live="polite">{{(page-1)*pageSize+1}}–{{page*pageSize > rows.length ? rows.length : page*pageSize}} of {{rows.length}} members</output>
+  `,
+})
+export class Example {
+  page = 1;
+  pageSize = 5;
+  columns = [
+  {
+    "key": "name",
+    "header": "Name"
+  },
+  {
+    "key": "role",
+    "header": "Role"
+  }
+];
+  rows = [
+  {
+    "id": 1,
+    "name": "Member 1",
+    "role": "Engineer"
+  },
+  {
+    "id": 2,
+    "name": "Member 2",
+    "role": "Designer"
+  },
+  {
+    "id": 3,
+    "name": "Member 3",
+    "role": "Engineer"
+  },
+  {
+    "id": 4,
+    "name": "Member 4",
+    "role": "Designer"
+  },
+  {
+    "id": 5,
+    "name": "Member 5",
+    "role": "Engineer"
+  },
+  {
+    "id": 6,
+    "name": "Member 6",
+    "role": "Designer"
+  },
+  {
+    "id": 7,
+    "name": "Member 7",
+    "role": "Engineer"
+  },
+  {
+    "id": 8,
+    "name": "Member 8",
+    "role": "Designer"
+  },
+  {
+    "id": 9,
+    "name": "Member 9",
+    "role": "Engineer"
+  },
+  {
+    "id": 10,
+    "name": "Member 10",
+    "role": "Designer"
+  },
+  {
+    "id": 11,
+    "name": "Member 11",
+    "role": "Engineer"
+  },
+  {
+    "id": 12,
+    "name": "Member 12",
+    "role": "Designer"
+  },
+  {
+    "id": 13,
+    "name": "Member 13",
+    "role": "Engineer"
+  },
+  {
+    "id": 14,
+    "name": "Member 14",
+    "role": "Designer"
+  },
+  {
+    "id": 15,
+    "name": "Member 15",
+    "role": "Engineer"
+  },
+  {
+    "id": 16,
+    "name": "Member 16",
+    "role": "Designer"
+  },
+  {
+    "id": 17,
+    "name": "Member 17",
+    "role": "Engineer"
+  },
+  {
+    "id": 18,
+    "name": "Member 18",
+    "role": "Designer"
+  },
+  {
+    "id": 19,
+    "name": "Member 19",
+    "role": "Engineer"
+  },
+  {
+    "id": 20,
+    "name": "Member 20",
+    "role": "Designer"
+  },
+  {
+    "id": 21,
+    "name": "Member 21",
+    "role": "Engineer"
+  },
+  {
+    "id": 22,
+    "name": "Member 22",
+    "role": "Designer"
+  },
+  {
+    "id": 23,
+    "name": "Member 23",
+    "role": "Engineer"
+  },
+  {
+    "id": 24,
+    "name": "Member 24",
+    "role": "Designer"
+  },
+  {
+    "id": 25,
+    "name": "Member 25",
+    "role": "Engineer"
+  },
+  {
+    "id": 26,
+    "name": "Member 26",
+    "role": "Designer"
+  },
+  {
+    "id": 27,
+    "name": "Member 27",
+    "role": "Engineer"
+  },
+  {
+    "id": 28,
+    "name": "Member 28",
+    "role": "Designer"
+  },
+  {
+    "id": 29,
+    "name": "Member 29",
+    "role": "Engineer"
+  },
+  {
+    "id": 30,
+    "name": "Member 30",
+    "role": "Designer"
+  },
+  {
+    "id": 31,
+    "name": "Member 31",
+    "role": "Engineer"
+  },
+  {
+    "id": 32,
+    "name": "Member 32",
+    "role": "Designer"
+  },
+  {
+    "id": 33,
+    "name": "Member 33",
+    "role": "Engineer"
+  },
+  {
+    "id": 34,
+    "name": "Member 34",
+    "role": "Designer"
+  },
+  {
+    "id": 35,
+    "name": "Member 35",
+    "role": "Engineer"
+  },
+  {
+    "id": 36,
+    "name": "Member 36",
+    "role": "Designer"
+  },
+  {
+    "id": 37,
+    "name": "Member 37",
+    "role": "Engineer"
+  },
+  {
+    "id": 38,
+    "name": "Member 38",
+    "role": "Designer"
+  },
+  {
+    "id": 39,
+    "name": "Member 39",
+    "role": "Engineer"
+  },
+  {
+    "id": 40,
+    "name": "Member 40",
+    "role": "Designer"
+  },
+  {
+    "id": 41,
+    "name": "Member 41",
+    "role": "Engineer"
+  },
+  {
+    "id": 42,
+    "name": "Member 42",
+    "role": "Designer"
+  }
+];
+}
+
+```
 
 ## Example: Semantic composition and merged cells
 
