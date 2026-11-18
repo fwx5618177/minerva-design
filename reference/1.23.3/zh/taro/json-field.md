@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.3",
-  "sourceCommit": "701bc5e143b35324946db80bfe8336f93933f86e",
-  "sourceDigest": "sha256:96e12a2f39f4691c9ba257d9f8247a4fd810c72b772e3da161b9f71eb1e5795d",
-  "referenceSourceDigest": "sha256:35253c549c1c2f3c71b2980b1a393121d92facacf74d97b2ceeaabceaa79878c"
+  "sourceCommit": "476a289a1ef792c8950058e6bf15f1fe46ce18b0",
+  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
+  "referenceSourceDigest": "sha256:7eba577017a7e4dd3baaf9e50ce53ce6efacf4bb06dac6c879af80bc45a8bca3"
 }
 ```
 
@@ -162,7 +162,7 @@ Native textarea values, input events, locking, invalid JSON draft retention and 
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((value: string) => void) | undefined",
-    "typeRef": "type:f5a719e9dbbd9a2557bd",
+    "typeRef": "type:134edd885465bd2be7c1",
     "parameters": [
       {
         "name": "value",

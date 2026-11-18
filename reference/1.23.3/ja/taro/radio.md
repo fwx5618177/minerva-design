@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.3",
-  "sourceCommit": "701bc5e143b35324946db80bfe8336f93933f86e",
-  "sourceDigest": "sha256:96e12a2f39f4691c9ba257d9f8247a4fd810c72b772e3da161b9f71eb1e5795d",
-  "referenceSourceDigest": "sha256:35253c549c1c2f3c71b2980b1a393121d92facacf74d97b2ceeaabceaa79878c"
+  "sourceCommit": "476a289a1ef792c8950058e6bf15f1fe46ce18b0",
+  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
+  "referenceSourceDigest": "sha256:7eba577017a7e4dd3baaf9e50ce53ce6efacf4bb06dac6c879af80bc45a8bca3"
 }
 ```
 
@@ -248,7 +248,7 @@ Boolean/single/multiple and numeric Radio selection, native event callbacks and 
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((checked: boolean, event: ITouchEvent) => void) | undefined",
-    "typeRef": "type:6491e6bdcb723898937d",
+    "typeRef": "type:624077f025da37ad704a",
     "parameters": [
       {
         "name": "checked",
@@ -437,7 +437,7 @@ Boolean/single/multiple and numeric Radio selection, native event callbacks and 
     "source": "packages/taro/src/forms.tsx",
     "kind": "array",
     "typeText": "SelectionOption[] | undefined",
-    "typeRef": "type:632f7ea286743241ff8a",
+    "typeRef": "type:fd9b90151401e164cfe6",
     "required": false
   },
   {
@@ -464,7 +464,7 @@ Boolean/single/multiple and numeric Radio selection, native event callbacks and 
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((value: string | number, event: ITouchEvent) => void) | undefined",
-    "typeRef": "type:ae4152ac939956368740",
+    "typeRef": "type:12bc7b5b3ff3867ba9ee",
     "parameters": [
       {
         "name": "value",

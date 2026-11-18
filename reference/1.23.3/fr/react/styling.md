@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.3",
-  "sourceCommit": "701bc5e143b35324946db80bfe8336f93933f86e",
-  "sourceDigest": "sha256:96e12a2f39f4691c9ba257d9f8247a4fd810c72b772e3da161b9f71eb1e5795d",
-  "referenceSourceDigest": "sha256:35253c549c1c2f3c71b2980b1a393121d92facacf74d97b2ceeaabceaa79878c"
+  "sourceCommit": "476a289a1ef792c8950058e6bf15f1fe46ce18b0",
+  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
+  "referenceSourceDigest": "sha256:7eba577017a7e4dd3baaf9e50ce53ce6efacf4bb06dac6c879af80bc45a8bca3"
 }
 ```
 
@@ -74,9 +74,11 @@ Conséquence : les resets globaux hors couche (button { background: none }, norm
 
 Pas de bordure d'un seul côté : Minerva ne marque jamais un état par une bande sur un bord (pas de barre d'accent à gauche d'un élément en surbrillance, pas de bordure soulignant l'onglet sélectionné, pas de bande sur une alerte ou une citation, pas d'ombre inset d'un seul côté). Les indicateurs sont des formes complètes : un fond, un anneau complet, une pastille arrondie ou un point. Les séparateurs entre lignes et sections sont des formes de séparation (une ligne de 1px dessinée par un pseudo-élément ou un élément séparateur), jamais un border-bottom de la ligne. Suivez la même règle dans vos surcharges ; les lignes de grille des tableaux et l'élément Divider lui-même sont les seules exceptions documentées.
 
-Le focus des contrôles de saisie (Input, Textarea, déclencheur de Select, NumberInput, TagInput, AutoComplete, TimePicker, Cascader, JsonField, KeyValueEditor, recherche de Command, champs de Pagination) remplace le contour natif du navigateur : la bordure prend la couleur de focus et un anneau en box-shadow entoure le contrôle. Les champs de texte l'affichent à chaque focus, souris comprise (:focus / :focus-within) ; les déclencheurs qui sont des boutons utilisent :focus-visible. La couleur de l'anneau vient du --focus-ring-color du thème, réglé par palette en clair et en sombre. Personnalisez-le avec les variables ci-dessous, sur :root, une portée de thème ou un seul contrôle.
+Le focus au pointeur modifie la bordure sans halo extérieur épais. Tab, les touches de navigation et les raccourcis de commande affichent un seul anneau de 2px. Ce traitement est partagé par les champs et leurs compositions dans React, Vue, Angular et Web Components. Il utilise --primary-color-text, ou --danger-color-text en cas d’erreur. Les variables --minerva-focus-* restent disponibles ; une largeur explicite conserve aussi l’anneau lors du focus au pointeur.
 
-Couleurs forcées (contraste élevé de Windows) : les box-shadows n'y sont pas peintes, donc chaque règle de focus définit aussi outline: 2px solid transparent. Le système transforme ce contour en une couleur système visible : le focus ne disparaît jamais. Conservez-le si vous redessinez l'anneau.
+Le contraste élevé de Windows utilise un contour Highlight sur le cadre extérieur. Les champs natifs internes ne dessinent pas un second indicateur. Conservez ce repli et placez vos styles de réinitialisation dans une couche antérieure.
+
+Les composants gèrent automatiquement la modalité d’entrée. Pour vos contrôles DOM, acquireFocusModality(document), depuis minerva-design/core, renvoie une fonction de nettoyage. Les utilisateurs d’un document partagent les mêmes écouteurs ; le dernier nettoyage restaure le style privé précédent. Appelez cette fonction après le montage dans le navigateur, avec ownerDocument, puis libérez-la à la destruction. Les variables de focus publiques restent prioritaires.
 
 ### Politique de stabilité
 
@@ -93,6 +95,28 @@ Non couverts : les noms de classes, la structure DOM des éléments sans hook et
 Thèmes, palettes et design tokens.
 
 Tokens, thèmes et langues pour les web components.
+
+Nom du projet
+
+Minerva Studio
+
+Date de publication
+
+Adresse e-mail
+
+Saisissez une adresse e-mail complète.
+
+Espace en lecture seule
+
+Notes de publication
+
+Décrivez cette publication…
+
+Actions rapides
+
+Planifier la publication
+
+Effacer la date
 
 ```css
 /* 1. Design tokens: the whole app (or a theme scope) */
@@ -183,25 +207,32 @@ minerva-menu:state(open) > [slot="trigger"] { }
 ```
 
 ```css
-/* The focus ring of every text-like control. Unset by default: the
-   ring falls back to the theme's --focus-ring-color (per palette, light
-   and dark), a 3px width and --primary-color for the border */
-:root {
-  --minerva-focus-ring-width: 4px;
+/* Default: pointer focus changes the border; keyboard navigation adds
+   one 2px ring. The frame owns the indicator, including composed controls. */
+.search-field {
+  --input-focus-color: var(--success-color);
+  --minerva-focus-ring-color: var(--success-color-text);
+}
+
+/* Optional explicit override: keeps a ring even for pointer focus.
+   Prefer the automatic default for ordinary forms. */
+.high-visibility {
+  --minerva-focus-ring-width: 3px;
   --minerva-focus-border-color: var(--primary-color-text);
 }
 
-/* One control: component variables still win for the border */
-.search-field {
-  --input-focus-color: var(--success-color);
-  --minerva-focus-ring-color: color-mix(in srgb, var(--success-color) 45%, transparent);
-}
+/* Keep the system-colored outline fallback in Windows High Contrast.
+   Do not globally suppress :focus or add a second outline to inner inputs. */
+```
 
-/* Restyling the ring yourself? Keep the transparent outline:
-   forced colors (High Contrast) paint it, box-shadows are dropped */
-[data-minerva="input"][data-part="root"]:focus-within {
-  box-shadow: 0 0 0 2px var(--primary-color);
-  outline: 2px solid transparent;
+```ts
+import { acquireFocusModality } from "minerva-design/core";
+
+// Custom DOM controls: acquire after mounting and release on teardown.
+// Framework components already manage this lifecycle automatically.
+export function mountCustomControl(element: HTMLElement) {
+  const release = acquireFocusModality(element.ownerDocument);
+  return () => release();
 }
 ```
 
@@ -217,6 +248,108 @@ wcSelector("modal", "content", { state: "open" });
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Focus et états des champs
+
+Cliquez dans un champ puis utilisez Tab pour comparer les deux modes. Le calendrier et les commandes sont interactifs ; les champs invalides et en lecture seule conservent leurs états.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/styling/demos/focus-treatment.tsx
+
+```tsx
+import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  Button,
+  CommandDialog,
+  DatePicker,
+  FormField,
+  Input,
+  Stack,
+  Textarea,
+} from "minerva-design";
+
+/** The frame owns focus; native fields must not add another outline. */
+export default function FocusTreatment() {
+  const { t } = useTranslation();
+  const text = (key: string) => t(`docs.styling.focusDemo.${key}`);
+  const dateRef = useRef<HTMLInputElement>(null);
+  const [date, setDate] = useState("");
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState("");
+  return (
+    <Stack gap={4} style={{ width: "100%", maxWidth: 760 }}>
+      <div
+        style={{
+          display: "grid",
+          gap: 20,
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
+        }}
+      >
+        <FormField label={text("name")}>
+          <Input placeholder={text("placeholder")} />
+        </FormField>
+        <FormField label={text("date")}>
+          <DatePicker
+            ref={dateRef}
+            aria-label={text("date")}
+            value={date}
+            onChange={setDate}
+          />
+        </FormField>
+        <FormField label={text("invalid")} errorMessage={text("error")}>
+          <Input defaultValue="hello@" />
+        </FormField>
+        <FormField label={text("readonly")}>
+          <Input readOnly defaultValue="Minerva Studio" />
+        </FormField>
+      </div>
+      <FormField label={text("notes")}>
+        <Textarea rows={2} placeholder={text("notesPlaceholder")} />
+      </FormField>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 12,
+        }}
+      >
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          {text("commands")}
+        </Button>
+        <output aria-live="polite">{selected}</output>
+      </div>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title={text("commands")}
+        shortcut={[]}
+        items={[
+          {
+            id: "schedule",
+            title: text("schedule"),
+            keywords: "schedule date calendar",
+          },
+          { id: "clear", title: text("clear"), keywords: "clear reset date" },
+        ]}
+        onSelect={(item) => {
+          setSelected(item.title);
+          if (item.id === "clear") setDate("");
+          else requestAnimationFrame(() => dateRef.current?.focus());
+        }}
+      />
+    </Stack>
+  );
+}
+
+```
 
 ## Example: Élément de menu mis en évidence
 

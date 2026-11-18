@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.3",
-  "sourceCommit": "701bc5e143b35324946db80bfe8336f93933f86e",
-  "sourceDigest": "sha256:96e12a2f39f4691c9ba257d9f8247a4fd810c72b772e3da161b9f71eb1e5795d",
-  "referenceSourceDigest": "sha256:35253c549c1c2f3c71b2980b1a393121d92facacf74d97b2ceeaabceaa79878c"
+  "sourceCommit": "476a289a1ef792c8950058e6bf15f1fe46ce18b0",
+  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
+  "referenceSourceDigest": "sha256:7eba577017a7e4dd3baaf9e50ce53ce6efacf4bb06dac6c879af80bc45a8bca3"
 }
 ```
 
@@ -69,7 +69,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "array",
     "typeText": "(string | AutoCompleteOption)[]",
-    "typeRef": "type:21ebe81e8ee65bc53b30",
+    "typeRef": "type:02007543cc5d35d5f15b",
     "required": true
   },
   {
@@ -77,7 +77,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((input: string, option: AutoCompleteOption) => boolean) | undefined",
-    "typeRef": "type:e8b60f7768b23c0e6938",
+    "typeRef": "type:566531cce97a095e642a",
     "parameters": [
       {
         "name": "input",
@@ -93,7 +93,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
         "required": true,
         "rest": false,
         "typeText": "AutoCompleteOption",
-        "typeRef": "type:3a1fe1d09f0928842790"
+        "typeRef": "type:bdcb02788b509d34a550"
       }
     ],
     "returnType": {
@@ -107,7 +107,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((a: AutoCompleteOption, b: AutoCompleteOption) => number) | undefined",
-    "typeRef": "type:e06cbacc9b3cbb4274e2",
+    "typeRef": "type:aac30a6fca94d345f120",
     "parameters": [
       {
         "name": "a",
@@ -115,7 +115,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
         "required": true,
         "rest": false,
         "typeText": "AutoCompleteOption",
-        "typeRef": "type:3a1fe1d09f0928842790"
+        "typeRef": "type:bdcb02788b509d34a550"
       },
       {
         "name": "b",
@@ -123,7 +123,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
         "required": true,
         "rest": false,
         "typeText": "AutoCompleteOption",
-        "typeRef": "type:3a1fe1d09f0928842790"
+        "typeRef": "type:bdcb02788b509d34a550"
       }
     ],
     "returnType": {
@@ -137,7 +137,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((option: AutoCompleteOption) => string) | undefined",
-    "typeRef": "type:5278b4ebc8560cdb2114",
+    "typeRef": "type:7a3796661791b9c080fc",
     "parameters": [
       {
         "name": "option",
@@ -145,7 +145,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
         "required": true,
         "rest": false,
         "typeText": "AutoCompleteOption",
-        "typeRef": "type:3a1fe1d09f0928842790"
+        "typeRef": "type:bdcb02788b509d34a550"
       }
     ],
     "returnType": {
@@ -199,7 +199,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "node",
     "typeText": "{ title?: ReactNode; description?: ReactNode; } | undefined",
-    "typeRef": "type:513c05ba0d2095d0207b",
+    "typeRef": "type:6d73d4f4e9132e07a4e3",
     "required": false
   },
   {
@@ -215,7 +215,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "node",
     "typeText": "(() => ReactNode) | undefined",
-    "typeRef": "type:d1d318a67eb23fef6b3c",
+    "typeRef": "type:55c1709074f2609450e3",
     "parameters": [],
     "returnType": {
       "typeText": "ReactNode",
@@ -228,7 +228,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "node",
     "typeText": "((option: AutoCompleteOption) => ReactNode) | undefined",
-    "typeRef": "type:b6ccbc578476c21caba1",
+    "typeRef": "type:7050f98f44925d33a39c",
     "parameters": [
       {
         "name": "option",
@@ -236,7 +236,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
         "required": true,
         "rest": false,
         "typeText": "AutoCompleteOption",
-        "typeRef": "type:3a1fe1d09f0928842790"
+        "typeRef": "type:bdcb02788b509d34a550"
       }
     ],
     "returnType": {
@@ -288,7 +288,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "object",
     "typeText": "{ x: number; y: number; } | undefined",
-    "typeRef": "type:6999ee8adb6148dd3898",
+    "typeRef": "type:6d27f2cc4dea1f530257",
     "required": false
   },
   {
@@ -436,7 +436,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((option: AutoCompleteOption) => void) | undefined",
-    "typeRef": "type:ea55e5fc11276e7f75f5",
+    "typeRef": "type:3426c056e77a49888f6a",
     "parameters": [
       {
         "name": "option",
@@ -444,7 +444,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
         "required": true,
         "rest": false,
         "typeText": "AutoCompleteOption",
-        "typeRef": "type:3a1fe1d09f0928842790"
+        "typeRef": "type:bdcb02788b509d34a550"
       }
     ],
     "returnType": {
@@ -458,7 +458,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((option: AutoCompleteOption) => void) | undefined",
-    "typeRef": "type:625658d1eea3101d9d15",
+    "typeRef": "type:77645a3818c5dc208038",
     "parameters": [
       {
         "name": "option",
@@ -466,7 +466,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
         "required": true,
         "rest": false,
         "typeText": "AutoCompleteOption",
-        "typeRef": "type:3a1fe1d09f0928842790"
+        "typeRef": "type:bdcb02788b509d34a550"
       }
     ],
     "returnType": {
@@ -480,7 +480,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((visible: boolean) => void) | undefined",
-    "typeRef": "type:1b9a3ed855bdee4729f2",
+    "typeRef": "type:f05b1ad1923973e24dfc",
     "parameters": [
       {
         "name": "visible",
@@ -502,7 +502,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((value: string) => void) | undefined",
-    "typeRef": "type:6250f3a83a916a3fe5cc",
+    "typeRef": "type:add16cce098bbe2e19a6",
     "parameters": [
       {
         "name": "value",
@@ -524,7 +524,7 @@ Filter/sort/group options including numeric values, loading/empty states, native
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((open: boolean) => void) | undefined",
-    "typeRef": "type:5722c29850834cdead8e",
+    "typeRef": "type:8f4be1ba8c0405ba3ef0",
     "parameters": [
       {
         "name": "open",

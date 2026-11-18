@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.3",
-  "sourceCommit": "701bc5e143b35324946db80bfe8336f93933f86e",
-  "sourceDigest": "sha256:96e12a2f39f4691c9ba257d9f8247a4fd810c72b772e3da161b9f71eb1e5795d",
-  "referenceSourceDigest": "sha256:35253c549c1c2f3c71b2980b1a393121d92facacf74d97b2ceeaabceaa79878c"
+  "sourceCommit": "476a289a1ef792c8950058e6bf15f1fe46ce18b0",
+  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
+  "referenceSourceDigest": "sha256:7eba577017a7e4dd3baaf9e50ce53ce6efacf4bb06dac6c879af80bc45a8bca3"
 }
 ```
 
@@ -79,7 +79,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "array",
     "typeText": "CascaderOption[]",
-    "typeRef": "type:0a0dd99a2907ba8f10a1",
+    "typeRef": "type:ff68458d1d39aa191e05",
     "required": true
   },
   {
@@ -111,7 +111,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((input: string, path: CascaderOption[]) => boolean) | undefined",
-    "typeRef": "type:6941f846c1bbc7af1b95",
+    "typeRef": "type:2d0a88510548343699c2",
     "parameters": [
       {
         "name": "input",
@@ -127,7 +127,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:0a0dd99a2907ba8f10a1"
+        "typeRef": "type:ff68458d1d39aa191e05"
       }
     ],
     "returnType": {
@@ -141,7 +141,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((path: CascaderOption[]) => void | Promise<void>) | undefined",
-    "typeRef": "type:6f67df9ae82b94208765",
+    "typeRef": "type:a2eb7f725c936a517c43",
     "parameters": [
       {
         "name": "path",
@@ -149,7 +149,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:0a0dd99a2907ba8f10a1"
+        "typeRef": "type:ff68458d1d39aa191e05"
       }
     ],
     "returnType": {
@@ -163,7 +163,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "node",
     "typeText": "((labels: string[], path: CascaderOption[]) => ReactNode) | undefined",
-    "typeRef": "type:896a59ebe2714742ad21",
+    "typeRef": "type:88afdb1f443a7f8a5798",
     "parameters": [
       {
         "name": "labels",
@@ -179,7 +179,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:0a0dd99a2907ba8f10a1"
+        "typeRef": "type:ff68458d1d39aa191e05"
       }
     ],
     "returnType": {
@@ -193,7 +193,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "node",
     "typeText": "((option: CascaderOption, level: number) => ReactNode) | undefined",
-    "typeRef": "type:42e603275ddad4ed131d",
+    "typeRef": "type:f1cbe00681917f5bf87e",
     "parameters": [
       {
         "name": "option",
@@ -201,7 +201,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption",
-        "typeRef": "type:d321d49c86ce9e3c8867"
+        "typeRef": "type:f8493c057de25af2ef11"
       },
       {
         "name": "level",
@@ -399,7 +399,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((value: (string | number)[], selectedOptions: CascaderOption[]) => void) | undefined",
-    "typeRef": "type:dbf2d1fc2e6268735e01",
+    "typeRef": "type:d019bf7256ee352d464e",
     "parameters": [
       {
         "name": "value",
@@ -415,7 +415,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:0a0dd99a2907ba8f10a1"
+        "typeRef": "type:ff68458d1d39aa191e05"
       }
     ],
     "returnType": {
@@ -429,7 +429,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((open: boolean) => void) | undefined",
-    "typeRef": "type:5722c29850834cdead8e",
+    "typeRef": "type:8f4be1ba8c0405ba3ef0",
     "parameters": [
       {
         "name": "open",

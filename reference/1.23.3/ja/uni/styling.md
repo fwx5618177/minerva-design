@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.3",
-  "sourceCommit": "701bc5e143b35324946db80bfe8336f93933f86e",
-  "sourceDigest": "sha256:96e12a2f39f4691c9ba257d9f8247a4fd810c72b772e3da161b9f71eb1e5795d",
-  "referenceSourceDigest": "sha256:35253c549c1c2f3c71b2980b1a393121d92facacf74d97b2ceeaabceaa79878c"
+  "sourceCommit": "476a289a1ef792c8950058e6bf15f1fe46ce18b0",
+  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
+  "referenceSourceDigest": "sha256:7eba577017a7e4dd3baaf9e50ce53ce6efacf4bb06dac6c879af80bc45a8bca3"
 }
 ```
 
@@ -74,9 +74,11 @@ minerva-design/tokens.css、minerva-design/style.css、styles/*.css、minerva-de
 
 片側だけのボーダーは使いません：Minerva は一辺のストライプで状態を示しません（ハイライト項目の左アクセントバー、選択タブの下線ボーダー、アラートや引用ブロックのストライプ、片側の inset シャドウはありません）。インジケーターは完全な形状です：背景の塗り、全周のリング、角丸のピル、ドット。行やセクションの区切りは区切り形状（疑似要素または区切り要素が描く 1px の線）で、行の border-bottom ではありません。上書きするときも同じルールに従ってください。テーブルのグリッド線と Divider 要素自体だけが文書化された例外です。
 
-テキスト系コントロール（Input、Textarea、Select のトリガー、NumberInput、TagInput、AutoComplete、TimePicker、Cascader、JsonField、KeyValueEditor、Command の検索欄、Pagination の入力欄）のフォーカスは、ブラウザー標準のアウトラインを置き換えます：ボーダーがフォーカス色に変わり、box-shadow のリングがコントロールを囲みます。テキストフィールドはマウスを含むすべてのフォーカスで表示されます（:focus / :focus-within）。ボタンであるトリガーは :focus-visible を使います。リングの色はテーマの --focus-ring-color から取られ、パレットごとにライトとダークで調整されています。:root、テーマのスコープ、または個々のコントロールで下記の変数を設定してカスタマイズできます。
+ポインターでフォーカスした場合は枠線だけを変更し、太い外側の輪郭は追加しません。Tab、方向キー、コマンドショートカットでは2pxのキーボードフォーカスリングを1つ表示します。React、Vue、Angular、Web Componentsの入力系コンポーネントと複合フィールドで共通です。通常は --primary-color-text、エラー時は --danger-color-text を使います。--minerva-focus-* による上書きも可能です。幅を明示するとポインターフォーカスでもリングが表示されます。
 
-強制カラーモード（Windows ハイコントラスト）：box-shadow は描画されないため、すべてのフォーカスルールは outline: 2px solid transparent も設定します。システムがこのアウトラインを見えるシステムカラーで描くので、フォーカスが消えることはありません。リングを作り直すときも残してください。
+Windowsのハイコントラストでは外側の枠にHighlightのシステム色を使います。内側の入力要素は輪郭を重ねません。この代替表示を維持し、アプリのリセットは先行するカスケードレイヤーに置いてください。
+
+各フレームワークのコンポーネントは入力方式を自動管理します。独自DOMコントロールでは minerva-design/core の acquireFocusModality(document) を使用できます。戻り値はクリーンアップ関数です。同一ドキュメントでリスナーを共有し、最後の解放時に以前の内部スタイルを復元します。ブラウザーでマウントした後に要素の ownerDocument を渡し、破棄時に解放してください。公開フォーカス変数による設定が優先されます。
 
 ### 安定性ポリシー
 
@@ -93,6 +95,28 @@ minerva-design/tokens.css、minerva-design/style.css、styles/*.css、minerva-de
 テーマ、パレット、デザイントークン。
 
 Web Components のトークン、テーマ、ロケール。
+
+プロジェクト名
+
+Minerva Studio
+
+リリース日
+
+メールアドレス
+
+完全なメールアドレスを入力してください。
+
+読み取り専用ワークスペース
+
+リリースノート
+
+今回のリリースを説明…
+
+クイックアクション
+
+リリースを予約
+
+日付をクリア
 
 ```css
 /* 1. Design tokens: the whole app (or a theme scope) */
@@ -183,25 +207,32 @@ minerva-menu:state(open) > [slot="trigger"] { }
 ```
 
 ```css
-/* The focus ring of every text-like control. Unset by default: the
-   ring falls back to the theme's --focus-ring-color (per palette, light
-   and dark), a 3px width and --primary-color for the border */
-:root {
-  --minerva-focus-ring-width: 4px;
+/* Default: pointer focus changes the border; keyboard navigation adds
+   one 2px ring. The frame owns the indicator, including composed controls. */
+.search-field {
+  --input-focus-color: var(--success-color);
+  --minerva-focus-ring-color: var(--success-color-text);
+}
+
+/* Optional explicit override: keeps a ring even for pointer focus.
+   Prefer the automatic default for ordinary forms. */
+.high-visibility {
+  --minerva-focus-ring-width: 3px;
   --minerva-focus-border-color: var(--primary-color-text);
 }
 
-/* One control: component variables still win for the border */
-.search-field {
-  --input-focus-color: var(--success-color);
-  --minerva-focus-ring-color: color-mix(in srgb, var(--success-color) 45%, transparent);
-}
+/* Keep the system-colored outline fallback in Windows High Contrast.
+   Do not globally suppress :focus or add a second outline to inner inputs. */
+```
 
-/* Restyling the ring yourself? Keep the transparent outline:
-   forced colors (High Contrast) paint it, box-shadows are dropped */
-[data-minerva="input"][data-part="root"]:focus-within {
-  box-shadow: 0 0 0 2px var(--primary-color);
-  outline: 2px solid transparent;
+```ts
+import { acquireFocusModality } from "minerva-design/core";
+
+// Custom DOM controls: acquire after mounting and release on teardown.
+// Framework components already manage this lifecycle automatically.
+export function mountCustomControl(element: HTMLElement) {
+  const release = acquireFocusModality(element.ownerDocument);
+  return () => release();
 }
 ```
 

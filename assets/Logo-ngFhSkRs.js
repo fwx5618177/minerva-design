@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{i as t,r as n}from"./native-preview-BRFLbKzw.js";var r,i;function a(){return(a=e((()=>{t(),r=n(),i=({size:e=26})=>(0,r.jsx)(`img`,{src:`/minerva-design/favicon.svg`,width:e,height:e,alt:``,"aria-hidden":`true`,"data-minerva-logo":!0,style:{flexShrink:0}})})))()}export{a as n,i as t};

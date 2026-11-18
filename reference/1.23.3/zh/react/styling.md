@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.23.3",
-  "sourceCommit": "701bc5e143b35324946db80bfe8336f93933f86e",
-  "sourceDigest": "sha256:96e12a2f39f4691c9ba257d9f8247a4fd810c72b772e3da161b9f71eb1e5795d",
-  "referenceSourceDigest": "sha256:35253c549c1c2f3c71b2980b1a393121d92facacf74d97b2ceeaabceaa79878c"
+  "sourceCommit": "476a289a1ef792c8950058e6bf15f1fe46ce18b0",
+  "sourceDigest": "sha256:b7c3468445a6a9337f252a14f73347509078e26d4ed34efcf08034d5d4d49c91",
+  "referenceSourceDigest": "sha256:7eba577017a7e4dd3baaf9e50ce53ce6efacf4bb06dac6c879af80bc45a8bca3"
 }
 ```
 
@@ -74,9 +74,11 @@ minerva-design/tokens.css、minerva-design/style.css、styles/*.css 和 minerva-
 
 不使用单边边框：Minerva 从不用某一侧的色条表示状态（高亮项没有左侧强调条，选中的标签没有下划线边框，提示框和引用块没有侧边色条，也没有单边的 inset 阴影）。指示器都是完整形状：背景填充、完整描边环、圆角胶囊或圆点。行与区块之间的分隔线是分隔形状（由伪元素或分隔元素绘制的 1px 线条），而不是行的 border-bottom。自定义样式时请遵循同一规则；表格网格线和 Divider 元素本身是仅有的已记录例外。
 
-文本类控件（Input、Textarea、Select 触发器、NumberInput、TagInput、AutoComplete、TimePicker、Cascader、JsonField、KeyValueEditor、Command 搜索框、Pagination 输入框）的焦点样式取代了浏览器原生轮廓：边框变为焦点色，并由 box-shadow 绘制环绕控件的焦点环。文本输入框在任何聚焦方式下（包括鼠标）都会显示（:focus / :focus-within）；按钮类触发器使用 :focus-visible。焦点环颜色来自主题的 --focus-ring-color，按调色板分别为浅色和深色调校。可在 :root、主题作用域或单个控件上用下列变量自定义。
+鼠标点击时只改变控件边框，不再叠加粗重外圈；Tab、方向键和命令快捷键操作会显示一圈清晰的 2px 键盘焦点环。React、Vue、Angular 与 Web Components 的 Input、Textarea、Select、NumberInput、Cascader、Command 搜索框及其组合组件使用同一套规则。普通焦点环使用 --primary-color-text，错误态使用 --danger-color-text。仍可通过 --minerva-focus-* 自定义；显式设置焦点环宽度时，鼠标聚焦也会保留该外圈。
 
-强制颜色模式（Windows 高对比度）：该模式不绘制 box-shadow，因此每条焦点规则还会设置 outline: 2px solid transparent。系统会把这条轮廓渲染为可见的系统颜色，焦点不会消失。重新设计焦点环时请保留它。
+Windows 高对比度模式使用外层控件的 Highlight 系统色轮廓，内部原生输入框不再重复描边。请保留这个回退，并将业务重置样式放到更早的级联层。
+
+各框架组件会自动管理输入方式。自行实现 DOM 控件时，可以使用 minerva-design/core 的 acquireFocusModality(document)，它返回清理函数。同一文档内共享一组监听器，最后一个使用者释放时恢复原有的私有样式。请在浏览器挂载后使用元素的 ownerDocument 注册，并在销毁时清理；公开的焦点样式变量仍然优先。
 
 ### 稳定性策略
 
@@ -93,6 +95,28 @@ major 版本：删除或重命名其中任何一项，或把状态移到另一�
 主题、配色与设计令牌。
 
 Web Components 的令牌、主题与语言。
+
+项目名称
+
+Minerva Studio
+
+发布日期
+
+邮箱地址
+
+请输入完整的邮箱地址。
+
+只读工作空间
+
+发布说明
+
+描述本次发布…
+
+快速操作
+
+安排发布
+
+清空日期
 
 ```css
 /* 1. Design tokens: the whole app (or a theme scope) */
@@ -183,25 +207,32 @@ minerva-menu:state(open) > [slot="trigger"] { }
 ```
 
 ```css
-/* The focus ring of every text-like control. Unset by default: the
-   ring falls back to the theme's --focus-ring-color (per palette, light
-   and dark), a 3px width and --primary-color for the border */
-:root {
-  --minerva-focus-ring-width: 4px;
+/* Default: pointer focus changes the border; keyboard navigation adds
+   one 2px ring. The frame owns the indicator, including composed controls. */
+.search-field {
+  --input-focus-color: var(--success-color);
+  --minerva-focus-ring-color: var(--success-color-text);
+}
+
+/* Optional explicit override: keeps a ring even for pointer focus.
+   Prefer the automatic default for ordinary forms. */
+.high-visibility {
+  --minerva-focus-ring-width: 3px;
   --minerva-focus-border-color: var(--primary-color-text);
 }
 
-/* One control: component variables still win for the border */
-.search-field {
-  --input-focus-color: var(--success-color);
-  --minerva-focus-ring-color: color-mix(in srgb, var(--success-color) 45%, transparent);
-}
+/* Keep the system-colored outline fallback in Windows High Contrast.
+   Do not globally suppress :focus or add a second outline to inner inputs. */
+```
 
-/* Restyling the ring yourself? Keep the transparent outline:
-   forced colors (High Contrast) paint it, box-shadows are dropped */
-[data-minerva="input"][data-part="root"]:focus-within {
-  box-shadow: 0 0 0 2px var(--primary-color);
-  outline: 2px solid transparent;
+```ts
+import { acquireFocusModality } from "minerva-design/core";
+
+// Custom DOM controls: acquire after mounting and release on teardown.
+// Framework components already manage this lifecycle automatically.
+export function mountCustomControl(element: HTMLElement) {
+  const release = acquireFocusModality(element.ownerDocument);
+  return () => release();
 }
 ```
 
@@ -217,6 +248,108 @@ wcSelector("modal", "content", { state: "open" });
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: 焦点与控件状态
+
+点击输入框，再使用 Tab 比较鼠标和键盘的焦点反馈。日期面板与快速操作均为真实组件，错误态和只读字段保持各自的语义。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-i18next
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/styling/demos/focus-treatment.tsx
+
+```tsx
+import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  Button,
+  CommandDialog,
+  DatePicker,
+  FormField,
+  Input,
+  Stack,
+  Textarea,
+} from "minerva-design";
+
+/** The frame owns focus; native fields must not add another outline. */
+export default function FocusTreatment() {
+  const { t } = useTranslation();
+  const text = (key: string) => t(`docs.styling.focusDemo.${key}`);
+  const dateRef = useRef<HTMLInputElement>(null);
+  const [date, setDate] = useState("");
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState("");
+  return (
+    <Stack gap={4} style={{ width: "100%", maxWidth: 760 }}>
+      <div
+        style={{
+          display: "grid",
+          gap: 20,
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
+        }}
+      >
+        <FormField label={text("name")}>
+          <Input placeholder={text("placeholder")} />
+        </FormField>
+        <FormField label={text("date")}>
+          <DatePicker
+            ref={dateRef}
+            aria-label={text("date")}
+            value={date}
+            onChange={setDate}
+          />
+        </FormField>
+        <FormField label={text("invalid")} errorMessage={text("error")}>
+          <Input defaultValue="hello@" />
+        </FormField>
+        <FormField label={text("readonly")}>
+          <Input readOnly defaultValue="Minerva Studio" />
+        </FormField>
+      </div>
+      <FormField label={text("notes")}>
+        <Textarea rows={2} placeholder={text("notesPlaceholder")} />
+      </FormField>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 12,
+        }}
+      >
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          {text("commands")}
+        </Button>
+        <output aria-live="polite">{selected}</output>
+      </div>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title={text("commands")}
+        shortcut={[]}
+        items={[
+          {
+            id: "schedule",
+            title: text("schedule"),
+            keywords: "schedule date calendar",
+          },
+          { id: "clear", title: text("clear"), keywords: "clear reset date" },
+        ]}
+        onSelect={(item) => {
+          setSelected(item.title);
+          if (item.id === "clear") setDate("");
+          else requestAnimationFrame(() => dateRef.current?.focus());
+        }}
+      />
+    </Stack>
+  );
+}
+
+```
 
 ## Example: 高亮的菜单项
 
