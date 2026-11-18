@@ -41,7 +41,7 @@ export async function checkHomeWorkbench({
       ),
     });
     await wait(
-      `document.documentElement.lang === "${locale}" && ${preview}?.querySelector("input")`,
+      `document.documentElement?.lang === "${locale}" && ${preview}?.querySelector("input")`,
     );
   };
   for (const locale of ["en", "zh", "ja", "fr"]) {
