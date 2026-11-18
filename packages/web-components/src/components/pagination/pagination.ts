@@ -19,6 +19,8 @@ import {
   type PaginationMachineEvent,
   type PaginationMachineProps,
 } from "@minerva/core";
+import "../../elements/select";
+import type { MinervaSelect } from "../select/select";
 import { MachineController } from "../../controllers/machine";
 import { AriaController } from "../../internal/aria";
 import { DEV, devWarn } from "../../internal/dev";
@@ -91,7 +93,7 @@ interface Item {
 /**
  * Page navigation (`<Pagination>` of React): page buttons with jump
  * items or a compact list with gaps, prev / next, a simple mode with a page
- * input, a quick jumper, a native page-size select and a total. Arrow keys
+ * input, a quick jumper, a page-size Select dropdown and a total. Arrow keys
  * (swapped in RTL), Home and End on the page buttons change the page and
  * move focus to it; focus never gets lost when the focused button is
  * disabled or removed by a page change.
@@ -108,7 +110,11 @@ interface Item {
  * @csspart item--disabled - Item state of `item`: disabled
  * @csspart total - The total text
  * @csspart jumper - The quick jumper label (wraps its input)
- * @csspart size-changer - The page size `<select>`
+ * @csspart size-changer - The page size selector wrapper
+ * @csspart size-changer-trigger - The Select combobox trigger
+ * @csspart size-changer-value - The selected page size label
+ * @csspart size-changer-icon - The Select chevron
+ * @csspart size-changer-content - The page size listbox
  * @csspart simple-input - The page input of the simple mode
  * @fires minerva-page-change - The user changed the page or the page size (`detail: { page, pageSize }`); cancelable: `preventDefault()` keeps the current page and size (controlled pattern)
  */
@@ -119,6 +125,10 @@ export class MinervaPagination extends MinervaElement {
     css`
       :host {
         display: block;
+      }
+      .sizeChanger > minerva-select {
+        min-width: 0;
+        width: max-content;
       }
     `,
     sharedStyles(styles),
@@ -144,7 +154,7 @@ export class MinervaPagination extends MinervaElement {
   @property({ type: Boolean, attribute: "show-quick-jumper" })
   showQuickJumper = false;
 
-  /** Shows a page size selector (native `<select>`) */
+  /** Shows a page size Select dropdown */
   @property({ type: Boolean, attribute: "show-size-changer" })
   showSizeChanger = false;
 
@@ -359,12 +369,15 @@ export class MinervaPagination extends MinervaElement {
     }
   };
 
-  private handleSizeChange = (event: Event) => {
-    const select = event.target as HTMLSelectElement;
-    const newSize = parseInt(select.value, 10);
-    this.send({ type: "SET_PAGE_SIZE", pageSize: newSize });
-    // canceled: the select shows the current size again
-    if (this.pageSize !== newSize) select.value = String(this.pageSize);
+  private handleSizeChange = (event: CustomEvent<{ value: string }>) => {
+    event.stopPropagation();
+    const select = event.currentTarget as MinervaSelect;
+    this.send({
+      type: "SET_PAGE_SIZE",
+      pageSize: parseInt(event.detail.value, 10),
+    });
+    // Keep a canceled request controlled even when the property did not change.
+    select.value = String(this.pageSize);
   };
 
   private commitSimpleDraft = () => {
@@ -598,23 +611,17 @@ export class MinervaPagination extends MinervaElement {
       }
       ${
         this.showSizeChanger
-          ? html`<div class="sizeChanger">
-              <select
-                part="size-changer"
+          ? html`<div class="sizeChanger" part="size-changer">
+              <minerva-select
+                .value=${String(pageSize)}
+                .size=${this.size}
                 ?disabled=${this.disabled}
                 aria-label=${labels?.pageSize ?? t("pagination.pageSize")}
-                @change=${this.handleSizeChange}
+                exportparts="root:size-changer-trigger,value:size-changer-value,icon:size-changer-icon,content:size-changer-content"
+                @minerva-change=${this.handleSizeChange}
               >
-                ${options.map(
-                  (option) =>
-                    html`<option
-                      value=${option}
-                      .selected=${option === pageSize}
-                    >
-                      ${sizeOptionLabel(option)}
-                    </option>`,
-                )}
-              </select>
+                ${options.map((option) => html`<minerva-option value=${String(option)}>${sizeOptionLabel(option)}</minerva-option>`)}
+              </minerva-select>
             </div>`
           : nothing
       }

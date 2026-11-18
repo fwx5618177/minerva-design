@@ -147,6 +147,8 @@ const SELECTION_WIDTH = 48;
  * @csspart skeleton - A skeleton bar of the loading rows
  * @csspart error - The error state (role=alert)
  * @csspart retry-button - The retry button of the error state
+ * @csspart pagination-root - The nested Pagination navigation
+ * @csspart pagination-item - The nested Pagination page controls
  * @csspart pagination - The `<minerva-pagination>` (its root and item parts are exported as pagination-root / pagination-item)
  * @fires minerva-sort-change - The user changed the sort (`detail: { key, order }`, order `null` = unsorted); cancelable: `preventDefault()` keeps the current sort
  * @fires minerva-selection-change - The user changed the selected rows (`detail: { selectedRowKeys, selectedRows }`); cancelable: `preventDefault()` keeps the current selection

@@ -46,6 +46,16 @@ export default defineHooks({
         "The retry button of the error state. Web components only: React renders a Button, which has its own hooks",
       only: "wc",
     },
+    "pagination-root": {
+      description:
+        "The nested Pagination navigation forwarded through the web component shadow root",
+      only: "wc",
+    },
+    "pagination-item": {
+      description:
+        "The nested Pagination page controls forwarded through the web component shadow root",
+      only: "wc",
+    },
     pagination: {
       description:
         "The <minerva-pagination> (its root and item parts are exported as pagination-root / pagination-item). Web components only: React renders a Pagination, which has its own hooks",

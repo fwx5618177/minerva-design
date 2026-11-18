@@ -9,7 +9,6 @@ import { useFocusModality } from "../../internal/focus-modality";
  */
 import {
   computed,
-  nextTick,
   onBeforeUnmount,
   ref,
   useAttrs,
@@ -25,6 +24,8 @@ import {
   getPaginationVisibleRange,
   getTotalPages,
 } from "@minerva/core";
+import Select from "../Select/Select.vue";
+import SelectItem from "../Select/SelectItem.vue";
 import styles from "@react-styles/components/Pagination/pagination.module.scss";
 import { hooks } from "../../internal/hooks";
 import { useMachine } from "../../internal/machine";
@@ -226,12 +227,8 @@ function onJumpKeydown(event: KeyboardEvent) {
   }
 }
 
-async function onSizeChange(event: Event) {
-  const select = event.target as HTMLSelectElement;
-  dispatch({ type: "SET_PAGE_SIZE", pageSize: parseInt(select.value, 10) });
-  // A controlled parent may keep its page size: mirror it again.
-  await nextTick();
-  select.value = String(currentPageSize.value);
+function onSizeChange(value: string) {
+  dispatch({ type: "SET_PAGE_SIZE", pageSize: parseInt(value, 10) });
 }
 
 // Commits the simple-mode page: valid values clamped, invalid ones reverted
@@ -531,18 +528,26 @@ const ripplesOf = (key: string) =>
       />
     </label>
 
-    <div v-if="showSizeChanger" :class="styles.sizeChanger">
-      <select
-        v-bind="hooks('pagination', 'size-changer')"
-        :value="currentPageSize"
+    <div
+      v-if="showSizeChanger"
+      :class="styles.sizeChanger"
+      v-bind="hooks('pagination', 'size-changer')"
+    >
+      <Select
+        :model-value="String(currentPageSize)"
+        :size="size"
         :disabled="disabled"
         :aria-label="labels?.pageSize ?? t('pagination.pageSize')"
-        @change="onSizeChange"
+        @update:model-value="onSizeChange"
       >
-        <option v-for="option in sizeOptions" :key="option" :value="option">
+        <SelectItem
+          v-for="option in sizeOptions"
+          :key="option"
+          :value="String(option)"
+        >
           {{ sizeOptionLabel(option) }}
-        </option>
-      </select>
+        </SelectItem>
+      </Select>
     </div>
   </nav>
 </template>

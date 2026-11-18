@@ -1585,6 +1585,7 @@ export const docPages: DocPageMeta[] = [
       "basic",
       "variants",
       "fixed-columns",
+      "pagination",
       "states",
       "data-table",
       "compound",
@@ -1610,7 +1611,7 @@ export const docPages: DocPageMeta[] = [
         "DataTable",
       ],
       api: ["TableProps", "TableCellContentProps", "DataTableProps"],
-      demos: ["basic"],
+      demos: ["basic", "pagination"],
     },
   },
   {

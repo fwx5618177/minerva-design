@@ -18,6 +18,9 @@ import { MnHook } from "../../internal/hooks";
 import { injectId } from "../../internal/ids";
 import * as styles from "../../internal/styles";
 
+import { MnSelect } from "../select/select";
+import { MnSelectItem } from "../select/select-item";
+
 const TABS = new InjectionToken<MnTabs>("MnTabs");
 @Component({
   selector: "mn-tabs",
@@ -242,7 +245,7 @@ export class MnPageTab {
 }
 @Component({
   selector: "mn-pagination",
-  imports: [MnHook],
+  imports: [MnHook, MnSelect, MnSelectItem],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     "data-minerva": "pagination",
@@ -318,18 +321,19 @@ export class MnPageTab {
       /></label>
     }
     @if (showSizeChanger()) {
-      <select
-        mnHook="pagination"
-        mnPart="size-changer"
-        aria-label="Items per page"
-        [value]="pageSize()"
-        [disabled]="disabled()"
-        (change)="resize($event)"
-      >
-        @for (n of pageSizeOptions(); track n) {
-          <option [value]="n">{{ n }}</option>
-        }
-      </select>
+      <span mnHook="pagination" mnPart="size-changer" [class]="s.sizeChanger">
+        <mn-select
+          aria-label="Items per page"
+          [value]="'' + pageSize()"
+          [disabled]="disabled()"
+          [size]="size()"
+          (valueChange)="resize($event)"
+        >
+          @for (n of pageSizeOptions(); track n) {
+            <mn-select-item [value]="'' + n">{{ n }}</mn-select-item>
+          }
+        </mn-select>
+      </span>
     }`,
 })
 export class MnPagination {
@@ -363,11 +367,9 @@ export class MnPagination {
   protected jump(e: Event) {
     this.go(Number((e.target as HTMLInputElement).value));
   }
-  protected resize(e: Event) {
+  protected resize(value: string | undefined) {
     if (this.disabled()) return;
-    this.pageSize.set(
-      Math.max(1, Number((e.target as HTMLSelectElement).value)),
-    );
+    this.pageSize.set(Math.max(1, Number(value)));
     this.go(1);
   }
 }

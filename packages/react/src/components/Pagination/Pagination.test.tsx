@@ -393,12 +393,12 @@ describe("Pagination", () => {
         />,
       );
       const select = screen.getByRole("combobox", { name: "Items per page" });
+      expect(select).toHaveTextContent("10 / page");
+      await user.click(select);
       expect(screen.getAllByRole("option")).toHaveLength(2);
-      expect(select).toHaveValue("10");
-
-      await user.selectOptions(select, "25");
+      await user.click(screen.getByRole("option", { name: "25 / page" }));
       expect(onChange).toHaveBeenCalledWith(1, 25);
-      expect(select).toHaveValue("25");
+      expect(select).toHaveTextContent("25 / page");
       // 100 / 25 = 4 pages
       expect(pageButton(4)).toBeInTheDocument();
       expect(
@@ -414,7 +414,7 @@ describe("Pagination", () => {
       rerender(<Pagination total={100} pageSize={50} showSizeChanger />);
       expect(
         screen.getByRole("combobox", { name: "Items per page" }),
-      ).toHaveValue("50");
+      ).toHaveTextContent("50 / page");
       expect(pageButton(2)).toBeInTheDocument();
       expect(
         screen.queryByRole("button", { name: "Page 3" }),
@@ -550,7 +550,7 @@ describe("Pagination", () => {
       ).not.toBeInTheDocument();
       expect(
         screen.getByRole("combobox", { name: "Items per page" }),
-      ).toHaveValue("20");
+      ).toHaveTextContent("20 / page");
     });
 
     it("honors a controlled current that the parent does not update", async () => {
@@ -574,9 +574,10 @@ describe("Pagination", () => {
         />,
       );
       const select = screen.getByRole("combobox", { name: "Items per page" });
-      await user.selectOptions(select, "50");
+      await user.click(select);
+      await user.click(screen.getByRole("option", { name: "50 / page" }));
       expect(onChange).toHaveBeenCalledExactlyOnceWith(1, 50);
-      expect(select).toHaveValue("10");
+      expect(select).toHaveTextContent("10 / page");
       expect(pageButton(10)).toBeInTheDocument();
     });
 
@@ -606,10 +607,10 @@ describe("Pagination", () => {
       await user.click(pageButton(3));
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(pageButton(3)).toHaveAttribute("aria-current", "page");
-      await user.selectOptions(
+      await user.click(
         screen.getByRole("combobox", { name: "Items per page" }),
-        "20",
       );
+      await user.click(screen.getByRole("option", { name: "20 / page" }));
       expect(onChange).toHaveBeenCalledTimes(2);
       expect(onChange).toHaveBeenLastCalledWith(1, 20);
       expect(pageButton(1)).toHaveAttribute("aria-current", "page");
@@ -662,7 +663,7 @@ describe("Pagination", () => {
     ).toBeInTheDocument();
   });
 
-  it("adds the current page size to the options when missing", () => {
+  it("adds the current page size to the options when missing", async () => {
     render(
       <Pagination
         total={100}
@@ -673,10 +674,13 @@ describe("Pagination", () => {
     );
     expect(
       screen.getByRole("combobox", { name: "Items per page" }),
-    ).toHaveValue("15");
+    ).toHaveTextContent("15 / page");
+    await userEvent
+      .setup()
+      .click(screen.getByRole("combobox", { name: "Items per page" }));
     expect(
-      screen.getAllByRole("option").map((o) => o.getAttribute("value")),
-    ).toEqual(["10", "15", "20"]);
+      screen.getAllByRole("option").map((option) => option.textContent),
+    ).toEqual(["10 / page", "15 / page", "20 / page"]);
   });
 
   it("does not submit an enclosing form", async () => {
@@ -705,7 +709,7 @@ describe("Pagination localization", () => {
     });
   });
 
-  it("translates the built-in labels with the library language", () => {
+  it("translates the built-in labels with the library language", async () => {
     act(() => {
       i18n.changeLanguage("zh");
     });
@@ -726,6 +730,9 @@ describe("Pagination localization", () => {
     expect(
       screen.getByRole("combobox", { name: "每页条数" }),
     ).toBeInTheDocument();
+    await userEvent
+      .setup()
+      .click(screen.getByRole("combobox", { name: "每页条数" }));
     expect(
       screen.getByRole("option", { name: "10 条/页" }),
     ).toBeInTheDocument();
@@ -747,7 +754,7 @@ describe("Pagination localization", () => {
     ).toBeInTheDocument();
   });
 
-  it("lets the labels prop win over the translation", () => {
+  it("lets the labels prop win over the translation", async () => {
     act(() => {
       i18n.changeLanguage("zh");
     });
@@ -770,6 +777,9 @@ describe("Pagination localization", () => {
     expect(
       screen.getByRole("button", { name: "Go to page 3" }),
     ).toBeInTheDocument();
+    await userEvent
+      .setup()
+      .click(screen.getByRole("combobox", { name: "每页条数" }));
     expect(screen.getByRole("option", { name: "20 rows" })).toBeInTheDocument();
     // Entries that are not overridden keep the translation
     expect(screen.getByRole("button", { name: "下一页" })).toBeInTheDocument();

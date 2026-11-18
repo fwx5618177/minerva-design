@@ -15,9 +15,10 @@ const columns = [
 
 export default function DataTableDemo() {
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
   const [failed, setFailed] = useState(false);
   // Rows are paginated by the data owner (here: a slice of a local array).
-  const rows = all.slice((page - 1) * 5, page * 5);
+  const rows = all.slice((page - 1) * pageSize, page * pageSize);
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <Button
@@ -37,9 +38,19 @@ export default function DataTableDemo() {
         onRetry={() => setFailed(false)}
         pagination={{
           current: page,
-          pageSize: 5,
+          pageSize,
+          showSizeChanger: true,
+          pageSizeOptions: [5, 10, 20],
+          showQuickJumper: true,
+          showTotal: true,
+          totalRender: (total, [from, to]) => `${from}–${to} of ${total} users`,
           total: all.length,
-          onChange: setPage,
+          onChange: (nextPage, nextSize) => {
+            setPage(
+              Math.min(nextPage, Math.max(1, Math.ceil(all.length / nextSize))),
+            );
+            setPageSize(nextSize);
+          },
         }}
       />
     </div>

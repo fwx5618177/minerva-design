@@ -14,7 +14,27 @@ export default defineHooks({
     },
     total: { description: "The total text" },
     jumper: { description: "The quick jumper label (wraps its input)" },
-    "size-changer": { description: "The page size <select>" },
+    "size-changer": { description: "The page size Select wrapper" },
+    "size-changer-trigger": {
+      description:
+        "The nested Select combobox trigger through the web component shadow root",
+      only: "wc",
+    },
+    "size-changer-value": {
+      description:
+        "The nested Select value through the web component shadow root",
+      only: "wc",
+    },
+    "size-changer-icon": {
+      description:
+        "The nested Select chevron through the web component shadow root",
+      only: "wc",
+    },
+    "size-changer-content": {
+      description:
+        "The nested Select listbox through the web component shadow root",
+      only: "wc",
+    },
     "simple-input": { description: "The page input of the simple mode" },
   },
   states: {

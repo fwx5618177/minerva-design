@@ -313,7 +313,8 @@ describe("Pagination interactions", () => {
     );
     await user.click(pageButton(4));
     expect(current.value).toBe(4);
-    await user.selectOptions(screen.getByRole("combobox"), "20");
+    await user.click(screen.getByRole("combobox"));
+    await user.click(screen.getByRole("option", { name: "20 / page" }));
     expect(pageSize.value).toBe(20);
     expect(current.value).toBe(1);
     expect(screen.getAllByRole("button", { name: /^Page / })).toHaveLength(5);
@@ -330,15 +331,14 @@ describe("Pagination interactions", () => {
     await user.click(pageButton(4));
     expect(emitted("change")).toEqual([[4, 10]]);
     expect(pageButton(2)).toHaveAttribute("aria-current", "page");
-    await user.selectOptions(screen.getByRole("combobox"), "50");
+    await user.click(screen.getByRole("combobox"));
+    await user.click(screen.getByRole("option", { name: "50 / page" }));
     expect(emitted("change")!.at(-1)).toEqual([1, 50]);
     expect(emitted("update:pageSize")).toEqual([[50]]);
-    expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe(
-      "10",
-    );
+    expect(screen.getByRole("combobox")).toHaveTextContent("10 / page");
   });
 
-  it("starts at defaultCurrent and defaultPageSize; adds a missing size option", () => {
+  it("starts at defaultCurrent and defaultPageSize; adds a missing size option", async () => {
     render(Pagination, {
       props: {
         total: 100,
@@ -350,12 +350,28 @@ describe("Pagination interactions", () => {
     });
     expect(pageButton(3)).toHaveAttribute("aria-current", "page");
     expect(screen.getAllByRole("button", { name: /^Page / })).toHaveLength(4);
+    await userEvent.click(screen.getByRole("combobox"));
     expect(
       screen.getAllByRole("option").map((o) => o.textContent?.trim()),
     ).toEqual(["10 / page", "25 / page", "50 / page"]);
     const select = screen.getByRole("combobox");
-    expect(select).toHaveAttribute("data-part", "size-changer");
-    expect((select as HTMLSelectElement).value).toBe("25");
+    expect(select.closest('[data-part="size-changer"]')).toBeTruthy();
+    expect(select).toHaveTextContent("25 / page");
+  });
+
+  it("opens the size list and restores focus on Escape without changing the page", async () => {
+    const user = userEvent.setup();
+    const { emitted } = render(Pagination, {
+      props: { total: 100, showSizeChanger: true },
+    });
+    const trigger = screen.getByRole("combobox");
+    expect(trigger.tagName).toBe("BUTTON");
+    await user.click(trigger);
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+    expect(emitted("change")).toBeUndefined();
   });
 
   it("disabled: ignores clicks, keys and marks every item disabled", async () => {
@@ -545,7 +561,7 @@ describe("Pagination localization", () => {
     expect(screen.getByRole("combobox", { name: "每页条数" })).toBeVisible();
   });
 
-  it("lets the labels prop and aria-label win over the translation", () => {
+  it("lets the labels prop and aria-label win over the translation", async () => {
     withLocale("zh", {
       total: 200,
       current: 10,
@@ -572,6 +588,7 @@ describe("Pagination localization", () => {
     expect(button("Forward 5")).toBeVisible();
     expect(button("Go to page 9")).toBeVisible();
     expect(screen.getByRole("combobox", { name: "Rows" })).toBeVisible();
+    await userEvent.click(screen.getByRole("combobox"));
     expect(screen.getByRole("option", { name: "10 rows" })).toBeInTheDocument();
   });
 

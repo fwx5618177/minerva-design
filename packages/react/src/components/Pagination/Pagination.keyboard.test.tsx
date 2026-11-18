@@ -91,15 +91,36 @@ describe("Pagination keyboard", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it("changes the page size from the keyboard-focused native select and keeps focus there", async () => {
+  it("selects a page size using the keyboard and restores focus to its trigger", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(<Pagination total={100} showSizeChanger onChange={onChange} />);
     const select = screen.getByRole("combobox", { name: "Items per page" });
     select.focus();
-    await user.selectOptions(select, "20");
+    await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
     expect(onChange).toHaveBeenCalledWith(1, 20);
     expect(select).toHaveFocus();
+  });
+
+  it("cancels page-size selection with Escape without changing the page", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <Pagination
+        total={100}
+        defaultCurrent={3}
+        showSizeChanger
+        onChange={onChange}
+      />,
+    );
+    const trigger = screen.getByRole("combobox", { name: "Items per page" });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}{ArrowDown}{Escape}");
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveTextContent("10 / page");
+    expect(pageButton(3)).toHaveAttribute("aria-current", "page");
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it("keeps keyboard focus inside the navigation when a focused jump item disappears", async () => {

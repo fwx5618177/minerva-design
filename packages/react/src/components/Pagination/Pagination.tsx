@@ -21,6 +21,7 @@ import {
 } from "@minerva/core";
 import { cn } from "../../utils/cn";
 import type { PaginationProps } from "./types";
+import { Select, SelectItem } from "../Select";
 import { logicalArrowKey } from "../../internal/direction";
 import styles from "./pagination.module.scss";
 import useI18n from "../../hooks/useI18n";
@@ -498,20 +499,23 @@ const Pagination = ({
       )}
 
       {showSizeChanger && (
-        <div className={styles.sizeChanger}>
-          <select
-            {...hooks("pagination", "size-changer")}
-            value={currentPageSize}
+        <div
+          className={styles.sizeChanger}
+          {...hooks("pagination", "size-changer")}
+        >
+          <Select
+            value={String(currentPageSize)}
+            size={size}
             disabled={disabled}
-            onChange={(e) => handleSizeChange(e.target.value)}
+            onChange={handleSizeChange}
             aria-label={sizeLabel}
           >
             {sizeOptions.map((option) => (
-              <option key={option} value={option}>
+              <SelectItem key={option} value={String(option)}>
                 {sizeOptionLabel(option)}
-              </option>
+              </SelectItem>
             ))}
-          </select>
+          </Select>
         </div>
       )}
     </nav>

@@ -205,11 +205,15 @@ describe("Pagination modes and attributes", () => {
     expect(screen.queryByRole("button", { name: "Next page" })).toBeNull();
   });
 
-  it("renders the page-size selector as a native select", () => {
+  it("uses the library Select trigger for page-size selection", () => {
     renderPager({ showSizeChanger: true, pageSizeOptions: [10, 20] });
     const select = screen.getByRole("combobox", { name: "Items per page" });
-    expect(select.tagName).toBe("SELECT");
-    expect(select.parentElement).toHaveClass(styles.sizeChanger);
+    expect(select.tagName).toBe("BUTTON");
+    expect(select).toHaveAttribute("data-minerva", "select");
+    expect(select).toHaveAttribute("aria-haspopup", "listbox");
+    expect(
+      select.closest('[data-minerva="pagination"][data-part="size-changer"]'),
+    ).toHaveClass(styles.sizeChanger);
   });
 
   it("is a labelled navigation landmark that forwards ref and attributes", () => {

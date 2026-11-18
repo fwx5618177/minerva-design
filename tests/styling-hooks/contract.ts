@@ -160,6 +160,32 @@ function hosts(root: ParentNode, out: Element[] = []): Element[] {
   return out;
 }
 
+/** Parts visible to an enclosing ::part selector, including actual re-exports.
+ * An exportparts declaration alone is not evidence: the source must render,
+ * and every intermediate shadow boundary must explicitly forward it.
+ */
+function exposedPartGroups(root: ShadowRoot | null): string[][] {
+  if (!root) return [];
+  const groups = Array.from(root.querySelectorAll("[part]")).map((element) =>
+    (element.getAttribute("part") ?? "").split(/\s+/).filter(Boolean),
+  );
+  for (const child of Array.from(root.querySelectorAll("[exportparts]"))) {
+    const mappings = (child.getAttribute("exportparts") ?? "")
+      .split(",")
+      .map((mapping) => mapping.split(":").map((name) => name.trim()))
+      .filter((names) => names.length <= 2 && names[0]);
+    for (const sourceGroup of exposedPartGroups(child.shadowRoot)) {
+      const aliases = mappings.flatMap(([source, alias = source]) =>
+        alias && sourceGroup.includes(source) ? [alias] : [],
+      );
+      // Keep physical source elements separate: an item state must be on
+      // the same element as its base part, even across forwarding chains.
+      if (aliases.length) groups.push(aliases);
+    }
+  }
+  return groups;
+}
+
 /**
  * Checks every Minerva element in `root` (and nested shadow roots): the
  * `part` names of its own shadow root and its custom states.
@@ -184,10 +210,7 @@ export function checkWcDom(
       continue;
     }
     const spec = manifest[component];
-    for (const el of Array.from(
-      host.shadowRoot?.querySelectorAll("[part]") ?? [],
-    )) {
-      const names = (el.getAttribute("part") ?? "").split(/\s+/);
+    for (const names of exposedPartGroups(host.shadowRoot)) {
       for (const part of names) {
         if (!part) continue;
         const separator = part.indexOf(ITEM_STATE_SEPARATOR);

@@ -5,12 +5,12 @@ const columns = [
   { key: "name", header: "Name" },
   { key: "role", header: "Role" },
 ];
-const data = [
-  { id: 1, name: "Ada", role: "Designer" },
-  { id: 2, name: "Grace", role: "Engineer" },
-  { id: 3, name: "Alan", role: "Researcher" },
-];
 const page = ref(1);
+const pageSize = ref(5);
+const changePage = (next: number, size: number) => {
+  page.value = Math.min(next, Math.max(1, Math.ceil(rows.length / size)));
+  pageSize.value = size;
+};
 const rows = Array.from({ length: 24 }, (_, index) => ({
   id: index + 1,
   name: `Member ${index + 1}`,
@@ -20,13 +20,18 @@ const rows = Array.from({ length: 24 }, (_, index) => ({
 <template>
   <DataTable
     :columns="columns"
-    :data="rows.slice((page - 1) * 5, page * 5)"
+    :data="rows.slice((page - 1) * pageSize, page * pageSize)"
     :row-key="(row) => row.id"
     :pagination="{
       current: page,
-      pageSize: 5,
+      pageSize,
+      showSizeChanger: true,
+      pageSizeOptions: [5, 10, 20],
+      showQuickJumper: true,
+      showTotal: true,
+      totalRender: (total, [from, to]) => `${from}–${to} of ${total} members`,
       total: rows.length,
-      onChange: (next) => (page = next),
+      onChange: changePage,
     }"
     aria-label="Paginated members"
   />

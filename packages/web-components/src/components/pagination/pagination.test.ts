@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { html } from "lit";
+import type { MinervaSelect } from "../select/select";
 import { MinervaPagination } from "./pagination";
 import "../../elements/pagination";
 import { resetDevWarnings } from "../../internal/dev";
@@ -212,33 +213,77 @@ describe("<minerva-pagination>", () => {
       `<minerva-pagination total="100" current="3" show-size-changer page-size-options="10,20,50"></minerva-pagination>`,
     );
     const calls = track();
-    const select = $<HTMLSelectElement>(el(), "select");
-    expect(select).toHaveAttribute("aria-label", "Items per page");
-    expect(
-      Array.from(select.options).map((o) => o.textContent?.trim()),
-    ).toEqual(["10 / page", "20 / page", "50 / page"]);
-    select.focus();
-    await user.selectOptions(select, "20");
+    const select = $<MinervaSelect>(el(), "minerva-select");
+    await select.updateComplete;
+    const trigger = $<HTMLButtonElement>(select, '[role="combobox"]');
+    expect(trigger).toHaveAttribute("aria-label", "Items per page");
+    expect(root().querySelector("select")).toBeNull();
+    await user.click(trigger);
+    await settle();
+    const option = select.querySelector<HTMLElement>(
+      'minerva-option[value="20"]',
+    )!;
+    option.click();
     await settle();
     expect(calls).toEqual([[1, 20]]);
     expect(el().pageSize).toBe(20);
     expect(el().current).toBe(1);
     expect(root().activeElement).toBe(select);
+    expect(select.shadowRoot!.activeElement).toBe(trigger);
   });
 
   it("adds the current page size to the options when missing", async () => {
     await mount(
       `<minerva-pagination total="100" page-size="15" show-size-changer></minerva-pagination>`,
     );
-    const select = $<HTMLSelectElement>(el(), "select");
-    expect(Array.from(select.options).map((o) => o.value)).toEqual([
-      "10",
-      "15",
-      "20",
-      "50",
-      "100",
-    ]);
+    const select = $<MinervaSelect>(el(), "minerva-select");
+    expect(
+      Array.from(select.querySelectorAll("minerva-option")).map((o) =>
+        o.getAttribute("value"),
+      ),
+    ).toEqual(["10", "15", "20", "50", "100"]);
     expect(select.value).toBe("15");
+  });
+
+  it("cancels size changes, closes on Escape, and disables the Select trigger", async () => {
+    await mount(
+      `<minerva-pagination total="100" current="3" show-size-changer></minerva-pagination>`,
+    );
+    const select = $<MinervaSelect>(el(), "minerva-select");
+    await select.updateComplete;
+    const trigger = $<HTMLButtonElement>(select, '[role="combobox"]');
+    el().addEventListener("minerva-page-change", (event) =>
+      event.preventDefault(),
+    );
+    trigger.click();
+    await settle();
+    expect(select.open).toBe(true);
+    select.querySelector<HTMLElement>('minerva-option[value="20"]')!.click();
+    await settle();
+    expect(el().pageSize).toBe(10);
+    expect(el().current).toBe(3);
+    expect(select.value).toBe("10");
+    trigger.click();
+    await settle();
+    // happy-dom cannot resolve activeElement for a focused nested slotted option.
+    trigger.focus();
+    select.shadowRoot!.querySelector('[role="listbox"]')!.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    await settle();
+    expect(select.open).toBe(false);
+    expect(select.shadowRoot!.activeElement).toBe(trigger);
+    el().disabled = true;
+    await settle();
+    await select.updateComplete;
+    expect(trigger).toBeDisabled();
+    trigger.click();
+    await settle();
+    expect(select.open).toBe(false);
   });
 
   describe("compact list", () => {
@@ -365,8 +410,11 @@ describe("<minerva-pagination>", () => {
         "aria-label",
         "跳转到指定页",
       );
-      expect($(el(), "select")).toHaveAttribute("aria-label", "每页条数");
-      expect($(el(), "option").textContent?.trim()).toBe("10 条/页");
+      expect($(el(), "minerva-select")).toHaveAttribute(
+        "aria-label",
+        "每页条数",
+      );
+      expect($(el(), "minerva-option").textContent?.trim()).toBe("10 条/页");
     });
 
     it("re-renders when the language changes and lets labels win", async () => {

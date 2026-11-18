@@ -12,6 +12,7 @@
 
 .pagination {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--pagination-gap, var(--space-2));
   font-size: var(--pagination-font-size, var(--font-size-md));
@@ -235,41 +236,11 @@
   .sizeChanger {
     margin-inline-start: var(--space-4);
 
-    select {
-      height: var(--control-height-sm);
-      padding-block: 0;
-      padding-inline: var(--space-3) var(--space-8);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      background-color: var(--surface-color);
-      // Chevron drawn with gradients so it follows the theme text color
-      background-image: linear-gradient(45deg, transparent 50%, var(--text-secondary-color) 50%), linear-gradient(135deg, var(--text-secondary-color) 50%, transparent 50%);
-      background-position:
-        calc(100% - 17px) 50%,
-        calc(100% - 12px) 50%;
-      background-size: 5px 5px;
-      background-repeat: no-repeat;
-      appearance: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      color: var(--text-color);
-      font-size: var(--font-size-md);
-
-      [dir="rtl"] & {
-        background-position:
-          12px 50%,
-          17px 50%;
-      }
-
-      &:hover {
-        border-color: var(--primary-color);
-      }
-
-      // the shared control-focus treatment (styles/_mixins.scss)
-      &:focus {
-        @include control-focus;
-      }
-    }
+    --select-height: var(--pagination-item-size, var(--control-height-sm));
+    --select-radius: var(--pagination-item-radius, var(--radius-md));
+    --select-font-size: var(--pagination-font-size, var(--font-size-md));
+    flex: none;
+    min-width: 0;
   }
 
   // 总数显示
@@ -311,7 +282,7 @@
 
     .jumper,
     .sizeChanger {
-      display: none;
+      margin-inline-start: 0;
     }
   }
 }
@@ -362,6 +333,10 @@
 
 // Sizes (the default is the density's small control height) and shapes
 .pagination.small {
+  .sizeChanger {
+    --select-height: var(--pagination-item-size, var(--control-height-xs));
+    --select-font-size: var(--pagination-font-size, var(--font-size-xs));
+  }
   .item,
   .ellipsis {
     min-width: var(--pagination-item-size, var(--control-height-xs));
@@ -374,6 +349,9 @@
 }
 
 .pagination.large {
+  .sizeChanger {
+    --select-height: var(--pagination-item-size, var(--control-height-md));
+  }
   .item,
   .ellipsis {
     min-width: var(--pagination-item-size, var(--control-height-md));

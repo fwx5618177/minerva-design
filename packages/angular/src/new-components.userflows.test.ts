@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, settle, user } from "./testing";
 import {
@@ -56,6 +56,8 @@ class FoundationHost {
   imports: [MnPagination],
   template: `<mn-pagination
     [total]="95"
+    [disabled]="disabled()"
+    [pageSizeOptions]="options()"
     [(page)]="page"
     showJumper
     showSizeChanger
@@ -63,8 +65,10 @@ class FoundationHost {
   />`,
 })
 class PaginationHost {
-  page = 1;
-  pageSize = 10;
+  page = signal(1);
+  pageSize = signal(10);
+  disabled = signal(false);
+  options = signal([10, 20, 50, 100]);
 }
 @Component({
   imports: [MnJsonField, MnKeyValueEditor],
@@ -205,11 +209,44 @@ describe("new Angular component user flows", () => {
       target: { value: "500" },
     });
     await settle(f);
-    expect(f.componentInstance.page).toBe(10);
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "20" } });
+    expect(f.componentInstance.page()).toBe(10);
+    await user().click(
+      screen.getByRole("combobox", { name: "Items per page" }),
+    );
     await settle(f);
-    expect(f.componentInstance.pageSize).toBe(20);
-    expect(f.componentInstance.page).toBe(1);
+    expect(
+      screen.getByRole("listbox", { name: "Items per page" }),
+    ).toBeVisible();
+    await user().click(screen.getByRole("option", { name: "20" }));
+    await settle(f);
+    expect(f.componentInstance.pageSize()).toBe(20);
+    expect(f.componentInstance.page()).toBe(1);
+    expect(
+      screen.getByRole("combobox", { name: "Items per page" }),
+    ).toHaveTextContent("20");
+    expect(screen.queryByRole("listbox")).toBeNull();
+  });
+  it("reflects externally updated pagination sizes and prevents disabled selection", async () => {
+    const f = await render(PaginationHost);
+    f.componentInstance.options.set([10, 25]);
+    f.componentInstance.pageSize.set(25);
+    f.componentInstance.page.set(3);
+    await settle(f);
+    const trigger = screen.getByRole("combobox", { name: "Items per page" });
+    expect(trigger).toHaveTextContent("25");
+    await user().click(trigger);
+    await settle(f);
+    expect(
+      screen.getAllByRole("option").map((item) => item.textContent?.trim()),
+    ).toEqual(["10", "25"]);
+    await user().keyboard("{Escape}");
+    f.componentInstance.disabled.set(true);
+    await settle(f);
+    expect(trigger).toBeDisabled();
+    await user().click(trigger);
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(f.componentInstance.pageSize()).toBe(25);
+    expect(f.componentInstance.page()).toBe(3);
   });
   it("formats JSON without changing numeric lexemes or duplicate properties", async () => {
     const f = await render(EditorHost);

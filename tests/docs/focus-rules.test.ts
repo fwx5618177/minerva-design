@@ -55,15 +55,17 @@ const CONTROLS: Array<[string, string, string]> = [
     "Pagination/pagination.module.scss",
     ".pagination .jumper input:focus",
   ],
-  [
-    "Pagination size changer",
-    "Pagination/pagination.module.scss",
-    ".pagination .sizeChanger select:focus",
-  ],
 ];
 
 /** Composite controls: [name, React source, Input/Textarea used, WC source] */
 const COMPOSED: Array<[string, string, RegExp, string, RegExp]> = [
+  [
+    "Pagination size changer",
+    "Pagination/Pagination.tsx",
+    /<Select\b/,
+    "pagination/pagination.ts",
+    /<minerva-select\b/,
+  ],
   [
     "TagInput",
     "TagInput/TagInput.tsx",
@@ -220,7 +222,7 @@ describe("text-like controls: focus treatment", () => {
   });
 
   it.each(COMPOSED)(
-    "%s is built on the Input / Textarea treatment",
+    "%s composes the shared control treatment",
     (_name, react, reactPattern, wc, wcPattern) => {
       expect(readFileSync(at(COMPONENTS, react), "utf8")).toMatch(reactPattern);
       expect(

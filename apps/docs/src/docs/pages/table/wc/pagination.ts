@@ -8,6 +8,7 @@ type Pagination = {
   total?: number;
   showTotal?: boolean;
   showSizeChanger?: boolean;
+  showQuickJumper?: boolean;
   pageSizeOptions?: number[];
 };
 type PageDetail = { page: number; pageSize: number };
@@ -50,6 +51,7 @@ export function setup(root: HTMLElement) {
     total: TOTAL,
     showTotal: true,
     showSizeChanger: true,
+    showQuickJumper: true,
     pageSizeOptions: [5, 10, 20],
   };
   load({ page: 1, pageSize: 5 });

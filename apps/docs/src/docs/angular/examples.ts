@@ -959,6 +959,25 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
   ],
   table: [
     example(
+      "Paginated rows",
+      ["MnDataTable", "MnPagination"],
+      `<mn-data-table caption="Paginated members" [columns]="columns" [rows]="rows.slice((page-1)*pageSize,page*pageSize)"/><mn-pagination [total]="rows.length" [(page)]="page" [(pageSize)]="pageSize" [pageSizeOptions]="[5,10,20]" showSizeChanger showJumper/><output aria-live="polite">{{(page-1)*pageSize+1}}–{{page*pageSize > rows.length ? rows.length : page*pageSize}} of {{rows.length}} members</output>`,
+      {
+        page: 1,
+        pageSize: 5,
+        columns: [
+          { key: "name", header: "Name" },
+          { key: "role", header: "Role" },
+        ],
+        rows: Array.from({ length: 42 }, (_, index) => ({
+          id: index + 1,
+          name: `Member ${index + 1}`,
+          role: index % 2 ? "Designer" : "Engineer",
+        })),
+      },
+      "Compose MnDataTable with MnPagination and pass only the current slice of rows. Both page and pageSize are controlled; changing page size returns to page 1. The output reports the visible range and total.",
+    ),
+    example(
       "Semantic composition and merged cells",
       [
         "MnTableRoot",

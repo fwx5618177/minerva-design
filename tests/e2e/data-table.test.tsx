@@ -186,17 +186,11 @@ describe("book list data table", () => {
     const sizeSelect = within(pager()).getByRole("combobox", {
       name: "Items per page",
     });
-    // The size changer is a native <select>, so the option is picked with
-    // selectOptions and the shown value read with toHaveDisplayValue.
-    expect(sizeSelect).toHaveDisplayValue("5 / page");
-
-    sizeSelect.focus();
-    await user.selectOptions(
-      sizeSelect,
-      screen.getByRole("option", { name: "10 / page" }),
-    );
-
-    expect(sizeSelect).toHaveDisplayValue("10 / page");
+    expect(sizeSelect.tagName).toBe("BUTTON");
+    expect(sizeSelect).toHaveTextContent("5 / page");
+    await user.click(sizeSelect);
+    await user.click(screen.getByRole("option", { name: "10 / page" }));
+    expect(sizeSelect).toHaveTextContent("10 / page");
     expect(bodyTitles()).toHaveLength(10);
     expect(
       within(pager()).getByText("第 1-10 条，共 23 条"),
