@@ -1,5 +1,5 @@
+import { CodeIcon } from "minerva-design/icons";
 import { Avatar, Tag } from "minerva-design";
-import { LuCode } from "react-icons/lu";
 
 export default function AvatarLoadingDemo() {
   return (
@@ -7,7 +7,7 @@ export default function AvatarLoadingDemo() {
       <Tag avatar={<Avatar name="Mia Rossi" size="xsmall" />} shape="circle">
         Mia Rossi
       </Tag>
-      <Tag icon={<LuCode />} color="info" variant="outline">
+      <Tag icon={<CodeIcon size="1em" />} color="info" variant="outline">
         Frontend
       </Tag>
       <Tag loading color="info">

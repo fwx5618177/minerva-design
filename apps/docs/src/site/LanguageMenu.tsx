@@ -1,7 +1,7 @@
+import { LanguageIcon } from "minerva-design/icons";
 import { Button } from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { IoLanguageOutline } from "react-icons/io5";
 import { Menu } from "minerva-design";
 import { changeLanguage, type Language } from "@i18n/config";
 import styles from "./site.module.scss";
@@ -51,7 +51,7 @@ const LanguageMenu: React.FC = () => {
         aria-label={`${label}: ${currentName}`}
         title={label}
       >
-        <IoLanguageOutline aria-hidden />
+        <LanguageIcon size="1em" aria-hidden />
         <span aria-hidden>{current.toUpperCase()}</span>
       </Button>
     </Menu>

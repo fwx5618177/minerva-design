@@ -1,7 +1,7 @@
+import { ArrowLeftIcon, RefreshIcon } from "minerva-design/icons";
 import React from "react";
 import { Button, TextLink, CodeBlock } from "minerva-design";
 import { useRouteError, Link } from "react-router";
-import { IoArrowBack, IoRefreshOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import styles from "@styles/pages/error.module.scss";
 
@@ -23,7 +23,7 @@ const ErrorBoundary: React.FC = () => {
         <div className={styles.actions}>
           <TextLink asChild className={styles.primary}>
             <Link to="/">
-              <IoArrowBack aria-hidden />
+              <ArrowLeftIcon size="1em" aria-hidden />
               {t("error.back_home")}
             </Link>
           </TextLink>
@@ -34,7 +34,7 @@ const ErrorBoundary: React.FC = () => {
             onClick={() => window.location.reload()}
             className={styles.secondary}
           >
-            <IoRefreshOutline aria-hidden />
+            <RefreshIcon size="1em" aria-hidden />
             {t("error.refresh")}
           </Button>
         </div>

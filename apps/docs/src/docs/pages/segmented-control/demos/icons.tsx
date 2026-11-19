@@ -1,4 +1,4 @@
-import { LuGrid2X2, LuList, LuMap } from "react-icons/lu";
+import { LayoutGridIcon, ListIcon, MapIcon } from "minerva-design/icons";
 import { SegmentedControl } from "minerva-design";
 
 export default function IconsDemo() {
@@ -8,9 +8,9 @@ export default function IconsDemo() {
         aria-label="Layout"
         defaultValue="list"
         options={[
-          { value: "list", label: "List", icon: <LuList /> },
-          { value: "grid", label: "Grid", icon: <LuGrid2X2 /> },
-          { value: "map", label: "Map", icon: <LuMap /> },
+          { value: "list", label: "List", icon: <ListIcon size="1em" /> },
+          { value: "grid", label: "Grid", icon: <LayoutGridIcon size="1em" /> },
+          { value: "map", label: "Map", icon: <MapIcon size="1em" /> },
         ]}
       />
       {/* Icon-only segments need an aria-label */}
@@ -18,9 +18,17 @@ export default function IconsDemo() {
         aria-label="Layout (compact)"
         defaultValue="grid"
         options={[
-          { value: "list", icon: <LuList />, "aria-label": "List" },
-          { value: "grid", icon: <LuGrid2X2 />, "aria-label": "Grid" },
-          { value: "map", icon: <LuMap />, "aria-label": "Map" },
+          {
+            value: "list",
+            icon: <ListIcon size="1em" />,
+            "aria-label": "List",
+          },
+          {
+            value: "grid",
+            icon: <LayoutGridIcon size="1em" />,
+            "aria-label": "Grid",
+          },
+          { value: "map", icon: <MapIcon size="1em" />, "aria-label": "Map" },
         ]}
       />
     </div>

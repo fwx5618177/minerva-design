@@ -1,6 +1,8 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
+import { copyFileSync } from "node:fs";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import pkg from "./package.json" with { type: "json" };
 import { writeDualDeclarations } from "../../tools/dual-declarations.mjs";
@@ -20,6 +22,15 @@ const src = (path: string) =>
 export default defineConfig({
   plugins: [
     react(),
+    {
+      name: "minerva-brand-notices",
+      writeBundle() {
+        copyFileSync(
+          fileURLToPath(new URL("./BRAND_NOTICES.md", import.meta.url)),
+          join(ICONS_DIST, "BRAND_NOTICES.md"),
+        );
+      },
+    },
     dts({
       tsconfigPath: "./tsconfig.build.json",
       entryRoot: "src",

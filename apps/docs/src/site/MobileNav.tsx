@@ -1,8 +1,8 @@
+import { MenuIcon } from "minerva-design/icons";
 import { Button } from "minerva-design";
 import React, { useState } from "react";
 import { useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
-import { IoMenuOutline } from "react-icons/io5";
 import { Drawer } from "minerva-design";
 import { sections, type DocSection } from "@/docs/registry";
 import { SidebarNav } from "@layout/Sidebar";
@@ -43,7 +43,7 @@ const MobileNav: React.FC = () => {
           className={`${styles.iconButton} ${styles.menuButton}`}
           aria-label={t("nav.openMenu")}
         >
-          <IoMenuOutline aria-hidden />
+          <MenuIcon size="1em" aria-hidden />
         </Button>
       }
     >

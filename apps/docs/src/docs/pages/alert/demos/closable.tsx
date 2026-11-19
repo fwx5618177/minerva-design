@@ -1,6 +1,6 @@
+import { XCircleIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Alert, Button } from "minerva-design";
-import { IoCloseCircleOutline } from "react-icons/io5";
 
 export default function ClosableDemo() {
   const [key, setKey] = useState(0);
@@ -15,7 +15,7 @@ export default function ClosableDemo() {
         <Alert
           color="warning"
           closable
-          closeIcon={<IoCloseCircleOutline />}
+          closeIcon={<XCircleIcon size="1em" />}
           onClose={() => setClosed((n) => n + 1)}
         >
           This alert uses a custom close icon.

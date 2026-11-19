@@ -2,8 +2,13 @@
  * 画面上的浮层：加载中、错误（可重试）、短暂提示（截图 / 录制结果）、录制中标记、开启声音、顶部标题栏。
  */
 import React from "react";
+import {
+  LoaderIcon,
+  RefreshIcon,
+  VolumeIcon,
+  AlertTriangleIcon,
+} from "@minerva/icons";
 import { PlayerText, usePlayerText } from "./i18n.js";
-import { VscLoading, VscRefresh, VscUnmute, VscWarning } from "react-icons/vsc";
 import { formatTime } from "./format.js";
 import styles from "./styles.module.scss";
 
@@ -16,7 +21,7 @@ export const LoadingOverlay: React.FC = () => {
       aria-label={text("加载中")}
       data-testid="video-loading"
     >
-      <VscLoading className={styles.spinner} />
+      <LoaderIcon size="1em" className={styles.spinner} />
     </div>
   );
 };
@@ -26,7 +31,7 @@ export const ErrorOverlay: React.FC<{
   onRetry: () => void;
 }> = ({ message, onRetry }) => (
   <div className={styles.errorOverlay} role="alert" data-testid="video-error">
-    <VscWarning className={styles.errorIcon} />
+    <AlertTriangleIcon size="1em" className={styles.errorIcon} />
     <span className={styles.errorText}>{message}</span>
     <button
       type="button"
@@ -36,7 +41,7 @@ export const ErrorOverlay: React.FC<{
         onRetry();
       }}
     >
-      <VscRefresh />
+      <RefreshIcon size="1em" />
       <span>
         <PlayerText>重试</PlayerText>
       </span>
@@ -83,7 +88,7 @@ export const UnmuteButton: React.FC<{
         onClick();
       }}
     >
-      <VscUnmute />
+      <VolumeIcon size="1em" />
       {!compact && (
         <span>
           <PlayerText>开启声音</PlayerText>

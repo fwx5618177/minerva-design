@@ -19,7 +19,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { VscPlay } from "react-icons/vsc";
+import { PlayIcon } from "@minerva/icons";
 import {
   nextAudioTrackState,
   playedSeconds,
@@ -758,7 +758,7 @@ const MediaPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                     >
                       {!compact && paused && !error && (
                         <span className={styles.bigPlay}>
-                          <VscPlay />
+                          <PlayIcon size="1em" />
                         </span>
                       )}
                     </div>

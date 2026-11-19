@@ -1,5 +1,5 @@
+import { BellIcon } from "minerva-design/icons";
 import { Badge } from "minerva-design";
-import { FaBell } from "react-icons/fa";
 
 const positions = [
   "top-right",
@@ -13,7 +13,7 @@ export default function PositionsDemo() {
     <div style={{ display: "flex", gap: 32 }}>
       {positions.map((position, index) => (
         <Badge key={position} position={position} content={index + 1}>
-          <FaBell size={24} />
+          <BellIcon size={24} />
         </Badge>
       ))}
     </div>

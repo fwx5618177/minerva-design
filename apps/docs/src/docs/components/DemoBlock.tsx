@@ -1,7 +1,7 @@
+import { ChevronDownIcon } from "minerva-design/icons";
 import { Button } from "minerva-design";
 import React, { useContext, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { IoChevronDown } from "react-icons/io5";
 import CodeBlock from "@layout/CodeBlock";
 import { scrollToHeading } from "@/site/toc";
 import { ChartRendererContext } from "../renderer/context";
@@ -82,7 +82,8 @@ const DemoBlock: React.FC<DemoBlockProps> = ({
             onClick={() => setShowCode((v) => !v)}
           >
             {showCode ? t("doc.hideCode") : t("doc.showCode")}
-            <IoChevronDown
+            <ChevronDownIcon
+              size="1em"
               aria-hidden
               className={styles.toggleIcon}
               data-open={showCode || undefined}

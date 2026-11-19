@@ -1,11 +1,11 @@
+import { CloudUploadIcon } from "minerva-design/icons";
 import { ProgressIndicator } from "minerva-design";
-import { FiUploadCloud } from "react-icons/fi";
 
 export default function WithIconDemo() {
   return (
     <ProgressIndicator
       variant="bar"
-      icon={<FiUploadCloud />}
+      icon={<CloudUploadIcon size="1em" />}
       aria-label="Uploading files"
     />
   );

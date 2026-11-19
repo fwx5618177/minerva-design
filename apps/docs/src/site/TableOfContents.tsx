@@ -1,7 +1,7 @@
+import { ArrowUpIcon } from "minerva-design/icons";
 import { Button } from "minerva-design";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { IoArrowUpOutline } from "react-icons/io5";
 import {
   collectHeadings,
   getActiveId,
@@ -131,7 +131,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({
           document.getElementById(rootId)?.focus({ preventScroll: true });
         }}
       >
-        <IoArrowUpOutline aria-hidden />
+        <ArrowUpIcon size="1em" aria-hidden />
         {t("toc.backToTop")}
       </Button>
     </nav>

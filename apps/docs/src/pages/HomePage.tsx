@@ -1,9 +1,9 @@
+import { ArrowRightIcon } from "minerva-design/icons";
 import Logo from "@/site/Logo";
 import { FrameworkIcon } from "@/site/FrameworkIcon";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Trans, useTranslation } from "react-i18next";
-import { IoArrowForward } from "react-icons/io5";
 import { Tab, TabList, TabPanel, Tabs, Tag, TextLink } from "minerva-design";
 import { docPages } from "@/docs/registry";
 import { LATEST_VERSION } from "@/docs/releases";
@@ -93,7 +93,7 @@ const HomePage: React.FC = () => {
               v{LATEST_VERSION}
             </Tag>
             <span>{t("docs.changelog.title")}</span>
-            <IoArrowForward aria-hidden />
+            <ArrowRightIcon size="1em" aria-hidden />
           </Link>
           <h1 id="home-title" className={styles.title}>
             {t("home.title")}
@@ -103,7 +103,7 @@ const HomePage: React.FC = () => {
             <TextLink asChild variant="action">
               <Link to="/installation" className={styles.ctaPrimary}>
                 {t("home.getStarted")}
-                <IoArrowForward aria-hidden />
+                <ArrowRightIcon size="1em" aria-hidden />
               </Link>
             </TextLink>
             <TextLink asChild variant="action">
@@ -213,7 +213,7 @@ const HomePage: React.FC = () => {
               <Link to={`/${id}`} className={styles.quickLink}>
                 <span className={styles.quickTitle}>
                   {t(`docs.${id}.title`)}
-                  <IoArrowForward aria-hidden />
+                  <ArrowRightIcon size="1em" aria-hidden />
                 </span>
                 <span className={styles.quickText}>
                   {t(`docs.${id}.description`)}

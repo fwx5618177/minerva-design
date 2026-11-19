@@ -23,6 +23,7 @@ import { DIST_DIR } from "./paths.mjs";
  * `js` for the JS files, `types` for the declarations.
  */
 export const WORKSPACE_ENTRIES = {
+  "@minerva/icons": { js: "icons/index", types: "icons/index" },
   "@minerva/media-player": {
     js: "media-player/index",
     types: "media-player/index",

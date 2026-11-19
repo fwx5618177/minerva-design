@@ -1,16 +1,16 @@
+import { BugIcon, CheckIcon, ClockIcon } from "minerva-design/icons";
 import { Tag } from "minerva-design";
-import { FaBug, FaCheck, FaClock } from "react-icons/fa";
 
 export default function WithIconDemo() {
   return (
     <>
-      <Tag icon={<FaCheck />} color="success">
+      <Tag icon={<CheckIcon size="1em" />} color="success">
         Done
       </Tag>
-      <Tag icon={<FaClock />} color="warning">
+      <Tag icon={<ClockIcon size="1em" />} color="warning">
         In progress
       </Tag>
-      <Tag icon={<FaBug />} color="danger">
+      <Tag icon={<BugIcon size="1em" />} color="danger">
         Bug
       </Tag>
     </>

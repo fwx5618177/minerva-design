@@ -1,10 +1,6 @@
+import { CpuIcon, InfoIcon, AlertTriangleIcon } from "minerva-design/icons";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import {
-  IoHardwareChipOutline,
-  IoInformationCircleOutline,
-  IoWarning,
-} from "react-icons/io5";
 import { Tooltip } from "minerva-design";
 import type { ChartRendererPreference } from "minerva-design/charts/core";
 import type { RendererTopic } from "./context";
@@ -141,7 +137,7 @@ export default function RendererBar({
       >
         <span className={styles.head}>
           <span className={styles.label} aria-hidden>
-            <IoHardwareChipOutline className={styles.labelIcon} />
+            <CpuIcon size="1em" className={styles.labelIcon} />
             {t("label")}
           </span>
           <Tooltip
@@ -154,7 +150,7 @@ export default function RendererBar({
               className={styles.infoButton}
               aria-label={t("infoLabel")}
             >
-              <IoInformationCircleOutline aria-hidden />
+              <InfoIcon size="1em" aria-hidden />
             </button>
           </Tooltip>
         </span>
@@ -198,7 +194,11 @@ export default function RendererBar({
                   )}
                   {backend(option)}
                   {software && (
-                    <IoWarning className={styles.warning} aria-hidden />
+                    <AlertTriangleIcon
+                      size="1em"
+                      className={styles.warning}
+                      aria-hidden
+                    />
                   )}
                 </label>
               </Tooltip>

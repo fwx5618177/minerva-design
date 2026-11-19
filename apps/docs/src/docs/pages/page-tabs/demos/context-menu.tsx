@@ -1,3 +1,4 @@
+import { MoreHorizontalIcon } from "minerva-design/icons";
 import { useState } from "react";
 import {
   ContextMenu,
@@ -6,7 +7,6 @@ import {
   PageTab,
   PageTabs,
 } from "minerva-design";
-import { LuEllipsis } from "react-icons/lu";
 
 const all = ["Overview", "Reports", "Settings", "Users", "Billing"];
 
@@ -31,7 +31,7 @@ export default function ContextMenuDemo() {
           <IconButton
             size="small"
             aria-label="Page menu"
-            icon={<LuEllipsis />}
+            icon={<MoreHorizontalIcon size="1em" />}
           />
         </Menu>
       }

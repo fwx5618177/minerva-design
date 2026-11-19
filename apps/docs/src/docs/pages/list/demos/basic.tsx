@@ -1,6 +1,6 @@
+import { SmartphoneIcon, TrashIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { IconButton, List, ListItem } from "minerva-design";
-import { LuSmartphone, LuTrash2 } from "react-icons/lu";
 
 const initialDevices = [
   { id: "phone", name: "iPhone 16", lastUsed: "Used 2 hours ago" },
@@ -14,7 +14,7 @@ export default function BasicDemo() {
       {devices.map((device) => (
         <ListItem
           key={device.id}
-          icon={<LuSmartphone />}
+          icon={<SmartphoneIcon size="1em" />}
           primary={<span id={`device-${device.id}`}>{device.name}</span>}
           secondary={device.lastUsed}
           actions={
@@ -25,7 +25,7 @@ export default function BasicDemo() {
               }
               aria-describedby={`device-${device.id}`}
             >
-              <LuTrash2 />
+              <TrashIcon size="1em" />
             </IconButton>
           }
         />

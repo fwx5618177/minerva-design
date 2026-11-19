@@ -1,6 +1,6 @@
+import { SearchIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Button, IconButton, Input } from "minerva-design";
-import { IoSearch } from "react-icons/io5";
 
 export default function SearchDemo() {
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ export default function SearchDemo() {
       <Input aria-label="Query" placeholder="Search books" clearable />
       <IconButton
         type="submit"
-        icon={<IoSearch />}
+        icon={<SearchIcon size="1em" />}
         label="Search"
         color="primary"
         variant="solid"

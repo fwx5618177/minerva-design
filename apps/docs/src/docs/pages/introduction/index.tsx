@@ -19,14 +19,14 @@ function Controlled() {
 }`;
 
 const passthroughCode = `import { Button, IconButton } from "minerva-design";
-import { IoTrashOutline } from "react-icons/io5";
+import { TrashIcon } from "minerva-design/icons";
 
 <Button className="my-button" style={{ minWidth: 120 }} type="submit">
   Save
 </Button>;
 
 // icon-only controls need an accessible name
-<IconButton icon={<IoTrashOutline />} aria-label="Delete item" />;`;
+<IconButton icon={<TrashIcon size="1em" />} aria-label="Delete item" />;`;
 
 const IntroductionDoc: React.FC = () => {
   const { t } = useTranslation();

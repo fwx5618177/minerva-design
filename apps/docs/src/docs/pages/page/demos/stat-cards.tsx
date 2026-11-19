@@ -1,5 +1,5 @@
+import { BookIcon, StarIcon, UsersIcon } from "minerva-design/icons";
 import { ResponsiveGrid, StatCard } from "minerva-design";
-import { LuBook, LuStar, LuUsers } from "react-icons/lu";
 
 export default function StatCardsDemo() {
   return (
@@ -8,12 +8,12 @@ export default function StatCardsDemo() {
       aria-label="Metrics"
       columns={{ base: 1, sm: 3 }}
     >
-      <StatCard label="Books" value="1,284" icon={<LuBook />} />
-      <StatCard label="Readers" value="9.6k" icon={<LuUsers />} />
+      <StatCard label="Books" value="1,284" icon={<BookIcon size="1em" />} />
+      <StatCard label="Readers" value="9.6k" icon={<UsersIcon size="1em" />} />
       <StatCard
         label="Reviews"
         value={0}
-        icon={<LuStar />}
+        icon={<StarIcon size="1em" />}
         description="No reviews yet"
       />
     </ResponsiveGrid>

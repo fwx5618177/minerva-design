@@ -1,19 +1,29 @@
+import { FileTextIcon, HomeIcon, InboxIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Button, NavTree, type NavTreeSection } from "minerva-design";
-import { LuFileText, LuHouse, LuInbox } from "react-icons/lu";
 
 const sections: NavTreeSection[] = [
   {
     id: "main",
     items: [
-      { id: "home", label: "Home", href: "#home", icon: <LuHouse /> },
-      { id: "inbox", label: "Inbox", href: "#inbox", icon: <LuInbox /> },
+      {
+        id: "home",
+        label: "Home",
+        href: "#home",
+        icon: <HomeIcon size="1em" />,
+      },
+      {
+        id: "inbox",
+        label: "Inbox",
+        href: "#inbox",
+        icon: <InboxIcon size="1em" />,
+      },
       {
         id: "docs",
         label: "Documents with a rather long name",
         description: "Shared with the whole team",
         href: "#docs",
-        icon: <LuFileText />,
+        icon: <FileTextIcon size="1em" />,
       },
     ],
   },

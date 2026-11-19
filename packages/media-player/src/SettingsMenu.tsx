@@ -6,11 +6,11 @@ import { usePlayerText } from "./i18n.js";
  */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  VscCheck,
-  VscChevronLeft,
-  VscChevronRight,
-  VscSettingsGear,
-} from "react-icons/vsc";
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  SettingsIcon,
+} from "@minerva/icons";
 import ControlButton, { type RenderTooltip } from "./ControlButton.js";
 import { PLAYBACK_RATES, formatRate } from "./keyboard.js";
 import type { QualityOption } from "./useMediaEngine.js";
@@ -254,7 +254,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
           }
         }}
       >
-        <VscSettingsGear />
+        <SettingsIcon size="1em" />
       </ControlButton>
       {open && (
         <div
@@ -282,7 +282,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
               >
                 <span className={styles.menuLabel}>{text(item.label)}</span>
                 <span className={styles.menuValue}>{item.value}</span>
-                <VscChevronRight className={styles.menuChevron} />
+                <ChevronRightIcon size="1em" className={styles.menuChevron} />
               </button>
             ))
           ) : (
@@ -294,7 +294,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
                 aria-label={text(`返回（${viewTitle}）`)}
                 onClick={() => setView("root")}
               >
-                <VscChevronLeft className={styles.menuChevron} />
+                <ChevronLeftIcon size="1em" className={styles.menuChevron} />
                 <span className={styles.menuLabel}>{text(viewTitle)}</span>
               </button>
               {choicesFor(view).map((choice) => (
@@ -310,7 +310,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
                   }}
                 >
                   <span className={styles.menuCheck}>
-                    {choice.checked && <VscCheck />}
+                    {choice.checked && <CheckIcon size="1em" />}
                   </span>
                   <span className={styles.menuLabel}>
                     {choice.key === "caption--1"

@@ -1,7 +1,7 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "minerva-design/icons";
 import React from "react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
-import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { menuConfig, sectionOfPath } from "@router/routes";
 import styles from "./site.module.scss";
 
@@ -22,7 +22,7 @@ const Pager: React.FC<{ pathname: string }> = ({ pathname }) => {
       {prev ? (
         <Link to={`/${prev.path}`} className={styles.pagerLink} rel="prev">
           <span className={styles.pagerHint}>
-            <IoChevronBack aria-hidden />
+            <ChevronLeftIcon size="1em" aria-hidden />
             {t("pager.previous")}
           </span>
           <span className={styles.pagerTitle}>{t(prev.translationKey)}</span>
@@ -38,7 +38,7 @@ const Pager: React.FC<{ pathname: string }> = ({ pathname }) => {
         >
           <span className={styles.pagerHint}>
             {t("pager.next")}
-            <IoChevronForward aria-hidden />
+            <ChevronRightIcon size="1em" aria-hidden />
           </span>
           <span className={styles.pagerTitle}>{t(next.translationKey)}</span>
         </Link>

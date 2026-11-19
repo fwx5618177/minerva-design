@@ -1,5 +1,5 @@
+import { HeartIcon } from "minerva-design/icons";
 import { IconButton } from "minerva-design";
-import { IoHeart } from "react-icons/io5";
 
 const colors = [
   "neutral",
@@ -16,7 +16,7 @@ export default function ColorsDemo() {
       {colors.map((color) => (
         <IconButton
           key={color}
-          icon={<IoHeart />}
+          icon={<HeartIcon size="1em" />}
           color={color}
           label={color}
         />

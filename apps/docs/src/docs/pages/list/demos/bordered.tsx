@@ -1,5 +1,5 @@
+import { GitBranchIcon } from "minerva-design/icons";
 import { Button, List, ListItem } from "minerva-design";
-import { LuGitBranch } from "react-icons/lu";
 
 const branches = [
   { id: "main", name: "main", meta: "Production · deployed 3 min ago" },
@@ -18,7 +18,7 @@ export default function BorderedDemo() {
       {branches.map((branch) => (
         <ListItem
           key={branch.id}
-          icon={<LuGitBranch />}
+          icon={<GitBranchIcon size="1em" />}
           primary={<span id={`branch-${branch.id}`}>{branch.name}</span>}
           secondary={branch.meta}
           actions={

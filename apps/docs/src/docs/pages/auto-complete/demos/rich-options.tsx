@@ -1,30 +1,35 @@
+import {
+  BrandAppleIcon,
+  BrandAndroidIcon,
+  BrandLinuxIcon,
+  BrandWindowsIcon,
+} from "minerva-design/icons";
 import { AutoComplete } from "minerva-design";
-import { FaApple, FaAndroid, FaLinux, FaWindows } from "react-icons/fa";
 
 const options = [
   {
     label: "macOS",
     value: "macos",
-    icon: <FaApple />,
+    icon: <BrandAppleIcon size="1em" />,
     description: "Recommended for this device",
     highlight: true,
   },
   {
     label: "Windows",
     value: "windows",
-    icon: <FaWindows />,
+    icon: <BrandWindowsIcon size="1em" />,
     description: "Windows 10 and later",
   },
   {
     label: "Linux",
     value: "linux",
-    icon: <FaLinux />,
+    icon: <BrandLinuxIcon size="1em" />,
     description: "deb and rpm packages",
   },
   {
     label: "Android",
     value: "android",
-    icon: <FaAndroid />,
+    icon: <BrandAndroidIcon size="1em" />,
     description: "Coming soon",
     disabled: true,
   },

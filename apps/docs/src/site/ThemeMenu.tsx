@@ -1,12 +1,7 @@
+import { HalfCircleIcon, MoonIcon, SunIcon } from "minerva-design/icons";
 import { Button } from "minerva-design";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import {
-  IoContrastOutline,
-  IoMoon,
-  IoMoonOutline,
-  IoSunnyOutline,
-} from "react-icons/io5";
 import { Menu, type MenuEntry } from "minerva-design";
 import {
   PALETTE_CHOICES,
@@ -26,13 +21,13 @@ const LABEL_KEYS: Record<ThemeMode, string> = {
 
 const ICONS: Record<
   ThemeMode,
-  React.ComponentType<{ "aria-hidden"?: boolean }>
+  React.ComponentType<{ "aria-hidden"?: boolean; size?: string }>
 > = {
-  auto: IoContrastOutline,
-  light: IoSunnyOutline,
-  dark: IoMoonOutline,
+  auto: HalfCircleIcon,
+  light: SunIcon,
+  dark: MoonIcon,
   // not the GitHub logo: the repository link next to it already uses it
-  "github-dark": IoMoon,
+  "github-dark": MoonIcon,
 };
 
 /**
@@ -88,7 +83,7 @@ const ThemeMenu: React.FC = () => {
         aria-label={`${label}: ${t(LABEL_KEYS[mode])}`}
         title={label}
       >
-        <Icon aria-hidden />
+        <Icon size="1em" aria-hidden />
       </Button>
     </Menu>
   );

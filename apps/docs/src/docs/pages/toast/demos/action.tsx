@@ -1,5 +1,5 @@
+import { BellIcon } from "minerva-design/icons";
 import { Button, HStack, toast } from "minerva-design";
-import { FiBell } from "react-icons/fi";
 
 export default function ActionDemo() {
   return (
@@ -24,7 +24,7 @@ export default function ActionDemo() {
         variant="outline"
         onClick={() =>
           toast.info("Reminder set for 9:00", {
-            icon: <FiBell />,
+            icon: <BellIcon size="1em" />,
             closable: false,
           })
         }

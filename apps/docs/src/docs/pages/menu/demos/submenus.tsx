@@ -1,13 +1,13 @@
+import { FolderOpenIcon, ShareIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Button, HStack, Menu, type MenuEntry } from "minerva-design";
-import { LuFolderInput, LuShare2 } from "react-icons/lu";
 
 const items: MenuEntry[] = [
   { key: "rename", label: "Rename", shortcut: "F2" },
   {
     key: "move",
     label: "Move to",
-    icon: <LuFolderInput />,
+    icon: <FolderOpenIcon size="1em" />,
     children: [
       { key: "inbox", label: "Inbox" },
       { key: "archive", label: "Archive" },
@@ -24,7 +24,7 @@ const items: MenuEntry[] = [
   {
     key: "share",
     label: "Share",
-    icon: <LuShare2 />,
+    icon: <ShareIcon size="1em" />,
     children: [
       { key: "email", label: "Email" },
       { key: "link", label: "Copy link" },

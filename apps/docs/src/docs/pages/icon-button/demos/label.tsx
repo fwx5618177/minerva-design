@@ -1,17 +1,17 @@
+import { EditIcon, RefreshIcon, TrashIcon } from "minerva-design/icons";
 import { IconButton } from "minerva-design";
-import { LuPencil, LuRefreshCw, LuTrash2 } from "react-icons/lu";
 
 export default function LabelDemo() {
   return (
     <>
       <IconButton label="Refresh" shape="square">
-        <LuRefreshCw />
+        <RefreshIcon size="1em" />
       </IconButton>
       <IconButton label="Edit" variant="outline" color="primary">
-        <LuPencil />
+        <EditIcon size="1em" />
       </IconButton>
       <IconButton label="Delete" variant="solid" color="danger" size="small">
-        <LuTrash2 />
+        <TrashIcon size="1em" />
       </IconButton>
     </>
   );

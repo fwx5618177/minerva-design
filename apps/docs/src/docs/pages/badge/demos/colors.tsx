@@ -1,5 +1,5 @@
+import { BellIcon } from "minerva-design/icons";
 import { Badge } from "minerva-design";
-import { FaBell } from "react-icons/fa";
 
 const colors = [
   "primary",
@@ -20,7 +20,7 @@ export default function ColorsDemo() {
           content={index + 1}
           aria-label={`${color} badge`}
         >
-          <FaBell size={24} title={color} />
+          <BellIcon size={24} title={color} />
         </Badge>
       ))}
     </div>

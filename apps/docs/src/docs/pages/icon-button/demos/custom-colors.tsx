@@ -1,6 +1,6 @@
+import { ZapIcon, TeardropIcon } from "minerva-design/icons";
 import type { CSSProperties } from "react";
 import { IconButton } from "minerva-design";
-import { IoFlash, IoWater } from "react-icons/io5";
 
 // CSS custom properties override the resolved colors; set them inline, in a
 // class, or on an ancestor to restyle a whole toolbar.
@@ -18,8 +18,13 @@ const sky = {
 export default function CustomColorsDemo() {
   return (
     <>
-      <IconButton icon={<IoFlash />} style={amber} label="Energy" />
-      <IconButton icon={<IoWater />} style={sky} defaultPressed label="Water" />
+      <IconButton icon={<ZapIcon size="1em" />} style={amber} label="Energy" />
+      <IconButton
+        icon={<TeardropIcon size="1em" />}
+        style={sky}
+        defaultPressed
+        label="Water"
+      />
     </>
   );
 }

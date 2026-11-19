@@ -1,6 +1,6 @@
+import { CheckIcon, CopyIcon } from "minerva-design/icons";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { IoCheckmarkOutline, IoCopyOutline } from "react-icons/io5";
 import {
   Button,
   CodeBlock as LibraryCodeBlock,
@@ -164,9 +164,9 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           data-copied={copied || undefined}
         >
           {copied ? (
-            <IoCheckmarkOutline className={styles.icon} aria-hidden />
+            <CheckIcon size="1em" className={styles.icon} aria-hidden />
           ) : (
-            <IoCopyOutline className={styles.icon} aria-hidden />
+            <CopyIcon size="1em" className={styles.icon} aria-hidden />
           )}
         </Button>
         <span className="sr-only" aria-live="polite">

@@ -8,16 +8,16 @@
 import { usePlayerText } from "./i18n.js";
 import React from "react";
 import {
-  VscDebugPause,
-  VscDebugStop,
-  VscDeviceCamera,
-  VscMultipleWindows,
-  VscPlay,
-  VscRecord,
-  VscScreenFull,
-  VscScreenNormal,
-  VscSync,
-} from "react-icons/vsc";
+  PauseIcon,
+  StopIcon,
+  CameraIcon,
+  PictureInPictureIcon,
+  PlayIcon,
+  CircleIcon,
+  MaximizeIcon,
+  MinimizeIcon,
+  RepeatIcon,
+} from "@minerva/icons";
 import type { AudioTrackState } from "./audio.js";
 import type { AbRange } from "./abRepeat.js";
 import { LONG_SEEK_SECONDS, KEY_SEEK_SECONDS } from "./keyboard.js";
@@ -190,7 +190,7 @@ const ControlBar: React.FC<ControlBarProps> = (props) => {
             aria-label={paused ? "播放" : "暂停"}
             onClick={props.onTogglePlay}
           >
-            {paused ? <VscPlay /> : <VscDebugPause />}
+            {paused ? <PlayIcon size="1em" /> : <PauseIcon size="1em" />}
           </ControlButton>
         )}
         {show.playlist && (
@@ -282,7 +282,7 @@ const ControlBar: React.FC<ControlBarProps> = (props) => {
             aria-pressed={props.loop}
             onClick={props.onToggleLoop}
           >
-            <VscSync />
+            <RepeatIcon size="1em" />
           </ControlButton>
         )}
         {show.screenshot && (
@@ -293,7 +293,7 @@ const ControlBar: React.FC<ControlBarProps> = (props) => {
             aria-label="截图"
             onClick={props.onScreenshot}
           >
-            <VscDeviceCamera />
+            <CameraIcon size="1em" />
           </ControlButton>
         )}
         {show.record && (
@@ -317,7 +317,7 @@ const ControlBar: React.FC<ControlBarProps> = (props) => {
               }
               onClick={props.onToggleRecord}
             >
-              {recording ? <VscDebugStop /> : <VscRecord />}
+              {recording ? <StopIcon size="1em" /> : <CircleIcon size="1em" />}
             </ControlButton>
           </>
         )}
@@ -331,7 +331,7 @@ const ControlBar: React.FC<ControlBarProps> = (props) => {
             aria-pressed={props.pipActive}
             onClick={props.onTogglePip}
           >
-            <VscMultipleWindows />
+            <PictureInPictureIcon size="1em" />
           </ControlButton>
         )}
         {show.download && props.onDownload && (
@@ -363,7 +363,11 @@ const ControlBar: React.FC<ControlBarProps> = (props) => {
             aria-label={props.fullscreen ? "退出全屏" : "全屏"}
             onClick={props.onToggleFullscreen}
           >
-            {props.fullscreen ? <VscScreenNormal /> : <VscScreenFull />}
+            {props.fullscreen ? (
+              <MinimizeIcon size="1em" />
+            ) : (
+              <MaximizeIcon size="1em" />
+            )}
           </ControlButton>
         )}
       </div>

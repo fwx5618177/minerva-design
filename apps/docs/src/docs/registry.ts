@@ -3623,7 +3623,7 @@ export const docPages: DocPageMeta[] = [
     category: "icons",
     package: "minerva-design/icons/core",
     exports: ["icons", "iconCategories", "getIcon", "searchIcons"],
-    demos: ["gallery"],
+    demos: ["gallery", "brands"],
   },
   {
     id: "icon",

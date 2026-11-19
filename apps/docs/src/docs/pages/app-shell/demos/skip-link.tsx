@@ -1,3 +1,4 @@
+import { LayoutGridIcon } from "minerva-design/icons";
 import { useState } from "react";
 import {
   AppShell,
@@ -7,12 +8,11 @@ import {
   Page,
   PageHeader,
 } from "minerva-design";
-import { LuLayoutDashboard } from "react-icons/lu";
 
 const items = ["Dashboard", "Books", "Reviews", "Settings"].map((label) => ({
   id: label.toLowerCase(),
   label,
-  icon: <LuLayoutDashboard />,
+  icon: <LayoutGridIcon size="1em" />,
 }));
 
 export default function SkipLinkDemo() {
@@ -30,7 +30,7 @@ export default function SkipLinkDemo() {
     >
       <AppShell
         brand="Publishing Admin"
-        brandIcon={<LuLayoutDashboard />}
+        brandIcon={<LayoutGridIcon size="1em" />}
         skipLink="Skip to the book list"
         style={{ minHeight: "100%" }}
         headerActions={

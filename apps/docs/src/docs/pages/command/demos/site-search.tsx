@@ -1,6 +1,6 @@
+import { SearchIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Button, CommandDialog, Stack, type CommandItem } from "minerva-design";
-import { LuSearch } from "react-icons/lu";
 
 const pages: CommandItem[] = [
   {
@@ -34,7 +34,7 @@ export default function SiteSearchDemo() {
       <Button
         color="neutral"
         variant="outline"
-        startIcon={<LuSearch />}
+        startIcon={<SearchIcon size="1em" />}
         endIcon={<kbd>Ctrl ⇧ K</kbd>}
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"

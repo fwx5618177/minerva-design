@@ -3,8 +3,7 @@
  * 音频与视频共用；默认只在音频界面里显示快退快进与 A-B（视频的控制条浮在画面上，保持精简，快捷键照常可用）。
  */
 import React from "react";
-import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
-import { VscCloudDownload } from "react-icons/vsc";
+import { SkipForwardIcon, SkipBackIcon, DownloadIcon } from "@minerva/icons";
 import { abButtonLabel, abState, type AbRange } from "./abRepeat.js";
 import ControlButton, { type RenderTooltip } from "./ControlButton.js";
 import styles from "./styles.module.scss";
@@ -97,7 +96,7 @@ export const TrackButton: React.FC<{
     disabled={disabled}
     onClick={onClick}
   >
-    {next ? <MdSkipNext /> : <MdSkipPrevious />}
+    {next ? <SkipForwardIcon size="1em" /> : <SkipBackIcon size="1em" />}
   </ControlButton>
 );
 
@@ -135,6 +134,6 @@ export const DownloadButton: React.FC<{
     aria-label="下载"
     onClick={onClick}
   >
-    <VscCloudDownload />
+    <DownloadIcon size="1em" />
   </ControlButton>
 );

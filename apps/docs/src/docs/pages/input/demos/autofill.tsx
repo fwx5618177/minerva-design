@@ -1,7 +1,7 @@
+import { LockIcon, UserIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, FormField, Input } from "minerva-design";
-import { LuLock, LuUser } from "react-icons/lu";
 
 export default function AutofillDemo() {
   const { t } = useTranslation("common", { keyPrefix: "docs.input.login" });
@@ -19,7 +19,7 @@ export default function AutofillDemo() {
         <Input
           name="username"
           autoComplete="username"
-          prefix={<LuUser />}
+          prefix={<UserIcon size="1em" />}
           required
         />
       </FormField>
@@ -28,7 +28,7 @@ export default function AutofillDemo() {
           name="password"
           type="password"
           autoComplete="current-password"
-          prefix={<LuLock />}
+          prefix={<LockIcon size="1em" />}
           required
         />
       </FormField>

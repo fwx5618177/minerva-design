@@ -1,5 +1,5 @@
+import { HeartIcon } from "minerva-design/icons";
 import { HStack, IconButton, VStack } from "minerva-design";
-import { IoHeart } from "react-icons/io5";
 
 const variants = ["ghost", "solid", "outline"] as const;
 
@@ -11,7 +11,7 @@ export default function VariantsDemo() {
           {variants.map((variant) => (
             <IconButton
               key={variant}
-              icon={<IoHeart />}
+              icon={<HeartIcon size="1em" />}
               color={color}
               variant={variant}
               label={`${color} ${variant}`}

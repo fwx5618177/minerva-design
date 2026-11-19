@@ -1,3 +1,4 @@
+import { LayoutGridIcon, SettingsIcon } from "minerva-design/icons";
 import { useState } from "react";
 import {
   AppShell,
@@ -8,11 +9,10 @@ import {
   RadioGroup,
   type AppShellSidebarMode,
 } from "minerva-design";
-import { LuLayoutDashboard, LuSettings } from "react-icons/lu";
 
 const items = [
-  { id: "overview", label: "Overview", icon: <LuLayoutDashboard /> },
-  { id: "settings", label: "Settings", icon: <LuSettings /> },
+  { id: "overview", label: "Overview", icon: <LayoutGridIcon size="1em" /> },
+  { id: "settings", label: "Settings", icon: <SettingsIcon size="1em" /> },
 ];
 
 export default function ControlledDemo() {
@@ -29,7 +29,7 @@ export default function ControlledDemo() {
     >
       <AppShell
         brand="Workspace"
-        brandIcon={<LuLayoutDashboard />}
+        brandIcon={<LayoutGridIcon size="1em" />}
         sidebarMode={mode}
         onSidebarModeChange={setMode}
         style={{ minHeight: "100%" }}

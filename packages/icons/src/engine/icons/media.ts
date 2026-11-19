@@ -237,3 +237,14 @@ export const filmIcon: IconDefinition = {
     "M16.5 16.5H21",
   ],
 };
+
+/** A video frame with a smaller floating viewport. */
+export const pictureInPictureIcon: IconDefinition = {
+  name: "picture-in-picture",
+  category: "media",
+  tags: ["video", "floating", "pip", "window"],
+  paths: [
+    "M4 4.5h16a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1 -1.5 1.5H4A1.5 1.5 0 0 1 2.5 18V6A1.5 1.5 0 0 1 4 4.5Z",
+    "M12 11.5h6v5h-6Z",
+  ],
+};

@@ -1,6 +1,6 @@
+import { BookmarkIcon, HeartIcon, MicOffIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { IconButton } from "minerva-design";
-import { IoBookmark, IoHeart, IoMicOff } from "react-icons/io5";
 
 export default function ToggleDemo() {
   const [liked, setLiked] = useState(false);
@@ -9,7 +9,7 @@ export default function ToggleDemo() {
     <>
       {/* controlled: the button exposes aria-pressed={liked} */}
       <IconButton
-        icon={<IoHeart />}
+        icon={<HeartIcon size="1em" />}
         label="Like"
         color="danger"
         pressed={liked}
@@ -17,9 +17,13 @@ export default function ToggleDemo() {
       />
       <span>{liked ? "Liked" : "Not liked yet"}</span>
       {/* uncontrolled */}
-      <IconButton icon={<IoBookmark />} label="Bookmark" defaultPressed />
       <IconButton
-        icon={<IoMicOff />}
+        icon={<BookmarkIcon size="1em" />}
+        label="Bookmark"
+        defaultPressed
+      />
+      <IconButton
+        icon={<MicOffIcon size="1em" />}
         label="Mute"
         shape="square"
         defaultPressed={false}

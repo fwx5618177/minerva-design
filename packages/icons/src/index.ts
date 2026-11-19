@@ -15,3 +15,5 @@ export type {
   NamedIconProps,
 } from "./react/types";
 export * from "./core";
+
+export * from "./react/brands";

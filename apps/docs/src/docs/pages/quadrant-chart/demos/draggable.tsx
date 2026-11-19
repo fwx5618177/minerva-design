@@ -1,3 +1,4 @@
+import { PlusIcon } from "minerva-design/icons";
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, IconButton, Input, Select, SelectItem } from "minerva-design";
@@ -8,7 +9,6 @@ import {
   type QuadrantCorner,
   type QuadrantPoint,
 } from "minerva-design/charts";
-import { LuPlus } from "react-icons/lu";
 
 type Corner = QuadrantCorner;
 
@@ -147,7 +147,7 @@ export default function DraggableDemo() {
           size="xsmall"
           variant="ghost"
           label={t("addTask", { quadrant: title(corner) })}
-          icon={<LuPlus />}
+          icon={<PlusIcon size="1em" />}
           onClick={() => add(corner)}
           style={{ pointerEvents: "auto" }}
         />

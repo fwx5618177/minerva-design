@@ -4,7 +4,7 @@ import { usePlayerText } from "./i18n.js";
  * 视频确定没有音轨时，按钮显示「无音轨」（不可点，不展开滑块），避免作者以为声音被吞掉。
  */
 import React from "react";
-import { VscMute, VscUnmute } from "react-icons/vsc";
+import { VolumeOffIcon, VolumeIcon } from "@minerva/icons";
 import type { AudioTrackState } from "./audio.js";
 import ControlButton, { type RenderTooltip } from "./ControlButton.js";
 import styles from "./styles.module.scss";
@@ -37,7 +37,7 @@ const VolumeControl: React.FC<VolumeControlProps> = ({
         aria-disabled="true"
         data-audio="absent"
       >
-        <VscMute />
+        <VolumeOffIcon size="1em" />
       </ControlButton>
     );
   }
@@ -51,7 +51,7 @@ const VolumeControl: React.FC<VolumeControlProps> = ({
         aria-label={muted ? "取消静音" : "静音"}
         onClick={onToggleMute}
       >
-        {silent ? <VscMute /> : <VscUnmute />}
+        {silent ? <VolumeOffIcon size="1em" /> : <VolumeIcon size="1em" />}
       </ControlButton>
       <input
         className={styles.volumeSlider}

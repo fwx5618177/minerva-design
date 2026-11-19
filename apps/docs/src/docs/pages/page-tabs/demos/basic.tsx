@@ -1,6 +1,6 @@
+import { FileTextIcon, HomeIcon, CloseIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { IconButton, PageTab, PageTabs } from "minerva-design";
-import { LuFileText, LuHouse, LuX } from "react-icons/lu";
 
 const initial = [
   { value: "home", label: "Dashboard" },
@@ -25,7 +25,13 @@ export default function BasicDemo() {
           key={page.value}
           value={page.value}
           label={page.label}
-          icon={page.value === "home" ? <LuHouse /> : <LuFileText />}
+          icon={
+            page.value === "home" ? (
+              <HomeIcon size="1em" />
+            ) : (
+              <FileTextIcon size="1em" />
+            )
+          }
           active={page.value === active}
           onSelect={() => setActive(page.value)}
           action={
@@ -33,7 +39,7 @@ export default function BasicDemo() {
               <IconButton
                 size="small"
                 aria-label={`Close ${page.label}`}
-                icon={<LuX />}
+                icon={<CloseIcon size="1em" />}
                 onClick={() => close(page.value)}
               />
             )

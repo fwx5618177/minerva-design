@@ -1,17 +1,27 @@
+import {
+  BarChartIcon,
+  HomeIcon,
+  SettingsIcon,
+  UsersIcon,
+} from "minerva-design/icons";
 import { useState } from "react";
 import { NavTree, type NavTreeSection } from "minerva-design";
-import { LuChartBar, LuHouse, LuSettings, LuUsers } from "react-icons/lu";
 
 const sections: NavTreeSection[] = [
   {
     id: "main",
     items: [
-      { id: "home", label: "Home", href: "#home", icon: <LuHouse /> },
+      {
+        id: "home",
+        label: "Home",
+        href: "#home",
+        icon: <HomeIcon size="1em" />,
+      },
       {
         id: "analytics",
         label: "Analytics",
         description: "Traffic and conversions",
-        icon: <LuChartBar />,
+        icon: <BarChartIcon size="1em" />,
         children: [
           { id: "traffic", label: "Traffic", href: "#traffic" },
           { id: "funnels", label: "Funnels", href: "#funnels" },
@@ -27,14 +37,14 @@ const sections: NavTreeSection[] = [
         id: "users",
         label: "Users",
         href: "#users",
-        icon: <LuUsers />,
+        icon: <UsersIcon size="1em" />,
         endContent: <small>12</small>,
       },
       {
         id: "settings",
         label: "Settings",
         href: "#settings",
-        icon: <LuSettings />,
+        icon: <SettingsIcon size="1em" />,
         disabled: true,
       },
     ],

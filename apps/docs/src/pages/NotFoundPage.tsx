@@ -1,7 +1,7 @@
+import { ArrowLeftIcon } from "minerva-design/icons";
 import React, { useEffect } from "react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
-import { IoArrowBack } from "react-icons/io5";
 import Kbd from "@/site/Kbd";
 import { modKeyLabel } from "@/site/searchItems";
 import styles from "@styles/pages/error.module.scss";
@@ -23,7 +23,7 @@ const NotFoundPage: React.FC = () => {
         <p className={styles.text}>{t("notFound.description")}</p>
         <div className={styles.actions}>
           <Link to="/" className={styles.primary}>
-            <IoArrowBack aria-hidden />
+            <ArrowLeftIcon size="1em" aria-hidden />
             {t("notFound.back_home")}
           </Link>
           <span className={styles.hint}>

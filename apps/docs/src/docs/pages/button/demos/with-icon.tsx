@@ -1,22 +1,27 @@
+import {
+  PlusIcon,
+  ArrowLeftIcon,
+  RefreshIcon,
+  TrashIcon,
+} from "minerva-design/icons";
 import { Button } from "minerva-design";
-import { IoAdd, IoArrowBack, IoRefresh, IoTrash } from "react-icons/io5";
 
 export default function WithIconDemo() {
   return (
     <>
-      <Button startIcon={<IoAdd aria-hidden />}>Add</Button>
-      <Button color="danger" startIcon={<IoRefresh aria-hidden />}>
+      <Button startIcon={<PlusIcon size="1em" aria-hidden />}>Add</Button>
+      <Button color="danger" startIcon={<RefreshIcon size="1em" aria-hidden />}>
         Retry
       </Button>
       <Button
         color="neutral"
         variant="ghost"
-        startIcon={<IoArrowBack aria-hidden />}
+        startIcon={<ArrowLeftIcon size="1em" aria-hidden />}
       >
         Back
       </Button>
       <Button color="danger" variant="outline" aria-label="Delete item">
-        <IoTrash aria-hidden />
+        <TrashIcon size="1em" aria-hidden />
       </Button>
     </>
   );

@@ -1,17 +1,17 @@
+import {
+  BookOpenIcon,
+  LayoutGridIcon,
+  MessageSquareIcon,
+  SettingsIcon,
+} from "minerva-design/icons";
 import { useState } from "react";
 import { AppShell, Badge, NavTree, Page, PageHeader } from "minerva-design";
-import {
-  LuBookOpen,
-  LuLayoutDashboard,
-  LuMessageSquare,
-  LuSettings,
-} from "react-icons/lu";
 
 const items = [
-  { id: "dashboard", label: "Dashboard", icon: <LuLayoutDashboard /> },
-  { id: "books", label: "Books", icon: <LuBookOpen /> },
-  { id: "reviews", label: "Reviews", icon: <LuMessageSquare /> },
-  { id: "settings", label: "Settings", icon: <LuSettings /> },
+  { id: "dashboard", label: "Dashboard", icon: <LayoutGridIcon size="1em" /> },
+  { id: "books", label: "Books", icon: <BookOpenIcon size="1em" /> },
+  { id: "reviews", label: "Reviews", icon: <MessageSquareIcon size="1em" /> },
+  { id: "settings", label: "Settings", icon: <SettingsIcon size="1em" /> },
 ];
 
 export default function BasicDemo() {
@@ -28,7 +28,7 @@ export default function BasicDemo() {
     >
       <AppShell
         brand="Publishing Admin"
-        brandIcon={<LuLayoutDashboard />}
+        brandIcon={<LayoutGridIcon size="1em" />}
         navigationLabel="Workspace navigation"
         style={{ minHeight: "100%" }}
         headerActions={

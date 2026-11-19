@@ -1,6 +1,6 @@
+import { XCircleIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Tag, Button } from "minerva-design";
-import { FaTimesCircle } from "react-icons/fa";
 
 const initialTags = ["Tag 1", "Tag 2", "Tag 3"];
 
@@ -15,7 +15,9 @@ export default function ClosableDemo() {
           key={tag}
           closable
           closeLabel={(label) => `Remove ${label}`}
-          closeIcon={index === 2 ? <FaTimesCircle aria-hidden /> : undefined}
+          closeIcon={
+            index === 2 ? <XCircleIcon size="1em" aria-hidden /> : undefined
+          }
           onClose={() => setTags((prev) => prev.filter((t) => t !== tag))}
           // clickable + closable: the tag and its close button are two
           // separate buttons, both reachable with Tab

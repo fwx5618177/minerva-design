@@ -127,7 +127,6 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
       "jsonc-parser",
       "lit",
       "mpegts.js",
-      "react-icons",
     ]);
   });
 

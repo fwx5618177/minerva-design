@@ -1,6 +1,6 @@
+import { PlusIcon, ArrowRightIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Button } from "minerva-design";
-import { IoAdd, IoArrowForward } from "react-icons/io5";
 
 export default function IconsLoadingDemo() {
   const [saving, setSaving] = useState(false);
@@ -11,8 +11,11 @@ export default function IconsLoadingDemo() {
 
   return (
     <div style={{ display: "grid", gap: 12, maxWidth: 320 }}>
-      <Button startIcon={<IoAdd aria-hidden />}>Add item</Button>
-      <Button variant="outline" endIcon={<IoArrowForward aria-hidden />}>
+      <Button startIcon={<PlusIcon size="1em" aria-hidden />}>Add item</Button>
+      <Button
+        variant="outline"
+        endIcon={<ArrowRightIcon size="1em" aria-hidden />}
+      >
         Continue
       </Button>
       <Button

@@ -1,5 +1,5 @@
+import { MoreVerticalIcon } from "minerva-design/icons";
 import { Button, HStack, IconButton, Menu } from "minerva-design";
-import { IoEllipsisVertical } from "react-icons/io5";
 
 const items = [
   { key: "profile", label: "Profile" },
@@ -17,7 +17,10 @@ export default function TriggersDemo() {
         </Button>
       </Menu>
       <Menu items={items} aria-label="More actions">
-        <IconButton icon={<IoEllipsisVertical />} label="More actions" />
+        <IconButton
+          icon={<MoreVerticalIcon size="1em" />}
+          label="More actions"
+        />
       </Menu>
     </HStack>
   );

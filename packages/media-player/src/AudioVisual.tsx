@@ -3,7 +3,7 @@
  * 这里只替换视频的画面区域；引擎、控制条、快捷键、声音、播放列表等全部与视频共用（见 MediaPlayer）。
  */
 import React from "react";
-import { VscDebugPause, VscPlay } from "react-icons/vsc";
+import { PauseIcon, PlayIcon } from "@minerva/icons";
 import type { AbRange } from "./abRepeat.js";
 import type { WaveformState } from "./useWaveform.js";
 import Waveform from "./Waveform.js";
@@ -73,9 +73,9 @@ const AudioVisual: React.FC<AudioVisualProps> = ({
       {poster ? (
         <img src={poster} alt="" draggable={false} />
       ) : paused ? (
-        <VscPlay />
+        <PlayIcon size="1em" />
       ) : (
-        <VscDebugPause />
+        <PauseIcon size="1em" />
       )}
     </span>
     <div className={styles.body}>

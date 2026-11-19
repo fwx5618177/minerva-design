@@ -1,8 +1,8 @@
+import { BrandGithubIcon, SearchIcon } from "minerva-design/icons";
 import { Button } from "minerva-design";
 import React from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
-import { IoLogoGithub, IoSearchOutline } from "react-icons/io5";
 import { sections } from "@/docs/registry";
 import { SECTION_LABELS, sectionOfPath } from "@router/routes";
 import LanguageMenu from "./LanguageMenu";
@@ -67,7 +67,11 @@ const TopNav: React.FC<TopNavProps> = ({ onSearch, withMenu = true }) => {
             aria-label={t("search.title")}
             aria-keyshortcuts="Meta+K Control+K"
             startIcon={
-              <IoSearchOutline aria-hidden className={styles.searchIcon} />
+              <SearchIcon
+                size="1em"
+                aria-hidden
+                className={styles.searchIcon}
+              />
             }
             endIcon={<Kbd className={styles.searchKbd}>{modKeyLabel()}</Kbd>}
           >
@@ -81,7 +85,7 @@ const TopNav: React.FC<TopNavProps> = ({ onSearch, withMenu = true }) => {
             target="_blank"
             rel="noreferrer"
           >
-            <IoLogoGithub aria-hidden />
+            <BrandGithubIcon size="1em" aria-hidden />
           </a>
           <LanguageMenu />
           <ThemeMenu />

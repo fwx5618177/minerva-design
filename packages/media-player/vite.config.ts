@@ -4,6 +4,10 @@ import dts from "vite-plugin-dts";
 import { fileURLToPath } from "node:url";
 import manifest from "./package.json" with { type: "json" };
 import { writeDualDeclarations } from "../../tools/dual-declarations.mjs";
+import {
+  coreImportsPlugin,
+  rewriteCoreDeclarations,
+} from "../../tools/core-imports.mjs";
 import { MEDIA_PLAYER_DIST } from "../../tools/paths.mjs";
 const external = [
   ...Object.keys(manifest.dependencies),
@@ -14,10 +18,14 @@ const source = (name: string) =>
 export default defineConfig({
   plugins: [
     react(),
+    coreImportsPlugin({ outDir: MEDIA_PLAYER_DIST }),
     dts({
       tsconfigPath: "./tsconfig.build.json",
       entryRoot: "src",
-      afterBuild: writeDualDeclarations,
+      afterBuild: (files) => {
+        writeDualDeclarations(files);
+        rewriteCoreDeclarations(MEDIA_PLAYER_DIST);
+      },
     }),
   ],
   build: {

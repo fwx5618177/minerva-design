@@ -1,10 +1,10 @@
+import { GiftIcon } from "minerva-design/icons";
 import { Alert } from "minerva-design";
-import { FiGift } from "react-icons/fi";
 
 export default function AppearanceDemo() {
   return (
     <div style={{ display: "grid", gap: 12, width: "100%" }}>
-      <Alert color="success" icon={<FiGift />} elevation>
+      <Alert color="success" icon={<GiftIcon size="1em" />} elevation>
         Custom icon with an elevated shadow.
       </Alert>
       <Alert color="info" variant="outline" rounded={false}>

@@ -1,11 +1,11 @@
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  SkipBackIcon,
+  SkipForwardIcon,
+} from "minerva-design/icons";
 import { useState } from "react";
 import { Pagination } from "minerva-design";
-import {
-  IoArrowBack,
-  IoArrowForward,
-  IoPlayBack,
-  IoPlayForward,
-} from "react-icons/io5";
 
 export default function CustomRenderDemo() {
   const [page, setPage] = useState(1);
@@ -17,10 +17,10 @@ export default function CustomRenderDemo() {
         total={100}
         onChange={setPage}
         icons={{
-          prev: <IoArrowBack />,
-          next: <IoArrowForward />,
-          jumpPrev: <IoPlayBack />,
-          jumpNext: <IoPlayForward />,
+          prev: <ArrowLeftIcon size="1em" />,
+          next: <ArrowRightIcon size="1em" />,
+          jumpPrev: <SkipBackIcon size="1em" />,
+          jumpNext: <SkipForwardIcon size="1em" />,
         }}
       />
       <Pagination

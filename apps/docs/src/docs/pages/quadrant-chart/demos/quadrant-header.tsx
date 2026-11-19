@@ -1,3 +1,4 @@
+import { PlusIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "minerva-design";
@@ -8,7 +9,6 @@ import {
   type QuadrantPoint,
   type QuadrantRegions,
 } from "minerva-design/charts";
-import { LuPlus } from "react-icons/lu";
 
 // x: urgency, y: importance (0-10); reverseX puts urgent tasks on the left
 const geometry = { reverseX: true };
@@ -133,7 +133,7 @@ export default function QuadrantHeaderDemo() {
                 size="xsmall"
                 variant="ghost"
                 label={t("addTask", { quadrant: title(corner) })}
-                icon={<LuPlus />}
+                icon={<PlusIcon size="1em" />}
                 onClick={() => add(corner)}
               />
             </div>

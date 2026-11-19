@@ -20,7 +20,7 @@ import { REACT_DIST } from "../../tools/paths.mjs";
 // main entry and the theme-utils / utils / monaco sub-entries).
 //
 // Everything the package depends on is resolved by the consumer, never bundled.
-// Matches bare ids and subpaths (e.g. react/jsx-runtime, react-icons/fa).
+// Matches bare ids and subpaths (e.g. react/jsx-runtime, hls.js).
 // @minerva/core stays external too: its imports are rewritten to the shared
 // copy in `dist/core/` (tools/core-imports.mjs), never inlined.
 // Stylesheets are the exception: CSS / SCSS imported from a dependency (the

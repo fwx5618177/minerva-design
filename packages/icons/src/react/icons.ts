@@ -195,6 +195,9 @@ export const HeadphonesIcon = /* @__PURE__ */ createIcon(icons.headphonesIcon);
 export const RepeatIcon = /* @__PURE__ */ createIcon(icons.repeatIcon);
 export const ShuffleIcon = /* @__PURE__ */ createIcon(icons.shuffleIcon);
 export const FilmIcon = /* @__PURE__ */ createIcon(icons.filmIcon);
+export const PictureInPictureIcon = /* @__PURE__ */ createIcon(
+  icons.pictureInPictureIcon,
+);
 export const FileIcon = /* @__PURE__ */ createIcon(icons.fileIcon);
 export const FileTextIcon = /* @__PURE__ */ createIcon(icons.fileTextIcon);
 export const FilePlusIcon = /* @__PURE__ */ createIcon(icons.filePlusIcon);

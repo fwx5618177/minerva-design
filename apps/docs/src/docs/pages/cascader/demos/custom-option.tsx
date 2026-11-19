@@ -1,5 +1,5 @@
+import { GlobeIcon, MapPinIcon } from "minerva-design/icons";
 import { Cascader, type CascaderOption } from "minerva-design";
-import { FaGlobeEurope, FaMapMarkerAlt } from "react-icons/fa";
 
 const options: CascaderOption[] = [
   {
@@ -57,7 +57,7 @@ export default function CustomOptionDemo() {
       maxLevel={2}
       optionRender={(option, level) => (
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          {level === 0 ? <FaGlobeEurope /> : <FaMapMarkerAlt />}
+          {level === 0 ? <GlobeIcon size="1em" /> : <MapPinIcon size="1em" />}
           {option.label}
         </span>
       )}

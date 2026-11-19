@@ -1,17 +1,17 @@
+import { CopyIcon, InfoIcon } from "minerva-design/icons";
 import { IconButton } from "minerva-design";
-import { IoCopyOutline, IoInformationCircleOutline } from "react-icons/io5";
 
 export default function TooltipDemo() {
   return (
     <>
       <IconButton
-        icon={<IoCopyOutline />}
+        icon={<CopyIcon size="1em" />}
         aria-label="Copy"
         showTooltip
         tooltip={{ content: "Copy to clipboard" }}
       />
       <IconButton
-        icon={<IoInformationCircleOutline />}
+        icon={<InfoIcon size="1em" />}
         color="info"
         aria-label="More information"
         showTooltip

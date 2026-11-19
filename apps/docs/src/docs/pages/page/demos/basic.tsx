@@ -1,5 +1,5 @@
+import { BookOpenIcon } from "minerva-design/icons";
 import { Button, Page, PageHeader, PageSection } from "minerva-design";
-import { LuBookOpen } from "react-icons/lu";
 
 export default function BasicDemo() {
   return (
@@ -11,7 +11,7 @@ export default function BasicDemo() {
       />
       <PageSection
         title="Recently added"
-        icon={<LuBookOpen />}
+        icon={<BookOpenIcon size="1em" />}
         actions={
           <Button color="neutral" variant="outline">
             View all

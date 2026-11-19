@@ -1,6 +1,6 @@
+import { CloudUploadIcon, MicIcon, TrashIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { IconButton } from "minerva-design";
-import { IoCloudUploadOutline, IoMic, IoTrashOutline } from "react-icons/io5";
 
 export default function StatesDemo() {
   const [loading, setLoading] = useState(false);
@@ -14,19 +14,23 @@ export default function StatesDemo() {
   return (
     <>
       <IconButton
-        icon={<IoCloudUploadOutline />}
+        icon={<CloudUploadIcon size="1em" />}
         color="primary"
         loading={loading}
         onClick={upload}
         aria-label="Upload"
       />
       <IconButton
-        icon={<IoMic />}
+        icon={<MicIcon size="1em" />}
         pressed={muted}
         onPressedChange={setMuted}
         aria-label="Mute microphone"
       />
-      <IconButton icon={<IoTrashOutline />} disabled aria-label="Delete" />
+      <IconButton
+        icon={<TrashIcon size="1em" />}
+        disabled
+        aria-label="Delete"
+      />
     </>
   );
 }

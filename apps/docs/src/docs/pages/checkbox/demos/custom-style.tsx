@@ -1,6 +1,6 @@
+import { HeartIcon } from "minerva-design/icons";
 import type { CSSProperties } from "react";
 import { Checkbox } from "minerva-design";
-import { IoHeart } from "react-icons/io5";
 
 // The --checkbox-* custom properties recolor the box; set them on className
 // or on any ancestor (here an inline style on the wrapper).
@@ -19,7 +19,7 @@ export default function CustomStyleDemo() {
       <Checkbox
         label="Custom icon"
         defaultChecked
-        icon={<IoHeart color="#e11d48" />}
+        icon={<HeartIcon size="1em" color="#e11d48" />}
       />
     </>
   );
