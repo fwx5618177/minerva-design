@@ -739,6 +739,13 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
   ],
   input: [
     example(
+      "Login and browser autofill",
+      ["MnInput", "MnButton"],
+      `<form (submit)="$event.preventDefault()"><mn-stack gap="3"><mn-input name="username" aria-label="Username" autocomplete="username" [prefix]="userIcon" required/><mn-input name="password" aria-label="Password" type="password" autocomplete="current-password" [prefix]="lockIcon" required/><button mnButton type="submit">Try form</button><output>Demo only. No credentials are sent and no account is signed in.</output></mn-stack></form><ng-template #userIcon><span aria-hidden="true">@</span></ng-template><ng-template #lockIcon><span aria-hidden="true">Key</span></ng-template>`,
+      {},
+      "The browser or password manager decides whether to offer saved credentials. Autofill tints the complete frame, including prefixes and the password toggle; customize it with an opaque --input-autofill-background color. This demo has no authentication backend.",
+    ),
+    example(
       "Controlled value",
       ["MnInput"],
       `<mn-input aria-label="Project name" placeholder="Enter a project name" [(value)]="value"/><output>{{value}}</output>`,

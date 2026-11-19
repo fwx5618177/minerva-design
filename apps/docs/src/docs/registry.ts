@@ -1301,13 +1301,14 @@ export const docPages: DocPageMeta[] = [
       "addons",
       "clearable-and-count",
       "password",
+      "autofill",
       "states",
       "validation",
     ],
     wc: {
       entry: "input",
       tags: ["minerva-input"],
-      demos: ["basic", "sizes-variants", "addons", "form"],
+      demos: ["basic", "sizes-variants", "addons", "form", "autofill"],
     },
   },
   {

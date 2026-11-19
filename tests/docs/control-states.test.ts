@@ -164,8 +164,15 @@ describe("read-only field presentation", () => {
     expect(
       rules.some(
         (rule) =>
-          rule.property === "background-color" &&
-          rule.value === "var(--readonly-surface-color)",
+          rule.value === "var(--readonly-surface-color)" &&
+          (rule.property === "background-color" ||
+            (rule.property === "--_input-background" &&
+              component(path).some(
+                (surface) =>
+                  surface.selector === ".root" &&
+                  surface.property === "background-color" &&
+                  surface.value === "var(--_input-background)",
+              ))),
       ),
     ).toBe(true);
     expect(rules.some((rule) => rule.property === "opacity")).toBe(false);

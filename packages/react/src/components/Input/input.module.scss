@@ -10,6 +10,7 @@
 // @css-var --input-radius Corner radius (defaults to --radius-lg)
 // @css-var --input-font-size Font size (every size)
 // @css-var --input-background Background color of the outline variant
+// @css-var --input-autofill-background Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface
 // @css-var --input-border-color Border color at rest
 // @css-var --input-focus-color Border color while hovered / focused (focus: then --minerva-focus-border-color)
 //
@@ -20,6 +21,8 @@
 // Internal plumbing uses the --_input-* prefix.
 .root {
   --_input-border: var(--input-border-color, var(--control-border-color));
+  --_input-background: var(--input-background, var(--surface-color));
+  --_input-autofill-background: var(--input-autofill-background, color-mix(in srgb, var(--primary-color) 10%, var(--surface-color)));
   --_input-pad-x: var(--input-padding-x, var(--control-padding-x-sm));
 
   position: relative;
@@ -27,7 +30,7 @@
   align-items: center;
   width: 100%;
   min-width: 0;
-  background-color: var(--input-background, var(--surface-color));
+  background-color: var(--_input-background);
   border: 1px solid transparent;
   border-radius: var(--input-radius, var(--radius-lg));
   box-shadow: inset 0 0 0 1px var(--_input-border);
@@ -69,16 +72,16 @@
 
 .filled {
   --_input-border: transparent;
-  background-color: var(--surface-muted-color);
+  --_input-background: var(--surface-muted-color);
 
   &:focus-within {
-    background-color: var(--surface-color);
+    --_input-background: var(--surface-color);
   }
 }
 
 .unstyled {
   --_input-border: transparent;
-  background: transparent;
+  --_input-background: transparent;
   box-shadow: none;
 
   &:hover:not(.disabled):not([data-readonly]):not(:has(.field[readonly])) {
@@ -104,7 +107,8 @@
 }
 
 .disabled {
-  background-color: var(--surface-subtle-color);
+  --_input-background: var(--surface-subtle-color);
+  --_input-autofill-background: var(--surface-subtle-color);
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -214,11 +218,32 @@
 // Unstyled fields (e.g. the Cascader's value) keep no surface.
 .root[data-readonly]:not(.disabled, .unstyled),
 .root:has(.field[readonly]):not(.disabled, .unstyled) {
-  background-color: var(--readonly-surface-color);
+  --_input-background: var(--readonly-surface-color);
+  --_input-autofill-background: var(--readonly-surface-color);
   cursor: default;
 }
 
 // The enclosing frame owns the single focus indicator.
 .root .field:focus {
   @include control-inner-focus;
+}
+
+// Autofill is a state of the complete control, not just its editable segment.
+// The UA's important background cannot be replaced by background-color alone;
+// an opaque inset paint covers it without changing the native input or hints.
+// Keep this after control-inner-focus: that reset must not erase the paint.
+@media (forced-colors: none) {
+  .root:has(> .field:is(:autofill, :-webkit-autofill)) {
+    background-color: var(--_input-autofill-background);
+    // A background transition on only the frame would briefly expose a seam.
+    // Border/focus transitions still belong to the enclosing frame.
+    transition-property: box-shadow;
+  }
+
+  .root > .field:is(:autofill, :-webkit-autofill) {
+    box-shadow: inset 0 0 0 100vmax var(--_input-autofill-background);
+    -webkit-text-fill-color: var(--text-color);
+    caret-color: var(--text-color);
+    border-radius: inherit;
+  }
 }
