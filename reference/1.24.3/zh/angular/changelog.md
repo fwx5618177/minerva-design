@@ -1,0 +1,53 @@
+# 更新日志
+
+minerva-design 每个版本的变更，按时间倒序排列，并包含已合并、等待下一次发布的变更。
+
+Package: minerva-design@1.24.3
+
+Renderer: angular
+
+Locale: zh
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.24.3",
+  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
+  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.24.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+发布说明由每个合并请求附带的 changeset 生成，使用英文撰写。
+
+### 即将发布
+
+上次发布以来已合并的变更（待处理的 changeset）。下一次发布会将它们发布为 {{version}} 版本。
+
+下一版本
+
+### 已发布版本
+
+最新
+
+npm
+
+重大变更
+
+次要变更
+
+补丁变更
+
+提交 {{hash}}
+
+npm 上的 minerva-design {{version}}
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

@@ -1,0 +1,248 @@
+# Skeleton
+
+Placeholder shapes shown while content is loading.
+
+Package: minerva-design@1.24.3
+
+Renderer: uni
+
+Locale: en
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.24.3",
+  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
+  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.24.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## Skeleton
+
+Support: beta
+
+Variants, geometry, radius/circle, loading content replacement, decorative/status semantics, pulse/wave/no-animation; text line count, height, gap and shortened final line. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/uni",
+  "exports": [
+    "Skeleton"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "variant",
+    "typeText": "\"rounded\" | \"button\" | \"text\" | \"circular\" | \"rectangular\" | \"image\" | \"card\" | undefined",
+    "required": false
+  },
+  {
+    "name": "animation",
+    "typeText": "\"false\" | \"wave\" | \"pulse\" | undefined",
+    "required": false
+  },
+  {
+    "name": "decorative",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "size",
+    "typeText": "string | number | undefined",
+    "required": false
+  },
+  {
+    "name": "width",
+    "typeText": "string | number | undefined",
+    "required": false
+  },
+  {
+    "name": "height",
+    "typeText": "string | number | undefined",
+    "required": false
+  },
+  {
+    "name": "circle",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "animated",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "loading",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "borderRadius",
+    "typeText": "string | number | undefined",
+    "required": false
+  },
+  {
+    "name": "lines",
+    "typeText": "number | undefined",
+    "required": false
+  },
+  {
+    "name": "avatar",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "avatarSize",
+    "typeText": "string | number | undefined",
+    "required": false
+  },
+  {
+    "name": "avatarShape",
+    "typeText": "\"circle\" | \"square\" | undefined",
+    "required": false
+  },
+  {
+    "name": "active",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "paragraph",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "title",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "ariaLabel",
+    "typeText": "string | undefined",
+    "required": false
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "default",
+    "typeText": "{}"
+  }
+]
+```
+
+## SkeletonText
+
+Support: beta
+
+Variants, geometry, radius/circle, loading content replacement, decorative/status semantics, pulse/wave/no-animation; text line count, height, gap and shortened final line. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/uni",
+  "exports": [
+    "SkeletonText"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "lines",
+    "typeText": "number | undefined",
+    "required": false
+  },
+  {
+    "name": "lineHeight",
+    "typeText": "string | number | undefined",
+    "required": false
+  },
+  {
+    "name": "gap",
+    "typeText": "string | number | undefined",
+    "required": false
+  },
+  {
+    "name": "lastLineWidth",
+    "typeText": "string | undefined",
+    "required": false
+  },
+  {
+    "name": "animated",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "shrinkLast",
+    "typeText": "boolean | undefined",
+    "required": false
+  },
+  {
+    "name": "animation",
+    "typeText": "\"false\" | \"wave\" | \"pulse\" | undefined",
+    "required": false
+  }
+]
+```
+
+## CSS variables
+
+```json
+{
+  "css:Skeleton": {
+    "kind": "cssVars",
+    "source": "react/src/components/Skeleton",
+    "vars": [
+      {
+        "name": "--skeleton-color",
+        "description": "Base color of the placeholder blocks"
+      },
+      {
+        "name": "--skeleton-highlight-color",
+        "description": "Color of the moving highlight (wave animation)"
+      },
+      {
+        "name": "--skeleton-radius",
+        "description": "Corner radius of the lines and blocks (circles stay round, rectangular blocks square)"
+      },
+      {
+        "name": "--skeleton-text-height",
+        "description": "Height of a text line"
+      },
+      {
+        "name": "--skeleton-gap",
+        "description": "Space between the lines of a paragraph and next to the avatar"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
