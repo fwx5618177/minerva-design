@@ -16,7 +16,7 @@ Locale: fr
   "packageVersion": "1.24.2",
   "sourceCommit": "2d9157080afa96d568e1ab5dd5ebf85bbe169957",
   "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:35a4364a093ce8ba3112a6866b1ac14e75de4497c8a2778617ef119cb4e030b2"
+  "referenceSourceDigest": "sha256:a10f6d21015b35fa6d9df069d49549a386ecb8a45ce2df880f926336f66209d5"
 }
 ```
 
@@ -709,7 +709,7 @@ Documentation context imports: none
 
 ## Example: Connexion et remplissage automatique
 
-Un véritable formulaire avec les indications username / current-password. Le navigateur ou le gestionnaire de mots de passe décide de proposer les identifiants enregistrés. Le remplissage colore tout le cadre, icônes et bouton du mot de passe compris, en conservant le focus. Personnalisez la teinte avec une couleur opaque dans --input-autofill-background. Cette démo ne dispose pas de serveur d’authentification et n’envoie aucun identifiant.
+Un véritable formulaire avec les indications username / current-password. Le navigateur ou le gestionnaire de mots de passe décide de proposer les identifiants enregistrés. Le remplissage colore tout le cadre, icônes et bouton du mot de passe compris, en conservant le focus. Personnalisez la teinte avec une couleur opaque dans --input-autofill-background. Cette démo ne dispose pas de serveur d’authentification et n’envoie aucun identifiant. La variante outline utilise une bordure de 1 px, claire et adaptée au thème. Le cadre extérieur trace la bordure : le remplissage automatique ne la masque pas. Le focus et les erreurs restent distincts.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -941,11 +941,9 @@ Documentation context imports: none
     value="Disabled"
     aria-label="Disabled"
   ></minerva-input>
-  <minerva-input
-    invalid
-    value="Invalid value"
-    aria-label="Invalid"
-  ></minerva-input>
+  <minerva-input invalid value="Invalid value" aria-label="Invalid"
+    ><span slot="prefix">@</span><span slot="suffix">!</span></minerva-input
+  >
 </div>
 
 ```

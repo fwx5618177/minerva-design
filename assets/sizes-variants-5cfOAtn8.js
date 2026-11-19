@@ -1,0 +1,41 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<div style="display: grid; gap: 12px; max-width: 360px">
+  <minerva-input
+    size="small"
+    aria-label="Small"
+    placeholder="Small"
+  ></minerva-input>
+  <minerva-input
+    size="medium"
+    aria-label="Medium"
+    placeholder="Medium (outline)"
+  ></minerva-input>
+  <minerva-input
+    size="large"
+    aria-label="Large"
+    placeholder="Large"
+  ></minerva-input>
+  <minerva-input
+    variant="filled"
+    aria-label="Filled"
+    placeholder="Filled"
+  ></minerva-input>
+  <minerva-input
+    variant="unstyled"
+    aria-label="Unstyled"
+    placeholder="Unstyled"
+  ></minerva-input>
+  <minerva-input
+    readonly
+    value="Read-only value"
+    aria-label="Read-only"
+  ></minerva-input>
+  <minerva-input
+    disabled
+    value="Disabled"
+    aria-label="Disabled"
+  ></minerva-input>
+  <minerva-input invalid value="Invalid value" aria-label="Invalid"
+    ><span slot="prefix">@</span><span slot="suffix">!</span></minerva-input
+  >
+</div>
+`})))()}n();export{t as default};

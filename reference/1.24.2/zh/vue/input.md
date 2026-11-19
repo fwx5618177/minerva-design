@@ -16,7 +16,7 @@ Locale: zh
   "packageVersion": "1.24.2",
   "sourceCommit": "2d9157080afa96d568e1ab5dd5ebf85bbe169957",
   "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:35a4364a093ce8ba3112a6866b1ac14e75de4497c8a2778617ef119cb4e030b2"
+  "referenceSourceDigest": "sha256:a10f6d21015b35fa6d9df069d49549a386ecb8a45ce2df880f926336f66209d5"
 }
 ```
 
@@ -473,17 +473,19 @@ import { Input, VStack } from "minerva-design/vue";
   <VStack :gap="3"
     ><Input aria-label="Small" size="small" placeholder="small" /><Input
       aria-label="Medium"
-      placeholder="medium (outline)" /><Input
-      aria-label="Large"
-      size="large"
-      placeholder="large" /><Input
+      placeholder="medium (outline)"
+    /><Input aria-label="Large" size="large" placeholder="large" /><Input
       aria-label="Filled"
       variant="filled"
-      placeholder="filled" /><Input
+      placeholder="filled"
+    /><Input
       aria-label="Unstyled"
       variant="unstyled"
       placeholder="unstyled"
-  /></VStack>
+    /><Input aria-label="Invalid" invalid default-value="Needs attention"
+      ><template #prefix>@</template><template #suffix>!</template></Input
+    ></VStack
+  >
 </template>
 
 ```

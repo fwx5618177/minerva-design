@@ -16,7 +16,7 @@ Locale: zh
   "packageVersion": "1.24.2",
   "sourceCommit": "2d9157080afa96d568e1ab5dd5ebf85bbe169957",
   "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:35a4364a093ce8ba3112a6866b1ac14e75de4497c8a2778617ef119cb4e030b2"
+  "referenceSourceDigest": "sha256:a10f6d21015b35fa6d9df069d49549a386ecb8a45ce2df880f926336f66209d5"
 }
 ```
 
@@ -709,7 +709,7 @@ Documentation context imports: none
 
 ## Example: 登录与浏览器自动填充
 
-使用 username / current-password 提示的真实登录表单。浏览器或密码管理器决定是否提供已保存的凭据。自动填充为整个输入框着色，包括前缀图标和密码切换按钮，并保留焦点样式。可将 --input-autofill-background 设为不透明颜色以自定义背景。本示例没有认证后端，不会发送凭据。
+使用 username / current-password 提示的真实登录表单。浏览器或密码管理器决定是否提供已保存的凭据。自动填充为整个输入框着色，包括前缀图标和密码切换按钮，并保留焦点样式。可将 --input-autofill-background 设为不透明颜色以自定义背景。本示例没有认证后端，不会发送凭据。 outline 使用随主题变化的浅色 1px 边框，由外框独立绘制，自动填充底色不会遮断边缘；聚焦和错误状态保留独立提示。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -941,11 +941,9 @@ Documentation context imports: none
     value="Disabled"
     aria-label="Disabled"
   ></minerva-input>
-  <minerva-input
-    invalid
-    value="Invalid value"
-    aria-label="Invalid"
-  ></minerva-input>
+  <minerva-input invalid value="Invalid value" aria-label="Invalid"
+    ><span slot="prefix">@</span><span slot="suffix">!</span></minerva-input
+  >
 </div>
 
 ```

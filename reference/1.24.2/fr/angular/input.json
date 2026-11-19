@@ -11,7 +11,7 @@
     "packageVersion": "1.24.2",
     "sourceCommit": "2d9157080afa96d568e1ab5dd5ebf85bbe169957",
     "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-    "referenceSourceDigest": "sha256:35a4364a093ce8ba3112a6866b1ac14e75de4497c8a2778617ef119cb4e030b2"
+    "referenceSourceDigest": "sha256:a10f6d21015b35fa6d9df069d49549a386ecb8a45ce2df880f926336f66209d5"
   },
   "content": {
     "login": {
@@ -300,7 +300,7 @@
     {
       "id": "login-and-browser-autofill",
       "title": "Login and browser autofill",
-      "description": "The browser or password manager decides whether to offer saved credentials. Autofill tints the complete frame, including prefixes and the password toggle; customize it with an opaque --input-autofill-background color. This demo has no authentication backend.",
+      "description": "The browser or password manager decides whether to offer saved credentials. The outer frame uses a light theme-derived real 1px border, which remains continuous during autofill, focus and errors. Autofill tints the complete frame, including prefixes and the password toggle; customize it with an opaque --input-autofill-background color. This demo has no authentication backend.",
       "kind": "internal-demo",
       "entry": "example.ts",
       "files": {
@@ -334,7 +334,7 @@
       "kind": "internal-demo",
       "entry": "example.ts",
       "files": {
-        "example.ts": "import { Component } from '@angular/core';\nimport { MnInput } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnInput],\n  template: `\n<mn-input aria-label=\"Website\" prefix=\"https://\" suffix=\".com\" placeholder=\"your-site\"/><mn-input aria-label=\"Invalid value\" invalid value=\"Needs attention\"/><mn-input aria-label=\"Disabled field\" disabled value=\"Unavailable\"/>\n  `,\n})\nexport class Example {\n\n}\n"
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnInput } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnInput],\n  template: `\n<mn-input aria-label=\"Website\" prefix=\"https://\" suffix=\".com\" placeholder=\"your-site\"/><mn-input aria-label=\"Invalid value\" invalid prefix=\"@\" suffix=\"!\" value=\"Needs attention\"/><mn-input aria-label=\"Disabled field\" disabled value=\"Unavailable\"/>\n  `,\n})\nexport class Example {\n\n}\n"
       },
       "dependencies": [
         "@angular/core",
@@ -403,7 +403,7 @@
         },
         "sizes-variants": {
           "title": "Tailles et variantes",
-          "description": "Trois tailles et les variantes outline, filled et unstyled."
+          "description": "Trois tailles et les variantes outline, filled et unstyled. La variante outline utilise une bordure de 1 px, claire et adaptée au thème. Le cadre extérieur trace la bordure : le remplissage automatique ne la masque pas. Le focus et les erreurs restent distincts."
         },
         "addons": {
           "title": "Préfixe et suffixe",
@@ -427,7 +427,7 @@
         },
         "autofill": {
           "title": "Connexion et remplissage automatique",
-          "description": "Un véritable formulaire avec les indications username / current-password. Le navigateur ou le gestionnaire de mots de passe décide de proposer les identifiants enregistrés. Le remplissage colore tout le cadre, icônes et bouton du mot de passe compris, en conservant le focus. Personnalisez la teinte avec une couleur opaque dans --input-autofill-background. Cette démo ne dispose pas de serveur d’authentification et n’envoie aucun identifiant."
+          "description": "Un véritable formulaire avec les indications username / current-password. Le navigateur ou le gestionnaire de mots de passe décide de proposer les identifiants enregistrés. Le remplissage colore tout le cadre, icônes et bouton du mot de passe compris, en conservant le focus. Personnalisez la teinte avec une couleur opaque dans --input-autofill-background. Cette démo ne dispose pas de serveur d’authentification et n’envoie aucun identifiant. La variante outline utilise une bordure de 1 px, claire et adaptée au thème. Le cadre extérieur trace la bordure : le remplissage automatique ne la masque pas. Le focus et les erreurs restent distincts."
         }
       },
       "api": {
@@ -453,7 +453,7 @@
         "--input-radius": "Rayon des coins (par défaut --radius-lg)",
         "--input-font-size": "Taille de police (toutes tailles)",
         "--input-background": "Couleur de fond de la variante outline",
-        "--input-border-color": "Couleur de bordure au repos",
+        "--input-border-color": "Bordure claire adaptée au thème au repos ; utilisez une couleur opaque pour la personnaliser",
         "--input-focus-color": "Couleur de bordure au survol / au focus",
         "--input-autofill-background": "Fond de tout le champ rempli automatiquement ; utilisez une couleur opaque"
       },
@@ -477,7 +477,7 @@
           },
           "autofill": {
             "title": "Connexion et remplissage automatique",
-            "description": "Un véritable formulaire avec les indications username / current-password. Le navigateur ou le gestionnaire de mots de passe décide de proposer les identifiants enregistrés. Le remplissage colore tout le cadre, icônes et bouton du mot de passe compris, en conservant le focus. Personnalisez la teinte avec une couleur opaque dans --input-autofill-background. Cette démo ne dispose pas de serveur d’authentification et n’envoie aucun identifiant."
+            "description": "Un véritable formulaire avec les indications username / current-password. Le navigateur ou le gestionnaire de mots de passe décide de proposer les identifiants enregistrés. Le remplissage colore tout le cadre, icônes et bouton du mot de passe compris, en conservant le focus. Personnalisez la teinte avec une couleur opaque dans --input-autofill-background. Cette démo ne dispose pas de serveur d’authentification et n’envoie aucun identifiant. La variante outline utilise une bordure de 1 px, claire et adaptée au thème. Le cadre extérieur trace la bordure : le remplissage automatique ne la masque pas. Le focus et les erreurs restent distincts."
           }
         },
         "minerva-input": {

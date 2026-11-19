@@ -16,7 +16,7 @@ Locale: ja
   "packageVersion": "1.24.2",
   "sourceCommit": "2d9157080afa96d568e1ab5dd5ebf85bbe169957",
   "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:35a4364a093ce8ba3112a6866b1ac14e75de4497c8a2778617ef119cb4e030b2"
+  "referenceSourceDigest": "sha256:a10f6d21015b35fa6d9df069d49549a386ecb8a45ce2df880f926336f66209d5"
 }
 ```
 
@@ -709,7 +709,7 @@ Documentation context imports: none
 
 ## Example: ログインとブラウザーの自動入力
 
-username / current-password のヒントを持つ実際のログインフォームです。保存済みの認証情報を表示するかはブラウザーやパスワードマネージャーが決定します。自動入力時は接頭アイコンとパスワード切り替えを含む枠全体に色が付き、フォーカス表示も維持されます。--input-autofill-background に不透明色を指定して変更できます。このデモに認証バックエンドはなく、認証情報は送信されません。
+username / current-password のヒントを持つ実際のログインフォームです。保存済みの認証情報を表示するかはブラウザーやパスワードマネージャーが決定します。自動入力時は接頭アイコンとパスワード切り替えを含む枠全体に色が付き、フォーカス表示も維持されます。--input-autofill-background に不透明色を指定して変更できます。このデモに認証バックエンドはなく、認証情報は送信されません。 outline はテーマに合わせた淡い 1px の枠線を使用します。外枠が線を描くため、自動入力の背景で途切れません。フォーカスとエラーは区別して表示します。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -941,11 +941,9 @@ Documentation context imports: none
     value="Disabled"
     aria-label="Disabled"
   ></minerva-input>
-  <minerva-input
-    invalid
-    value="Invalid value"
-    aria-label="Invalid"
-  ></minerva-input>
+  <minerva-input invalid value="Invalid value" aria-label="Invalid"
+    ><span slot="prefix">@</span><span slot="suffix">!</span></minerva-input
+  >
 </div>
 
 ```

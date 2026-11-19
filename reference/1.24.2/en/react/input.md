@@ -16,7 +16,7 @@ Locale: en
   "packageVersion": "1.24.2",
   "sourceCommit": "2d9157080afa96d568e1ab5dd5ebf85bbe169957",
   "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:35a4364a093ce8ba3112a6866b1ac14e75de4497c8a2778617ef119cb4e030b2"
+  "referenceSourceDigest": "sha256:a10f6d21015b35fa6d9df069d49549a386ecb8a45ce2df880f926336f66209d5"
 }
 ```
 
@@ -769,7 +769,7 @@ export default function AddonsDemo() {
 
 ## Example: Login and browser autofill
 
-A real login form with username / current-password hints. Your browser or password manager decides whether saved credentials are offered. Autofill tints the complete frame, including prefix icons and the password toggle, while preserving focus. Set --input-autofill-background to an opaque color to customize the tint. This demo has no authentication backend and sends no credentials.
+A real login form with username / current-password hints. Your browser or password manager decides whether saved credentials are offered. Autofill tints the complete frame, including prefix icons and the password toggle, while preserving focus. Set --input-autofill-background to an opaque color to customize the tint. This demo has no authentication backend and sends no credentials. The outline variant uses a light theme-derived 1px frame. The outer frame paints the border; autofill cannot cover it. Focus and error states remain distinct.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -922,7 +922,7 @@ export default function PasswordDemo() {
 
 ## Example: Sizes and variants
 
-Three sizes and the outline, filled and unstyled variants.
+Three sizes and the outline, filled and unstyled variants. The outline variant uses a light theme-derived 1px frame. The outer frame paints the border; autofill cannot cover it. Focus and error states remain distinct.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
@@ -967,7 +967,13 @@ import { FormField, Input } from "minerva-design";
 export default function StatesDemo() {
   return (
     <>
-      <Input aria-label="Invalid" invalid defaultValue="Invalid" />
+      <Input
+        aria-label="Invalid"
+        invalid
+        prefix="@"
+        suffix="!"
+        defaultValue="Invalid"
+      />
       <Input aria-label="Disabled" disabled defaultValue="Disabled" />
       <Input aria-label="Read-only" readOnly defaultValue="Project Atlas" />
       <FormField label="Inside a FormField" errorMessage="Inherits the error">
