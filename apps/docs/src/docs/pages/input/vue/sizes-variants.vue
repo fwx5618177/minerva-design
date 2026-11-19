@@ -5,15 +5,17 @@ import { Input, VStack } from "minerva-design/vue";
   <VStack :gap="3"
     ><Input aria-label="Small" size="small" placeholder="small" /><Input
       aria-label="Medium"
-      placeholder="medium (outline)" /><Input
-      aria-label="Large"
-      size="large"
-      placeholder="large" /><Input
+      placeholder="medium (outline)"
+    /><Input aria-label="Large" size="large" placeholder="large" /><Input
       aria-label="Filled"
       variant="filled"
-      placeholder="filled" /><Input
+      placeholder="filled"
+    /><Input
       aria-label="Unstyled"
       variant="unstyled"
       placeholder="unstyled"
-  /></VStack>
+    /><Input aria-label="Invalid" invalid default-value="Needs attention"
+      ><template #prefix>@</template><template #suffix>!</template></Input
+    ></VStack
+  >
 </template>

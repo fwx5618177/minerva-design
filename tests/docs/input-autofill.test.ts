@@ -43,3 +43,43 @@ describe("Input autofill surface", () => {
     ).toBe(true);
   });
 });
+
+describe("Input frame painting", () => {
+  it("places its boundary outside the native field paint", () => {
+    expect(
+      rules.find(
+        (rule) => rule.selector === ".root" && rule.property === "border",
+      )?.value,
+    ).toBe("1px solid var(--_input-border)");
+    expect(
+      rules.filter(
+        (rule) => rule.selector === ".root" && rule.property === "box-shadow",
+      ),
+    ).toHaveLength(0);
+  });
+  it.each([".root:focus-within", ".invalid:focus-within"])(
+    "keeps %s border separate from its outer focus ring",
+    (selector) => {
+      const focused = rules.filter(
+        (rule) =>
+          rule.selector === selector && !rule.context.includes("forced-colors"),
+      );
+      expect(
+        focused.find((rule) => rule.property === "border-color")?.value,
+      ).toBe("var(--_input-border)");
+      expect(
+        focused.find((rule) => rule.property === "box-shadow")?.value,
+      ).not.toContain("inset");
+    },
+  );
+  it("uses a softer theme-derived resting boundary without changing custom overrides", () => {
+    expect(
+      rules.find(
+        (rule) =>
+          rule.selector === ".root" && rule.property === "--_input-border",
+      )?.value,
+    ).toBe(
+      "var(--input-border-color, color-mix(in srgb, var(--control-border-color) 85%, var(--surface-color)))",
+    );
+  });
+});

@@ -1,8 +1,8 @@
 @use "../../styles/mixins" as *;
 
-// Every visible line is drawn with box-shadow (inset 1px as border + outer
-// focus indicator) so rounded corners stay crisp: a real border and a box-shadow
-// rasterize differently and leave 1px notches at the corners at 1x DPR.
+// The frame owns a real border outside the native field's painting area.
+// An autofilled field paints an opaque inset shadow, which can cover a parent
+// inset border. Keep only the outer focus indicator in box-shadow.
 //
 // Public CSS variables (set them on the input or any ancestor):
 // @css-var --input-height Minimum height of the field (every size; defaults to the density's control height of the size)
@@ -20,7 +20,7 @@
 //
 // Internal plumbing uses the --_input-* prefix.
 .root {
-  --_input-border: var(--input-border-color, var(--control-border-color));
+  --_input-border: var(--input-border-color, color-mix(in srgb, var(--control-border-color) 85%, var(--surface-color)));
   --_input-background: var(--input-background, var(--surface-color));
   --_input-autofill-background: var(--input-autofill-background, color-mix(in srgb, var(--primary-color) 10%, var(--surface-color)));
   --_input-pad-x: var(--input-padding-x, var(--control-padding-x-sm));
@@ -31,11 +31,11 @@
   width: 100%;
   min-width: 0;
   background-color: var(--_input-background);
-  border: 1px solid transparent;
+  border: 1px solid var(--_input-border);
   border-radius: var(--input-radius, var(--radius-lg));
-  box-shadow: inset 0 0 0 1px var(--_input-border);
   color: var(--text-color);
   transition:
+    border-color var(--transition-fast),
     box-shadow var(--transition-fast),
     background-color var(--transition-fast);
 
@@ -45,7 +45,7 @@
 
   &:focus-within {
     --_input-border: var(--input-focus-color, #{$focus-border-color});
-    @include control-focus(var(--_input-border), $inset-border: true);
+    @include control-focus(var(--_input-border));
   }
 }
 
@@ -82,6 +82,7 @@
 .unstyled {
   --_input-border: transparent;
   --_input-background: transparent;
+  border-color: transparent;
   box-shadow: none;
 
   &:hover:not(.disabled):not([data-readonly]):not(:has(.field[readonly])) {
@@ -89,6 +90,7 @@
   }
 
   &:focus-within {
+    border-color: transparent;
     box-shadow: none;
   }
 }
@@ -102,7 +104,7 @@
 
   &:focus-within {
     --_input-border: var(--danger-color);
-    @include control-focus(var(--_input-border), $focus-ring-danger, $inset-border: true);
+    @include control-focus(var(--_input-border), $focus-ring-danger);
   }
 }
 
@@ -205,7 +207,7 @@
   padding-inline-end: 0;
 }
 
-// Forced colors drop box-shadows: the transparent border stays visible and
+// Forced colors retain the real border with a system color, while
 // focus gets a system-colored outline instead of the halo.
 @media (forced-colors: active) {
   .root:focus-within {
@@ -237,7 +239,7 @@
     background-color: var(--_input-autofill-background);
     // A background transition on only the frame would briefly expose a seam.
     // Border/focus transitions still belong to the enclosing frame.
-    transition-property: box-shadow;
+    transition-property: border-color, box-shadow;
   }
 
   .root > .field:is(:autofill, :-webkit-autofill) {

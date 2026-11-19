@@ -197,11 +197,14 @@ describe("text-like controls: focus treatment", () => {
       const rules = declarations({ file: path, css: compileScss(path) }).filter(
         (d) => !inForcedColors(d) && selectorsOf(d).includes(selector),
       );
-      const border =
+      let border =
         rules.find((d) => d.property === "border-color")?.value ??
-        // Input / Select draw the border as an inset shadow layer
+        // Some composite controls keep their boundary in an inset shadow layer
         rules.find((d) => d.property.startsWith("--_"))?.value ??
         rules.find((d) => d.property === "box-shadow")?.value;
+      if (border === "var(--_input-border)") {
+        border = rules.find((d) => d.property === "--_input-border")?.value;
+      }
       expect(border).toMatch(/--minerva-focus-border-color|inset 0 0 0 1px/);
     },
   );

@@ -205,7 +205,7 @@ try {
       'document.querySelector("[data-demo-preview] [data-minerva=\\"input\\"][data-part=\\"root\\"]")',
     );
     const data = await evaluate(
-      `(()=>{${contrastHelpers}const root=document.querySelector('[data-demo-preview] [data-minerva="input"][data-part="root"]');const style=getComputedStyle(root);const border=style.boxShadow.match(/color\\([^)]+\\)|rgba?\\([^)]+\\)/)?.[0];return {mode:'${mode}',border,background:background(root),contrast:contrast(border,background(root)),surface:getComputedStyle(root).getPropertyValue('--surface-color').trim(),rootSurface:getComputedStyle(document.documentElement).getPropertyValue('--surface-color').trim()};})()`,
+      `(()=>{${contrastHelpers}const root=document.querySelector('[data-demo-preview] [data-minerva="input"][data-part="root"]');const style=getComputedStyle(root);const border=style.borderTopColor;return {mode:'${mode}',border,background:background(root),contrast:contrast(border,background(root)),surface:getComputedStyle(root).getPropertyValue('--surface-color').trim(),rootSurface:getComputedStyle(document.documentElement).getPropertyValue('--surface-color').trim()};})()`,
     );
     assert.ok(data.contrast >= 3, JSON.stringify(data));
     assert.equal(data.surface, data.rootSurface);

@@ -743,7 +743,7 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
       ["MnInput", "MnButton"],
       `<form (submit)="$event.preventDefault()"><mn-stack gap="3"><mn-input name="username" aria-label="Username" autocomplete="username" [prefix]="userIcon" required/><mn-input name="password" aria-label="Password" type="password" autocomplete="current-password" [prefix]="lockIcon" required/><button mnButton type="submit">Try form</button><output>Demo only. No credentials are sent and no account is signed in.</output></mn-stack></form><ng-template #userIcon><span aria-hidden="true">@</span></ng-template><ng-template #lockIcon><span aria-hidden="true">Key</span></ng-template>`,
       {},
-      "The browser or password manager decides whether to offer saved credentials. Autofill tints the complete frame, including prefixes and the password toggle; customize it with an opaque --input-autofill-background color. This demo has no authentication backend.",
+      "The browser or password manager decides whether to offer saved credentials. The outer frame uses a light theme-derived real 1px border, which remains continuous during autofill, focus and errors. Autofill tints the complete frame, including prefixes and the password toggle; customize it with an opaque --input-autofill-background color. This demo has no authentication backend.",
     ),
     example(
       "Controlled value",
@@ -754,7 +754,7 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
     example(
       "Affixes and states",
       ["MnInput"],
-      `<mn-input aria-label="Website" prefix="https://" suffix=".com" placeholder="your-site"/><mn-input aria-label="Invalid value" invalid value="Needs attention"/><mn-input aria-label="Disabled field" disabled value="Unavailable"/>`,
+      `<mn-input aria-label="Website" prefix="https://" suffix=".com" placeholder="your-site"/><mn-input aria-label="Invalid value" invalid prefix="@" suffix="!" value="Needs attention"/><mn-input aria-label="Disabled field" disabled value="Unavailable"/>`,
     ),
     example(
       "Clear password and character count",
