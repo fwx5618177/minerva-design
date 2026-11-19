@@ -3,6 +3,10 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeAll, describe, expect, it } from "vitest";
 import type { ComponentType } from "react";
+// Collect the Vue renderer dependency graph before timing interactions, just
+// as the React/native renderers are collected with this test module.
+// VueDemo still performs its asynchronous island mount inside each scenario.
+import "minerva-design/vue";
 import { SiteProviders, setupI18n } from "../test/utils";
 import VueDemo from "./components/VueDemo";
 import PhoneFrame from "./native/PhoneFrame";
