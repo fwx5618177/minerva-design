@@ -9,11 +9,19 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.1",
-    "sourceCommit": "0842512112df9e117f4b9efce6a8b1ba91350d24",
-    "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
-    "referenceSourceDigest": "sha256:c18f38eab1217f616ad8f6be5a8e5115f531c7c7825f7faf41778d9ee752ae17"
+    "sourceCommit": "047f9c5959d145a99ef0fc64e0f45b2576a52272",
+    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+    "referenceSourceDigest": "sha256:6b85000d2c44f8f86c14aa56a8104e251bc0f90185b40c286ffbdc93cc63c2f6"
   },
-  "content": {},
+  "content": {
+    "login": {
+      "username": "用户名",
+      "password": "密码",
+      "submit": "试用表单",
+      "notice": "仅供演示。不会发送凭据，也不会登录账户。",
+      "feedback": "已阻止表单提交。未发送凭据，未登录账户。"
+    }
+  },
   "components": [
     {
       "name": "Input",
@@ -276,6 +284,10 @@
           "description": "Background color of the outline variant"
         },
         {
+          "name": "--input-autofill-background",
+          "description": "Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface"
+        },
+        {
           "name": "--input-border-color",
           "description": "Border color at rest"
         },
@@ -323,6 +335,10 @@
         "validation": {
           "title": "校验",
           "description": "提交时校验，并通过 FormField 的 errorMessage 显示错误信息：输入框进入无效状态，并由该信息描述。"
+        },
+        "autofill": {
+          "title": "登录与浏览器自动填充",
+          "description": "使用 username / current-password 提示的真实登录表单。浏览器或密码管理器决定是否提供已保存的凭据。自动填充为整个输入框着色，包括前缀图标和密码切换按钮，并保留焦点样式。可将 --input-autofill-background 设为不透明颜色以自定义背景。本示例没有认证后端，不会发送凭据。"
         }
       },
       "api": {
@@ -349,7 +365,8 @@
         "--input-font-size": "字号（所有尺寸）",
         "--input-background": "outline 变体的背景色",
         "--input-border-color": "静止时的边框颜色",
-        "--input-focus-color": "悬停 / 聚焦时的边框颜色"
+        "--input-focus-color": "悬停 / 聚焦时的边框颜色",
+        "--input-autofill-background": "整个自动填充输入框的背景；请使用不透明颜色"
       },
       "wc": {
         "demos": {
@@ -368,6 +385,10 @@
           "form": {
             "title": "在表单中",
             "description": "required、type=\"email\"、minlength 与 pattern 在提交时使用浏览器校验；未通过的字段会被设为 invalid 直到修正，reset 将其恢复。"
+          },
+          "autofill": {
+            "title": "登录与浏览器自动填充",
+            "description": "使用 username / current-password 提示的真实登录表单。浏览器或密码管理器决定是否提供已保存的凭据。自动填充为整个输入框着色，包括前缀图标和密码切换按钮，并保留焦点样式。可将 --input-autofill-background 设为不透明颜色以自定义背景。本示例没有认证后端，不会发送凭据。"
           }
         },
         "minerva-input": {
@@ -438,6 +459,13 @@
             "description": "clearable 会在有值时显示带标签的清除按钮；清除时以空值触发 onChange，并保持焦点在输入框中。showCharCount 显示字数（以及 maxLength），并与输入框关联。"
           }
         }
+      },
+      "login": {
+        "username": "用户名",
+        "password": "密码",
+        "submit": "试用表单",
+        "notice": "仅供演示。不会发送凭据，也不会登录账户。",
+        "feedback": "已阻止表单提交。未发送凭据，未登录账户。"
       }
     }
   }

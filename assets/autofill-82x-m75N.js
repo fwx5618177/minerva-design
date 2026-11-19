@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=e.querySelector(`#input-login`),n=e=>e.preventDefault();return t.addEventListener(`submit`,n),()=>t.removeEventListener(`submit`,n)}function n(){return(n=e((()=>{})))()}n();export{t as setup};

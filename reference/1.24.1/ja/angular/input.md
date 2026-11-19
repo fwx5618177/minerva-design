@@ -14,15 +14,25 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.1",
-  "sourceCommit": "0842512112df9e117f4b9efce6a8b1ba91350d24",
-  "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
-  "referenceSourceDigest": "sha256:c18f38eab1217f616ad8f6be5a8e5115f531c7c7825f7faf41778d9ee752ae17"
+  "sourceCommit": "047f9c5959d145a99ef0fc64e0f45b2576a52272",
+  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+  "referenceSourceDigest": "sha256:6b85000d2c44f8f86c14aa56a8104e251bc0f90185b40c286ffbdc93cc63c2f6"
 }
 ```
 
 Type references resolve through the [type graph](/minerva-design/reference/1.24.1/types.json) or getType() from minerva-design/contracts.
 
 ## Documentation
+
+ユーザー名
+
+パスワード
+
+フォームを試す
+
+デモ専用です。認証情報の送信やアカウントへのログインは行いません。
+
+フォーム送信を停止しました。認証情報は送信されず、ログインも行われていません。
 
 ## Input
 
@@ -297,6 +307,10 @@ Native Angular: MnInput. Native standalone component/directive; see platform tes
         "description": "Background color of the outline variant"
       },
       {
+        "name": "--input-autofill-background",
+        "description": "Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface"
+      },
+      {
         "name": "--input-border-color",
         "description": "Border color at rest"
       },
@@ -312,6 +326,35 @@ Native Angular: MnInput. Native standalone component/directive; see platform tes
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Login and browser autofill
+
+The browser or password manager decides whether to offer saved credentials. Autofill tints the complete frame, including prefixes and the password toggle; customize it with an opaque --input-autofill-background color. This demo has no authentication backend.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: @angular/core, minerva-design
+
+Documentation context imports: none
+
+### example.ts
+
+```tsx
+import { Component } from '@angular/core';
+import { MnInput, MnButton, MnStack } from 'minerva-design/angular';
+
+@Component({
+  selector: 'app-example',
+  imports: [MnInput, MnButton, MnStack],
+  template: `
+<form (submit)="$event.preventDefault()"><mn-stack gap="3"><mn-input name="username" aria-label="Username" autocomplete="username" [prefix]="userIcon" required/><mn-input name="password" aria-label="Password" type="password" autocomplete="current-password" [prefix]="lockIcon" required/><button mnButton type="submit">Try form</button><output>Demo only. No credentials are sent and no account is signed in.</output></mn-stack></form><ng-template #userIcon><span aria-hidden="true">@</span></ng-template><ng-template #lockIcon><span aria-hidden="true">Key</span></ng-template>
+  `,
+})
+export class Example {
+
+}
+
+```
 
 ## Example: Controlled value
 

@@ -9,11 +9,19 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.1",
-    "sourceCommit": "0842512112df9e117f4b9efce6a8b1ba91350d24",
-    "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
-    "referenceSourceDigest": "sha256:c18f38eab1217f616ad8f6be5a8e5115f531c7c7825f7faf41778d9ee752ae17"
+    "sourceCommit": "047f9c5959d145a99ef0fc64e0f45b2576a52272",
+    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+    "referenceSourceDigest": "sha256:6b85000d2c44f8f86c14aa56a8104e251bc0f90185b40c286ffbdc93cc63c2f6"
   },
-  "content": {},
+  "content": {
+    "login": {
+      "username": "Nom d’utilisateur",
+      "password": "Mot de passe",
+      "submit": "Essayer le formulaire",
+      "notice": "Démo uniquement. Aucun identifiant envoyé et aucune connexion effectuée.",
+      "feedback": "Envoi du formulaire bloqué. Aucun identifiant envoyé et aucune connexion effectuée."
+    }
+  },
   "components": [
     {
       "name": "Input",
@@ -238,6 +246,10 @@
           "description": "Background color of the outline variant"
         },
         {
+          "name": "--input-autofill-background",
+          "description": "Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface"
+        },
+        {
           "name": "--input-border-color",
           "description": "Border color at rest"
         },
@@ -261,6 +273,20 @@
       ],
       "contextImports": [],
       "title": "addons",
+      "description": ""
+    },
+    {
+      "id": "autofill",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/vue/autofill.vue",
+      "files": {
+        "apps/docs/src/docs/pages/input/vue/autofill.vue": "<script setup lang=\"ts\">\nimport { Input, FormField, Button, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <form @submit.prevent>\n    <VStack :gap=\"3\" align=\"stretch\">\n      <FormField label=\"Username\" required>\n        <Input name=\"username\" autocomplete=\"username\" required>\n          <template #prefix><span aria-hidden=\"true\">@</span></template>\n        </Input>\n      </FormField>\n      <FormField label=\"Password\" required>\n        <Input\n          name=\"password\"\n          type=\"password\"\n          autocomplete=\"current-password\"\n          required\n        >\n          <template #prefix><span aria-hidden=\"true\">Key</span></template>\n        </Input>\n      </FormField>\n      <Button type=\"submit\">Try form</Button>\n      <output aria-live=\"polite\"\n        >Demo only. No credentials are sent and no account is signed in.</output\n      >\n    </VStack>\n  </form>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "autofill",
       "description": ""
     },
     {
@@ -406,6 +432,10 @@
         "validation": {
           "title": "Validation",
           "description": "Validez à l'envoi et affichez le message avec errorMessage du FormField : le champ devient invalide et est décrit par le message."
+        },
+        "autofill": {
+          "title": "Connexion et remplissage automatique",
+          "description": "Un véritable formulaire avec les indications username / current-password. Le navigateur ou le gestionnaire de mots de passe décide de proposer les identifiants enregistrés. Le remplissage colore tout le cadre, icônes et bouton du mot de passe compris, en conservant le focus. Personnalisez la teinte avec une couleur opaque dans --input-autofill-background. Cette démo ne dispose pas de serveur d’authentification et n’envoie aucun identifiant."
         }
       },
       "api": {
@@ -432,7 +462,8 @@
         "--input-font-size": "Taille de police (toutes tailles)",
         "--input-background": "Couleur de fond de la variante outline",
         "--input-border-color": "Couleur de bordure au repos",
-        "--input-focus-color": "Couleur de bordure au survol / au focus"
+        "--input-focus-color": "Couleur de bordure au survol / au focus",
+        "--input-autofill-background": "Fond de tout le champ rempli automatiquement ; utilisez une couleur opaque"
       },
       "wc": {
         "demos": {
@@ -451,6 +482,10 @@
           "form": {
             "title": "Dans un formulaire",
             "description": "required, type=\"email\", minlength et pattern utilisent la validation du navigateur à l’envoi ; les champs en échec passent en invalid jusqu’à correction, et reset les restaure."
+          },
+          "autofill": {
+            "title": "Connexion et remplissage automatique",
+            "description": "Un véritable formulaire avec les indications username / current-password. Le navigateur ou le gestionnaire de mots de passe décide de proposer les identifiants enregistrés. Le remplissage colore tout le cadre, icônes et bouton du mot de passe compris, en conservant le focus. Personnalisez la teinte avec une couleur opaque dans --input-autofill-background. Cette démo ne dispose pas de serveur d’authentification et n’envoie aucun identifiant."
           }
         },
         "minerva-input": {
@@ -521,6 +556,13 @@
             "description": "clearable affiche un bouton d'effacement libellé tant que le champ a une valeur ; l'effacement déclenche onChange avec une valeur vide et garde le focus dans le champ. showCharCount affiche la longueur (et maxLength) et la relie au champ."
           }
         }
+      },
+      "login": {
+        "username": "Nom d’utilisateur",
+        "password": "Mot de passe",
+        "submit": "Essayer le formulaire",
+        "notice": "Démo uniquement. Aucun identifiant envoyé et aucune connexion effectuée.",
+        "feedback": "Envoi du formulaire bloqué. Aucun identifiant envoyé et aucune connexion effectuée."
       }
     }
   }

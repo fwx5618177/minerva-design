@@ -14,15 +14,25 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.1",
-  "sourceCommit": "0842512112df9e117f4b9efce6a8b1ba91350d24",
-  "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
-  "referenceSourceDigest": "sha256:c18f38eab1217f616ad8f6be5a8e5115f531c7c7825f7faf41778d9ee752ae17"
+  "sourceCommit": "047f9c5959d145a99ef0fc64e0f45b2576a52272",
+  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+  "referenceSourceDigest": "sha256:6b85000d2c44f8f86c14aa56a8104e251bc0f90185b40c286ffbdc93cc63c2f6"
 }
 ```
 
 Type references resolve through the [type graph](/minerva-design/reference/1.24.1/types.json) or getType() from minerva-design/contracts.
 
 ## Documentation
+
+用户名
+
+密码
+
+试用表单
+
+仅供演示。不会发送凭据，也不会登录账户。
+
+已阻止表单提交。未发送凭据，未登录账户。
 
 ## Input
 
@@ -705,6 +715,10 @@ Support: stable
         "description": "Background color of the outline variant"
       },
       {
+        "name": "--input-autofill-background",
+        "description": "Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface"
+      },
+      {
         "name": "--input-border-color",
         "description": "Border color at rest"
       },
@@ -748,6 +762,63 @@ export default function AddonsDemo() {
       <Input aria-label="Handle" prefix="@" defaultValue="minerva" />
       <Input aria-label="Price" prefix="$" suffix="USD" inputMode="decimal" />
     </>
+  );
+}
+
+```
+
+## Example: 登录与浏览器自动填充
+
+使用 username / current-password 提示的真实登录表单。浏览器或密码管理器决定是否提供已保存的凭据。自动填充为整个输入框着色，包括前缀图标和密码切换按钮，并保留焦点样式。可将 --input-autofill-background 设为不透明颜色以自定义背景。本示例没有认证后端，不会发送凭据。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-i18next, react-icons
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/input/demos/autofill.tsx
+
+```tsx
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, FormField, Input } from "minerva-design";
+import { LuLock, LuUser } from "react-icons/lu";
+
+export default function AutofillDemo() {
+  const { t } = useTranslation("common", { keyPrefix: "docs.input.login" });
+  const [submitted, setSubmitted] = useState(false);
+
+  return (
+    <form
+      style={{ display: "grid", gap: 12, maxWidth: 360 }}
+      onSubmit={(event) => {
+        event.preventDefault();
+        setSubmitted(true);
+      }}
+    >
+      <FormField label={t("username")} required>
+        <Input
+          name="username"
+          autoComplete="username"
+          prefix={<LuUser />}
+          required
+        />
+      </FormField>
+      <FormField label={t("password")} required>
+        <Input
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          prefix={<LuLock />}
+          required
+        />
+      </FormField>
+      <Button type="submit">{t("submit")}</Button>
+      <output aria-live="polite">
+        {submitted ? t("feedback") : t("notice")}
+      </output>
+    </form>
   );
 }
 

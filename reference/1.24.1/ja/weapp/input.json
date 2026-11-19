@@ -9,11 +9,19 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.1",
-    "sourceCommit": "0842512112df9e117f4b9efce6a8b1ba91350d24",
-    "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
-    "referenceSourceDigest": "sha256:c18f38eab1217f616ad8f6be5a8e5115f531c7c7825f7faf41778d9ee752ae17"
+    "sourceCommit": "047f9c5959d145a99ef0fc64e0f45b2576a52272",
+    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+    "referenceSourceDigest": "sha256:6b85000d2c44f8f86c14aa56a8104e251bc0f90185b40c286ffbdc93cc63c2f6"
   },
-  "content": {},
+  "content": {
+    "login": {
+      "username": "ユーザー名",
+      "password": "パスワード",
+      "submit": "フォームを試す",
+      "notice": "デモ専用です。認証情報の送信やアカウントへのログインは行いません。",
+      "feedback": "フォーム送信を停止しました。認証情報は送信されず、ログインも行われていません。"
+    }
+  },
   "components": [
     {
       "name": "Input",
@@ -209,6 +217,10 @@
           "description": "Background color of the outline variant"
         },
         {
+          "name": "--input-autofill-background",
+          "description": "Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface"
+        },
+        {
           "name": "--input-border-color",
           "description": "Border color at rest"
         },
@@ -256,6 +268,10 @@
         "validation": {
           "title": "バリデーション",
           "description": "送信時に検証し、FormField の errorMessage でメッセージを表示します。入力欄は無効状態になり、メッセージで説明されます。"
+        },
+        "autofill": {
+          "title": "ログインとブラウザーの自動入力",
+          "description": "username / current-password のヒントを持つ実際のログインフォームです。保存済みの認証情報を表示するかはブラウザーやパスワードマネージャーが決定します。自動入力時は接頭アイコンとパスワード切り替えを含む枠全体に色が付き、フォーカス表示も維持されます。--input-autofill-background に不透明色を指定して変更できます。このデモに認証バックエンドはなく、認証情報は送信されません。"
         }
       },
       "api": {
@@ -282,7 +298,8 @@
         "--input-font-size": "フォントサイズ（全サイズ）",
         "--input-background": "outline バリアントの背景色",
         "--input-border-color": "通常時の枠線色",
-        "--input-focus-color": "ホバー / フォーカス時の枠線色"
+        "--input-focus-color": "ホバー / フォーカス時の枠線色",
+        "--input-autofill-background": "自動入力されたフィールド全体の背景。不透明色を指定してください"
       },
       "wc": {
         "demos": {
@@ -301,6 +318,10 @@
           "form": {
             "title": "フォーム内での利用",
             "description": "required・type=\"email\"・minlength・pattern は送信時にブラウザーの検証を使います。不正なフィールドは修正されるまで invalid になり、リセットで元に戻ります。"
+          },
+          "autofill": {
+            "title": "ログインとブラウザーの自動入力",
+            "description": "username / current-password のヒントを持つ実際のログインフォームです。保存済みの認証情報を表示するかはブラウザーやパスワードマネージャーが決定します。自動入力時は接頭アイコンとパスワード切り替えを含む枠全体に色が付き、フォーカス表示も維持されます。--input-autofill-background に不透明色を指定して変更できます。このデモに認証バックエンドはなく、認証情報は送信されません。"
           }
         },
         "minerva-input": {
@@ -371,6 +392,13 @@
             "description": "clearable は値があるときにラベル付きのクリアボタンを表示します。クリアすると空の値で onChange が呼ばれ、フォーカスは入力欄に残ります。showCharCount は文字数（と maxLength）を表示し、入力欄に関連付けます。"
           }
         }
+      },
+      "login": {
+        "username": "ユーザー名",
+        "password": "パスワード",
+        "submit": "フォームを試す",
+        "notice": "デモ専用です。認証情報の送信やアカウントへのログインは行いません。",
+        "feedback": "フォーム送信を停止しました。認証情報は送信されず、ログインも行われていません。"
       }
     }
   }

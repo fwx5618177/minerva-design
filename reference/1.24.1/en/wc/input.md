@@ -14,15 +14,25 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.1",
-  "sourceCommit": "0842512112df9e117f4b9efce6a8b1ba91350d24",
-  "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
-  "referenceSourceDigest": "sha256:c18f38eab1217f616ad8f6be5a8e5115f531c7c7825f7faf41778d9ee752ae17"
+  "sourceCommit": "047f9c5959d145a99ef0fc64e0f45b2576a52272",
+  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+  "referenceSourceDigest": "sha256:6b85000d2c44f8f86c14aa56a8104e251bc0f90185b40c286ffbdc93cc63c2f6"
 }
 ```
 
 Type references resolve through the [type graph](/minerva-design/reference/1.24.1/types.json) or getType() from minerva-design/contracts.
 
 ## Documentation
+
+Username
+
+Password
+
+Try form
+
+Demo only. No credentials are sent and no account is signed in.
+
+Form submission was prevented. No credentials were sent and no account was signed in.
 
 ## Input
 
@@ -582,6 +592,10 @@ Support: stable
         "description": "Background color of the outline variant"
       },
       {
+        "name": "--input-autofill-background",
+        "description": "Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface"
+      },
+      {
         "name": "--input-border-color",
         "description": "Border color at rest"
       },
@@ -621,6 +635,10 @@ Support: stable
       {
         "name": "--input-background",
         "description": "Background color of the outline variant"
+      },
+      {
+        "name": "--input-autofill-background",
+        "description": "Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface"
       },
       {
         "name": "--input-border-color",
@@ -686,6 +704,62 @@ Documentation context imports: none
     autocomplete="current-password"
   ></minerva-input>
 </div>
+
+```
+
+## Example: Login and browser autofill
+
+A real login form with username / current-password hints. Your browser or password manager decides whether saved credentials are offered. Autofill tints the complete frame, including prefix icons and the password toggle, while preserving focus. Set --input-autofill-background to an opaque color to customize the tint. This demo has no authentication backend and sends no credentials.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: none
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/input/wc/autofill.html
+
+```html
+<form id="input-login" style="display: grid; gap: 12px; max-width: 360px">
+  <label for="input-login-user">Username</label>
+  <minerva-input
+    id="input-login-user"
+    aria-label="Username"
+    name="username"
+    autocomplete="username"
+    required
+  >
+    <span slot="prefix" aria-hidden="true">@</span>
+  </minerva-input>
+  <label for="input-login-password">Password</label>
+  <minerva-input
+    id="input-login-password"
+    aria-label="Password"
+    name="password"
+    type="password"
+    autocomplete="current-password"
+    required
+  >
+    <span slot="prefix" aria-hidden="true">Key</span>
+  </minerva-input>
+  <minerva-button type="submit">Try form</minerva-button>
+  <output aria-live="polite"
+    >Demo only. No credentials are sent and no account is signed in.</output
+  >
+</form>
+
+```
+
+### apps/docs/src/docs/pages/input/wc/autofill.ts
+
+```tsx
+// Keep native form validation and password-manager hints without sending credentials.
+export function setup(root: HTMLElement) {
+  const form = root.querySelector<HTMLFormElement>("#input-login")!;
+  const onSubmit = (event: SubmitEvent) => event.preventDefault();
+  form.addEventListener("submit", onSubmit);
+  return () => form.removeEventListener("submit", onSubmit);
+}
 
 ```
 

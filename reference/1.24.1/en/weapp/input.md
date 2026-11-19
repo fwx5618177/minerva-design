@@ -14,15 +14,25 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.1",
-  "sourceCommit": "0842512112df9e117f4b9efce6a8b1ba91350d24",
-  "sourceDigest": "sha256:ddf24b058620a47363c171d7a5d941ded5095e4c61225ecdcd3c9a4f29932128",
-  "referenceSourceDigest": "sha256:c18f38eab1217f616ad8f6be5a8e5115f531c7c7825f7faf41778d9ee752ae17"
+  "sourceCommit": "047f9c5959d145a99ef0fc64e0f45b2576a52272",
+  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
+  "referenceSourceDigest": "sha256:6b85000d2c44f8f86c14aa56a8104e251bc0f90185b40c286ffbdc93cc63c2f6"
 }
 ```
 
 Type references resolve through the [type graph](/minerva-design/reference/1.24.1/types.json) or getType() from minerva-design/contracts.
 
 ## Documentation
+
+Username
+
+Password
+
+Try form
+
+Demo only. No credentials are sent and no account is signed in.
+
+Form submission was prevented. No credentials were sent and no account was signed in.
 
 ## Input
 
@@ -229,6 +239,10 @@ Controlled/default text with rejected native input rollback; password visibility
       {
         "name": "--input-background",
         "description": "Background color of the outline variant"
+      },
+      {
+        "name": "--input-autofill-background",
+        "description": "Opaque autofill tint for editable inputs; defaults to a primary tint over the theme surface"
       },
       {
         "name": "--input-border-color",
