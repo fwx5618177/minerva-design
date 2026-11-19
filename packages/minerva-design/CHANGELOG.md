@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.24.3
+
+### Patch Changes
+
+- bbcef3f: Draw Input boundaries with a real 1px border so browser autofill cannot cover the edge between icons and text. Use a softer theme-derived resting border, retain custom colors, focus and error feedback, and verify top/bottom edge continuity in Chrome. Update the Input documentation.
+
 ## 1.24.2
 
 ### Patch Changes
