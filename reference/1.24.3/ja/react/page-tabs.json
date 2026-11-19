@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.3",
-    "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-    "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+    "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+    "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+    "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
   },
   "content": {},
   "components": [
@@ -332,12 +332,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/page-tabs/demos/basic.tsx",
       "files": {
-        "apps/docs/src/docs/pages/page-tabs/demos/basic.tsx": "import { useState } from \"react\";\nimport { IconButton, PageTab, PageTabs } from \"minerva-design\";\nimport { LuFileText, LuHouse, LuX } from \"react-icons/lu\";\n\nconst initial = [\n  { value: \"home\", label: \"Dashboard\" },\n  { value: \"books\", label: \"Books\" },\n  { value: \"article\", label: \"A very long article title that gets truncated\" },\n];\n\nexport default function BasicDemo() {\n  const [pages, setPages] = useState(initial);\n  const [active, setActive] = useState(\"books\");\n\n  const close = (value: string) => {\n    const rest = pages.filter((page) => page.value !== value);\n    setPages(rest);\n    if (value === active) setActive(rest[0]?.value ?? \"\");\n  };\n\n  return (\n    <PageTabs aria-label=\"Open pages\" activeValue={active}>\n      {pages.map((page) => (\n        <PageTab\n          key={page.value}\n          value={page.value}\n          label={page.label}\n          icon={page.value === \"home\" ? <LuHouse /> : <LuFileText />}\n          active={page.value === active}\n          onSelect={() => setActive(page.value)}\n          action={\n            page.value !== \"home\" && (\n              <IconButton\n                size=\"small\"\n                aria-label={`Close ${page.label}`}\n                icon={<LuX />}\n                onClick={() => close(page.value)}\n              />\n            )\n          }\n        />\n      ))}\n    </PageTabs>\n  );\n}\n"
+        "apps/docs/src/docs/pages/page-tabs/demos/basic.tsx": "import { FileTextIcon, HomeIcon, CloseIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { IconButton, PageTab, PageTabs } from \"minerva-design\";\n\nconst initial = [\n  { value: \"home\", label: \"Dashboard\" },\n  { value: \"books\", label: \"Books\" },\n  { value: \"article\", label: \"A very long article title that gets truncated\" },\n];\n\nexport default function BasicDemo() {\n  const [pages, setPages] = useState(initial);\n  const [active, setActive] = useState(\"books\");\n\n  const close = (value: string) => {\n    const rest = pages.filter((page) => page.value !== value);\n    setPages(rest);\n    if (value === active) setActive(rest[0]?.value ?? \"\");\n  };\n\n  return (\n    <PageTabs aria-label=\"Open pages\" activeValue={active}>\n      {pages.map((page) => (\n        <PageTab\n          key={page.value}\n          value={page.value}\n          label={page.label}\n          icon={\n            page.value === \"home\" ? (\n              <HomeIcon size=\"1em\" />\n            ) : (\n              <FileTextIcon size=\"1em\" />\n            )\n          }\n          active={page.value === active}\n          onSelect={() => setActive(page.value)}\n          action={\n            page.value !== \"home\" && (\n              <IconButton\n                size=\"small\"\n                aria-label={`Close ${page.label}`}\n                icon={<CloseIcon size=\"1em\" />}\n                onClick={() => close(page.value)}\n              />\n            )\n          }\n        />\n      ))}\n    </PageTabs>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "基本的な使い方",
@@ -348,12 +347,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/page-tabs/demos/context-menu.tsx",
       "files": {
-        "apps/docs/src/docs/pages/page-tabs/demos/context-menu.tsx": "import { useState } from \"react\";\nimport {\n  ContextMenu,\n  IconButton,\n  Menu,\n  PageTab,\n  PageTabs,\n} from \"minerva-design\";\nimport { LuEllipsis } from \"react-icons/lu\";\n\nconst all = [\"Overview\", \"Reports\", \"Settings\", \"Users\", \"Billing\"];\n\nexport default function ContextMenuDemo() {\n  const [pages, setPages] = useState(all);\n  const [active, setActive] = useState(\"Reports\");\n\n  const closeOthers = (keep: string) => {\n    setPages([keep]);\n    setActive(keep);\n  };\n\n  return (\n    <PageTabs\n      aria-label=\"Open pages\"\n      activeValue={active}\n      actions={\n        <Menu\n          items={[{ key: \"reset\", label: \"Reopen all pages\" }]}\n          onSelect={() => setPages(all)}\n        >\n          <IconButton\n            size=\"small\"\n            aria-label=\"Page menu\"\n            icon={<LuEllipsis />}\n          />\n        </Menu>\n      }\n    >\n      {pages.map((page) => (\n        <ContextMenu\n          key={page}\n          items={[{ key: \"close-others\", label: \"Close other pages\" }]}\n          onSelect={() => closeOthers(page)}\n        >\n          <PageTab\n            value={page}\n            label={page}\n            active={page === active}\n            onSelect={() => setActive(page)}\n          />\n        </ContextMenu>\n      ))}\n    </PageTabs>\n  );\n}\n"
+        "apps/docs/src/docs/pages/page-tabs/demos/context-menu.tsx": "import { MoreHorizontalIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport {\n  ContextMenu,\n  IconButton,\n  Menu,\n  PageTab,\n  PageTabs,\n} from \"minerva-design\";\n\nconst all = [\"Overview\", \"Reports\", \"Settings\", \"Users\", \"Billing\"];\n\nexport default function ContextMenuDemo() {\n  const [pages, setPages] = useState(all);\n  const [active, setActive] = useState(\"Reports\");\n\n  const closeOthers = (keep: string) => {\n    setPages([keep]);\n    setActive(keep);\n  };\n\n  return (\n    <PageTabs\n      aria-label=\"Open pages\"\n      activeValue={active}\n      actions={\n        <Menu\n          items={[{ key: \"reset\", label: \"Reopen all pages\" }]}\n          onSelect={() => setPages(all)}\n        >\n          <IconButton\n            size=\"small\"\n            aria-label=\"Page menu\"\n            icon={<MoreHorizontalIcon size=\"1em\" />}\n          />\n        </Menu>\n      }\n    >\n      {pages.map((page) => (\n        <ContextMenu\n          key={page}\n          items={[{ key: \"close-others\", label: \"Close other pages\" }]}\n          onSelect={() => closeOthers(page)}\n        >\n          <PageTab\n            value={page}\n            label={page}\n            active={page === active}\n            onSelect={() => setActive(page)}\n          />\n        </ContextMenu>\n      ))}\n    </PageTabs>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "コンテキストメニューとアクション",

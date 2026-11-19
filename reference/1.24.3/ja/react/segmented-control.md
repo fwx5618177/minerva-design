@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -536,14 +536,14 @@ export default function FullWidthDemo() {
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/segmented-control/demos/icons.tsx
 
 ```tsx
-import { LuGrid2X2, LuList, LuMap } from "react-icons/lu";
+import { LayoutGridIcon, ListIcon, MapIcon } from "minerva-design/icons";
 import { SegmentedControl } from "minerva-design";
 
 export default function IconsDemo() {
@@ -553,9 +553,9 @@ export default function IconsDemo() {
         aria-label="Layout"
         defaultValue="list"
         options={[
-          { value: "list", label: "List", icon: <LuList /> },
-          { value: "grid", label: "Grid", icon: <LuGrid2X2 /> },
-          { value: "map", label: "Map", icon: <LuMap /> },
+          { value: "list", label: "List", icon: <ListIcon size="1em" /> },
+          { value: "grid", label: "Grid", icon: <LayoutGridIcon size="1em" /> },
+          { value: "map", label: "Map", icon: <MapIcon size="1em" /> },
         ]}
       />
       {/* Icon-only segments need an aria-label */}
@@ -563,9 +563,17 @@ export default function IconsDemo() {
         aria-label="Layout (compact)"
         defaultValue="grid"
         options={[
-          { value: "list", icon: <LuList />, "aria-label": "List" },
-          { value: "grid", icon: <LuGrid2X2 />, "aria-label": "Grid" },
-          { value: "map", icon: <LuMap />, "aria-label": "Map" },
+          {
+            value: "list",
+            icon: <ListIcon size="1em" />,
+            "aria-label": "List",
+          },
+          {
+            value: "grid",
+            icon: <LayoutGridIcon size="1em" />,
+            "aria-label": "Grid",
+          },
+          { value: "map", icon: <MapIcon size="1em" />, "aria-label": "Map" },
         ]}
       />
     </div>

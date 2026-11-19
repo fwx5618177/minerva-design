@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -537,15 +537,15 @@ PageHeader 渲染带操作的 h1；每个 PageSection 都是以 h2 命名的区�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/page/demos/basic.tsx
 
 ```tsx
+import { BookOpenIcon } from "minerva-design/icons";
 import { Button, Page, PageHeader, PageSection } from "minerva-design";
-import { LuBookOpen } from "react-icons/lu";
 
 export default function BasicDemo() {
   return (
@@ -557,7 +557,7 @@ export default function BasicDemo() {
       />
       <PageSection
         title="Recently added"
-        icon={<LuBookOpen />}
+        icon={<BookOpenIcon size="1em" />}
         actions={
           <Button color="neutral" variant="outline">
             View all
@@ -578,15 +578,15 @@ StatCard 以描述列表组织标签与数值；0 也会显示。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/page/demos/stat-cards.tsx
 
 ```tsx
+import { BookIcon, StarIcon, UsersIcon } from "minerva-design/icons";
 import { ResponsiveGrid, StatCard } from "minerva-design";
-import { LuBook, LuStar, LuUsers } from "react-icons/lu";
 
 export default function StatCardsDemo() {
   return (
@@ -595,12 +595,12 @@ export default function StatCardsDemo() {
       aria-label="Metrics"
       columns={{ base: 1, sm: 3 }}
     >
-      <StatCard label="Books" value="1,284" icon={<LuBook />} />
-      <StatCard label="Readers" value="9.6k" icon={<LuUsers />} />
+      <StatCard label="Books" value="1,284" icon={<BookIcon size="1em" />} />
+      <StatCard label="Readers" value="9.6k" icon={<UsersIcon size="1em" />} />
       <StatCard
         label="Reviews"
         value={0}
-        icon={<LuStar />}
+        icon={<StarIcon size="1em" />}
         description="No reviews yet"
       />
     </ResponsiveGrid>

@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -454,27 +454,27 @@ navigation は collapsed / isMobile / closeNavigation / expandNavigation を受�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/app-shell/demos/basic.tsx
 
 ```tsx
+import {
+  BookOpenIcon,
+  LayoutGridIcon,
+  MessageSquareIcon,
+  SettingsIcon,
+} from "minerva-design/icons";
 import { useState } from "react";
 import { AppShell, Badge, NavTree, Page, PageHeader } from "minerva-design";
-import {
-  LuBookOpen,
-  LuLayoutDashboard,
-  LuMessageSquare,
-  LuSettings,
-} from "react-icons/lu";
 
 const items = [
-  { id: "dashboard", label: "Dashboard", icon: <LuLayoutDashboard /> },
-  { id: "books", label: "Books", icon: <LuBookOpen /> },
-  { id: "reviews", label: "Reviews", icon: <LuMessageSquare /> },
-  { id: "settings", label: "Settings", icon: <LuSettings /> },
+  { id: "dashboard", label: "Dashboard", icon: <LayoutGridIcon size="1em" /> },
+  { id: "books", label: "Books", icon: <BookOpenIcon size="1em" /> },
+  { id: "reviews", label: "Reviews", icon: <MessageSquareIcon size="1em" /> },
+  { id: "settings", label: "Settings", icon: <SettingsIcon size="1em" /> },
 ];
 
 export default function BasicDemo() {
@@ -491,7 +491,7 @@ export default function BasicDemo() {
     >
       <AppShell
         brand="Publishing Admin"
-        brandIcon={<LuLayoutDashboard />}
+        brandIcon={<LayoutGridIcon size="1em" />}
         navigationLabel="Workspace navigation"
         style={{ minHeight: "100%" }}
         headerActions={
@@ -530,13 +530,14 @@ sidebarMode / onSidebarModeChange で expanded・compact・floating を制御し
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/app-shell/demos/controlled.tsx
 
 ```tsx
+import { LayoutGridIcon, SettingsIcon } from "minerva-design/icons";
 import { useState } from "react";
 import {
   AppShell,
@@ -547,11 +548,10 @@ import {
   RadioGroup,
   type AppShellSidebarMode,
 } from "minerva-design";
-import { LuLayoutDashboard, LuSettings } from "react-icons/lu";
 
 const items = [
-  { id: "overview", label: "Overview", icon: <LuLayoutDashboard /> },
-  { id: "settings", label: "Settings", icon: <LuSettings /> },
+  { id: "overview", label: "Overview", icon: <LayoutGridIcon size="1em" /> },
+  { id: "settings", label: "Settings", icon: <SettingsIcon size="1em" /> },
 ];
 
 export default function ControlledDemo() {
@@ -568,7 +568,7 @@ export default function ControlledDemo() {
     >
       <AppShell
         brand="Workspace"
-        brandIcon={<LuLayoutDashboard />}
+        brandIcon={<LayoutGridIcon size="1em" />}
         sidebarMode={mode}
         onSidebarModeChange={setMode}
         style={{ minHeight: "100%" }}
@@ -619,13 +619,14 @@ export default function ControlledDemo() {
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/app-shell/demos/skip-link.tsx
 
 ```tsx
+import { LayoutGridIcon } from "minerva-design/icons";
 import { useState } from "react";
 import {
   AppShell,
@@ -635,12 +636,11 @@ import {
   Page,
   PageHeader,
 } from "minerva-design";
-import { LuLayoutDashboard } from "react-icons/lu";
 
 const items = ["Dashboard", "Books", "Reviews", "Settings"].map((label) => ({
   id: label.toLowerCase(),
   label,
-  icon: <LuLayoutDashboard />,
+  icon: <LayoutGridIcon size="1em" />,
 }));
 
 export default function SkipLinkDemo() {
@@ -658,7 +658,7 @@ export default function SkipLinkDemo() {
     >
       <AppShell
         brand="Publishing Admin"
-        brandIcon={<LuLayoutDashboard />}
+        brandIcon={<LayoutGridIcon size="1em" />}
         skipLink="Skip to the book list"
         style={{ minHeight: "100%" }}
         headerActions={

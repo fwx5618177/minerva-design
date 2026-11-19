@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.3",
-    "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-    "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+    "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+    "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+    "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
   },
   "content": {},
   "components": [
@@ -382,12 +382,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/basic.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/basic.tsx": "import { useState } from \"react\";\nimport { HStack, IconButton } from \"minerva-design\";\nimport { IoAdd, IoSettingsOutline, IoTrashOutline } from \"react-icons/io5\";\n\nexport default function BasicDemo() {\n  const [count, setCount] = useState(0);\n  return (\n    <HStack gap={3} align=\"center\" wrap>\n      <IconButton\n        icon={<IoAdd />}\n        aria-label=\"Add\"\n        onClick={() => setCount((n) => n + 1)}\n      />\n      <IconButton icon={<IoSettingsOutline />} aria-label=\"Settings\" />\n      <IconButton icon={<IoTrashOutline />} aria-label=\"Delete\" />\n      <output aria-live=\"polite\">\n        {count === 0 ? \"Nothing added yet\" : `Added ${count} item(s)`}\n      </output>\n    </HStack>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/basic.tsx": "import { PlusIcon, SettingsIcon, TrashIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { HStack, IconButton } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  const [count, setCount] = useState(0);\n  return (\n    <HStack gap={3} align=\"center\" wrap>\n      <IconButton\n        icon={<PlusIcon size=\"1em\" />}\n        aria-label=\"Add\"\n        onClick={() => setCount((n) => n + 1)}\n      />\n      <IconButton icon={<SettingsIcon size=\"1em\" />} aria-label=\"Settings\" />\n      <IconButton icon={<TrashIcon size=\"1em\" />} aria-label=\"Delete\" />\n      <output aria-live=\"polite\">\n        {count === 0 ? \"Nothing added yet\" : `Added ${count} item(s)`}\n      </output>\n    </HStack>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "基本的な使い方",
@@ -398,11 +397,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/colors.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/colors.tsx": "import { IconButton } from \"minerva-design\";\nimport { IoHeart } from \"react-icons/io5\";\n\nconst colors = [\n  \"neutral\",\n  \"primary\",\n  \"success\",\n  \"warning\",\n  \"danger\",\n  \"info\",\n] as const;\n\nexport default function ColorsDemo() {\n  return (\n    <>\n      {colors.map((color) => (\n        <IconButton\n          key={color}\n          icon={<IoHeart />}\n          color={color}\n          label={color}\n        />\n      ))}\n    </>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/colors.tsx": "import { HeartIcon } from \"minerva-design/icons\";\nimport { IconButton } from \"minerva-design\";\n\nconst colors = [\n  \"neutral\",\n  \"primary\",\n  \"success\",\n  \"warning\",\n  \"danger\",\n  \"info\",\n] as const;\n\nexport default function ColorsDemo() {\n  return (\n    <>\n      {colors.map((color) => (\n        <IconButton\n          key={color}\n          icon={<HeartIcon size=\"1em\" />}\n          color={color}\n          label={color}\n        />\n      ))}\n    </>\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "カラー",
@@ -413,12 +411,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/custom-colors.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/custom-colors.tsx": "import type { CSSProperties } from \"react\";\nimport { IconButton } from \"minerva-design\";\nimport { IoFlash, IoWater } from \"react-icons/io5\";\n\n// CSS custom properties override the resolved colors; set them inline, in a\n// class, or on an ancestor to restyle a whole toolbar.\nconst amber = {\n  \"--icon-button-color\": \"#b45309\",\n  \"--icon-button-hover-bg\": \"rgba(245, 158, 11, 0.16)\",\n} as CSSProperties;\n\nconst sky = {\n  \"--icon-button-color\": \"#0ea5e9\",\n  \"--icon-button-pressed-color\": \"#ffffff\",\n  \"--icon-button-pressed-bg\": \"#0369a1\",\n} as CSSProperties;\n\nexport default function CustomColorsDemo() {\n  return (\n    <>\n      <IconButton icon={<IoFlash />} style={amber} label=\"Energy\" />\n      <IconButton icon={<IoWater />} style={sky} defaultPressed label=\"Water\" />\n    </>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/custom-colors.tsx": "import { ZapIcon, TeardropIcon } from \"minerva-design/icons\";\nimport type { CSSProperties } from \"react\";\nimport { IconButton } from \"minerva-design\";\n\n// CSS custom properties override the resolved colors; set them inline, in a\n// class, or on an ancestor to restyle a whole toolbar.\nconst amber = {\n  \"--icon-button-color\": \"#b45309\",\n  \"--icon-button-hover-bg\": \"rgba(245, 158, 11, 0.16)\",\n} as CSSProperties;\n\nconst sky = {\n  \"--icon-button-color\": \"#0ea5e9\",\n  \"--icon-button-pressed-color\": \"#ffffff\",\n  \"--icon-button-pressed-bg\": \"#0369a1\",\n} as CSSProperties;\n\nexport default function CustomColorsDemo() {\n  return (\n    <>\n      <IconButton icon={<ZapIcon size=\"1em\" />} style={amber} label=\"Energy\" />\n      <IconButton\n        icon={<TeardropIcon size=\"1em\" />}\n        style={sky}\n        defaultPressed\n        label=\"Water\"\n      />\n    </>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "カスタムカラー",
@@ -429,11 +426,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/label.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/label.tsx": "import { IconButton } from \"minerva-design\";\nimport { LuPencil, LuRefreshCw, LuTrash2 } from \"react-icons/lu\";\n\nexport default function LabelDemo() {\n  return (\n    <>\n      <IconButton label=\"Refresh\" shape=\"square\">\n        <LuRefreshCw />\n      </IconButton>\n      <IconButton label=\"Edit\" variant=\"outline\" color=\"primary\">\n        <LuPencil />\n      </IconButton>\n      <IconButton label=\"Delete\" variant=\"solid\" color=\"danger\" size=\"small\">\n        <LuTrash2 />\n      </IconButton>\n    </>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/label.tsx": "import { EditIcon, RefreshIcon, TrashIcon } from \"minerva-design/icons\";\nimport { IconButton } from \"minerva-design\";\n\nexport default function LabelDemo() {\n  return (\n    <>\n      <IconButton label=\"Refresh\" shape=\"square\">\n        <RefreshIcon size=\"1em\" />\n      </IconButton>\n      <IconButton label=\"Edit\" variant=\"outline\" color=\"primary\">\n        <EditIcon size=\"1em\" />\n      </IconButton>\n      <IconButton label=\"Delete\" variant=\"solid\" color=\"danger\" size=\"small\">\n        <TrashIcon size=\"1em\" />\n      </IconButton>\n    </>\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "ラベルとツールチップ",
@@ -444,12 +440,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/search.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/search.tsx": "import { useState } from \"react\";\nimport { Button, IconButton, Input } from \"minerva-design\";\nimport { IoSearch } from \"react-icons/io5\";\n\nexport default function SearchDemo() {\n  const [loading, setLoading] = useState(false);\n\n  const search = (event: React.FormEvent) => {\n    event.preventDefault();\n    setLoading(true);\n    setTimeout(() => setLoading(false), 1500);\n  };\n\n  return (\n    <form\n      onSubmit={search}\n      style={{ display: \"flex\", gap: 8, alignItems: \"center\" }}\n    >\n      <Input aria-label=\"Query\" placeholder=\"Search books\" clearable />\n      <IconButton\n        type=\"submit\"\n        icon={<IoSearch />}\n        label=\"Search\"\n        color=\"primary\"\n        variant=\"solid\"\n        loading={loading}\n      />\n      <Button type=\"submit\" color=\"neutral\" variant=\"outline\" loading={loading}>\n        Search\n      </Button>\n    </form>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/search.tsx": "import { SearchIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { Button, IconButton, Input } from \"minerva-design\";\n\nexport default function SearchDemo() {\n  const [loading, setLoading] = useState(false);\n\n  const search = (event: React.FormEvent) => {\n    event.preventDefault();\n    setLoading(true);\n    setTimeout(() => setLoading(false), 1500);\n  };\n\n  return (\n    <form\n      onSubmit={search}\n      style={{ display: \"flex\", gap: 8, alignItems: \"center\" }}\n    >\n      <Input aria-label=\"Query\" placeholder=\"Search books\" clearable />\n      <IconButton\n        type=\"submit\"\n        icon={<SearchIcon size=\"1em\" />}\n        label=\"Search\"\n        color=\"primary\"\n        variant=\"solid\"\n        loading={loading}\n      />\n      <Button type=\"submit\" color=\"neutral\" variant=\"outline\" loading={loading}>\n        Search\n      </Button>\n    </form>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "検索ボタン",
@@ -460,11 +455,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/sizes-and-shapes.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/sizes-and-shapes.tsx": "import { IconButton } from \"minerva-design\";\nimport { IoStar } from \"react-icons/io5\";\n\nexport default function SizesAndShapesDemo() {\n  return (\n    <>\n      <IconButton icon={<IoStar />} size=\"small\" aria-label=\"Small\" />\n      <IconButton icon={<IoStar />} size=\"medium\" aria-label=\"Medium\" />\n      <IconButton icon={<IoStar />} size=\"large\" aria-label=\"Large\" />\n      <IconButton\n        icon={<IoStar />}\n        shape=\"square\"\n        size=\"small\"\n        aria-label=\"Small square\"\n      />\n      <IconButton icon={<IoStar />} shape=\"square\" aria-label=\"Medium square\" />\n      <IconButton\n        icon={<IoStar />}\n        shape=\"square\"\n        size=\"large\"\n        aria-label=\"Large square\"\n      />\n    </>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/sizes-and-shapes.tsx": "import { StarIcon } from \"minerva-design/icons\";\nimport { IconButton } from \"minerva-design\";\n\nexport default function SizesAndShapesDemo() {\n  return (\n    <>\n      <IconButton\n        icon={<StarIcon size=\"1em\" />}\n        size=\"small\"\n        aria-label=\"Small\"\n      />\n      <IconButton\n        icon={<StarIcon size=\"1em\" />}\n        size=\"medium\"\n        aria-label=\"Medium\"\n      />\n      <IconButton\n        icon={<StarIcon size=\"1em\" />}\n        size=\"large\"\n        aria-label=\"Large\"\n      />\n      <IconButton\n        icon={<StarIcon size=\"1em\" />}\n        shape=\"square\"\n        size=\"small\"\n        aria-label=\"Small square\"\n      />\n      <IconButton\n        icon={<StarIcon size=\"1em\" />}\n        shape=\"square\"\n        aria-label=\"Medium square\"\n      />\n      <IconButton\n        icon={<StarIcon size=\"1em\" />}\n        shape=\"square\"\n        size=\"large\"\n        aria-label=\"Large square\"\n      />\n    </>\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "サイズと形状",
@@ -475,12 +469,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/states.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/states.tsx": "import { useState } from \"react\";\nimport { IconButton } from \"minerva-design\";\nimport { IoCloudUploadOutline, IoMic, IoTrashOutline } from \"react-icons/io5\";\n\nexport default function StatesDemo() {\n  const [loading, setLoading] = useState(false);\n  const [muted, setMuted] = useState(false);\n\n  const upload = () => {\n    setLoading(true);\n    setTimeout(() => setLoading(false), 1500);\n  };\n\n  return (\n    <>\n      <IconButton\n        icon={<IoCloudUploadOutline />}\n        color=\"primary\"\n        loading={loading}\n        onClick={upload}\n        aria-label=\"Upload\"\n      />\n      <IconButton\n        icon={<IoMic />}\n        pressed={muted}\n        onPressedChange={setMuted}\n        aria-label=\"Mute microphone\"\n      />\n      <IconButton icon={<IoTrashOutline />} disabled aria-label=\"Delete\" />\n    </>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/states.tsx": "import { CloudUploadIcon, MicIcon, TrashIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { IconButton } from \"minerva-design\";\n\nexport default function StatesDemo() {\n  const [loading, setLoading] = useState(false);\n  const [muted, setMuted] = useState(false);\n\n  const upload = () => {\n    setLoading(true);\n    setTimeout(() => setLoading(false), 1500);\n  };\n\n  return (\n    <>\n      <IconButton\n        icon={<CloudUploadIcon size=\"1em\" />}\n        color=\"primary\"\n        loading={loading}\n        onClick={upload}\n        aria-label=\"Upload\"\n      />\n      <IconButton\n        icon={<MicIcon size=\"1em\" />}\n        pressed={muted}\n        onPressedChange={setMuted}\n        aria-label=\"Mute microphone\"\n      />\n      <IconButton\n        icon={<TrashIcon size=\"1em\" />}\n        disabled\n        aria-label=\"Delete\"\n      />\n    </>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "状態",
@@ -491,12 +484,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/toggle.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/toggle.tsx": "import { useState } from \"react\";\nimport { IconButton } from \"minerva-design\";\nimport { IoBookmark, IoHeart, IoMicOff } from \"react-icons/io5\";\n\nexport default function ToggleDemo() {\n  const [liked, setLiked] = useState(false);\n\n  return (\n    <>\n      {/* controlled: the button exposes aria-pressed={liked} */}\n      <IconButton\n        icon={<IoHeart />}\n        label=\"Like\"\n        color=\"danger\"\n        pressed={liked}\n        onPressedChange={setLiked}\n      />\n      <span>{liked ? \"Liked\" : \"Not liked yet\"}</span>\n      {/* uncontrolled */}\n      <IconButton icon={<IoBookmark />} label=\"Bookmark\" defaultPressed />\n      <IconButton\n        icon={<IoMicOff />}\n        label=\"Mute\"\n        shape=\"square\"\n        defaultPressed={false}\n      />\n    </>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/toggle.tsx": "import { BookmarkIcon, HeartIcon, MicOffIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { IconButton } from \"minerva-design\";\n\nexport default function ToggleDemo() {\n  const [liked, setLiked] = useState(false);\n\n  return (\n    <>\n      {/* controlled: the button exposes aria-pressed={liked} */}\n      <IconButton\n        icon={<HeartIcon size=\"1em\" />}\n        label=\"Like\"\n        color=\"danger\"\n        pressed={liked}\n        onPressedChange={setLiked}\n      />\n      <span>{liked ? \"Liked\" : \"Not liked yet\"}</span>\n      {/* uncontrolled */}\n      <IconButton\n        icon={<BookmarkIcon size=\"1em\" />}\n        label=\"Bookmark\"\n        defaultPressed\n      />\n      <IconButton\n        icon={<MicOffIcon size=\"1em\" />}\n        label=\"Mute\"\n        shape=\"square\"\n        defaultPressed={false}\n      />\n    </>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "トグルボタン",
@@ -507,11 +499,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/tooltip.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/tooltip.tsx": "import { IconButton } from \"minerva-design\";\nimport { IoCopyOutline, IoInformationCircleOutline } from \"react-icons/io5\";\n\nexport default function TooltipDemo() {\n  return (\n    <>\n      <IconButton\n        icon={<IoCopyOutline />}\n        aria-label=\"Copy\"\n        showTooltip\n        tooltip={{ content: \"Copy to clipboard\" }}\n      />\n      <IconButton\n        icon={<IoInformationCircleOutline />}\n        color=\"info\"\n        aria-label=\"More information\"\n        showTooltip\n        tooltip={{ content: \"Hover or focus to see me\", arrow: true }}\n      />\n    </>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/tooltip.tsx": "import { CopyIcon, InfoIcon } from \"minerva-design/icons\";\nimport { IconButton } from \"minerva-design\";\n\nexport default function TooltipDemo() {\n  return (\n    <>\n      <IconButton\n        icon={<CopyIcon size=\"1em\" />}\n        aria-label=\"Copy\"\n        showTooltip\n        tooltip={{ content: \"Copy to clipboard\" }}\n      />\n      <IconButton\n        icon={<InfoIcon size=\"1em\" />}\n        color=\"info\"\n        aria-label=\"More information\"\n        showTooltip\n        tooltip={{ content: \"Hover or focus to see me\", arrow: true }}\n      />\n    </>\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "ツールチップ",
@@ -522,11 +513,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/icon-button/demos/variants.tsx",
       "files": {
-        "apps/docs/src/docs/pages/icon-button/demos/variants.tsx": "import { HStack, IconButton, VStack } from \"minerva-design\";\nimport { IoHeart } from \"react-icons/io5\";\n\nconst variants = [\"ghost\", \"solid\", \"outline\"] as const;\n\nexport default function VariantsDemo() {\n  return (\n    <VStack gap={3}>\n      {([\"neutral\", \"primary\", \"danger\"] as const).map((color) => (\n        <HStack key={color} gap={2} wrap>\n          {variants.map((variant) => (\n            <IconButton\n              key={variant}\n              icon={<IoHeart />}\n              color={color}\n              variant={variant}\n              label={`${color} ${variant}`}\n            />\n          ))}\n        </HStack>\n      ))}\n    </VStack>\n  );\n}\n"
+        "apps/docs/src/docs/pages/icon-button/demos/variants.tsx": "import { HeartIcon } from \"minerva-design/icons\";\nimport { HStack, IconButton, VStack } from \"minerva-design\";\n\nconst variants = [\"ghost\", \"solid\", \"outline\"] as const;\n\nexport default function VariantsDemo() {\n  return (\n    <VStack gap={3}>\n      {([\"neutral\", \"primary\", \"danger\"] as const).map((color) => (\n        <HStack key={color} gap={2} wrap>\n          {variants.map((variant) => (\n            <IconButton\n              key={variant}\n              icon={<HeartIcon size=\"1em\" />}\n              color={color}\n              variant={variant}\n              label={`${color} ${variant}`}\n            />\n          ))}\n        </HStack>\n      ))}\n    </VStack>\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "バリアント",

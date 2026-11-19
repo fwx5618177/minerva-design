@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -353,24 +353,24 @@ See [installation](./setup.md). Styles and root providers belong in the applicat
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/badge/demos/basic.tsx
 
 ```tsx
+import { BellIcon, MailIcon } from "minerva-design/icons";
 import { Badge } from "minerva-design";
-import { FaBell, FaEnvelope } from "react-icons/fa";
 
 export default function BasicDemo() {
   return (
     <>
       <Badge content={5} aria-label="5 unread notifications">
-        <FaBell size={24} aria-label="Notifications" />
+        <BellIcon size={24} aria-label="Notifications" />
       </Badge>
       <Badge content="99+" aria-label="More than 99 messages">
-        <FaEnvelope size={24} aria-label="Messages" />
+        <MailIcon size={24} aria-label="Messages" />
       </Badge>
       <span>
         Inbox <Badge content={12} color="info" aria-label="12 unread" /> and
@@ -388,15 +388,15 @@ color でセマンティックカラーを指定します：primary（既定）�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/badge/demos/colors.tsx
 
 ```tsx
+import { BellIcon } from "minerva-design/icons";
 import { Badge } from "minerva-design";
-import { FaBell } from "react-icons/fa";
 
 const colors = [
   "primary",
@@ -417,7 +417,7 @@ export default function ColorsDemo() {
           content={index + 1}
           aria-label={`${color} badge`}
         >
-          <FaBell size={24} title={color} />
+          <BellIcon size={24} title={color} />
         </Badge>
       ))}
     </div>
@@ -432,16 +432,16 @@ borderRadius と borderWidth で形を調整します。色を変えるには CS
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/badge/demos/custom-style.tsx
 
 ```tsx
+import { BellIcon } from "minerva-design/icons";
 import type { CSSProperties } from "react";
 import { Badge } from "minerva-design";
-import { FaBell } from "react-icons/fa";
 
 // --badge-bg, --badge-fg and --badge-border override the theme colors; they
 // can also be set from a stylesheet, for a single badge or a whole subtree.
@@ -459,10 +459,10 @@ export default function CustomStyleDemo() {
   return (
     <div style={{ display: "flex", gap: 24 }}>
       <Badge content={1} borderRadius="12px" style={brand}>
-        <FaBell size={24} />
+        <BellIcon size={24} />
       </Badge>
       <Badge content={2} variant="outline" borderWidth="2px" style={outlined}>
-        <FaBell size={24} />
+        <BellIcon size={24} />
       </Badge>
     </div>
   );
@@ -476,27 +476,27 @@ dot は内容の代わりに小さな点を表示し、「新着あり」の表�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/badge/demos/dot.tsx
 
 ```tsx
+import { BellIcon } from "minerva-design/icons";
 import { Badge } from "minerva-design";
-import { FaBell } from "react-icons/fa";
 
 export default function DotDemo() {
   return (
     <>
       <Badge dot color="primary" aria-label="New activity">
-        <FaBell size={24} />
+        <BellIcon size={24} />
       </Badge>
       <Badge dot color="success" aria-label="Online">
-        <FaBell size={24} />
+        <BellIcon size={24} />
       </Badge>
       <Badge dot color="danger" aria-label="Danger">
-        <FaBell size={24} />
+        <BellIcon size={24} />
       </Badge>
     </>
   );
@@ -510,15 +510,15 @@ position でバッジを任意の角に配置します。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/badge/demos/positions.tsx
 
 ```tsx
+import { BellIcon } from "minerva-design/icons";
 import { Badge } from "minerva-design";
-import { FaBell } from "react-icons/fa";
 
 const positions = [
   "top-right",
@@ -532,7 +532,7 @@ export default function PositionsDemo() {
     <div style={{ display: "flex", gap: 32 }}>
       {positions.map((position, index) => (
         <Badge key={position} position={position} content={index + 1}>
-          <FaBell size={24} />
+          <BellIcon size={24} />
         </Badge>
       ))}
     </div>
@@ -547,27 +547,27 @@ small、medium（既定）、large の 3 サイズ。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/badge/demos/sizes.tsx
 
 ```tsx
+import { BellIcon } from "minerva-design/icons";
 import { Badge } from "minerva-design";
-import { FaBell } from "react-icons/fa";
 
 export default function SizesDemo() {
   return (
     <>
       <Badge size="small" content="S">
-        <FaBell size={24} />
+        <BellIcon size={24} />
       </Badge>
       <Badge size="medium" content="M">
-        <FaBell size={24} />
+        <BellIcon size={24} />
       </Badge>
       <Badge size="large" content="L">
-        <FaBell size={24} />
+        <BellIcon size={24} />
       </Badge>
     </>
   );
@@ -662,34 +662,34 @@ icon は内容の前に表示されます。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/badge/demos/with-icon.tsx
 
 ```tsx
+import { CheckIcon, StarIcon, UserIcon } from "minerva-design/icons";
 import { Badge } from "minerva-design";
-import { FaCheck, FaStar, FaUser } from "react-icons/fa";
 
 export default function WithIconDemo() {
   return (
     <div style={{ display: "flex", gap: 48 }}>
       <Badge
         color="success"
-        icon={<FaCheck />}
+        icon={<CheckIcon size="1em" />}
         content="OK"
         aria-label="Verified"
       >
-        <FaUser size={24} />
+        <UserIcon size={24} />
       </Badge>
       <Badge
         color="warning"
-        icon={<FaStar />}
+        icon={<StarIcon size="1em" />}
         content="Top"
         aria-label="Top rated"
       >
-        <FaUser size={24} />
+        <UserIcon size={24} />
       </Badge>
     </div>
   );

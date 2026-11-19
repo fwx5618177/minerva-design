@@ -1,6 +1,6 @@
 # 图标
 
-Minerva 的图标集：专为本组件库在 24×24 网格上绘制的原创图标，默认以内联 SVG 渲染，也可以绘制在 Canvas2D、WebGL、WebGL2 或 WebGPU 画布上。
+Minerva 线条图标与 SVG 品牌标识统一从同一入口导入。线条图标另支持 Canvas2D 和 GPU 绘制。
 
 Package: minerva-design@1.24.3
 
@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -26,7 +26,7 @@ Type references resolve through the [type graph](/minerva-design/reference/1.24.
 
 ### 概览
 
-minerva-design/icons 提供 {{count}} 个图标，分为 {{categories}} 个类别，不依赖任何第三方图标集：每个图标都是组件库自有的 SVG 路径数据，所有渲染器、所有框架使用同一份数据。
+minerva-design/icons 提供 {{count}} 个线条图标，分为 {{categories}} 类，另含填充式 SVG 品牌标识。播放器和文档站统一使用该入口，无需额外安装图标库。
 
 统一的视觉语言：24×24 网格，约 2px 内边距，2px 描边，圆形线帽与连接，无填充，因此图标能与文字协调搭配，并可在 12 到 96 像素之间缩放。部分图标为每条描边指定颜色（colors），其余图标跟随 color 属性。
 
@@ -145,6 +145,64 @@ import { SearchIcon, SettingsIcon } from "minerva-design/icons";
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: 品牌标识
+
+从 minerva-design/icons 导入 BrandReactIcon、BrandVueIcon 等品牌组件。品牌标识以 SVG 保留填充轮廓与比例，size 控制宽高，color 控制填充色，搭配文字时可用 size="1em"。传入 title 或 aria-label 可提供无障碍名称，未命名的标识作为装饰。renderer 和 strokeWidth 选项适用于线条图标组件。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/icons/demos/brands.tsx
+
+```tsx
+import { HStack, VStack, Box } from "minerva-design";
+import {
+  BrandGithubIcon,
+  BrandReactIcon,
+  BrandVueIcon,
+  BrandAngularIcon,
+  BrandWechatIcon,
+  BrandSvelteIcon,
+  BrandSolidIcon,
+  BrandHtml5Icon,
+  BrandAppleIcon,
+  BrandAndroidIcon,
+  BrandLinuxIcon,
+  BrandWindowsIcon,
+} from "minerva-design/icons";
+
+const brands = [
+  { name: "GitHub", Icon: BrandGithubIcon, color: "currentColor" },
+  { name: "React", Icon: BrandReactIcon, color: "#0898bb" },
+  { name: "Vue", Icon: BrandVueIcon, color: "#269b70" },
+  { name: "Angular", Icon: BrandAngularIcon, color: "#ed426b" },
+  { name: "WeChat", Icon: BrandWechatIcon, color: "#18ad63" },
+  { name: "Svelte", Icon: BrandSvelteIcon, color: "#ef653d" },
+  { name: "Solid", Icon: BrandSolidIcon, color: "#589bd1" },
+  { name: "HTML5", Icon: BrandHtml5Icon, color: "#e87737" },
+  { name: "Apple", Icon: BrandAppleIcon, color: "currentColor" },
+  { name: "Android", Icon: BrandAndroidIcon, color: "#269b70" },
+  { name: "Linux", Icon: BrandLinuxIcon, color: "currentColor" },
+  { name: "Windows", Icon: BrandWindowsIcon, color: "#0078d4" },
+];
+export default function BrandsDemo() {
+  return (
+    <HStack wrap gap={6} align="center">
+      {brands.map(({ name, Icon, color }) => (
+        <VStack key={name} gap={2} align="center" style={{ minWidth: 80 }}>
+          <Icon size={32} color={color} />
+          <Box as="span">{name}</Box>
+        </VStack>
+      ))}
+    </HStack>
+  );
+}
+
+```
 
 ## Example: 图标一览
 

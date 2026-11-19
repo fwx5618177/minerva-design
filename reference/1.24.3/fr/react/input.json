@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.3",
-    "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-    "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+    "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+    "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+    "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
   },
   "content": {
     "login": {
@@ -697,11 +697,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/input/demos/addons.tsx",
       "files": {
-        "apps/docs/src/docs/pages/input/demos/addons.tsx": "import { Input } from \"minerva-design\";\nimport { LuSearch } from \"react-icons/lu\";\n\nexport default function AddonsDemo() {\n  return (\n    <>\n      <Input aria-label=\"Search\" prefix={<LuSearch />} placeholder=\"Search\" />\n      <Input aria-label=\"Handle\" prefix=\"@\" defaultValue=\"minerva\" />\n      <Input aria-label=\"Price\" prefix=\"$\" suffix=\"USD\" inputMode=\"decimal\" />\n    </>\n  );\n}\n"
+        "apps/docs/src/docs/pages/input/demos/addons.tsx": "import { SearchIcon } from \"minerva-design/icons\";\nimport { Input } from \"minerva-design\";\n\nexport default function AddonsDemo() {\n  return (\n    <>\n      <Input\n        aria-label=\"Search\"\n        prefix={<SearchIcon size=\"1em\" />}\n        placeholder=\"Search\"\n      />\n      <Input aria-label=\"Handle\" prefix=\"@\" defaultValue=\"minerva\" />\n      <Input aria-label=\"Price\" prefix=\"$\" suffix=\"USD\" inputMode=\"decimal\" />\n    </>\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "Préfixe et suffixe",
@@ -712,13 +711,12 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/input/demos/autofill.tsx",
       "files": {
-        "apps/docs/src/docs/pages/input/demos/autofill.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, FormField, Input } from \"minerva-design\";\nimport { LuLock, LuUser } from \"react-icons/lu\";\n\nexport default function AutofillDemo() {\n  const { t } = useTranslation(\"common\", { keyPrefix: \"docs.input.login\" });\n  const [submitted, setSubmitted] = useState(false);\n\n  return (\n    <form\n      style={{ display: \"grid\", gap: 12, maxWidth: 360 }}\n      onSubmit={(event) => {\n        event.preventDefault();\n        setSubmitted(true);\n      }}\n    >\n      <FormField label={t(\"username\")} required>\n        <Input\n          name=\"username\"\n          autoComplete=\"username\"\n          prefix={<LuUser />}\n          required\n        />\n      </FormField>\n      <FormField label={t(\"password\")} required>\n        <Input\n          name=\"password\"\n          type=\"password\"\n          autoComplete=\"current-password\"\n          prefix={<LuLock />}\n          required\n        />\n      </FormField>\n      <Button type=\"submit\">{t(\"submit\")}</Button>\n      <output aria-live=\"polite\">\n        {submitted ? t(\"feedback\") : t(\"notice\")}\n      </output>\n    </form>\n  );\n}\n"
+        "apps/docs/src/docs/pages/input/demos/autofill.tsx": "import { LockIcon, UserIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, FormField, Input } from \"minerva-design\";\n\nexport default function AutofillDemo() {\n  const { t } = useTranslation(\"common\", { keyPrefix: \"docs.input.login\" });\n  const [submitted, setSubmitted] = useState(false);\n\n  return (\n    <form\n      style={{ display: \"grid\", gap: 12, maxWidth: 360 }}\n      onSubmit={(event) => {\n        event.preventDefault();\n        setSubmitted(true);\n      }}\n    >\n      <FormField label={t(\"username\")} required>\n        <Input\n          name=\"username\"\n          autoComplete=\"username\"\n          prefix={<UserIcon size=\"1em\" />}\n          required\n        />\n      </FormField>\n      <FormField label={t(\"password\")} required>\n        <Input\n          name=\"password\"\n          type=\"password\"\n          autoComplete=\"current-password\"\n          prefix={<LockIcon size=\"1em\" />}\n          required\n        />\n      </FormField>\n      <Button type=\"submit\">{t(\"submit\")}</Button>\n      <output aria-live=\"polite\">\n        {submitted ? t(\"feedback\") : t(\"notice\")}\n      </output>\n    </form>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
         "react",
-        "react-i18next",
-        "react-icons"
+        "react-i18next"
       ],
       "contextImports": [],
       "title": "Connexion et remplissage automatique",
@@ -758,11 +756,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/input/demos/password.tsx",
       "files": {
-        "apps/docs/src/docs/pages/input/demos/password.tsx": "import { FormField, Input } from \"minerva-design\";\nimport { LuLock } from \"react-icons/lu\";\n\nexport default function PasswordDemo() {\n  return (\n    <FormField label=\"Password\" helperText=\"At least 8 characters.\">\n      <Input\n        type=\"password\"\n        prefix={<LuLock />}\n        autoComplete=\"new-password\"\n        minLength={8}\n      />\n    </FormField>\n  );\n}\n"
+        "apps/docs/src/docs/pages/input/demos/password.tsx": "import { LockIcon } from \"minerva-design/icons\";\nimport { FormField, Input } from \"minerva-design\";\n\nexport default function PasswordDemo() {\n  return (\n    <FormField label=\"Password\" helperText=\"At least 8 characters.\">\n      <Input\n        type=\"password\"\n        prefix={<LockIcon size=\"1em\" />}\n        autoComplete=\"new-password\"\n        minLength={8}\n      />\n    </FormField>\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "Mot de passe",

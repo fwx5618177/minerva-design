@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.3",
-    "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-    "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+    "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+    "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+    "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
   },
   "content": {},
   "components": [
@@ -467,12 +467,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/command/demos/site-search.tsx",
       "files": {
-        "apps/docs/src/docs/pages/command/demos/site-search.tsx": "import { useState } from \"react\";\nimport { Button, CommandDialog, Stack, type CommandItem } from \"minerva-design\";\nimport { LuSearch } from \"react-icons/lu\";\n\nconst pages: CommandItem[] = [\n  {\n    id: \"button\",\n    title: \"Button\",\n    description: \"Actions, loading and variants\",\n    group: \"Components\",\n    keywords: \"click action submit\",\n  },\n  {\n    id: \"input\",\n    title: \"Input\",\n    description: \"Text fields and validation\",\n    group: \"Components\",\n    keywords: \"form text search\",\n  },\n  {\n    id: \"installation\",\n    title: \"Installation\",\n    description: \"Install and configure Minerva\",\n    group: \"Getting started\",\n    keywords: \"npm pnpm css\",\n  },\n];\n\nexport default function SiteSearchDemo() {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(\"No page selected\");\n  return (\n    <Stack gap={3} style={{ width: \"100%\", maxWidth: 420 }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        startIcon={<LuSearch />}\n        endIcon={<kbd>Ctrl ⇧ K</kbd>}\n        onClick={() => setOpen(true)}\n        aria-haspopup=\"dialog\"\n        aria-expanded={open}\n        style={{ justifyContent: \"space-between\" }}\n      >\n        Search documentation\n      </Button>\n      <output aria-live=\"polite\">{selected}</output>\n      <CommandDialog\n        open={open}\n        onOpenChange={setOpen}\n        title=\"Search documentation\"\n        description=\"Search titles, descriptions or keywords. Use the arrow keys and Enter to choose a page.\"\n        placeholder=\"Search components or guides…\"\n        emptyText=\"No matching page. Try another keyword.\"\n        items={pages}\n        maxResults={8}\n        shortcut=\"ctrl+shift+k\"\n        shortcutLabel=\"Ctrl ⇧ K\"\n        onSelect={(item) => setSelected(`Selected: ${item.title}`)}\n      />\n    </Stack>\n  );\n}\n"
+        "apps/docs/src/docs/pages/command/demos/site-search.tsx": "import { SearchIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { Button, CommandDialog, Stack, type CommandItem } from \"minerva-design\";\n\nconst pages: CommandItem[] = [\n  {\n    id: \"button\",\n    title: \"Button\",\n    description: \"Actions, loading and variants\",\n    group: \"Components\",\n    keywords: \"click action submit\",\n  },\n  {\n    id: \"input\",\n    title: \"Input\",\n    description: \"Text fields and validation\",\n    group: \"Components\",\n    keywords: \"form text search\",\n  },\n  {\n    id: \"installation\",\n    title: \"Installation\",\n    description: \"Install and configure Minerva\",\n    group: \"Getting started\",\n    keywords: \"npm pnpm css\",\n  },\n];\n\nexport default function SiteSearchDemo() {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(\"No page selected\");\n  return (\n    <Stack gap={3} style={{ width: \"100%\", maxWidth: 420 }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        startIcon={<SearchIcon size=\"1em\" />}\n        endIcon={<kbd>Ctrl ⇧ K</kbd>}\n        onClick={() => setOpen(true)}\n        aria-haspopup=\"dialog\"\n        aria-expanded={open}\n        style={{ justifyContent: \"space-between\" }}\n      >\n        Search documentation\n      </Button>\n      <output aria-live=\"polite\">{selected}</output>\n      <CommandDialog\n        open={open}\n        onOpenChange={setOpen}\n        title=\"Search documentation\"\n        description=\"Search titles, descriptions or keywords. Use the arrow keys and Enter to choose a page.\"\n        placeholder=\"Search components or guides…\"\n        emptyText=\"No matching page. Try another keyword.\"\n        items={pages}\n        maxResults={8}\n        shortcut=\"ctrl+shift+k\"\n        shortcutLabel=\"Ctrl ⇧ K\"\n        onSelect={(item) => setSelected(`Selected: ${item.title}`)}\n      />\n    </Stack>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "站点搜索",

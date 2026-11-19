@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -745,20 +745,24 @@ See [installation](./setup.md). Styles and root providers belong in the applicat
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/input/demos/addons.tsx
 
 ```tsx
+import { SearchIcon } from "minerva-design/icons";
 import { Input } from "minerva-design";
-import { LuSearch } from "react-icons/lu";
 
 export default function AddonsDemo() {
   return (
     <>
-      <Input aria-label="Search" prefix={<LuSearch />} placeholder="Search" />
+      <Input
+        aria-label="Search"
+        prefix={<SearchIcon size="1em" />}
+        placeholder="Search"
+      />
       <Input aria-label="Handle" prefix="@" defaultValue="minerva" />
       <Input aria-label="Price" prefix="$" suffix="USD" inputMode="decimal" />
     </>
@@ -773,17 +777,17 @@ username / current-password のヒントを持つ実際のログインフォー�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-i18next, react-icons
+External dependencies: minerva-design, react, react-i18next
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/input/demos/autofill.tsx
 
 ```tsx
+import { LockIcon, UserIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, FormField, Input } from "minerva-design";
-import { LuLock, LuUser } from "react-icons/lu";
 
 export default function AutofillDemo() {
   const { t } = useTranslation("common", { keyPrefix: "docs.input.login" });
@@ -801,7 +805,7 @@ export default function AutofillDemo() {
         <Input
           name="username"
           autoComplete="username"
-          prefix={<LuUser />}
+          prefix={<UserIcon size="1em" />}
           required
         />
       </FormField>
@@ -810,7 +814,7 @@ export default function AutofillDemo() {
           name="password"
           type="password"
           autoComplete="current-password"
-          prefix={<LuLock />}
+          prefix={<LockIcon size="1em" />}
           required
         />
       </FormField>
@@ -895,22 +899,22 @@ type="password" にすると、ローカライズされたラベル付きの表�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/input/demos/password.tsx
 
 ```tsx
+import { LockIcon } from "minerva-design/icons";
 import { FormField, Input } from "minerva-design";
-import { LuLock } from "react-icons/lu";
 
 export default function PasswordDemo() {
   return (
     <FormField label="Password" helperText="At least 8 characters.">
       <Input
         type="password"
-        prefix={<LuLock />}
+        prefix={<LockIcon size="1em" />}
         autoComplete="new-password"
         minLength={8}
       />

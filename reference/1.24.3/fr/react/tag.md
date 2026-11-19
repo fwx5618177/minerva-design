@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -501,15 +501,15 @@ avatar affiche un avatar avant le contenu. loading remplace l'icône / l'avatar 
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/tag/demos/avatar-loading.tsx
 
 ```tsx
+import { CodeIcon } from "minerva-design/icons";
 import { Avatar, Tag } from "minerva-design";
-import { LuCode } from "react-icons/lu";
 
 export default function AvatarLoadingDemo() {
   return (
@@ -517,7 +517,7 @@ export default function AvatarLoadingDemo() {
       <Tag avatar={<Avatar name="Mia Rossi" size="xsmall" />} shape="circle">
         Mia Rossi
       </Tag>
-      <Tag icon={<LuCode />} color="info" variant="outline">
+      <Tag icon={<CodeIcon size="1em" />} color="info" variant="outline">
         Frontend
       </Tag>
       <Tag loading color="info">
@@ -587,16 +587,16 @@ Supprimer Tag 1, Tag 2 et Tag 3. Une fois tous retirés, Reset les restaure.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/tag/demos/closable.tsx
 
 ```tsx
+import { XCircleIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Tag, Button } from "minerva-design";
-import { FaTimesCircle } from "react-icons/fa";
 
 const initialTags = ["Tag 1", "Tag 2", "Tag 3"];
 
@@ -611,7 +611,9 @@ export default function ClosableDemo() {
           key={tag}
           closable
           closeLabel={(label) => `Remove ${label}`}
-          closeIcon={index === 2 ? <FaTimesCircle aria-hidden /> : undefined}
+          closeIcon={
+            index === 2 ? <XCircleIcon size="1em" aria-hidden /> : undefined
+          }
           onClose={() => setTags((prev) => prev.filter((t) => t !== tag))}
           // clickable + closable: the tag and its close button are two
           // separate buttons, both reachable with Tab
@@ -841,26 +843,26 @@ icon s'affiche avant le contenu.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/tag/demos/with-icon.tsx
 
 ```tsx
+import { BugIcon, CheckIcon, ClockIcon } from "minerva-design/icons";
 import { Tag } from "minerva-design";
-import { FaBug, FaCheck, FaClock } from "react-icons/fa";
 
 export default function WithIconDemo() {
   return (
     <>
-      <Tag icon={<FaCheck />} color="success">
+      <Tag icon={<CheckIcon size="1em" />} color="success">
         Done
       </Tag>
-      <Tag icon={<FaClock />} color="warning">
+      <Tag icon={<ClockIcon size="1em" />} color="warning">
         In progress
       </Tag>
-      <Tag icon={<FaBug />} color="danger">
+      <Tag icon={<BugIcon size="1em" />} color="danger">
         Bug
       </Tag>
     </>

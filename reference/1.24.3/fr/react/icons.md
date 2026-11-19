@@ -1,6 +1,6 @@
 # Icônes
 
-Le jeu d’icônes de Minerva : des icônes originales dessinées pour la bibliothèque sur une grille 24×24, rendues en SVG inline par défaut et aussi dessinées sur des canvas Canvas2D, WebGL, WebGL2 ou WebGPU.
+Les icônes au trait et les marques SVG de Minerva se chargent depuis la même entrée. Les icônes au trait prennent aussi en charge Canvas2D et le GPU.
 
 Package: minerva-design@1.24.3
 
@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -26,7 +26,7 @@ Type references resolve through the [type graph](/minerva-design/reference/1.24.
 
 ### Vue d’ensemble
 
-minerva-design/icons fournit {{count}} icônes réparties en {{categories}} catégories, sans jeu d’icônes tiers : chaque icône est une donnée de tracé SVG propre à la bibliothèque, la même pour tous les rendus et tous les frameworks.
+minerva-design/icons fournit {{count}} icônes au trait dans {{categories}} catégories, ainsi que des marques SVG pleines. Le lecteur et la documentation utilisent cette entrée ; aucun autre paquet d’icônes n’est nécessaire.
 
 Un seul langage visuel : une grille 24×24 avec environ 2px de marge, des traits de 2px aux extrémités et jointures arrondies, sans remplissage, pour que les icônes s’accordent au texte et s’adaptent de 12 à 96 pixels. Certaines icônes ont une couleur par trait (colors) ; les autres suivent la propriété color.
 
@@ -145,6 +145,64 @@ import { SearchIcon, SettingsIcon } from "minerva-design/icons";
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Marques
+
+Importez BrandReactIcon, BrandVueIcon et les autres marques depuis minerva-design/icons. Leur SVG conserve les formes pleines et les proportions. size règle les deux dimensions, color la couleur de remplissage ; utilisez size="1em" avec du texte. title ou aria-label donne un nom accessible ; les marques sans nom sont décoratives. renderer et strokeWidth concernent les icônes au trait.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/icons/demos/brands.tsx
+
+```tsx
+import { HStack, VStack, Box } from "minerva-design";
+import {
+  BrandGithubIcon,
+  BrandReactIcon,
+  BrandVueIcon,
+  BrandAngularIcon,
+  BrandWechatIcon,
+  BrandSvelteIcon,
+  BrandSolidIcon,
+  BrandHtml5Icon,
+  BrandAppleIcon,
+  BrandAndroidIcon,
+  BrandLinuxIcon,
+  BrandWindowsIcon,
+} from "minerva-design/icons";
+
+const brands = [
+  { name: "GitHub", Icon: BrandGithubIcon, color: "currentColor" },
+  { name: "React", Icon: BrandReactIcon, color: "#0898bb" },
+  { name: "Vue", Icon: BrandVueIcon, color: "#269b70" },
+  { name: "Angular", Icon: BrandAngularIcon, color: "#ed426b" },
+  { name: "WeChat", Icon: BrandWechatIcon, color: "#18ad63" },
+  { name: "Svelte", Icon: BrandSvelteIcon, color: "#ef653d" },
+  { name: "Solid", Icon: BrandSolidIcon, color: "#589bd1" },
+  { name: "HTML5", Icon: BrandHtml5Icon, color: "#e87737" },
+  { name: "Apple", Icon: BrandAppleIcon, color: "currentColor" },
+  { name: "Android", Icon: BrandAndroidIcon, color: "#269b70" },
+  { name: "Linux", Icon: BrandLinuxIcon, color: "currentColor" },
+  { name: "Windows", Icon: BrandWindowsIcon, color: "#0078d4" },
+];
+export default function BrandsDemo() {
+  return (
+    <HStack wrap gap={6} align="center">
+      {brands.map(({ name, Icon, color }) => (
+        <VStack key={name} gap={2} align="center" style={{ minWidth: 80 }}>
+          <Icon size={32} color={color} />
+          <Box as="span">{name}</Box>
+        </VStack>
+      ))}
+    </HStack>
+  );
+}
+
+```
 
 ## Example: Galerie
 

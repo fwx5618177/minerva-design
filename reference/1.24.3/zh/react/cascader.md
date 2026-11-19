@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -891,15 +891,15 @@ optionRender 按层级渲染每个选项，maxLevel 限制层级深度（最后�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/cascader/demos/custom-option.tsx
 
 ```tsx
+import { GlobeIcon, MapPinIcon } from "minerva-design/icons";
 import { Cascader, type CascaderOption } from "minerva-design";
-import { FaGlobeEurope, FaMapMarkerAlt } from "react-icons/fa";
 
 const options: CascaderOption[] = [
   {
@@ -957,7 +957,7 @@ export default function CustomOptionDemo() {
       maxLevel={2}
       optionRender={(option, level) => (
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          {level === 0 ? <FaGlobeEurope /> : <FaMapMarkerAlt />}
+          {level === 0 ? <GlobeIcon size="1em" /> : <MapPinIcon size="1em" />}
           {option.label}
         </span>
       )}

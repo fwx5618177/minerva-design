@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.3",
-    "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-    "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+    "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+    "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+    "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
   },
   "content": {},
   "components": [
@@ -608,11 +608,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/alert/demos/appearance.tsx",
       "files": {
-        "apps/docs/src/docs/pages/alert/demos/appearance.tsx": "import { Alert } from \"minerva-design\";\nimport { FiGift } from \"react-icons/fi\";\n\nexport default function AppearanceDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Alert color=\"success\" icon={<FiGift />} elevation>\n        Custom icon with an elevated shadow.\n      </Alert>\n      <Alert color=\"info\" variant=\"outline\" rounded={false}>\n        Outline variant with square corners.\n      </Alert>\n      <Alert color=\"info\" variant=\"solid\" borderRadius={16}>\n        Solid variant with a 16px radius.\n      </Alert>\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/alert/demos/appearance.tsx": "import { GiftIcon } from \"minerva-design/icons\";\nimport { Alert } from \"minerva-design\";\n\nexport default function AppearanceDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Alert color=\"success\" icon={<GiftIcon size=\"1em\" />} elevation>\n        Custom icon with an elevated shadow.\n      </Alert>\n      <Alert color=\"info\" variant=\"outline\" rounded={false}>\n        Outline variant with square corners.\n      </Alert>\n      <Alert color=\"info\" variant=\"solid\" borderRadius={16}>\n        Solid variant with a 16px radius.\n      </Alert>\n    </div>\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "外観",
@@ -637,12 +636,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/alert/demos/closable.tsx",
       "files": {
-        "apps/docs/src/docs/pages/alert/demos/closable.tsx": "import { useState } from \"react\";\nimport { Alert, Button } from \"minerva-design\";\nimport { IoCloseCircleOutline } from \"react-icons/io5\";\n\nexport default function ClosableDemo() {\n  const [key, setKey] = useState(0);\n  const [closed, setClosed] = useState(0);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div key={key} style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n        <Alert color=\"info\" closable onClose={() => setClosed((n) => n + 1)}>\n          Close me with the button on the right.\n        </Alert>\n        <Alert\n          color=\"warning\"\n          closable\n          closeIcon={<IoCloseCircleOutline />}\n          onClose={() => setClosed((n) => n + 1)}\n        >\n          This alert uses a custom close icon.\n        </Alert>\n      </div>\n      <div style={{ display: \"flex\", gap: 12, alignItems: \"center\" }}>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={() => setKey((k) => k + 1)}\n        >\n          Reset\n        </Button>\n        <span>Closed: {closed}</span>\n      </div>\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/alert/demos/closable.tsx": "import { XCircleIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { Alert, Button } from \"minerva-design\";\n\nexport default function ClosableDemo() {\n  const [key, setKey] = useState(0);\n  const [closed, setClosed] = useState(0);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div key={key} style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n        <Alert color=\"info\" closable onClose={() => setClosed((n) => n + 1)}>\n          Close me with the button on the right.\n        </Alert>\n        <Alert\n          color=\"warning\"\n          closable\n          closeIcon={<XCircleIcon size=\"1em\" />}\n          onClose={() => setClosed((n) => n + 1)}\n        >\n          This alert uses a custom close icon.\n        </Alert>\n      </div>\n      <div style={{ display: \"flex\", gap: 12, alignItems: \"center\" }}>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={() => setKey((k) => k + 1)}\n        >\n          Reset\n        </Button>\n        <span>Closed: {closed}</span>\n      </div>\n    </div>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "閉じられるアラート",

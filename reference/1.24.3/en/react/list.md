@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -325,16 +325,16 @@ The list contains iPhone 16 and MacBook Air. Each Delete action removes only its
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/list/demos/basic.tsx
 
 ```tsx
+import { SmartphoneIcon, TrashIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { IconButton, List, ListItem } from "minerva-design";
-import { LuSmartphone, LuTrash2 } from "react-icons/lu";
 
 const initialDevices = [
   { id: "phone", name: "iPhone 16", lastUsed: "Used 2 hours ago" },
@@ -348,7 +348,7 @@ export default function BasicDemo() {
       {devices.map((device) => (
         <ListItem
           key={device.id}
-          icon={<LuSmartphone />}
+          icon={<SmartphoneIcon size="1em" />}
           primary={<span id={`device-${device.id}`}>{device.name}</span>}
           secondary={device.lastUsed}
           actions={
@@ -359,7 +359,7 @@ export default function BasicDemo() {
               }
               aria-describedby={`device-${device.id}`}
             >
-              <LuTrash2 />
+              <TrashIcon size="1em" />
             </IconButton>
           }
         />
@@ -376,15 +376,15 @@ bordered frames the list as a card whose rows are tinted on hover and while a co
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/list/demos/bordered.tsx
 
 ```tsx
+import { GitBranchIcon } from "minerva-design/icons";
 import { Button, List, ListItem } from "minerva-design";
-import { LuGitBranch } from "react-icons/lu";
 
 const branches = [
   { id: "main", name: "main", meta: "Production · deployed 3 min ago" },
@@ -403,7 +403,7 @@ export default function BorderedDemo() {
       {branches.map((branch) => (
         <ListItem
           key={branch.id}
-          icon={<LuGitBranch />}
+          icon={<GitBranchIcon size="1em" />}
           primary={<span id={`branch-${branch.id}`}>{branch.name}</span>}
           secondary={branch.meta}
           actions={

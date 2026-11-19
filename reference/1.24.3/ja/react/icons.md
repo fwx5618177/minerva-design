@@ -1,6 +1,6 @@
 # アイコン
 
-Minerva のアイコンセット。ライブラリのために 24×24 グリッド上で描き起こしたオリジナルのアイコンで、既定ではインライン SVG として描画され、Canvas2D、WebGL、WebGL2、WebGPU のキャンバスにも描画できます。
+Minerva の線画アイコンと SVG ブランドマークを同じ入口から読み込みます。線画アイコンは Canvas2D と GPU 描画にも対応します。
 
 Package: minerva-design@1.24.3
 
@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -26,7 +26,7 @@ Type references resolve through the [type graph](/minerva-design/reference/1.24.
 
 ### 概要
 
-minerva-design/icons は {{categories}} カテゴリ、{{count}} 個のアイコンを収録し、サードパーティのアイコンセットは使いません。すべてのアイコンはライブラリ独自の SVG パスデータで、どのレンダラー・どのフレームワークでも同じデータを使います。
+minerva-design/icons は {{categories}} カテゴリの {{count}} 個の線画アイコンと、塗りつぶし SVG ブランドマークを提供します。プレーヤーとドキュメントも同じ入口を使うため、別のアイコンパッケージは不要です。
 
 統一されたビジュアル言語。24×24 グリッド、約 2px の余白、丸い線端と結合部を持つ 2px のストローク、塗りなし。テキストと自然になじみ、12 から 96 ピクセルまで拡大縮小できます。一部のアイコンはストロークごとに色（colors）を持ち、それ以外は color プロパティに従います。
 
@@ -145,6 +145,64 @@ import { SearchIcon, SettingsIcon } from "minerva-design/icons";
 ## Installation and initialization
 
 See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: ブランドマーク
+
+BrandReactIcon や BrandVueIcon を minerva-design/icons から読み込みます。SVG で塗りと比率を保ちます。size は幅と高さ、color は塗り色を指定し、文字の横では size="1em" が使えます。title または aria-label で名前を付けられ、名前のないマークは装飾として扱います。renderer と strokeWidth は線画アイコン用の設定です。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/icons/demos/brands.tsx
+
+```tsx
+import { HStack, VStack, Box } from "minerva-design";
+import {
+  BrandGithubIcon,
+  BrandReactIcon,
+  BrandVueIcon,
+  BrandAngularIcon,
+  BrandWechatIcon,
+  BrandSvelteIcon,
+  BrandSolidIcon,
+  BrandHtml5Icon,
+  BrandAppleIcon,
+  BrandAndroidIcon,
+  BrandLinuxIcon,
+  BrandWindowsIcon,
+} from "minerva-design/icons";
+
+const brands = [
+  { name: "GitHub", Icon: BrandGithubIcon, color: "currentColor" },
+  { name: "React", Icon: BrandReactIcon, color: "#0898bb" },
+  { name: "Vue", Icon: BrandVueIcon, color: "#269b70" },
+  { name: "Angular", Icon: BrandAngularIcon, color: "#ed426b" },
+  { name: "WeChat", Icon: BrandWechatIcon, color: "#18ad63" },
+  { name: "Svelte", Icon: BrandSvelteIcon, color: "#ef653d" },
+  { name: "Solid", Icon: BrandSolidIcon, color: "#589bd1" },
+  { name: "HTML5", Icon: BrandHtml5Icon, color: "#e87737" },
+  { name: "Apple", Icon: BrandAppleIcon, color: "currentColor" },
+  { name: "Android", Icon: BrandAndroidIcon, color: "#269b70" },
+  { name: "Linux", Icon: BrandLinuxIcon, color: "currentColor" },
+  { name: "Windows", Icon: BrandWindowsIcon, color: "#0078d4" },
+];
+export default function BrandsDemo() {
+  return (
+    <HStack wrap gap={6} align="center">
+      {brands.map(({ name, Icon, color }) => (
+        <VStack key={name} gap={2} align="center" style={{ minWidth: 80 }}>
+          <Icon size={32} color={color} />
+          <Box as="span">{name}</Box>
+        </VStack>
+      ))}
+    </HStack>
+  );
+}
+
+```
 
 ## Example: ギャラリー
 

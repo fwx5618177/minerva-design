@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.3",
-    "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-    "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+    "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+    "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+    "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
   },
   "content": {},
   "components": [
@@ -504,12 +504,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/nav-tree/demos/basic.tsx",
       "files": {
-        "apps/docs/src/docs/pages/nav-tree/demos/basic.tsx": "import { useState } from \"react\";\nimport { NavTree, type NavTreeSection } from \"minerva-design\";\nimport { LuChartBar, LuHouse, LuSettings, LuUsers } from \"react-icons/lu\";\n\nconst sections: NavTreeSection[] = [\n  {\n    id: \"main\",\n    items: [\n      { id: \"home\", label: \"Home\", href: \"#home\", icon: <LuHouse /> },\n      {\n        id: \"analytics\",\n        label: \"Analytics\",\n        description: \"Traffic and conversions\",\n        icon: <LuChartBar />,\n        children: [\n          { id: \"traffic\", label: \"Traffic\", href: \"#traffic\" },\n          { id: \"funnels\", label: \"Funnels\", href: \"#funnels\" },\n        ],\n      },\n    ],\n  },\n  {\n    id: \"admin\",\n    title: \"Administration\",\n    items: [\n      {\n        id: \"users\",\n        label: \"Users\",\n        href: \"#users\",\n        icon: <LuUsers />,\n        endContent: <small>12</small>,\n      },\n      {\n        id: \"settings\",\n        label: \"Settings\",\n        href: \"#settings\",\n        icon: <LuSettings />,\n        disabled: true,\n      },\n    ],\n  },\n];\n\nexport default function BasicDemo() {\n  const [active, setActive] = useState(\"traffic\");\n  return (\n    <div style={{ maxWidth: 260 }}>\n      <NavTree\n        aria-label=\"Main navigation\"\n        sections={sections}\n        activeId={active}\n        onItemSelect={(item) => {\n          if (!item.children) setActive(item.id);\n        }}\n      />\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/nav-tree/demos/basic.tsx": "import {\n  BarChartIcon,\n  HomeIcon,\n  SettingsIcon,\n  UsersIcon,\n} from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { NavTree, type NavTreeSection } from \"minerva-design\";\n\nconst sections: NavTreeSection[] = [\n  {\n    id: \"main\",\n    items: [\n      {\n        id: \"home\",\n        label: \"Home\",\n        href: \"#home\",\n        icon: <HomeIcon size=\"1em\" />,\n      },\n      {\n        id: \"analytics\",\n        label: \"Analytics\",\n        description: \"Traffic and conversions\",\n        icon: <BarChartIcon size=\"1em\" />,\n        children: [\n          { id: \"traffic\", label: \"Traffic\", href: \"#traffic\" },\n          { id: \"funnels\", label: \"Funnels\", href: \"#funnels\" },\n        ],\n      },\n    ],\n  },\n  {\n    id: \"admin\",\n    title: \"Administration\",\n    items: [\n      {\n        id: \"users\",\n        label: \"Users\",\n        href: \"#users\",\n        icon: <UsersIcon size=\"1em\" />,\n        endContent: <small>12</small>,\n      },\n      {\n        id: \"settings\",\n        label: \"Settings\",\n        href: \"#settings\",\n        icon: <SettingsIcon size=\"1em\" />,\n        disabled: true,\n      },\n    ],\n  },\n];\n\nexport default function BasicDemo() {\n  const [active, setActive] = useState(\"traffic\");\n  return (\n    <div style={{ maxWidth: 260 }}>\n      <NavTree\n        aria-label=\"Main navigation\"\n        sections={sections}\n        activeId={active}\n        onItemSelect={(item) => {\n          if (!item.children) setActive(item.id);\n        }}\n      />\n    </div>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "Basic usage",
@@ -520,12 +519,11 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/nav-tree/demos/collapsed.tsx",
       "files": {
-        "apps/docs/src/docs/pages/nav-tree/demos/collapsed.tsx": "import { useState } from \"react\";\nimport { Button, NavTree, type NavTreeSection } from \"minerva-design\";\nimport { LuFileText, LuHouse, LuInbox } from \"react-icons/lu\";\n\nconst sections: NavTreeSection[] = [\n  {\n    id: \"main\",\n    items: [\n      { id: \"home\", label: \"Home\", href: \"#home\", icon: <LuHouse /> },\n      { id: \"inbox\", label: \"Inbox\", href: \"#inbox\", icon: <LuInbox /> },\n      {\n        id: \"docs\",\n        label: \"Documents with a rather long name\",\n        description: \"Shared with the whole team\",\n        href: \"#docs\",\n        icon: <LuFileText />,\n      },\n    ],\n  },\n];\n\nexport default function CollapsedDemo() {\n  const [collapsed, setCollapsed] = useState(false);\n  return (\n    <div style={{ display: \"grid\", gap: 12, justifyItems: \"start\" }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        size=\"small\"\n        onClick={() => setCollapsed((c) => !c)}\n      >\n        {collapsed ? \"Expand sidebar\" : \"Collapse sidebar\"}\n      </Button>\n      <div style={{ width: collapsed ? 56 : 220 }}>\n        <NavTree\n          sections={sections}\n          activeId=\"inbox\"\n          collapsed={collapsed}\n          wrapLabels\n        />\n      </div>\n    </div>\n  );\n}\n"
+        "apps/docs/src/docs/pages/nav-tree/demos/collapsed.tsx": "import { FileTextIcon, HomeIcon, InboxIcon } from \"minerva-design/icons\";\nimport { useState } from \"react\";\nimport { Button, NavTree, type NavTreeSection } from \"minerva-design\";\n\nconst sections: NavTreeSection[] = [\n  {\n    id: \"main\",\n    items: [\n      {\n        id: \"home\",\n        label: \"Home\",\n        href: \"#home\",\n        icon: <HomeIcon size=\"1em\" />,\n      },\n      {\n        id: \"inbox\",\n        label: \"Inbox\",\n        href: \"#inbox\",\n        icon: <InboxIcon size=\"1em\" />,\n      },\n      {\n        id: \"docs\",\n        label: \"Documents with a rather long name\",\n        description: \"Shared with the whole team\",\n        href: \"#docs\",\n        icon: <FileTextIcon size=\"1em\" />,\n      },\n    ],\n  },\n];\n\nexport default function CollapsedDemo() {\n  const [collapsed, setCollapsed] = useState(false);\n  return (\n    <div style={{ display: \"grid\", gap: 12, justifyItems: \"start\" }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        size=\"small\"\n        onClick={() => setCollapsed((c) => !c)}\n      >\n        {collapsed ? \"Expand sidebar\" : \"Collapse sidebar\"}\n      </Button>\n      <div style={{ width: collapsed ? 56 : 220 }}>\n        <NavTree\n          sections={sections}\n          activeId=\"inbox\"\n          collapsed={collapsed}\n          wrapLabels\n        />\n      </div>\n    </div>\n  );\n}\n"
       },
       "dependencies": [
         "minerva-design",
-        "react",
-        "react-icons"
+        "react"
       ],
       "contextImports": [],
       "title": "Compact mode and wrapping",

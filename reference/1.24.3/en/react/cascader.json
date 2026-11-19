@@ -9,9 +9,9 @@
   "provenance": {
     "schemaVersion": "2.0.0",
     "packageVersion": "1.24.3",
-    "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-    "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-    "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+    "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+    "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+    "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
   },
   "content": {
     "keyboard": {
@@ -726,11 +726,10 @@
       "kind": "internal-demo",
       "entry": "apps/docs/src/docs/pages/cascader/demos/custom-option.tsx",
       "files": {
-        "apps/docs/src/docs/pages/cascader/demos/custom-option.tsx": "import { Cascader, type CascaderOption } from \"minerva-design\";\nimport { FaGlobeEurope, FaMapMarkerAlt } from \"react-icons/fa\";\n\nconst options: CascaderOption[] = [\n  {\n    value: \"fr\",\n    label: \"France\",\n    children: [\n      {\n        value: \"idf\",\n        label: \"Île-de-France\",\n        children: [\n          { value: \"paris\", label: \"Paris\" },\n          { value: \"versailles\", label: \"Versailles\" },\n        ],\n      },\n      {\n        value: \"ara\",\n        label: \"Auvergne-Rhône-Alpes\",\n        children: [\n          { value: \"lyon\", label: \"Lyon\" },\n          { value: \"grenoble\", label: \"Grenoble\" },\n        ],\n      },\n    ],\n  },\n  {\n    value: \"jp\",\n    label: \"Japan\",\n    children: [\n      {\n        value: \"kanto\",\n        label: \"Kantō\",\n        children: [\n          { value: \"tokyo\", label: \"Tokyo\" },\n          { value: \"yokohama\", label: \"Yokohama\" },\n        ],\n      },\n      {\n        value: \"kansai\",\n        label: \"Kansai\",\n        children: [\n          { value: \"osaka\", label: \"Osaka\" },\n          { value: \"kyoto\", label: \"Kyoto\" },\n        ],\n      },\n    ],\n  },\n];\n\nexport default function CustomOptionDemo() {\n  return (\n    <Cascader\n      name=\"region\"\n      label=\"Region (2 levels)\"\n      options={options}\n      maxLevel={2}\n      optionRender={(option, level) => (\n        <span style={{ display: \"inline-flex\", alignItems: \"center\", gap: 6 }}>\n          {level === 0 ? <FaGlobeEurope /> : <FaMapMarkerAlt />}\n          {option.label}\n        </span>\n      )}\n      dropdownStyle={{ minWidth: 360 }}\n      optionStyle={{ fontWeight: 500 }}\n    />\n  );\n}\n"
+        "apps/docs/src/docs/pages/cascader/demos/custom-option.tsx": "import { GlobeIcon, MapPinIcon } from \"minerva-design/icons\";\nimport { Cascader, type CascaderOption } from \"minerva-design\";\n\nconst options: CascaderOption[] = [\n  {\n    value: \"fr\",\n    label: \"France\",\n    children: [\n      {\n        value: \"idf\",\n        label: \"Île-de-France\",\n        children: [\n          { value: \"paris\", label: \"Paris\" },\n          { value: \"versailles\", label: \"Versailles\" },\n        ],\n      },\n      {\n        value: \"ara\",\n        label: \"Auvergne-Rhône-Alpes\",\n        children: [\n          { value: \"lyon\", label: \"Lyon\" },\n          { value: \"grenoble\", label: \"Grenoble\" },\n        ],\n      },\n    ],\n  },\n  {\n    value: \"jp\",\n    label: \"Japan\",\n    children: [\n      {\n        value: \"kanto\",\n        label: \"Kantō\",\n        children: [\n          { value: \"tokyo\", label: \"Tokyo\" },\n          { value: \"yokohama\", label: \"Yokohama\" },\n        ],\n      },\n      {\n        value: \"kansai\",\n        label: \"Kansai\",\n        children: [\n          { value: \"osaka\", label: \"Osaka\" },\n          { value: \"kyoto\", label: \"Kyoto\" },\n        ],\n      },\n    ],\n  },\n];\n\nexport default function CustomOptionDemo() {\n  return (\n    <Cascader\n      name=\"region\"\n      label=\"Region (2 levels)\"\n      options={options}\n      maxLevel={2}\n      optionRender={(option, level) => (\n        <span style={{ display: \"inline-flex\", alignItems: \"center\", gap: 6 }}>\n          {level === 0 ? <GlobeIcon size=\"1em\" /> : <MapPinIcon size=\"1em\" />}\n          {option.label}\n        </span>\n      )}\n      dropdownStyle={{ minWidth: 360 }}\n      optionStyle={{ fontWeight: 500 }}\n    />\n  );\n}\n"
       },
       "dependencies": [
-        "minerva-design",
-        "react-icons"
+        "minerva-design"
       ],
       "contextImports": [],
       "title": "Custom options and levels",

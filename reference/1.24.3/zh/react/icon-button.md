@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.24.3",
-  "sourceCommit": "bbcef3f0abff568d08e734ec3e117c8cd10b017e",
-  "sourceDigest": "sha256:94a5fd0119213e1760835190bfd5a8871f02c56d20091b654fc378ab0e0e6331",
-  "referenceSourceDigest": "sha256:aa4b50ed4e7a53906ab6f39a3da2bbb4024583714e780e0cf99a262437a2babd"
+  "sourceCommit": "e8c253c3c4ff080aa45e0b73b5132eaefca86209",
+  "sourceDigest": "sha256:b9a39dcfe8b09a5d0967efee074963c408a37abb72fbe1d4c7a1eda21075df1d",
+  "referenceSourceDigest": "sha256:db3e755233f56f2ed326cfe2cf1eb7099c6b0bea2a5e432b6c94ae08d637c24c"
 }
 ```
 
@@ -424,28 +424,28 @@ Add 增加条目计数；Settings 和 Delete 展示带可访问名称的图标�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/basic.tsx
 
 ```tsx
+import { PlusIcon, SettingsIcon, TrashIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { HStack, IconButton } from "minerva-design";
-import { IoAdd, IoSettingsOutline, IoTrashOutline } from "react-icons/io5";
 
 export default function BasicDemo() {
   const [count, setCount] = useState(0);
   return (
     <HStack gap={3} align="center" wrap>
       <IconButton
-        icon={<IoAdd />}
+        icon={<PlusIcon size="1em" />}
         aria-label="Add"
         onClick={() => setCount((n) => n + 1)}
       />
-      <IconButton icon={<IoSettingsOutline />} aria-label="Settings" />
-      <IconButton icon={<IoTrashOutline />} aria-label="Delete" />
+      <IconButton icon={<SettingsIcon size="1em" />} aria-label="Settings" />
+      <IconButton icon={<TrashIcon size="1em" />} aria-label="Delete" />
       <output aria-live="polite">
         {count === 0 ? "Nothing added yet" : `Added ${count} item(s)`}
       </output>
@@ -461,15 +461,15 @@ color 设置语义颜色：neutral（默认）、primary、success、warning、d
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/colors.tsx
 
 ```tsx
+import { HeartIcon } from "minerva-design/icons";
 import { IconButton } from "minerva-design";
-import { IoHeart } from "react-icons/io5";
 
 const colors = [
   "neutral",
@@ -486,7 +486,7 @@ export default function ColorsDemo() {
       {colors.map((color) => (
         <IconButton
           key={color}
-          icon={<IoHeart />}
+          icon={<HeartIcon size="1em" />}
           color={color}
           label={color}
         />
@@ -503,16 +503,16 @@ export default function ColorsDemo() {
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/custom-colors.tsx
 
 ```tsx
+import { ZapIcon, TeardropIcon } from "minerva-design/icons";
 import type { CSSProperties } from "react";
 import { IconButton } from "minerva-design";
-import { IoFlash, IoWater } from "react-icons/io5";
 
 // CSS custom properties override the resolved colors; set them inline, in a
 // class, or on an ancestor to restyle a whole toolbar.
@@ -530,8 +530,13 @@ const sky = {
 export default function CustomColorsDemo() {
   return (
     <>
-      <IconButton icon={<IoFlash />} style={amber} label="Energy" />
-      <IconButton icon={<IoWater />} style={sky} defaultPressed label="Water" />
+      <IconButton icon={<ZapIcon size="1em" />} style={amber} label="Energy" />
+      <IconButton
+        icon={<TeardropIcon size="1em" />}
+        style={sky}
+        defaultPressed
+        label="Water"
+      />
     </>
   );
 }
@@ -544,27 +549,27 @@ label 作为按钮的无障碍名称并显示为提示；图标可作为 childre
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/label.tsx
 
 ```tsx
+import { EditIcon, RefreshIcon, TrashIcon } from "minerva-design/icons";
 import { IconButton } from "minerva-design";
-import { LuPencil, LuRefreshCw, LuTrash2 } from "react-icons/lu";
 
 export default function LabelDemo() {
   return (
     <>
       <IconButton label="Refresh" shape="square">
-        <LuRefreshCw />
+        <RefreshIcon size="1em" />
       </IconButton>
       <IconButton label="Edit" variant="outline" color="primary">
-        <LuPencil />
+        <EditIcon size="1em" />
       </IconButton>
       <IconButton label="Delete" variant="solid" color="danger" size="small">
-        <LuTrash2 />
+        <TrashIcon size="1em" />
       </IconButton>
     </>
   );
@@ -578,16 +583,16 @@ export default function LabelDemo() {
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/search.tsx
 
 ```tsx
+import { SearchIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { Button, IconButton, Input } from "minerva-design";
-import { IoSearch } from "react-icons/io5";
 
 export default function SearchDemo() {
   const [loading, setLoading] = useState(false);
@@ -606,7 +611,7 @@ export default function SearchDemo() {
       <Input aria-label="Query" placeholder="Search books" clearable />
       <IconButton
         type="submit"
-        icon={<IoSearch />}
+        icon={<SearchIcon size="1em" />}
         label="Search"
         color="primary"
         variant="solid"
@@ -627,31 +632,47 @@ export default function SearchDemo() {
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/sizes-and-shapes.tsx
 
 ```tsx
+import { StarIcon } from "minerva-design/icons";
 import { IconButton } from "minerva-design";
-import { IoStar } from "react-icons/io5";
 
 export default function SizesAndShapesDemo() {
   return (
     <>
-      <IconButton icon={<IoStar />} size="small" aria-label="Small" />
-      <IconButton icon={<IoStar />} size="medium" aria-label="Medium" />
-      <IconButton icon={<IoStar />} size="large" aria-label="Large" />
       <IconButton
-        icon={<IoStar />}
+        icon={<StarIcon size="1em" />}
+        size="small"
+        aria-label="Small"
+      />
+      <IconButton
+        icon={<StarIcon size="1em" />}
+        size="medium"
+        aria-label="Medium"
+      />
+      <IconButton
+        icon={<StarIcon size="1em" />}
+        size="large"
+        aria-label="Large"
+      />
+      <IconButton
+        icon={<StarIcon size="1em" />}
         shape="square"
         size="small"
         aria-label="Small square"
       />
-      <IconButton icon={<IoStar />} shape="square" aria-label="Medium square" />
       <IconButton
-        icon={<IoStar />}
+        icon={<StarIcon size="1em" />}
+        shape="square"
+        aria-label="Medium square"
+      />
+      <IconButton
+        icon={<StarIcon size="1em" />}
         shape="square"
         size="large"
         aria-label="Large square"
@@ -668,16 +689,16 @@ loading 用加载动画替换图标，并在忽略激活的同时保持按钮可
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/states.tsx
 
 ```tsx
+import { CloudUploadIcon, MicIcon, TrashIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { IconButton } from "minerva-design";
-import { IoCloudUploadOutline, IoMic, IoTrashOutline } from "react-icons/io5";
 
 export default function StatesDemo() {
   const [loading, setLoading] = useState(false);
@@ -691,19 +712,23 @@ export default function StatesDemo() {
   return (
     <>
       <IconButton
-        icon={<IoCloudUploadOutline />}
+        icon={<CloudUploadIcon size="1em" />}
         color="primary"
         loading={loading}
         onClick={upload}
         aria-label="Upload"
       />
       <IconButton
-        icon={<IoMic />}
+        icon={<MicIcon size="1em" />}
         pressed={muted}
         onPressedChange={setMuted}
         aria-label="Mute microphone"
       />
-      <IconButton icon={<IoTrashOutline />} disabled aria-label="Delete" />
+      <IconButton
+        icon={<TrashIcon size="1em" />}
+        disabled
+        aria-label="Delete"
+      />
     </>
   );
 }
@@ -716,16 +741,16 @@ Like 默认关闭并更新反馈；Bookmark 默认开启，Mute 默认关闭。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react, react-icons
+External dependencies: minerva-design, react
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/toggle.tsx
 
 ```tsx
+import { BookmarkIcon, HeartIcon, MicOffIcon } from "minerva-design/icons";
 import { useState } from "react";
 import { IconButton } from "minerva-design";
-import { IoBookmark, IoHeart, IoMicOff } from "react-icons/io5";
 
 export default function ToggleDemo() {
   const [liked, setLiked] = useState(false);
@@ -734,7 +759,7 @@ export default function ToggleDemo() {
     <>
       {/* controlled: the button exposes aria-pressed={liked} */}
       <IconButton
-        icon={<IoHeart />}
+        icon={<HeartIcon size="1em" />}
         label="Like"
         color="danger"
         pressed={liked}
@@ -742,9 +767,13 @@ export default function ToggleDemo() {
       />
       <span>{liked ? "Liked" : "Not liked yet"}</span>
       {/* uncontrolled */}
-      <IconButton icon={<IoBookmark />} label="Bookmark" defaultPressed />
       <IconButton
-        icon={<IoMicOff />}
+        icon={<BookmarkIcon size="1em" />}
+        label="Bookmark"
+        defaultPressed
+      />
+      <IconButton
+        icon={<MicOffIcon size="1em" />}
         label="Mute"
         shape="square"
         defaultPressed={false}
@@ -761,27 +790,27 @@ export default function ToggleDemo() {
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/tooltip.tsx
 
 ```tsx
+import { CopyIcon, InfoIcon } from "minerva-design/icons";
 import { IconButton } from "minerva-design";
-import { IoCopyOutline, IoInformationCircleOutline } from "react-icons/io5";
 
 export default function TooltipDemo() {
   return (
     <>
       <IconButton
-        icon={<IoCopyOutline />}
+        icon={<CopyIcon size="1em" />}
         aria-label="Copy"
         showTooltip
         tooltip={{ content: "Copy to clipboard" }}
       />
       <IconButton
-        icon={<IoInformationCircleOutline />}
+        icon={<InfoIcon size="1em" />}
         color="info"
         aria-label="More information"
         showTooltip
@@ -799,15 +828,15 @@ variant 设置视觉样式：ghost（默认，悬停前透明）、solid（以�
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
-External dependencies: minerva-design, react-icons
+External dependencies: minerva-design
 
 Documentation context imports: none
 
 ### apps/docs/src/docs/pages/icon-button/demos/variants.tsx
 
 ```tsx
+import { HeartIcon } from "minerva-design/icons";
 import { HStack, IconButton, VStack } from "minerva-design";
-import { IoHeart } from "react-icons/io5";
 
 const variants = ["ghost", "solid", "outline"] as const;
 
@@ -819,7 +848,7 @@ export default function VariantsDemo() {
           {variants.map((variant) => (
             <IconButton
               key={variant}
-              icon={<IoHeart />}
+              icon={<HeartIcon size="1em" />}
               color={color}
               variant={variant}
               label={`${color} ${variant}`}
